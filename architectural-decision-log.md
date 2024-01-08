@@ -85,8 +85,10 @@ Authentication
 HTTP Client
 - Axios
 
+Packages
+-
 
-## Discussion on why each tech was used
+## Discussion on tech design choices
 
 - Next.js 14 App Router is my new favorite way to create front-end applications.
 
@@ -98,6 +100,52 @@ HTTP Client
 - [shadcn/ui](https://ui.shadcn.com/) has become ny favorite collection of re-usable components
   - We can build our own component system and not be dependent on any 3rd party npm library which needs to be updated and maintained.
 
+## Coding style & naming conventions
+
+Here I'd like to list out some general rules I'd like to set for myself to ensure consistent coding style and naming conventions. I'll be updating this section intermittently.
+
+Enforcing these rules keeps the codebase consistent and reduces overhead when thinking about how to name files and variables.
+
+### Coding Style
+
+- Favor vertical code hierarchy over horizontal
+
+### Naming Conventions
+
+In this React, Typescript project here is some rules to adhere to:
+
+<table>
+  <tr>
+    <td>Case</td>
+    <td>Subject</td>
+    <td>Example</td>
+  </tr>
+  <tr>
+    <td>camelCase (start with lowercase letter and capitalizes the first letter of each subsequent word)</td>
+    <td>Code: variables, functions, objects, etc.</td>
+    <td>someVariable, doSomething, myId</td>
+  </tr>
+  <tr>
+    <td>PascalCase (Uppercase with no separators, first letter must be uppercase)</td>
+    <td>Components</td>
+    <td>App, Layout, Navbar, CardList </td>
+  </tr>
+  <tr>
+    <td>kebab-case (lowercase words separated by hypens)</td>
+    <td>File names that are NOT components</td>
+    <td>pages, API routes, utils, etc.</td>
+  </tr>
+  <tr>
+    <td>Square brackets ([ ])</td>
+    <td>Dynamic route segments</td>
+    <td>[id], [slug], [boardId], etc.</td>
+  </tr>
+  <tr>
+    <td>Underscore ( _ )</td>
+    <td>Special files, or private properties</td>
+    <td>_app, _document, _error, etc.</td>
+  </tr>
+</table>
 
 ## Project configuration
 
