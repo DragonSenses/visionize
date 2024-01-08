@@ -99,7 +99,7 @@ HTTP Client
   - We can build our own component system and not be dependent on any 3rd party npm library which needs to be updated and maintained.
 
 
-## Initialize project
+## Project configuration
 
 Let's get started with [Next.js 14 - App Router](https://nextjs.org/docs).
 
@@ -125,3 +125,59 @@ Initialize Next.js 14 project
 - This commit sets up the basic structure and configuration for a nextjs 14 project with the following setup:
 - Typescript, ESLint, TailwindCSS
 - App Router
+
+The next step is to initialize [shadcn/ui](https://ui.shadcn.com/docs/installation/next).
+
+```sh
+npx shadcn-ui@latest init
+```
+
+This should give us the following prompts
+
+```sh
+Need to install the following packages:
+  shadcn-ui@0.6.0
+Ok to proceed? (y) y
+√ Would you like to use TypeScript (recommended)? ... no / *yes*
+√ Which style would you like to use? » *Default*
+√ Which color would you like to use as base color? » *Neutral*
+√ Where is your global CSS file? ... *app/globals.css*
+√ Would you like to use CSS variables for colors? ... no / *yes*
+√ Are you using a custom tailwind prefix eg. tw-? (Leave blank if not) ...
+√ Where is your tailwind.config.js located? ... *tailwind.config.ts*
+√ Configure the import alias for components: ... *@/components*
+√ Configure the import alias for utils: ... *@/lib/utils*
+√ Are you using React Server Components? ... no / *yes*
+√ Write configuration to components.json. Proceed? ... *yes*
+```
+
+Initialize shadcn-ui@0.6.0
+
+Let's take a closer look at the `/lib/utils.ts` file that `shadcn/ui` installed. Going to add comments to describe `utils.ts` and the `cn` function that it contains.
+
+The `cn()` function allows us to safely combine and merge tailwind classes. Useful for applying both conditional and merged class names to a React component or element. e.g., we may have a specific class for a `success` state, and another class for the `error` state.
+
+```ts
+/* A utility function that combines clsx and tailwind-merge to create a single
+string of class names */
+import { type ClassValue, clsx } from "clsx";
+/* twMerge is a function that takes one or more strings of Tailwind CSS 
+classes and returns a single string of merged classes, following the 
+Tailwind CSS rules. twMerge is useful for combining and overriding class 
+names from different sources, such as props, state, or theme */
+import { twMerge } from "tailwind-merge";
+
+/**
+ * Export the cn helper function, which takes one or more ClassValue arguments
+ * and returns a single string of merged class names. Useful for applying both
+ * conditional and merged class names to a React component or element.
+ * @param inputs ClassValue is a type that represents a valid CSS class name
+ * @returns a single string of merged classnames
+ */
+export function cn(...inputs: ClassValue[]) {
+  // Use clsx to convert the inputs to a single string of class names
+  // Use twMerge to merge the class names according to the Tailwind CSS rules
+  // Return the merged string of class names
+  return twMerge(clsx(inputs));
+}
+```
