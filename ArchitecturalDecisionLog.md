@@ -57,6 +57,10 @@ The technologies I plan to use:
 Programming Language
 - TypeScript
 
+Browsers
+  - Google Chrome
+  - Microsoftt Edge
+
 Code Editor
 - VSCode
 - Vim
@@ -94,3 +98,30 @@ HTTP Client
 - [shadcn/ui](https://ui.shadcn.com/) has become ny favorite collection of re-usable components
   - We can build our own component system and not be dependent on any 3rd party npm library which needs to be updated and maintained.
 
+
+## Initialize project
+
+Let's get started with [Next.js 14 - App Router](https://nextjs.org/docs).
+
+- [Nextjs Installation](https://nextjs.org/docs/getting-started/installation)
+
+```sh
+npx create-next-app@latest visionize
+```
+
+Now we answer the prompts that defines the set up of our project
+
+```sh
+√ Would you like to use TypeScript? ... No / [Yes]
+√ Would you like to use ESLint? ... No / [Yes]
+√ Would you like to use Tailwind CSS? ... No / [Yes]
+√ Would you like to use `src/` directory? ... [No] / Yes
+√ Would you like to use App Router? (recommended) ... No / [Yes]
+√ Would you like to customize the default import alias (@/*)? ... [No] / Yes
+```
+
+Initialize Next.js 14 project
+
+- This commit sets up the basic structure and configuration for a nextjs 14 project with the following setup:
+- Typescript, ESLint, TailwindCSS
+- App Router
