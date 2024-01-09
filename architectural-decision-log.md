@@ -229,3 +229,41 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 ```
+
+### Developing the app
+
+Let's look at the entry point to our application, the home page. We'll remove the boilerplate that it shipped with and keep it simple, a `Home` component that returns a `div`.
+
+`app\page.tsx`
+```tsx
+export default function Home() {
+  return (
+    <div className="text-sky-500">
+      Visionize
+    </div>
+  )
+}
+```
+
+Another thing we should modify is `globals.css`, and set all `html`, `body` and `:root` elements to 100% of the viewport height.
+
+`app\globals.css`
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+:root {
+  height: 100%;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+
+/* ... */
+```
+
