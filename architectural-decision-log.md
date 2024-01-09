@@ -314,3 +314,26 @@ const LandingLayout = ({
 
 export default LandingLayout;
 ```
+
+Next let's give the `LandingLayout` some styles, `h-full` and `bg-slate-100`. Wrap the `children` in a `<main>` with the same background color, and padding for both the top and bottom side. The padding is there for the components `Navbar` and `Footer` that we will add later, for now we'll add comments to mark as indicators for where it should be.
+
+`app\(landing)\layout.tsx`
+```tsx
+const LandingLayout = ({
+  children
+}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <div className="h-full bg-slate-100">
+      {/* Navbar */}
+      <main className="pt-40 pb-20 bg-slate-100">
+        {children}
+      </main>
+      {/* Footer */}
+    </div>
+  );
+};
+
+export default LandingLayout;
+```
