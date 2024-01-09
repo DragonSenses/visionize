@@ -232,20 +232,7 @@ export function cn(...inputs: ClassValue[]) {
 
 ### Developing the app
 
-Let's look at the entry point to our application, the home page. We'll remove the boilerplate that it shipped with and keep it simple, a `Home` component that returns a `div`.
-
-`app\page.tsx`
-```tsx
-export default function Home() {
-  return (
-    <div className="text-sky-500">
-      Visionize
-    </div>
-  )
-}
-```
-
-Another thing we should modify is `globals.css`, and set all `html`, `body` and `:root` elements to 100% of the viewport height.
+Start with the `globals.css`, and set all `html`, `body` and `:root` elements to 100% of the viewport height.
 
 `app\globals.css`
 ```css
@@ -266,4 +253,46 @@ body,
 
 /* ... */
 ```
+
+Some Next.js app router features:
+
+- [Pages and Layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts)
+- [Route Groups](https://nextjs.org/docs/app/building-your-application/routing/route-groups)
+- [Dynamic Routes](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes)
+- [API Routes](https://nextjs.org/docs/app/api-reference/file-conventions/route)
+  - [Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers)
+
+Let's look at the entry point to our application, the home page. We'll remove the boilerplate that it shipped with and keep it simple, a `Home` component that returns a `div`.
+
+`app\page.tsx`
+```tsx
+export default function Home() {
+  return (
+    <div className="text-sky-500">
+      Visionize
+    </div>
+  )
+}
+```
+
+## Landing Page
+
+Better yet, we should create an organizational folder named `(landing)` and move the `page.tsx` in there. Next rename the function to `LandingPage`.
+
+`app\(landing)\page.tsx`
+```tsx
+import React from 'react';
+
+export default function LandingPage() {
+  return (
+    <div>page</div>
+  )
+}
+```
+
+A landing page is a standalone web page that is created for a specific marketing or advertising campaign. It has a single goal or call to action, such as capturing leads or making sales.
+
+A marketing page is a more general term that can refer to any web page that is used to promote a product, service, or brand. A marketing page can have multiple goals or links, such as providing information, building trust, or directing visitors to other page.
+
+A landing page is a type of marketing page, but not all marketing pages are landing pages. For example, a homepage is a marketing page that showcases a brand and its offerings, but it is not a landing page because it does not have a specific campaign goal or a clear call to action. A landing page, on the other hand, is designed to persuade visitors to take one action, such as signing up for a free trial, downloading an ebook, or buying a product.
 
