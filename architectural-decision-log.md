@@ -296,3 +296,21 @@ A marketing page is a more general term that can refer to any web page that is u
 
 A landing page is a type of marketing page, but not all marketing pages are landing pages. For example, a homepage is a marketing page that showcases a brand and its offerings, but it is not a landing page because it does not have a specific campaign goal or a clear call to action. A landing page, on the other hand, is designed to persuade visitors to take one action, such as signing up for a free trial, downloading an ebook, or buying a product.
 
+Next, create a specific layout for the `LandingPage`. Create `layout.tsx` inside `(landing)`, a `LandingLayout` component which accepts a `children` prop that will be populated with a child page.
+
+`app\(landing)\layout.tsx`
+```tsx
+const LandingLayout = ({
+  children
+}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <div>
+      {children}
+    </div>
+  );
+};
+
+export default LandingLayout;
+```
