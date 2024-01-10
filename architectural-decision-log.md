@@ -445,3 +445,29 @@ export default function LandingPage() {
   )
 }
 ```
+
+### Landing Page - Button component
+
+Install [shadcn/ui - Button](https://ui.shadcn.com/docs/components/button) component.
+
+```sh
+npx shadcn-ui@latest add button
+```
+
+Notice that this installed two things: `components/ui/button.tsx` and a package named `@radix-ui-react/slot` as a dependency. Let's break it down, starting with the latter.
+
+- [Radix-ui/react-slot](https://www.radix-ui.com/primitives/docs/utilities/slot) is a React component that merges its props onto its immediate child. It can be used to create your own asChild API, which allows you to render a component as a child of another component. 
+  - For example, you can use radix-ui/react-slot to create a custom button component that can accept an anchor tag as a child and inherit its props. 
+  - Radix-ui/react-slot also handles event handlers correctly, so that the child handler takes precedence over the slot handler. 
+  - Radix-ui/react-slot is part of the Radix Primitives library, which provides low-level UI components for building design systems and web applications.
+
+So in the `package.json`,
+Add @radix-ui/react-slot dependency.
+
+Next the `button.tsx` component, we can see the actual code (which usually isn't the case for other component libraries.). We can customize it to our liking  Some changes we could make:
+
+- Modifying the `const buttonVariants`:
+  - focus-visible
+  - opacity when its disabled
+- `variants`
+- `sizes`
