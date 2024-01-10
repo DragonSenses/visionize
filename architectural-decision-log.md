@@ -337,3 +337,28 @@ const LandingLayout = ({
 
 export default LandingLayout;
 ```
+
+Let's develop the `LandingPage`.
+
+- Center the contents inside the element using `flex-col`
+- Add a `Medal` icon from `lucide-react`
+- Add some text right under that
+
+`app\(landing)\page.tsx`
+```tsx
+import React from 'react';
+import { Medal } from 'lucide-react';
+
+export default function LandingPage() {
+  return (
+    <div className='flex items-center justify-center flex-col'>
+      <div className='flex items-center justify-center flex-col'>
+        <div>
+          <Medal className='h-6 w-6 mr-2'/>
+          Achieve more with <strong><em>Visionize</em></strong>, the ultimate task management app
+        </div>
+      </div>
+    </div>
+  )
+}
+```
