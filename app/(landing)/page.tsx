@@ -17,6 +17,13 @@ export default function LandingPage() {
           Turn your vision into reality.
         </div>
       </div>
+      <div className='text-sm md:text-xl text-neutral-400 mt-4 max-w-xs md:max-w-2xl text-center mx-auto'>
+        Fight mediocrity with Visionize. With just boards, lists and cards you can 
+        get a clear overview of your tasks. Then you can plan, prioritize, and
+        execute your goals with confidence.      
+        You can drag and drop tasks, add labels and due dates, attach files 
+        and comments, and more.
+      </div>
     </div>
   )
 }
