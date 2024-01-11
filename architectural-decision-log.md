@@ -638,6 +638,8 @@ Awesome, using the `asChild` prop to `Button` component renders the button as a 
 
 ### Fonts
 
+#### Using local fonts in Next.js
+
 Let's import a local font in Next.js. Going to use [Cal Sans 1.0](https://github.com/calcom/font) font.
 
 Now to install a font we can check the [Nextjs Font | Reference](https://nextjs.org/docs/app/api-reference/components/font).
@@ -649,3 +651,66 @@ Next in our landing page:
 - `import localFont from 'next/font/local';`
 - Create a `headingFont` that has an object with a `src` property set to the relative path of the font, like this: `../../public/fonts/YOUR_FONT_HERE`
 - import `cn` util
+
+```tsx
+import localFont from 'next/font/local';
+
+import { cn } from '@/lib/utils';
+
+const headingFont = localFont({
+  src: "../../public/fonts/CalSans-SemiBold.woff2",
+});
+```
+
+Now we can use the `cn` function to append the font to the already existing tailwind css clasnames.
+
+- To do so we wrap our default className styles in curly brackets `({})` so that we can step into TypeScript and interpolate code here. We call the `cn()` function with the default classNames as the first argument, and the `headingFont.className` as the second argument.
+
+```tsx
+// ...
+import localFont from 'next/font/local';
+
+import { cn } from '@/lib/utils';
+
+const headingFont = localFont({
+  src: "../../public/fonts/CalSans-SemiBold.woff2",
+});
+
+export default function LandingPage() {
+  return (
+    <div className='flex items-center justify-center flex-col'>
+
+      <div className={cn(
+        'flex items-center justify-center flex-col',
+        headingFont.className,
+        )}>
+
+      {/* ... */}
+```
+
+#### Importing and using fonts in Next.js
+
+Next we can try importing the [Poppins](https://fonts.google.com/specimen/Poppins) font from `next/font/google`.
+
+Then we initialize the font in a similar way but calling the variable `textFont`. Also gove it font function arguments using the [API reference for next/font/google](https://nextjs.org/docs/app/api-reference/components/font). We will set the `weight` to "latin" and `subsets` from "100-900".
+
+```tsx
+import { Poppins } from 'next/font/google';
+
+const textFont = Poppins({
+  subsets: ["latin"],
+  weight: [
+    "100",
+    "200",
+    "300",
+    "400",
+    "500",
+    "600",
+    "700",
+    "800",
+    "900",
+  ],
+});
+```
+
+Now append the font to the rest of the text, this time let's add the `textFont` to the promotional text.
