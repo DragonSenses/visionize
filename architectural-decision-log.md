@@ -626,3 +626,26 @@ export default function LandingPage() {
 }
 ```
 
+Now let's check the `localhost:3000` developer console pressing F12, under Elements tab.
+
+Find the element for our Link to confirm that the output is an `<a>` tag instead of a `<button>`.
+
+```html
+  <a class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md px-8 mt-6" href="/sign-up">Try Visionize for free</a>
+```
+
+Awesome, using the `asChild` prop to `Button` component renders the button as a child of the `Link` component. This properly navigates to another page in our Next.js app when we click on it.
+
+### Fonts
+
+Let's import a local font in Next.js. Going to use [Cal Sans 1.0](https://github.com/calcom/font) font.
+
+Now to install a font we can check the [Nextjs Font | Reference](https://nextjs.org/docs/app/api-reference/components/font).
+
+Create a folder named `font` inside `public`. Then drag and drop or copy over your font of choice. Then save the relative path name as we'll use it for later.
+
+Next in our landing page:
+
+- `import localFont from 'next/font/local';`
+- Create a `headingFont` that has an object with a `src` property set to the relative path of the font, like this: `../../public/fonts/YOUR_FONT_HERE`
+- import `cn` util
