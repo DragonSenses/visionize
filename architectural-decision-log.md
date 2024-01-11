@@ -472,6 +472,14 @@ Next the `button.tsx` component, we can see the actual code (which usually isn't
 - `variants`
 - `sizes`
 
+shadcn has created multiple variants for the button here - including `default`, `destructive`, `outline`, `subtle`, `ghost`, and `link`. Each of these variants is set up with specific tailwind classes that will be applied to the button.
+
+All of these variants are built on top of the core button set of tailwind classes
+
+The `VariantProps` type from CVA is used to ensure that the `variant` and `size` props are typed correctly.
+
+Now you can easily import the `Button` component and use it in your app.
+
 Alright so what is our broader goal here? We want want to redirect the user and have them navigate to the sign-up or log-in page. For that we will be using both `Button` component and `Link` component from `next/link`.
 
 Wait a minute. Link inside a button? That's bad!
@@ -544,3 +552,31 @@ export default function MyComponent() {
 ```
 
 Both options are good for accessibility, as they will produce semantic HTML elements that are keyboard and screen reader friendly. However, the first option may be more convenient if you want to use Next.js features such as prefetching or dynamic routes. The second option may be simpler if you want to use external links or custom styles.
+
+3. Another option is to use `buttonVariants` helper directly to create a link that looks like a button. For example:
+
+```tsx
+import Link from "next/link";
+
+import { buttonVariants } from "@/components/ui/button";
+
+export default function page() {
+  return (
+    <div>
+      <Link className={buttonVariants({ variant: "outline" })} href="/login">
+        login
+      </Link>
+    </div>
+  );
+}
+```
+
+There is an interesting [GitHub discussion on hyperlink button component for shadcn/ui](https://github.com/shadcn-ui/ui/issues/1015#issuecomment-1789906140), and according to elie222 we can use the `Slot` from `@radix-ui/react-slot` like this:
+
+```tsx
+<Button asChild>
+   <Link href="#" target="_blank">My Link</Link>
+</Button>
+```
+
+And the output of the code will have an `<a>` tag instead of a `<button>` tag.
