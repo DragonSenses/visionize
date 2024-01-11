@@ -1,6 +1,9 @@
 import React from 'react';
 import { ClipboardCheck, KanbanSquare } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+
 export default function LandingPage() {
   return (
     <div className='flex items-center justify-center flex-col'>
@@ -24,6 +27,12 @@ export default function LandingPage() {
         You can drag and drop tasks, add labels and due dates, attach files 
         and comments, and more.
       </div>
+      <Button className='mt-6' size='lg' asChild>
+        <Link href="/sign-up">
+          Try Visionize for free
+        </Link>
+      </Button>
     </div>
   )
 }
+
