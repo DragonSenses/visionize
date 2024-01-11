@@ -1,8 +1,13 @@
 import React from 'react';
+import Link from 'next/link';
+import localFont from 'next/font/local';
 import { ClipboardCheck, KanbanSquare } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { cn } from '@/lib/utils';
+const headingFont = localFont({
+  src: "../../public/fonts/CalSans-SemiBold.woff2",
+});
 
 export default function LandingPage() {
   return (
