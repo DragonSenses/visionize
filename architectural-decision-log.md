@@ -471,3 +471,76 @@ Next the `button.tsx` component, we can see the actual code (which usually isn't
   - opacity when its disabled
 - `variants`
 - `sizes`
+
+Alright so what is our broader goal here? We want want to redirect the user and have them navigate to the sign-up or log-in page. For that we will be using both `Button` component and `Link` component from `next/link`.
+
+Wait a minute. Link inside a button? That's bad!
+
+#### Issue: Link inside a Button
+
+A link inside a button is **bad** because it violates the HTML5 specification and the accessibility guidelines. According to the [HTML5 spec](http://w3c.github.io/html/textlevel-semantics.html#the-a-element), interactive elements such as links and buttons are not allowed to be nested inside each other.
+
+> Content model: Transparent, but there must be no interactive content descendant.
+
+The a element may be wrapped around entire paragraphs, lists, tables, and so forth, even entire sections, so long as there is no interactive content within (e.g. buttons or other links).
+
+In other words, you can nest any elements inside an `<a>` except the following:
+
+- `<a>`
+- `<audio>` (if the controls attribute is present)
+- `<button>`
+- `<details>`
+- `<embed>`
+- `<iframe>`
+- `<img>` (if the usemap attribute is present)
+- `<input>` (if the type attribute is not in the hidden state)
+- `<keygen>`
+- `<label>`
+- `<menu>` (if the type attribute is in the toolbar state)
+- `<object>` (if the usemap attribute is present)
+- `<select>`
+- `<textarea>`
+- `<video>` (if the controls attribute is present)
+
+[Source: stackoverflow | nest a button element inside an a](https://stackoverflow.com/questions/6393827/can-i-nest-a-button-element-inside-an-a-using-html5)
+
+According to the HTML5 spec, interactive elements such as links and buttons are not allowed to be nested inside each other. This is because it creates confusion and ambiguity for the user’s intention. For example, if a user clicks on a link inside a button, should the link or the button action be triggered? Different browsers may handle this situation differently, resulting in inconsistent and unpredictable behavior.
+
+A link inside a button is bad for accessibility, as it makes it harder for keyboard and screen reader users to navigate and interact with the web page. A link and a button have different roles and expectations for how they should behave when activated. A link should navigate the user to another page or location, while a button should perform a specific action or submit a form. A link inside a button breaks these conventions and confuses the assistive technology and the user.
+
+Therefore, it is best to avoid nesting a link inside a button, and instead use either a link or a button depending on the purpose and context. If you want to create a link that looks like a button, you can style it with CSS. If you want to create a button that navigates to another page, you can use a form element or a JavaScript function.
+
+#### Solution: shadcn/ui `Button` with a link inside
+
+We have two options:
+
+1. You can use the `asChild` prop of the shadcn/ui Button component, which lets you render the button as a child of another component. This way, you can wrap the button with a Next.js Link component and pass the link props to the button. For example:
+
+```tsx
+import { Button } from "@shadcn/ui/button";
+import Link from "next/link";
+
+export default function MyComponent() {
+  return (
+    <Link href="/about" passHref>
+      <Button asChild>Go to About Page</Button>
+    </Link>
+  );
+}
+```
+
+2. You can use the `as` prop of the shadcn/ui Button component, which lets you change the underlying element of the button. This way, you can render the button as an anchor tag and pass the link props to the button. For example:
+
+```tsx
+import { Button } from "@shadcn/ui/button";
+
+export default function MyComponent() {
+  return (
+    <Button as="a" href="/about">
+      Go to About Page
+    </Button>
+  );
+}
+```
+
+Both options are good for accessibility, as they will produce semantic HTML elements that are keyboard and screen reader friendly. However, the first option may be more convenient if you want to use Next.js features such as prefetching or dynamic routes. The second option may be simpler if you want to use external links or custom styles.
