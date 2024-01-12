@@ -802,3 +802,46 @@ Add heading and text fonts to landing page
 - Add KanbanSquare and ClipboardCheck icons from lucide-react
 - Add padding to text between icons
 - Add gradient background and padding to title and subtitle
+
+## Components
+
+### 
+
+Now we develop the `Navbar` and `Footer` components for the `LandingLayout`. Also make a re-usable component the `Logo`.
+
+### Logo
+
+To make a logo then convert to SVG I used [Adobe Express](https://www.adobe.com/express/create/logo).
+
+Then move the file with the name `logo.svg` to the `/public` folder. Then in `/components` we can create `Logo.tsx`.
+
+Add reusable Logo component
+
+- Import Image and Link from next/image and next/link
+- Create Logo component that renders a logo image inside a link
+- Use hover, transition, and gap utilities from Tailwind CSS
+- Export Logo component as default
+
+```tsx
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
+
+const Logo = () => {
+  return (
+    <Link href="/">
+      <div className='hover:opacity-75 transition items-center gap-x-2 hidden md:flex'>
+        <Image 
+          src='/logo.svg'
+          alt='Logo for Visionize'
+          height={30}
+          width={30}
+        />
+      </div>
+    </Link>
+  )
+}
+
+export default Logo
+```
+
