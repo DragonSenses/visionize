@@ -275,6 +275,27 @@ export default function Home() {
 }
 ```
 
+### Metadata, HTML `head` and SEO
+
+One thing to make sure to update is the metadata.
+
+- [Metadata | Nextjs Reference](https://nextjs.org/docs/app/building-your-application/optimizing/metadata)
+- [Metadata Object | Reference](https://nextjs.org/docs/app/api-reference/functions/generate-metadata)
+
+Next.js has a Metadata API that can be used to define your application metadata (e.g. `meta` and `link` tags inside your HTML head element) for improved SEO and web shareability.
+
+The meta description should consist of the following elements:
+
+- The name of your app and its main feature (kanban-style productivity app)
+- The benefit of using your app (turn your vision into reality)
+- The main functionalities of your app (boards, lists, and cards)
+- A call to action (try Visionize for free today)
+
+```sh
+Visionize is a kanban-style productivity app that helps you turn your vision into reality. Plan, prioritize, and execute your goals with boards, lists, and cards. Visionize your tasks with visionary kanban boards. Try Visionize for free today.
+```
+May even mention a catchy slogan such as "*Visionize your tasks with visionary kanban boards*". As we want to draw the connection between visonary (i.e., (especially of a person) thinking about or planning the future with imagination or wisdom) and visual representation of the tasks.
+
 ## Landing Page
 
 Better yet, we should create an organizational folder named `(landing)` and move the `page.tsx` in there. Next rename the function to `LandingPage`.
@@ -775,3 +796,9 @@ export default function LandingPage() {
       </div>
 ```
 
+Add heading and text fonts to landing page
+
+- Use localFont and Poppins from next/font
+- Add KanbanSquare and ClipboardCheck icons from lucide-react
+- Add padding to text between icons
+- Add gradient background and padding to title and subtitle
