@@ -254,6 +254,8 @@ body,
 /* ... */
 ```
 
+## Why Next.js?
+
 Some Next.js app router features:
 
 - [Pages and Layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts)
@@ -261,6 +263,44 @@ Some Next.js app router features:
 - [Dynamic Routes](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes)
 - [API Routes](https://nextjs.org/docs/app/api-reference/file-conventions/route)
   - [Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers)
+
+### Creating Routes
+
+[Creating routes](https://nextjs.org/docs/app/building-your-application/routing/defining-routes#creating-routes)
+
+Next.js uses a file-system based router where folders are used to define routes.
+
+- Each folder represents a route segment that maps to a URL segment. To create a nested route, you can nest folders inside each other.
+
+- A special `page.js` file is used to make route segments publicly accessible.
+
+[Pages in Next.js](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts#pages)
+
+- A page is UI that is unique to a route. You can define pages by exporting a component from a page.js file. Use nested folders to define a route and a page.js file to make the route publicly accessible.
+
+Every page component should be exported as default, becauses of the file-system based routing, it needs to know which component is the default one for each page.
+
+### Project Structure
+
+Using App router, we can see all the use cases for how to name our folders and files for our project.
+
+- [Next.js Project Structure | Reference](https://nextjs.org/docs/getting-started/project-structure)
+
+Another reference is:
+
+- [Next.js Routing](https://nextjs.org/docs/app/building-your-application/routing)
+
+As we can see in the [documentation](https://nextjs.org/docs/app/building-your-application/routing#roles-of-folders-and-files), Next.js uses a file-system based router where:
+
+- Folders are used to define routes. A route is a single path of nested folders, following the file-system hierarchy from the root folder down to a final leaf folder that includes a page.js file.
+
+- Files are used to create UI that is shown for a route segment.
+
+So in order to organize our project without affecting routing, we need to use [Route Groups and Private Folders](https://nextjs.org/docs/getting-started/project-structure#route-groups-and-private-folders) which is denoted by `(folder)` and `_folder` respectively.
+
+#### Next.js exports
+
+### On to project development
 
 Let's look at the entry point to our application, the home page. We'll remove the boilerplate that it shipped with and keep it simple, a `Home` component that returns a `div`.
 
@@ -805,7 +845,7 @@ Add heading and text fonts to landing page
 
 ## Components
 
-### 
+### Components for the `LandingLayout`
 
 Now we develop the `Navbar` and `Footer` components for the `LandingLayout`. Also make a re-usable component the `Logo`.
 
@@ -845,3 +885,19 @@ const Logo = () => {
 export default Logo
 ```
 
+### Navbar
+
+Let's use a private folder in next.js so that we can opt folder and all child segments out of routing.
+
+We will create a `_components` folder under the route group `(landing)` and create the `Navbar.tsx` component. Make it a named export, not a default export so that we do not have inconsistency and naming conflicts.
+
+`app\(landing)\_components\Navbar.tsx`
+```tsx
+import React from 'react';
+
+export const Navbar = () => {
+  return (
+    <div>Navbar</div>
+  );
+};
+```
