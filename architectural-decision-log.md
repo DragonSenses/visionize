@@ -636,6 +636,27 @@ Find the element for our Link to confirm that the output is an `<a>` tag instead
 
 Awesome, using the `asChild` prop to `Button` component renders the button as a child of the `Link` component. This properly navigates to another page in our Next.js app when we click on it.
 
+#### Landing Page - pad text in the icon container
+
+After looking through, there needs to be some top padding for the textt inside the icon container. So wrapped the text that's between the two icons inside a span and gave it top padding.
+
+```tsx
+export default function LandingPage() {
+  return (
+    <div className='flex items-center justify-center flex-col'>
+      <div className={cn(
+        'flex items-center justify-center flex-col',
+        headingFont.className,
+        )}>
+        <div className='mb-4 flex items-center border shadow-sm p-4 bg-amber-100 text-amber-700 rounded-full uppercase'>
+
+          <KanbanSquare className='h-6 w-6 mr-2'/>
+          <span className='pt-1'>Kanban your way</span>
+          <ClipboardCheck className='h-6 w-6 mx-2'/>
+
+        </div>
+```
+
 ### Fonts
 
 #### Using local fonts in Next.js
@@ -714,3 +735,43 @@ const textFont = Poppins({
 ```
 
 Now append the font to the rest of the text, this time let's add the `textFont` to the promotional text.
+
+```tsx
+import { Poppins } from 'next/font/google';
+
+const textFont = Poppins({
+  subsets: ["latin"],
+  weight: [
+    100,
+    // ...
+  ],
+});
+
+export default function LandingPage() {
+  return (
+    <div className='flex items-center justify-center flex-col'>
+      <div className={cn(
+        'flex items-center justify-center flex-col',
+        headingFont.className,
+        )}>
+        <div className='mb-4 flex items-center border shadow-sm p-4 bg-amber-100 text-amber-700 rounded-full uppercase'>
+          <KanbanSquare className='h-6 w-6 mr-2'/>
+          <span className='pt-1'>Kanban your way</span>
+          <ClipboardCheck className='h-6 w-6 mx-2'/>
+        </div>
+        {/* Headings here... */}
+      </div>
+
+      {/* Promotional Text */}
+      <div className={cn(
+        'text-sm md:text-xl text-neutral-400 mt-4 max-w-xs md:max-w-2xl text-center mx-auto',
+        textFont.className,
+      )}>
+        Fight mediocrity with Visionize. With just boards, lists and cards you can 
+        get a clear overview of your tasks. Then you can plan, prioritize, and
+        execute your goals with confidence.      
+        You can drag and drop tasks, add labels and due dates, attach files 
+        and comments, and more.
+      </div>
+```
+
