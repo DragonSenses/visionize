@@ -901,3 +901,28 @@ export const Navbar = () => {
   );
 };
 ```
+
+Let's style the `Navbar`. Keep it fixed, centered. Also add another `div` which sets the max screen width to 2xl.
+
+Then render the `Logo` inside the inner `div`.
+
+Update Navbar component with logo
+
+Adds a new navbar component that renders a logo and a placeholder for a button. The navbar is fixed at the top of the page and has a border and a shadow. It uses the Logo component from '@/components/Logo' and tailwindcss for styling.
+
+```tsx
+import React from 'react';
+
+import Logo from '@/components/Logo';
+
+export const Navbar = () => {
+  return (
+    <div className='fixed top-0 w-full h-14 px-4 border-b shadow-sm bg-white flex items-center'>
+      <div className='md:max-w-screen-2-xl mx-auto flex items-center w-full justify-between'>
+        <Logo />
+        {/* Button */}
+      </div>
+    </div>
+  );
+};
+```
