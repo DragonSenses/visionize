@@ -994,6 +994,7 @@ Create `Footer.tsx` inside `app\(landing)\_components`.
 
 The `Footer` component will be fixed at the bottom, it will also have a container that has the `Logo` and two `Button` components. The `Button` components will have "Privacy Policy" and "Terms of Service" as children text.
 
+`app\(landing)\_components\Footer.tsx`
 ```tsx
 import React from 'react';
 
@@ -1022,3 +1023,27 @@ export const Footer = () => {
 Add footer component with links
 
 Create a responsive footer component that displays two buttons for privacy policy and terms of service.
+
+Now import the `Footer` and render it inside the `LandingLayout`:
+
+`app\(landing)\layout.tsx`
+```tsx
+import { Footer } from "./_components/Footer";
+import { Navbar } from "./_components/Navbar";
+
+const LandingLayout = ({
+  children
+}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <div className="h-full bg-slate-100">
+      <Navbar />
+      <main className="pt-40 pb-20 bg-slate-100">
+        {children}
+      </main>
+      <Footer />
+    </div>
+  );
+};
+```
