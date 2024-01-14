@@ -992,27 +992,27 @@ This commit adds two buttons for sign-in and sign-up to the Navbar component. Th
 
 Create `Footer.tsx` inside `app\(landing)\_components`.
 
-The `Footer` component will be fixed at the bottom, it will also have a container that has the `Logo` and two `Button` components. The `Button` components will have "Privacy Policy" and "Terms of Service" as children text.
+The `Footer` component will be fixed at the bottom, it will also have a container that has the `Logo` and two `Link` components that uses the `Button` component's `buttonVariants`. The `Button` components will have "Privacy Policy" and "Terms of Service" as children text.
 
 `app\(landing)\_components\Footer.tsx`
 ```tsx
 import React from 'react';
+import Link from 'next/link';
 
-import Logo from '@/components/Logo';
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from "@/components/ui/button";
+
 
 export const Footer = () => {
   return (
-    <div className='fixed bottom-0 w-full px-4 border-t flex items-center bg-slate-100'>
-      <div className='md:max-w-screen-2-xl mx-auto flex items-center w-full justify-between'>
-        <Logo />
-        <div className='space-x-4 md:block md:w-auto flex items-center justify-between w-full'>
-          <Button size='sm' variant="ghost">
+    <div className='fixed bottom-0 w-full p-4 border-t flex items-center bg-slate-100'>
+      <div className='md:max-w-screen-2-xl mx-auto flex items-center w-full justify-center'>
+        <div className='space-x-4 md:block md:w-auto flex items-center justify-center w-full'>
+          <Link className={buttonVariants({ size: "lg", variant: "ghost" })} href="/privacy-policy">
             Privacy Policy
-          </Button>
-          <Button size='sm' variant="ghost">
+          </Link>
+          <Link className={buttonVariants({ size: "lg", variant: "ghost" })} href="/terms-of-service">
             Terms of Service
-          </Button>
+          </Link>
         </div>
       </div>
     </div>
@@ -1022,7 +1022,11 @@ export const Footer = () => {
 
 Add footer component with links
 
-Create a responsive footer component that displays two buttons for privacy policy and terms of service.
+Create a responsive footer component that displays two links for privacy policy and terms of service.
+
+Refactor footer component with buttonVariants and Link
+
+Replace the Button component with buttonVariants and use the Link component from next.js to render the links. Resize links to improve user experience. Also center the content horizontally and vertically with flexbox.
 
 Now import the `Footer` and render it inside the `LandingLayout`:
 
