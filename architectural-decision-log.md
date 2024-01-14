@@ -902,6 +902,31 @@ export const Navbar = () => {
 };
 ```
 
+Now import the `Navbar` inside the `LandingLayout`
+
+`app\(landing)\layout.tsx`
+```tsx
+import { Navbar } from "./_components/Navbar";
+
+const LandingLayout = ({
+  children
+}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <div className="h-full bg-slate-100">
+      <Navbar />
+      <main className="pt-40 pb-20 bg-slate-100">
+        {children}
+      </main>
+      {/* Footer */}
+    </div>
+  );
+};
+
+export default LandingLayout;
+```
+
 Let's style the `Navbar`. Keep it fixed, centered. Also add another `div` which sets the max screen width to 2xl.
 
 Then render the `Logo` inside the inner `div`.
@@ -926,3 +951,39 @@ export const Navbar = () => {
   );
 };
 ```
+
+After the Logo let's add the sign-in and sign-up buttons
+
+```tsx
+import React from 'react';
+import Link from 'next/link';
+
+import Logo from '@/components/Logo';
+import { Button } from '@/components/ui/button';
+
+export const Navbar = () => {
+  return (
+    <div className='fixed top-0 w-full h-14 px-4 border-b shadow-sm bg-white flex items-center'>
+      <div className='md:max-w-screen-2-xl mx-auto flex items-center w-full justify-between'>
+        <Logo />
+        <div className='space-x-4 md:block md:w-auto flex items-center justify-between w-full'>
+          <Button size='sm' asChild>
+            <Link href="/sign-up">
+              Sign Up
+            </Link>
+          </Button>
+          <Button size='sm' variant='outline' asChild>
+            <Link href="/sign-in">
+              Login
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+```
+
+Add sign-in and sign-up buttons for Navbar
+
+This commit adds two buttons for sign-in and sign-up to the Navbar component. The buttons use the Link component from 'next/link' to navigate to the corresponding pages. 
