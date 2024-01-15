@@ -885,6 +885,50 @@ const Logo = () => {
 export default Logo
 ```
 
+Notice the `hidden` class which sets the `display: none` on devices smaller than 768px.
+
+Add text to logo component & use custom font
+
+- Add the text next to the logo image and style it with Tailwind CSS classes.
+- Import the CalSans-SemiBold font from the local folder and use it for the text. 
+- Use the cn function from the utils library to combine the classes.
+
+```tsx
+import Image from 'next/image';
+import Link from 'next/link';
+import localFont from 'next/font/local';
+import React from 'react';
+
+import { cn } from '@/lib/utils';
+
+const headingFont = localFont({
+  src: "../public/fonts/CalSans-SemiBold.woff2",
+});
+
+const Logo = () => {
+  return (
+    <Link href="/">
+      <div className='hover:opacity-75 transition items-center gap-x-2 hidden md:flex'>
+        <Image 
+          src='/logo.svg'
+          alt='Logo for Visionize'
+          height={30}
+          width={30}
+        />
+        <p className={cn(
+          'text-xl text-neutral-700 px-1 pt-1',
+          headingFont.className,
+        )}>
+          Visionize
+        </p>
+      </div>
+    </Link>
+  )
+}
+
+export default Logo
+```
+
 ### Navbar
 
 Let's use a private folder in next.js so that we can opt folder and all child segments out of routing.
@@ -1024,7 +1068,7 @@ Add footer component with links
 
 Create a responsive footer component that displays two links for privacy policy and terms of service.
 
-Refactor footer component with buttonVariants and Link
+Refactor Footer with buttonVariants & Link
 
 Replace the Button component with buttonVariants and use the Link component from next.js to render the links. Resize links to improve user experience. Also center the content horizontally and vertically with flexbox.
 
