@@ -317,8 +317,9 @@ export default function Home() {
 
 ### Metadata, HTML `head` and SEO
 
-One thing to make sure to update is the metadata.
+One thing to make sure to update is the metadata. In most web pages, we have a document meta data thats set in the `<head>` HTML element which adds titles, scripts, and stylesheets. For example, we can set the title (the text on top of a browser tab).
 
+- [HTML head element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/head)
 - [Metadata | Nextjs Reference](https://nextjs.org/docs/app/building-your-application/optimizing/metadata)
 - [Metadata Object | Reference](https://nextjs.org/docs/app/api-reference/functions/generate-metadata)
 
@@ -335,6 +336,44 @@ The meta description should consist of the following elements:
 Visionize is a kanban-style productivity app that helps you turn your vision into reality. Plan, prioritize, and execute your goals with boards, lists, and cards. Visionize your tasks with visionary kanban boards. Try Visionize for free today.
 ```
 May even mention a catchy slogan such as "*Visionize your tasks with visionary kanban boards*". As we want to draw the connection between visonary (i.e., (especially of a person) thinking about or planning the future with imagination or wisdom) and visual representation of the tasks.
+
+Let's add the static metadata to our global layout. Inside `app\layout.tsx`, we modify the properties of the `metadata` object. 
+
+```tsx
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: 'Visionize',
+  description: `Visionize is a kanban-style productivity app that helps you
+  turn your vision into reality. Plan, prioritize, and execute your goals
+  with boards, lists, and cards. Visionize your tasks with visionary kanban
+  boards. Try Visionize for free today.`,
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>{children}</body>
+    </html>
+  )
+}
+```
+
+With that we set our static metadata object which now properly sets the `<head>` element.
+
+Let's make a `config` so we can have dynamic metadata.
+
+- [Dynamic Metadata](https://nextjs.org/docs/app/building-your-application/optimizing/metadata#dynamic-metadata)
+
+
 
 ## Landing Page
 
