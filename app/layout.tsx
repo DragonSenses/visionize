@@ -2,14 +2,16 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 
+import { siteConfig } from '@/config/site'
+
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Visionize',
-  description: `Visionize is a kanban-style productivity app that helps you
-  turn your vision into reality. Plan, prioritize, and execute your goals
-  with boards, lists, and cards. Visionize your tasks with visionary kanban
-  boards. Try Visionize for free today.`,
+  title: {
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
 }
 
 export default function RootLayout({
