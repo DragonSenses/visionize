@@ -373,6 +373,74 @@ Let's make a `config` so we can have dynamic metadata.
 
 - [Dynamic Metadata](https://nextjs.org/docs/app/building-your-application/optimizing/metadata#dynamic-metadata)
 
+#### Separation of concerns - Metadata
+
+The CS concept of separation is also known as **separation of concerns**. It is a design principle for separating a computer program into distinct sections, each addressing a separate concern, a set of information that affects the code of a computer program. Separation of concerns can improve the modularity, readability, reusability, and maintainability of the code, as well as reduce the complexity and potential errors.
+
+One way to achieve separation of concerns is to use modules, which are units of code that encapsulate some functionality and have a well-defined interface. Modules can be imported and used by other modules, without exposing their implementation details. For example, the `siteConfig` module that will define an object that contains the name and description of our app. 
+
+This object can be used by other modules, such as the `RootLayout` component, to customize the metadata of our pages. **By separating the configuration data from the presentation logic**, you can easily change the app name or description without affecting the rest of the code. You can also reuse the `siteConfig` module in other projects that need similar functionality.
+
+Create a folder named `config` at the root of the project, then create a file named `site.ts` inside. We create and export the object named `siteConfig`, which will have the same contents as our static metadata object we specified in our root layout. 
+
+`/config`
+```ts
+export const siteConfig = {
+  name: "Visionize",
+  description: `Visionize is a kanban-style productivity app that helps you
+  turn your vision into reality. Plan, prioritize, and execute your goals
+  with boards, lists, and cards. Visionize your tasks with visionary kanban
+  boards. Try Visionize for free today.`,
+};
+```
+
+Why did we do this? Well later on when we have authentication and user is signed-in, then we want them to skip the landing page and go straight to the application. In that application they will have a different title. By separating the configuration data from presentation logic, we can now do this a lot easier and present the `head` and metadata differently depending on the user.
+
+Let's parameterize the metadata in our root layout now using the `siteConfig`.
+
+```tsx
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+
+import { siteConfig } from '@/config/site'
+
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: {
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: `Visionize is a kanban-style productivity app that helps you
+  turn your vision into reality. Plan, prioritize, and execute your goals
+  with boards, lists, and cards. Visionize your tasks with visionary kanban
+  boards. Try Visionize for free today.`,
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>{children}</body>
+    </html>
+  )
+}
+```
+
+This code is using the **config-based metadata** [feature of Next.js](https://nextjs.org/docs/app/building-your-application/optimizing/metadata), which allows you to define your application metadata (such as title and description) for improved SEO and web shareability. 
+
+The `metadata` object t exported from the `page.tsx` file contains the following fields:
+
+- `title`: an object that specifies the title of your page. It has two properties:
+    - `default`: the default title of your page, which is the name of your app (`Visionize`) from the `siteConfig` object that you imported.
+    - `template`: a template string that can be used to generate dynamic titles based on the current route. It uses `%s` as a placeholder for the route-specific title, and appends the app name after a `|` character. For example, if the route-specific title is `Home`, the template will produce `Home | Visionize`.
+- `description`: a string that describes your app and its features. This will be used as the content of the `<meta name="description">` tag in the `<head>` element of your page.
+
+The `RootLayout` component that you exported as the default export from the `page.tsx` file is a **Server Component** that renders the `<html>` and `<body>` elements of your page. It also imports the `Inter` font from Google Fonts and applies it to the `<body>` element using the `inter.className` property. The `RootLayout` component takes a `children` prop, which is the content of your page, and renders it inside the `<body>` element.
 
 
 ## Landing Page
