@@ -26,6 +26,22 @@ const textFont = Poppins({
   ],
 });
 
+let g0 = 'bg-gradient-to-r from-fuchsia-600 to-pink-600';
+// beam of light
+let g1 = 'bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-gray-900 via-gray-100 to-gray-900';
+// arendelle
+let g2 = 'bg-gradient-to-l from-blue-200 via-blue-300 to-blue-500';
+// huckleberry
+let g3 = 'bg-gradient-to-l from-purple-200 via-purple-400 to-purple-800';
+// sky
+let g4 = 'bg-gradient-to-r from-sky-400 to-sky-200';
+// lavender
+let g5 = 'bg-gradient-to-l from-indigo-300 to-purple-400';
+
+let g6 = 'bg-gradient-to-l from-gray-200 via-gray-400 to-gray-600';
+
+// Array of gradient colors to choose from to use for the heading
+let gradient = [g0, g1, g2, g3, g4, g5, g6];
 
 export default function LandingPage() {
   return (
@@ -44,8 +60,10 @@ export default function LandingPage() {
         <h1 className='text-3xl md:text-6xl text-center text-neutral-800 mb-6'>
           <span className='mr-1'><strong>Visionize</strong></span> your tasks
         </h1>
-        <div className='text-3xl md:text-6xl bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white px-4 p-2 rounded-md pb-4 w-fit'>
-          Turn your vision into reality.
+        <div className={cn('text-2xl md:text-6xl text-white p-3 md:p-4 rounded-md w-fit',
+        gradient[2],
+        )}>
+          Turn your vision into reality. 
         </div>
       </div>
       {/* Promotional Text */}
