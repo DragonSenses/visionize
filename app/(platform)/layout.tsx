@@ -1,3 +1,4 @@
+import { ClerkProvider } from '@clerk/nextjs';
 import React from 'react';
 
 const PlatformLayout = ({
@@ -6,7 +7,9 @@ const PlatformLayout = ({
   children: React.ReactNode;
 }) => {
   return (
-    <div>PlatformLayout</div>
+    <ClerkProvider>
+      {children}
+    </ClerkProvider>
   )
 }
 
