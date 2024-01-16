@@ -1295,3 +1295,37 @@ Now add the two API keys we got from Clerk to your `.env` file. Use the clipboar
 
 Next we can click the "Continue in docs", which should send us to [clerk quickstart nextjs | reference](https://clerk.com/docs/quickstarts/nextjs).
 
+1. Install Clerk and add auth to protected routes.
+
+```sh
+npm install @clerk/nextjs
+```
+
+Add Clerk dependency and secure routes with auth.
+
+2. Set environment keys
+
+3. Wrap your app in `<ClerkProvider>`
+
+The `<ClerkProvider>` component provides active session and user context to Clerk's hooks and other components. Import it into your app by adding `import { ClerkProvider } from '@clerk/nextjs'` at the top of your file.
+
+Note that we won't wrap the provider around our main layout, (i.e., `app\layout.tsx`), like it does in the documentation. We only want to wrap the provider around the layouts that are protected, the routes where we would want the user to be authenticated.
+
+Create a route group, folder named `(platform)` inside the `/app` folder. Then create a `layout.tsx` within. Inside we create a react arrow functional component export named `PlatformLayout`.
+
+`app\(platform)\layout.tsx`
+```tsx
+import React from 'react';
+
+const PlatformLayout = ({
+  children
+}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <div>PlatformLayout</div>
+  )
+}
+
+export default PlatformLayout
+```
