@@ -1311,6 +1311,8 @@ The `<ClerkProvider>` component provides active session and user context to Cler
 
 Note that we won't wrap the provider around our main layout, (i.e., `app\layout.tsx`), like it does in the documentation. We only want to wrap the provider around the layouts that are protected, the routes where we would want the user to be authenticated.
 
+Wrap PlatformLayout with ClerkProvider for auth
+
 Create a route group, folder named `(platform)` inside the `/app` folder. Then create a `layout.tsx` within. Inside we create a react arrow functional component export named `PlatformLayout`.
 
 `app\(platform)\layout.tsx`
@@ -1329,3 +1331,5 @@ const PlatformLayout = ({
 
 export default PlatformLayout
 ```
+
+
