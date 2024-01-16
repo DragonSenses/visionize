@@ -261,8 +261,10 @@ Some Next.js app router features:
 - [Pages and Layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts)
 - [Route Groups](https://nextjs.org/docs/app/building-your-application/routing/route-groups)
 - [Dynamic Routes](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes)
+- [Catch-all Segments](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes#catch-all-segments)
 - [API Routes](https://nextjs.org/docs/app/api-reference/file-conventions/route)
   - [Route Handlers](https://nextjs.org/docs/app/building-your-application/routing/route-handlers)
+
 
 ### Creating Routes
 
@@ -1373,13 +1375,43 @@ export const config = {
 };
 ```
 
-This adds the auth middleware to all routtes, so to make certain routes public we have to use `publicRoutes`. See the docs for more details.
+This adds the auth middleware to all routes, so to make certain routes public we have to use `publicRoutes`. See the docs for more details.
 
 - [Clerk middleware | Reference](https://clerk.com/docs/references/nextjs/auth-middleware)
+
+So we have to modify the `authMiddleware` so that it will make the following routes `/`, `/sign-in` and `/sign-up` public, no routes ignored, and all remaining routes protected.
+
+```ts
+import { authMiddleware } from "@clerk/nextjs";
+ 
+export default authMiddleware({
+  publicRoutes: ["/"],
+});
+ 
+export const config = {
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+};
+```
+
+Assuming that the `.env` based settings for sign-in and sign-up are set to `/sign-in` and `/sign-up` respectively, the following authMiddleware would make the routes `/`, `/contact`, `/sign-in` and `/sign-up `public, no routes ignored, and all remaining routes protected.
+
+```ts
+import { authMiddleware } from "@clerk/nextjs";
+ 
+export default authMiddleware({
+  publicRoutes: ["/", "/contact"],
+});
+ 
+export const config = {
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+};
+```
 
 5. Embed the `<UserButton />`
 
 Clerk offers a set of prebuilt components to add functionality to your app with minimal effort. The `<UserButton />` allows users to manage their account information and log out, completing the full authentication circle.
+
+### Sign-Up and Sign-In pages
 
 We need to create the `Sign-Up` and `Sign-In` pages to embed this component.
 
