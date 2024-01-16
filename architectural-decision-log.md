@@ -1332,4 +1332,56 @@ const PlatformLayout = ({
 export default PlatformLayout
 ```
 
+The user needs to be logged-in to be in the platform. As opposed to `(landing)`, where we don't the user to be logged-in. So to secure the `(platform)` routes we need to wrap it in the `ClerkProvider`.
+
+```tsx
+import { ClerkProvider } from '@clerk/nextjs';
+import React from 'react';
+
+const PlatformLayout = ({
+  children
+}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <ClerkProvider>
+      {children}
+    </ClerkProvider>
+  )
+}
+
+export default PlatformLayout
+```
+
+4. Require authentication to access your app
+
+Now that Clerk is installed and mounted in your application, you can decide which pages are public and which should require authentication to access.
+
+Create a `middleware.ts` file in your root directory alongside `.env`.
+
+`middleware.ts`
+```ts
+import { authMiddleware } from "@clerk/nextjs";
+ 
+// This example protects all routes including api/trpc routes
+// Please edit this to allow other routes to be public as needed.
+// See https://clerk.com/docs/references/nextjs/auth-middleware for more information about configuring your Middleware
+export default authMiddleware({});
+ 
+export const config = {
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+};
+```
+
+This adds the auth middleware to all routtes, so to make certain routes public we have to use `publicRoutes`. See the docs for more details.
+
+- [Clerk middleware | Reference](https://clerk.com/docs/references/nextjs/auth-middleware)
+
+5. Embed the `<UserButton />`
+
+Clerk offers a set of prebuilt components to add functionality to your app with minimal effort. The `<UserButton />` allows users to manage their account information and log out, completing the full authentication circle.
+
+We need to create the `Sign-Up` and `Sign-In` pages to embed this component.
+
+- [Clerk nextjs Sign-Up and Sign-In pages](https://clerk.com/docs/references/nextjs/custom-signup-signin-pages)
 
