@@ -1511,3 +1511,36 @@ const ClerkLayout = ({ children}:{
 
 export default ClerkLayout;
 ```
+
+## Organizations
+
+We can check our organizations through `https://dashboard.clerk.com`, click the Organizations tab.
+
+Then enable organizations.
+
+With that we can now create a protected route where users can create or select an organization. We now need to create a route that has `select-org` route with a catch all segment.
+
+- [Organization List | Clerk Reference](https://clerk.com/docs/components/organization/organization-list)
+
+The `<OrganizationList />` component is used to display organization related memberships, invitations, and suggestions for the user.
+
+Inside `(clerk)` create a route named `select-org/[[...select-org]]/page.tsx`
+
+Add page to create new organization
+
+This commit adds a new React component called CreateOrganizationPage that renders an OrganizationList component from @clerk/nextjs. This component allows the user to create a new organization and see the existing ones.
+
+`app\(platform)\(clerk)\select-org\[[...select-org]]\page.tsx`
+```tsx
+import React from 'react';
+import { OrganizationList } from '@clerk/nextjs';
+
+export default function CreateOrganizationPage() {
+  return (
+    <OrganizationList />
+  );
+};
+```
+
+This page is already centered as it shares the layout with the `(clerk)` route group.
+
