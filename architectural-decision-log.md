@@ -1483,4 +1483,31 @@ This will let the middleware know where to redirect. See how our project structu
 
 Remember that route groups are not part of the URL. So the route would become `localhost:3000/sign-in`.
 
-### Style the Sign-In Page
+### Style the Sign-In and Sign-Up Page
+
+- [Pages & Layouts | Nextjs Reference](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts#nesting-layouts)
+
+Let's create a nested layout so that we can center both the sign-in page and sign-up page.
+
+Create a `layout.tsx` inside the `(clerk)` folder, which centers the `children` prop.
+
+Add layout component for clerk pages
+
+Create a nested layout called ClerkLayout that renders a centered flex container for clerk pages. This component can be used to wrap other components that need to be aligned in the center of the screen.
+
+`app\(platform)\(clerk)\layout.tsx`
+```tsx
+import React from 'react';
+
+const ClerkLayout = ({ children}:{ 
+  children: React.ReactNode;
+}) => {
+  return (
+    <div className='h-full flex items-center justify-center'>
+      {children}
+    </div>
+  );
+};
+
+export default ClerkLayout;
+```
