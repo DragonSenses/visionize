@@ -1650,3 +1650,26 @@ const OrganizationIdPage = () => {
 
 export default OrganizationIdPage
 ```
+
+### Dashboard layout
+
+Let's create the `layout.tsx` file for the `(dashboard)`, which accepts a `children` prop that will be populated with a child layout or a child page during rendering.
+
+```tsx
+import React from 'react';
+
+const DashboardLayout = ({children}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <div className='h-full'>
+      {/* Navbar */}
+      {children}
+    </div>
+  )
+}
+
+export default DashboardLayout
+```
+
+We are also going to create local components for the dashboard, which includes a `<Navbar />`.
