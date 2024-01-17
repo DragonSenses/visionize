@@ -28,7 +28,9 @@ With that out of the way, let's move on to development.
 
 *Visualize* and *realize* your vision with Visionize, a task management app that will help you reach your goals.
 
-Inspired by the [Kanban](https://en.wikipedia.org/wiki/Kanban_(development)) developmentt process, allows users to vieew their progress and process, from start to finish.
+Inspired by the [Kanban](https://en.wikipedia.org/wiki/Kanban_(development)) development process, allows users to vieew their progress and process, from start to finish.
+
+Currently, this project is just a way to learn and implement and practice skills and is not meant for commercial use. Certain design decisions made here favor ease of development over costs in service (e.g., Clerk as authentication as a service as opposed to a self-hosting solution) so may not be lucrative in the long-term. See section on [commercial feasibility](#commercial-feasibility) for more discussion on service pricing, commercial feasaibility, and alternatives to improve it.
 
 ## Specifications
 
@@ -101,6 +103,35 @@ Packages
 
 - [shadcn/ui](https://ui.shadcn.com/) has become ny favorite collection of re-usable components
   - We can build our own component system and not be dependent on any 3rd party npm library which needs to be updated and maintained.
+
+## Commercial Feasibility
+
+Add note on service pricing to commercial feasibility
+
+Explain why services such as Clerk is not a viable option for visionize in the long-term due to its high per-user cost. Compare Clerk's pricing with other authentication providers and suggest alternatives.
+
+A collaboration app that uses organizations even on a decent free-to-paid plan conversion rate, we can take a look at the costs. $0.02 per Monthly Active User (MAU) after 10,000 with $25 on the pro plan. Then we include the cost for every additional MAO (Monthly Active Organization) for $1 each. Not to mention all the overhead costs for additional features such as "authentication add-on" and more, then for a small business it is no longer feasible to use Clerk. Because this assumes that every user is a paid user which is not the case for this app.
+
+Some alternatives to authentication are:
+
+1. Authentication Providers
+  - Auth0, Okta, Firebase, Duo
+
+2. Self-hosted authentication servers
+  - [Supertokens](https://supertokens.com/)
+  - [Authelia](https://www.authelia.com/)
+  - [Authentik](https://goauthentik.io/)
+  - [FusionAuth](https://fusionauth.io/)
+
+To self-host your own authentication server, you need to:
+
+- Choose a software or library that suits your needs and supports the protocols and features you want, such as OAuth, OpenID Connect, SAML, JWT, etc.
+
+- Install and configure the software or library on your server or cloud platform, following the documentation and best practices.
+
+- Integrate the software or library with your web application, using the SDKs, APIs, or plugins provided.
+
+- Test and monitor your authentication server, ensuring its security, performance, and reliability.
 
 ## Coding style & naming conventions
 
@@ -1655,6 +1686,7 @@ export default OrganizationIdPage
 
 Let's create the `layout.tsx` file for the `(dashboard)`, which accepts a `children` prop that will be populated with a child layout or a child page during rendering.
 
+`app\(platform)\(dashboard)\layout.tsx`
 ```tsx
 import React from 'react';
 
@@ -1673,3 +1705,68 @@ export default DashboardLayout
 ```
 
 We are also going to create local components for the dashboard, which includes a `<Navbar />`.
+
+Create the folder under `(dashboard)` named `_components` with a file named `Navbar.tsx`
+
+`app\(platform)\(dashboard)\_components\Navbar.tsx`
+```tsx
+export const Navbar = () => {
+  return (
+    <div>
+      Navbar
+    </div>
+  );
+};
+```
+
+Then import and add it inside the `DashboardLayout`.
+
+`app\(platform)\(dashboard)\layout.tsx`
+```tsx
+import { Navbar } from './_components/navbar';
+
+const DashboardLayout = ({children}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <div className='h-full'>
+      <Navbar />
+      {children}
+    </div>
+  )
+}
+
+export default DashboardLayout
+```
+
+Now add responsive styles to the `Navbar` and include a create `Button`. Also change the `div` to the semantic tag `nav`.
+
+```tsx
+import React from 'react';
+import { Plus } from 'lucide-react';
+
+import Logo from '@/components/Logo';
+import { Button } from '@/components/ui/button';
+
+export const Navbar = () => {
+  return (
+    <nav className='flex items-center fixed px-4 z-10 top-0 w-full h-14 border-b shadow-sm bg-white'>
+      {/* Responsive Container */}
+      <div className='flex items-center gap-x-4'>
+        {/* For screens 768px and larger  */}
+        <div className='hidden md:flex'>
+          <Logo />
+        </div>
+        <Button 
+          size='sm' 
+          className='rounded-sm py-1.5 px-2 h-auto'
+        >
+          <span className='hidden md:block'>Create</span>
+          <Plus className='block pl-1 h-4 w-4'/>
+        </Button>
+      </div>
+    </nav>
+  );
+};
+```
+
