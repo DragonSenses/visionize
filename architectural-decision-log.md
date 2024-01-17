@@ -82,6 +82,7 @@ Payment and Billing
 Authentication
 - Clerk*
 - *For now Clerk is fine to develop quickly, but may switch to [Passportjs](https://www.passportjs.org/docs/)
+- [Passportjs | Better Documentation](https://github.com/jwalton/passport-api-docs)
 
 HTTP Client
 - Axios
@@ -1629,4 +1630,23 @@ const UserIdPage = () => {
 };
 
 export default UserIdPage
+```
+
+Let's also do the same for `OrganizationIdPage`.
+
+```tsx
+import { auth } from '@clerk/nextjs';
+import React from 'react';
+
+const OrganizationIdPage = () => {
+  const { userId, orgId } = auth();
+
+  return (
+    <div>
+      {`Organization: ${orgId}`}
+    </div>
+  );
+};
+
+export default OrganizationIdPage
 ```
