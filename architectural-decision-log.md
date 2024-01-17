@@ -1563,11 +1563,47 @@ import { OrganizationList } from '@clerk/nextjs';
 export default function CreateOrganizationPage() {
   return (
     <OrganizationList 
-      afterCreateOrganizationUrl='/organization/:slug'
+      afterCreateOrganizationUrl='/organization/:id'
       afterSelectPersonalUrl='/user/:id'
-      afterSelectOrganizationUrl='/organization/:slug'
+      afterSelectOrganizationUrl='/organization/:id'
     />
   );
 };
 ```
+
+This commit adds three props to the OrganizationList component from @clerk/nextjs: afterCreateOrganizationUrl, afterSelectPersonalUrl, and afterSelectOrganizationUrl. These props allow the user to to navigate to after creating or selecting an organization or a personal account. This design decision enables both teams and individuals.
+
+## Dashboard
+
+We want the user to be routed to the platform's dashboard so they can start using the app.
+
+The urls to navigate to will be in a route group named `(dashboard)`. Inside will be both the `user` and `organization` routes, containing the [dynamic routes/ dynamic segments](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes) for each using `id`. Each will have a `page.tsx`.
+
+`app\(platform)\(dashboard)\organization\[organizationId]\page.tsx`
+```tsx
+import React from 'react';
+
+const OrganizationIdPage = () => {
+  return (
+    <div>Organization Page</div>
+  );
+};
+
+export default OrganizationIdPage
+```
+
+`app\(platform)\(dashboard)\user\[userId]\page.tsx`
+```tsx
+import React from 'react';
+
+const UserIdPage = () => {
+  return (
+    <div>User Page</div>
+  );
+};
+
+export default UserIdPage
+```
+
+Add personal user page to dashboard
 
