@@ -1,8 +1,13 @@
+import { auth } from '@clerk/nextjs';
 import React from 'react';
 
 const UserIdPage = () => {
+  const { userId } : { userId: string | null } = auth();
+
   return (
-    <div>User Page</div>
+    <div>
+      `User: ${userId}`
+    </div>
   );
 };
 
