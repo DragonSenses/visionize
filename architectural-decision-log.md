@@ -1544,3 +1544,30 @@ export default function CreateOrganizationPage() {
 
 This page is already centered as it shares the layout with the `(clerk)` route group.
 
+### Use both personal and organization accounts
+
+We have the decision to either have individual users and organizations or just organizations. Visionize will be for both individuals and organizations so that more will benefit.
+
+Allow for both personal & organizational use
+
+This commit changes the app logic and UI to enable visionize to be used for both personal and organizational purposes. The user can now switch between different modes and access different features depending on their needs.
+
+We can add the prop `hidePersonal` to `OrganizationalList` to remove selecting a personal account if we intend this app to only be between groups, teams and organizations. But we want this app to be tailored towards individual users too, so we omit that.
+
+Let's add the props according to the [docs](https://clerk.com/docs/components/organization/organization-list#usage).
+
+```tsx
+import React from 'react';
+import { OrganizationList } from '@clerk/nextjs';
+
+export default function CreateOrganizationPage() {
+  return (
+    <OrganizationList 
+      afterCreateOrganizationUrl='/organization/:slug'
+      afterSelectPersonalUrl='/user/:id'
+      afterSelectOrganizationUrl='/organization/:slug'
+    />
+  );
+};
+```
+
