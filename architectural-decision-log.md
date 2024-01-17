@@ -80,7 +80,8 @@ Payment and Billing
 - Stripe
 
 Authentication
-- Clerk
+- Clerk*
+- *For now Clerk is fine to develop quickly, but may switch to [Passportjs](https://www.passportjs.org/docs/)
 
 HTTP Client
 - Axios
@@ -1579,6 +1580,8 @@ We want the user to be routed to the platform's dashboard so they can start usin
 
 The urls to navigate to will be in a route group named `(dashboard)`. Inside will be both the `user` and `organization` routes, containing the [dynamic routes/ dynamic segments](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes) for each using `id`. Each will have a `page.tsx`.
 
+Add organization page to dashboard
+
 `app\(platform)\(dashboard)\organization\[organizationId]\page.tsx`
 ```tsx
 import React from 'react';
@@ -1591,6 +1594,8 @@ const OrganizationIdPage = () => {
 
 export default OrganizationIdPage
 ```
+
+Add personal user page to dashboard
 
 `app\(platform)\(dashboard)\user\[userId]\page.tsx`
 ```tsx
@@ -1605,5 +1610,23 @@ const UserIdPage = () => {
 export default UserIdPage
 ```
 
-Add personal user page to dashboard
+- [auth() | Clerk Reference](https://clerk.com/docs/references/nextjs/auth) is a helper that returns the `Authentication` object of the currently active user. 
 
+Let's retrieve the `userId` in the `UserIdPage` and interpolate the data.
+
+```tsx
+import { auth } from '@clerk/nextjs';
+import React from 'react';
+
+const UserIdPage = () => {
+  const { userId } : { userId: string | null } = auth();
+
+  return (
+    <div>
+      `User: ${userId}`
+    </div>
+  );
+};
+
+export default UserIdPage
+```
