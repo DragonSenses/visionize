@@ -1411,9 +1411,76 @@ export const config = {
 
 Clerk offers a set of prebuilt components to add functionality to your app with minimal effort. The `<UserButton />` allows users to manage their account information and log out, completing the full authentication circle.
 
+Before we embed this component we need to create the sign-in and sign-up pages to allow users to login or create an account.
+
 ### Sign-Up and Sign-In pages
 
-We need to create the `Sign-Up` and `Sign-In` pages to embed this component.
+We need to create the `Sign-Up` and `Sign-In` pages.
 
 - [Clerk nextjs Sign-Up and Sign-In pages](https://clerk.com/docs/references/nextjs/custom-signup-signin-pages)
 
+The first step in the documentation for the sign-up page is to create the file `app/sign-up/[[...sign-up]]/page.tsx` and add the code 
+
+```tsx
+import { SignUp } from "@clerk/nextjs";
+ 
+export default function Page() {
+  return <SignUp />;
+}
+```
+
+Notice how it uses a [catch-all segment](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes#catch-all-segments) which is a dynamic segment that is extended to **catch-all** subsequent segments by adding an ellipsis inside the brackets `[...folderName]`.
+
+For example, `app/shop/[...slug]/page.js` will `match /shop/clothes`, but also `/shop/clothes/`tops, `/shop/clothes/tops/t-shirts`, and so on.
+
+### Route group to hold our authentication
+
+Let's first create the route group `(clerk)` inside `(platform)` to group these related files.
+
+Create sign-up page using Clerk
+
+1. Create the folder `sign-up` inside `(clerk)`
+2. Create the folder `[[...sign-up]]` inside `sign-up`
+3. Create `page.tsx` file inside `[[...sign-up]]`
+
+`app\(platform)\(clerk)\sign-up\[[...sign-up]]\page.tsx`
+```tsx
+import { SignUp } from "@clerk/nextjs";
+ 
+export default function Page() {
+  return <SignUp />;
+}
+```
+
+Create sign-in page using Clerk
+
+1. Create the folder `sign-in` inside `(clerk)`
+2. Create the folder `[[...sign-in]]` inside `sign-in`
+3. Create `page.tsx` file inside `[[...sign-in]]`
+
+`app\(platform)\(clerk)\sign-in\[[...sign-in]]\page.tsx`
+```tsx
+import { SignIn } from "@clerk/nextjs";
+ 
+export default function Page() {
+  return <SignIn />;
+}
+```
+
+Next, add environment variables for the signIn, signUp, afterSignUp, and afterSignIn paths: 
+
+`.env`
+```env
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
+```
+
+These values control the behavior of the components when you sign in or sign up and when you click on the respective links at the bottom of each component.
+
+This will let the middleware know where to redirect. See how our project structure aligns with this in `app\(platform)\(clerk)\sign-in\[[...sign-in]]\page.tsx`.
+
+Remember that route groups are not part of the URL. So the route would become `localhost:3000/sign-in`.
+
+### Style the Sign-In Page
