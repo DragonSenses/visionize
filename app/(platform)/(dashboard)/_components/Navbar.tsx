@@ -28,6 +28,15 @@ export const Navbar = () => {
           afterLeaveOrganizationUrl='/select-org'
           afterSelectOrganizationUrl="/organization/:id"
           afterSelectPersonalUrl='/user/:id'
+          appearance={{
+            elements: {
+              rootBox: {
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              },
+            },
+          }}
         />
       </div>
     </nav>
