@@ -1,4 +1,5 @@
 import { authMiddleware, redirectToSignIn } from "@clerk/nextjs";
+import { NextResponse } from "next/server";
 
 export default authMiddleware({
   publicRoutes: ["/"],
@@ -9,15 +10,24 @@ export default authMiddleware({
       return redirectToSignIn({ returnBackUrl: req.url });
     }
 
-    if (auth.userId && auth.isPublicRoute) {
-      let path = "/select-org";
+    let path = `/select-org`;
 
-      if (auth.orgId) {
-        path = `/organization/${auth.orgId}`;
-      } else {
-        path = `/user/${auth.userId}`;
-      }
+    // Redirect logged in users to personal user page if they are not active in an organization
+    if (
+      auth.userId &&
+      !auth.orgId &&
+      req.nextUrl.pathname !== "/select-org"
+    ) {
+      const userPage = new URL(`/user/${auth.userId}`, req.url);
+      return NextResponse.redirect(userPage);
     }
+
+    // If the user is logged in and trying to access a protected route, allow them to access route
+    if (auth.userId && !auth.isPublicRoute) {
+      return NextResponse.next();
+    }
+    // Allow users visiting public routes to access them
+    return NextResponse.next();
   },
 });
 
