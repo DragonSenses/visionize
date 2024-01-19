@@ -1896,4 +1896,55 @@ export const Navbar = () => {
 };
 ```
 
-allows users to manage their account information and log out
+Add account and logout options in navbar
+
+In Navbar, add `UserButton` component which allows users to manage their account information and log out.
+
+### Update middleware to control navigation after authentication
+
+Let's change the behavior for when user is already logged-in and they attempt to visit the landing page. We want the user to always be on a specific organization or their individual page. We want to be redirected to `SelectOrganizationPage`.
+
+One way to do this is to use the the [afterAuth()](https://clerk.com/docs/references/nextjs/auth-middleware#use-after-auth-for-fine-grained-control) in our middleware.
+
+Some developers will need to handle specific cases such as handling redirects differently or detecting if a user is inside an organization. These cases can be handled with `afterAuth()`.
+
+`middleware.ts`
+```ts
+import { authMiddleware, redirectToSignIn } from "@clerk/nextjs";
+import { NextResponse } from "next/server";
+
+export default authMiddleware({
+  publicRoutes: ["/"],
+
+  afterAuth(auth, req, evt) {
+    // Handle users who aren't authenticated
+    if (!auth.userId && !auth.isPublicRoute) {
+      return redirectToSignIn({ returnBackUrl: req.url });
+    }
+
+    let path = `/select-org`;
+
+    // Redirect logged in users to personal user page if they are not active in an organization
+    if (
+      auth.userId &&
+      !auth.orgId &&
+      req.nextUrl.pathname !== "/select-org"
+    ) {
+      const userPage = new URL(`/user/${auth.userId}`, req.url);
+      return NextResponse.redirect(userPage);
+    }
+
+    // If the user is logged in and trying to access a protected route, allow them to access route
+    if (auth.userId && !auth.isPublicRoute) {
+      return NextResponse.next();
+    }
+    // Allow users visiting public routes to access them
+    return NextResponse.next();
+  },
+});
+
+export const config = {
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+};
+
+```
