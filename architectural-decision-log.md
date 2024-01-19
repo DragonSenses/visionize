@@ -1810,3 +1810,26 @@ export const Navbar = () => {
   );
 };
 ```
+
+Let's use the `appearance` prop to style the `OrganizationSwitcher` component.
+
+- [Appearance prop](https://clerk.com/docs/components/customization/overview)
+- [Use inline CSS objects to style Clerk components](https://clerk.com/docs/components/customization/overview#use-inline-css-objects-to-style-clerk-components)
+
+```tsx
+        <OrganizationSwitcher 
+          afterCreateOrganizationUrl='/organization/:id'
+          afterLeaveOrganizationUrl='/select-org'
+          afterSelectOrganizationUrl="/organization/:id"
+          afterSelectPersonalUrl='/user/:id'
+          appearance={{
+            elements: {
+              rootBox: {
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              },
+            },
+          }}
+        />
+```
