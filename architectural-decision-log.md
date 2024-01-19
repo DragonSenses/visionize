@@ -133,6 +133,8 @@ To self-host your own authentication server, you need to:
 
 - Test and monitor your authentication server, ensuring its security, performance, and reliability.
 
+Also in the Next.js tutorial it covers the authentication using nextauth ([Nextjs adding authentication](https://nextjs.org/learn/dashboard-app/adding-authentication)).
+
 ## Coding style & naming conventions
 
 Here I'd like to list out some general rules I'd like to set for myself to ensure consistent coding style and naming conventions. I'll be updating this section intermittently.
@@ -1770,3 +1772,41 @@ export const Navbar = () => {
 };
 ```
 
+Add create button & responsive styles to navbar
+
+This commit adds a new feature to the navbar that allows users to create new organizations. It also improves the appearance and functionality of the navbar on different screen sizes and devices.
+
+#### `OrganizationSwitcher` component
+
+Let's add [OrganizationSwitcher](https://clerk.com/docs/references/javascript/clerk/organization-switcher#organization-switcher-component) in the `Navbar` and set the prop urls.
+
+```tsx
+export const Navbar = () => {
+  return (
+    <nav className='flex items-center fixed px-4 z-10 top-0 w-full h-14 border-b shadow-sm bg-white'>
+      {/* Responsive Container */}
+      <div className='flex items-center gap-x-4'>
+        {/* For screens 768px and larger  */}
+        <div className='hidden md:flex'>
+          <Logo />
+        </div>
+        <Button 
+          size='sm' 
+          className='rounded-sm py-1.5 px-2 h-auto'
+        >
+          <span className='hidden md:block'>Create</span>
+          <Plus className='block pl-1 h-4 w-4'/>
+        </Button>
+      </div>
+      <div className='ml-auto flex items-center gap-x-2'>
+        <OrganizationSwitcher 
+          afterCreateOrganizationUrl='/organization/:id'
+          afterLeaveOrganizationUrl='/select-org'
+          afterSelectOrganizationUrl="/organization/:id"
+          afterSelectPersonalUrl='/user/:id'
+        />
+      </div>
+    </nav>
+  );
+};
+```
