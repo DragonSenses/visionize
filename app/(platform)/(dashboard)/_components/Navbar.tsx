@@ -1,4 +1,5 @@
 import React from 'react';
+import { OrganizationSwitcher } from '@clerk/nextjs';
 import { Plus } from 'lucide-react';
 
 import Logo from '@/components/Logo';
@@ -20,6 +21,14 @@ export const Navbar = () => {
           <span className='hidden md:block'>Create</span>
           <Plus className='block pl-1 h-4 w-4'/>
         </Button>
+      </div>
+      <div className='ml-auto flex items-center gap-x-2'>
+        <OrganizationSwitcher 
+          afterCreateOrganizationUrl='/organization/:id'
+          afterLeaveOrganizationUrl='/select-org'
+          afterSelectOrganizationUrl="/organization/:id"
+          afterSelectPersonalUrl='/user/:id'
+        />
       </div>
     </nav>
   );
