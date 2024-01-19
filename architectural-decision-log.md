@@ -1781,6 +1781,8 @@ This commit adds a new feature to the navbar that allows users to create new org
 Let's add [OrganizationSwitcher](https://clerk.com/docs/references/javascript/clerk/organization-switcher#organization-switcher-component) in the `Navbar` and set the prop urls.
 
 ```tsx
+import { OrganizationSwitcher } from '@clerk/nextjs';
+
 export const Navbar = () => {
   return (
     <nav className='flex items-center fixed px-4 z-10 top-0 w-full h-14 border-b shadow-sm bg-white'>
@@ -1817,6 +1819,51 @@ Let's use the `appearance` prop to style the `OrganizationSwitcher` component.
 - [Use inline CSS objects to style Clerk components](https://clerk.com/docs/components/customization/overview#use-inline-css-objects-to-style-clerk-components)
 
 ```tsx
+<OrganizationSwitcher 
+  afterCreateOrganizationUrl='/organization/:id'
+  afterLeaveOrganizationUrl='/select-org'
+  afterSelectOrganizationUrl="/organization/:id"
+  afterSelectPersonalUrl='/user/:id'
+  appearance={{
+    elements: {
+      rootBox: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
+    },
+  }}
+/>
+```
+
+Now add the [UserButton](https://clerk.com/docs/components/user/user-button) right next to the switcher. Give it the props `afterSignOutUrl` and `appearance`.
+
+```tsx
+import React from 'react';
+import { OrganizationSwitcher, UserButton } from '@clerk/nextjs';
+import { Plus } from 'lucide-react';
+
+import Logo from '@/components/Logo';
+import { Button } from '@/components/ui/button';
+
+export const Navbar = () => {
+  return (
+    <nav className='flex items-center fixed px-4 z-10 top-0 w-full h-14 border-b shadow-sm bg-white'>
+      {/* Responsive Container */}
+      <div className='flex items-center gap-x-4'>
+        {/* For screens 768px and larger  */}
+        <div className='hidden md:flex'>
+          <Logo />
+        </div>
+        <Button 
+          size='sm' 
+          className='rounded-sm py-1.5 px-2 h-auto'
+        >
+          <span className='hidden md:block'>Create</span>
+          <Plus className='block pl-1 h-4 w-4'/>
+        </Button>
+      </div>
+      <div className='ml-auto flex items-center gap-x-2'>
         <OrganizationSwitcher 
           afterCreateOrganizationUrl='/organization/:id'
           afterLeaveOrganizationUrl='/select-org'
@@ -1832,4 +1879,21 @@ Let's use the `appearance` prop to style the `OrganizationSwitcher` component.
             },
           }}
         />
+        <UserButton 
+          afterSignOutUrl='/'
+          appearance={{
+              elements: {
+                avatarBox: {
+                  height: 30,
+                  width: 30,
+                },
+              },
+          }}
+        />
+      </div>
+    </nav>
+  );
+};
 ```
+
+allows users to manage their account information and log out
