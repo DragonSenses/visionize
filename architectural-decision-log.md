@@ -1348,34 +1348,34 @@ The `<ClerkProvider>` component provides active session and user context to Cler
 
 Note that we won't wrap the provider around our main layout, (i.e., `app\layout.tsx`), like it does in the documentation. We only want to wrap the provider around the layouts that are protected, the routes where we would want the user to be authenticated.
 
-Wrap PlatformLayout with ClerkProvider for auth
+Wrap AppLayout with ClerkProvider for auth
 
-Create a route group, folder named `(platform)` inside the `/app` folder. Then create a `layout.tsx` within. Inside we create a react arrow functional component export named `PlatformLayout`.
+Create a route group, folder named `(app)` inside the `/app` folder. Then create a `layout.tsx` within. Inside we create a react arrow functional component export named `AppLayout`.
 
-`app\(platform)\layout.tsx`
+`app\(app)\layout.tsx`
 ```tsx
 import React from 'react';
 
-const PlatformLayout = ({
+const AppLayout = ({
   children
 }: {
   children: React.ReactNode;
 }) => {
   return (
-    <div>PlatformLayout</div>
+    <div>AppLayout</div>
   )
 }
 
-export default PlatformLayout
+export default AppLayout
 ```
 
-The user needs to be logged-in to be in the platform. As opposed to `(landing)`, where we don't the user to be logged-in. So to secure the `(platform)` routes we need to wrap it in the `ClerkProvider`.
+The user needs to be logged-in to be in the app. As opposed to `(landing)`, where we don't the user to be logged-in. So to secure the `(app)` routes we need to wrap it in the `ClerkProvider`.
 
 ```tsx
 import { ClerkProvider } from '@clerk/nextjs';
 import React from 'react';
 
-const PlatformLayout = ({
+const AppLayout = ({
   children
 }: {
   children: React.ReactNode;
@@ -1387,7 +1387,7 @@ const PlatformLayout = ({
   )
 }
 
-export default PlatformLayout
+export default AppLayout
 ```
 
 4. Require authentication to access your app
@@ -1470,15 +1470,15 @@ For example, `app/shop/[...slug]/page.js` will `match /shop/clothes`, but also `
 
 ### Route group to hold our authentication
 
-Let's first create the route group `(clerk)` inside `(platform)` to group these related files.
+Let's first create the route group `(auth)` inside `(app)` to group these related files.
 
 Create sign-up page using Clerk
 
-1. Create the folder `sign-up` inside `(clerk)`
+1. Create the folder `sign-up` inside `(auth)`
 2. Create the folder `[[...sign-up]]` inside `sign-up`
 3. Create `page.tsx` file inside `[[...sign-up]]`
 
-`app\(platform)\(clerk)\sign-up\[[...sign-up]]\page.tsx`
+`app\(app)\(auth)\sign-up\[[...sign-up]]\page.tsx`
 ```tsx
 import { SignUp } from "@clerk/nextjs";
  
@@ -1489,11 +1489,11 @@ export default function Page() {
 
 Create sign-in page using Clerk
 
-1. Create the folder `sign-in` inside `(clerk)`
+1. Create the folder `sign-in` inside `(auth)`
 2. Create the folder `[[...sign-in]]` inside `sign-in`
 3. Create `page.tsx` file inside `[[...sign-in]]`
 
-`app\(platform)\(clerk)\sign-in\[[...sign-in]]\page.tsx`
+`app\(app)\(auth)\sign-in\[[...sign-in]]\page.tsx`
 ```tsx
 import { SignIn } from "@clerk/nextjs";
  
@@ -1514,7 +1514,7 @@ NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
 
 These values control the behavior of the components when you sign in or sign up and when you click on the respective links at the bottom of each component.
 
-This will let the middleware know where to redirect. See how our project structure aligns with this in `app\(platform)\(clerk)\sign-in\[[...sign-in]]\page.tsx`.
+This will let the middleware know where to redirect. See how our project structure aligns with this in `app\(app)\(auth)\sign-in\[[...sign-in]]\page.tsx`.
 
 Remember that route groups are not part of the URL. So the route would become `localhost:3000/sign-in`.
 
@@ -1524,17 +1524,17 @@ Remember that route groups are not part of the URL. So the route would become `l
 
 Let's create a nested layout so that we can center both the sign-in page and sign-up page.
 
-Create a `layout.tsx` inside the `(clerk)` folder, which centers the `children` prop.
+Create a `layout.tsx` inside the `(auth)` folder, which centers the `children` prop.
 
 Add layout component for clerk pages
 
-Create a nested layout called ClerkLayout that renders a centered flex container for clerk pages. This component can be used to wrap other components that need to be aligned in the center of the screen.
+Create a nested layout called `AuthLayout` that renders a centered flex container for clerk pages. This component can be used to wrap other components that need to be aligned in the center of the screen.
 
-`app\(platform)\(clerk)\layout.tsx`
+`app\(app)\(auth)\layout.tsx`
 ```tsx
 import React from 'react';
 
-const ClerkLayout = ({ children}:{ 
+const AuthLayout = ({ children}:{ 
   children: React.ReactNode;
 }) => {
   return (
@@ -1544,7 +1544,7 @@ const ClerkLayout = ({ children}:{
   );
 };
 
-export default ClerkLayout;
+export default AuthLayout;
 ```
 
 ## Organizations
@@ -1553,31 +1553,31 @@ We can check our organizations through `https://dashboard.clerk.com`, click the 
 
 Then enable organizations.
 
-With that we can now create a protected route where users can create or select an organization. We now need to create a route that has `select-org` route with a catch all segment.
+With that we can now create a protected route where users can create or select an organization. We now need to create a route that has `org-selection` route with a catch all segment.
 
 - [Organization List | Clerk Reference](https://clerk.com/docs/components/organization/organization-list)
 
 The `<OrganizationList />` component is used to display organization related memberships, invitations, and suggestions for the user.
 
-Inside `(clerk)` create a route named `select-org/[[...select-org]]/page.tsx`
+Inside `(auth)` create a route named `org-selection/[[...org-selection]]/page.tsx`
 
 Add page to create new organization
 
-This commit adds a new React component called CreateOrganizationPage that renders an OrganizationList component from @clerk/nextjs. This component allows the user to create a new organization and see the existing ones.
+This commit adds a new React component called OrganizationSelectionPage that renders an OrganizationList component from @clerk/nextjs. This component allows the user to create a new organization and see the existing ones.
 
-`app\(platform)\(clerk)\select-org\[[...select-org]]\page.tsx`
+`app\(app)\(auth)\org-selection\[[...org-selection]]\page.tsx`
 ```tsx
 import React from 'react';
 import { OrganizationList } from '@clerk/nextjs';
 
-export default function CreateOrganizationPage() {
+export default function OrganizationSelectionPage() {
   return (
     <OrganizationList />
   );
 };
 ```
 
-This page is already centered as it shares the layout with the `(clerk)` route group.
+This page is already centered as it shares the layout with the `(auth)` route group.
 
 ### Use both personal and organization accounts
 
@@ -1595,7 +1595,7 @@ Let's add the props according to the [docs](https://clerk.com/docs/components/or
 import React from 'react';
 import { OrganizationList } from '@clerk/nextjs';
 
-export default function CreateOrganizationPage() {
+export default function OrganizationSelectionPage() {
   return (
     <OrganizationList 
       afterCreateOrganizationUrl='/organization/:id'
@@ -1610,13 +1610,13 @@ This commit adds three props to the OrganizationList component from @clerk/nextj
 
 ## Dashboard
 
-We want the user to be routed to the platform's dashboard so they can start using the app.
+We want the user to be routed to the app's dashboard so they can start using the app.
 
 The urls to navigate to will be in a route group named `(dashboard)`. Inside will be both the `user` and `organization` routes, containing the [dynamic routes/ dynamic segments](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes) for each using `id`. Each will have a `page.tsx`.
 
 Add organization page to dashboard
 
-`app\(platform)\(dashboard)\organization\[organizationId]\page.tsx`
+`app\(app)\(dashboard)\organization\[organizationId]\page.tsx`
 ```tsx
 import React from 'react';
 
@@ -1631,7 +1631,7 @@ export default OrganizationIdPage
 
 Add personal user page to dashboard
 
-`app\(platform)\(dashboard)\user\[userId]\page.tsx`
+`app\(app)\(dashboard)\user\[userId]\page.tsx`
 ```tsx
 import React from 'react';
 
@@ -1688,7 +1688,7 @@ export default OrganizationIdPage
 
 Let's create the `layout.tsx` file for the `(dashboard)`, which accepts a `children` prop that will be populated with a child layout or a child page during rendering.
 
-`app\(platform)\(dashboard)\layout.tsx`
+`app\(app)\(dashboard)\layout.tsx`
 ```tsx
 import React from 'react';
 
@@ -1710,7 +1710,7 @@ We are also going to create local components for the dashboard, which includes a
 
 Create the folder under `(dashboard)` named `_components` with a file named `Navbar.tsx`
 
-`app\(platform)\(dashboard)\_components\Navbar.tsx`
+`app\(app)\(dashboard)\_components\Navbar.tsx`
 ```tsx
 export const Navbar = () => {
   return (
@@ -1723,7 +1723,7 @@ export const Navbar = () => {
 
 Then import and add it inside the `DashboardLayout`.
 
-`app\(platform)\(dashboard)\layout.tsx`
+`app\(app)\(dashboard)\layout.tsx`
 ```tsx
 import { Navbar } from './_components/navbar';
 
@@ -1803,7 +1803,7 @@ export const Navbar = () => {
       <div className='ml-auto flex items-center gap-x-2'>
         <OrganizationSwitcher 
           afterCreateOrganizationUrl='/organization/:id'
-          afterLeaveOrganizationUrl='/select-org'
+          afterLeaveOrganizationUrl='/org-selection'
           afterSelectOrganizationUrl="/organization/:id"
           afterSelectPersonalUrl='/user/:id'
         />
@@ -1821,7 +1821,7 @@ Let's use the `appearance` prop to style the `OrganizationSwitcher` component.
 ```tsx
 <OrganizationSwitcher 
   afterCreateOrganizationUrl='/organization/:id'
-  afterLeaveOrganizationUrl='/select-org'
+  afterLeaveOrganizationUrl='/org-selection'
   afterSelectOrganizationUrl="/organization/:id"
   afterSelectPersonalUrl='/user/:id'
   appearance={{
@@ -1866,7 +1866,7 @@ export const Navbar = () => {
       <div className='ml-auto flex items-center gap-x-2'>
         <OrganizationSwitcher 
           afterCreateOrganizationUrl='/organization/:id'
-          afterLeaveOrganizationUrl='/select-org'
+          afterLeaveOrganizationUrl='/org-selection'
           afterSelectOrganizationUrl="/organization/:id"
           afterSelectPersonalUrl='/user/:id'
           appearance={{
@@ -1908,6 +1908,8 @@ One way to do this is to use the the [afterAuth()](https://clerk.com/docs/refere
 
 Some developers will need to handle specific cases such as handling redirects differently or detecting if a user is inside an organization. These cases can be handled with `afterAuth()`.
 
+Configure redirects for public & private routes
+
 `middleware.ts`
 ```ts
 import { authMiddleware, redirectToSignIn } from "@clerk/nextjs";
@@ -1922,13 +1924,13 @@ export default authMiddleware({
       return redirectToSignIn({ returnBackUrl: req.url });
     }
 
-    let path = `/select-org`;
+    let path = `/org-selection`;
 
     // Redirect logged in users to personal user page if they are not active in an organization
     if (
       auth.userId &&
       !auth.orgId &&
-      req.nextUrl.pathname !== "/select-org"
+      req.nextUrl.pathname !== "/org-selection"
     ) {
       const userPage = new URL(`/user/${auth.userId}`, req.url);
       return NextResponse.redirect(userPage);
@@ -1948,3 +1950,24 @@ export const config = {
 };
 
 ```
+
+fix: add condition to avoid redirect loop in authMiddleware
+
+This commit adds a condition to check if the user is already on the login page before redirecting them to it in the auth middleware. This prevents the error of too many redirects when the user tries to log out or access a public route. The condition uses the req.nextUrl.pathname property to compare with the login route path.
+
+refactor: rename to auth route group for sign-up
+
+Renames the route group (clerk) to (auth) in the sign-up page, to avoid being tied to a specific vendor for authentication. This change also updates the imports and links that refer to the sign-up page accordingly. This will make it easier to switch to a different authentication provider in the future if needed.
+
+refactor: rename platform to app in dashboard layout
+
+This commit renames the dynamic segment (platform) to (app) in the dashboard layout file, to follow the convention of using (app) for the application or service name. 
+
+refactor: move organization page to (app) directory
+
+This commit renames the route group (platform) to (app) in the dashboard layout file, to follow the convention of using (app) for the application or service name.
+
+refactor: restructure navbar to app route group
+
+This commit renames the route group (platform) to (app) in the navbar component file, to follow the convention of using (app) for the application or service name. This change also updates the props and imports accordingly.
+
