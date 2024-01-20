@@ -10,16 +10,14 @@ export default authMiddleware({
       return redirectToSignIn({ returnBackUrl: req.url });
     }
 
-    let path = `/select-org`;
-
     // Redirect logged in users to personal user page if they are not active in an organization
     if (
       auth.userId &&
       !auth.orgId &&
-      req.nextUrl.pathname !== "/select-org"
+      req.nextUrl.pathname !== "/org-selection"
     ) {
-      const userPage = new URL(`/user/${auth.userId}`, req.url);
-      return NextResponse.redirect(userPage);
+      const orgSelection = new URL("/org-selection", req.url);
+      return NextResponse.redirect(orgSelection);
     }
 
     // If the user is logged in and trying to access a protected route, allow them to access route
