@@ -1924,16 +1924,14 @@ export default authMiddleware({
       return redirectToSignIn({ returnBackUrl: req.url });
     }
 
-    let path = `/org-selection`;
-
     // Redirect logged in users to personal user page if they are not active in an organization
     if (
       auth.userId &&
       !auth.orgId &&
       req.nextUrl.pathname !== "/org-selection"
     ) {
-      const userPage = new URL(`/user/${auth.userId}`, req.url);
-      return NextResponse.redirect(userPage);
+      const orgSelection = new URL("/org-selection", req.url);
+      return NextResponse.redirect(orgSelection);
     }
 
     // If the user is logged in and trying to access a protected route, allow them to access route
@@ -1948,7 +1946,6 @@ export default authMiddleware({
 export const config = {
   matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
 };
-
 ```
 
 fix: add condition to avoid redirect loop in authMiddleware
