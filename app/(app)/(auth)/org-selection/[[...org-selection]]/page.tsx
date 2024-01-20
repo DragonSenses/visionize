@@ -1,7 +1,7 @@
 import React from 'react';
 import { OrganizationList } from '@clerk/nextjs';
 
-export default function CreateOrganizationPage() {
+export default function OrganizationSelectionPage() {
   return (
     <OrganizationList 
       afterCreateOrganizationUrl='/organization/:id'
