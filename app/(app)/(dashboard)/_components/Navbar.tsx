@@ -25,7 +25,7 @@ export const Navbar = () => {
       <div className='ml-auto flex items-center gap-x-2'>
         <OrganizationSwitcher 
           afterCreateOrganizationUrl='/organization/:id'
-          afterLeaveOrganizationUrl='/select-org'
+          afterLeaveOrganizationUrl='/org-selection'
           afterSelectOrganizationUrl="/organization/:id"
           afterSelectPersonalUrl='/user/:id'
           appearance={{
