@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ClerkLayout = ({ children}:{ 
+const AuthLayout = ({ children}:{ 
   children: React.ReactNode;
 }) => {
   return (
@@ -10,4 +10,4 @@ const ClerkLayout = ({ children}:{
   );
 };
 
-export default ClerkLayout;
+export default AuthLayout;
