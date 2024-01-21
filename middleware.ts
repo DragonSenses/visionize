@@ -10,15 +10,24 @@ export default authMiddleware({
       return redirectToSignIn({ returnBackUrl: req.url });
     }
 
-    // Redirect logged in users to personal user page if they are not active in an organization
+    // If user is logged-in and on the landing page, redirect them
     if (
-      auth.userId &&
-      !auth.orgId &&
-      req.nextUrl.pathname !== "/org-selection"
-    ) {
+      auth.userId && 
+      req.nextUrl.pathname === "/") 
+    {
       const orgSelection = new URL("/org-selection", req.url);
       return NextResponse.redirect(orgSelection);
     }
+
+    // Redirect logged in users to personal user page if they are not active in an organization
+  //   if (
+  //     auth.userId &&
+  //     !auth.orgId &&
+  //     req.nextUrl.pathname !== "/org-selection"
+  //   ) {
+  //     const orgSelection = new URL("/org-selection", req.url);
+  //     return NextResponse.redirect(orgSelection);
+  //   }
 
     // If the user is logged in and trying to access a protected route, allow them to access route
     if (auth.userId && !auth.isPublicRoute) {
