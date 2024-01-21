@@ -1776,6 +1776,58 @@ Add create button & responsive styles to navbar
 
 This commit adds a new feature to the navbar that allows users to create new organizations. It also improves the appearance and functionality of the navbar on different screen sizes and devices.
 
+#### Customize `Button` component
+
+One thing to add is to modify the `Button` component to have a lighter color that matches the background.
+
+Navigate to `button.tsx` and add a `primary` variant that gives the `Button` a sky blue color.
+
+Add primary variant to buttonVariants
+
+Add a new variant called primary to the buttonVariants object in the Button.tsx component. The primary variant has a sky blue background color and a white text color. It also has a hover effect that changes the background color to a darker shade of sky blue. The primary variant can be used for buttons that need to stand out or indicate a primary action.
+
+Gives the Button component in Navbar a primary variant, which has a sky blue background color and a white text color. It also has a hover effect that changes the background color to a darker shade of sky blue. This indicates to the user the action to create.
+
+`components\ui\button.tsx`
+```tsx
+const buttonVariants = cva(
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline:
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+        primary: "bg-sky-500 hover:bg-sky-600/90 text-primary-foreground",
+      },
+```
+
+Then add add the `variant` prop and set it to `primary` in `Navbar.tsx`.
+
+`app\(app)\(dashboard)\_components\Navbar.tsx`
+```tsx
+export const Navbar = () => {
+  return (
+    <nav className='flex items-center fixed px-4 z-10 top-0 w-full h-14 border-b shadow-sm bg-white'>
+      {/* Responsive Container */}
+      <div className='flex items-center gap-x-4'>
+        {/* For screens 768px and larger  */}
+        <div className='hidden md:flex'>
+          <Logo />
+        </div>
+        <Button
+          variant='primary'
+          size='sm' 
+          className='rounded-sm py-1.5 px-2 h-auto'
+        >
+```
+
 #### `OrganizationSwitcher` component
 
 Let's add [OrganizationSwitcher](https://clerk.com/docs/references/javascript/clerk/organization-switcher#organization-switcher-component) in the `Navbar` and set the prop urls.
@@ -1971,3 +2023,4 @@ The first case when we handle users who aren't authenticated we want to redirect
 
 In this next condition we redirect users already logged-in and on the landing page to the selection page.
 
+### 
