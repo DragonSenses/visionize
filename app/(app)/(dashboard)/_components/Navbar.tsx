@@ -20,7 +20,7 @@ export const Navbar = () => {
           className='rounded-sm py-1.5 px-2 h-auto'
         >
           <span className='hidden md:block'>Create</span>
-          <Plus className='block pl-1 h-4 w-4'/>
+          <Plus className='block md:pl-1 h-4 w-4'/>
         </Button>
       </div>
       <div className='ml-auto flex items-center gap-x-2'>
