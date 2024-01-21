@@ -1924,12 +1924,11 @@ export default authMiddleware({
       return redirectToSignIn({ returnBackUrl: req.url });
     }
 
-    // Redirect logged in users to personal user page if they are not active in an organization
+    // If user is logged-in and on the landing page, redirect them
     if (
-      auth.userId &&
-      !auth.orgId &&
-      req.nextUrl.pathname !== "/org-selection"
-    ) {
+      auth.userId && 
+      req.nextUrl.pathname === "/") 
+    {
       const orgSelection = new URL("/org-selection", req.url);
       return NextResponse.redirect(orgSelection);
     }
@@ -1946,25 +1945,29 @@ export default authMiddleware({
 export const config = {
   matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
 };
+
 ```
 
-fix: add condition to avoid redirect loop in authMiddleware
+The first case when we handle users who aren't authenticated we want to redirect them to the sign-in page. Then after signing in, we return them back to the URL they came from. The URL they come from was either a private route that they couldn't access earlier, e.g., they bookmarked the dashboard page.
 
-This commit adds a condition to check if the user is already on the login page before redirecting them to it in the auth middleware. This prevents the error of too many redirects when the user tries to log out or access a public route. The condition uses the req.nextUrl.pathname property to compare with the login route path.
+```ts
+  afterAuth(auth, req, evt) {
+    // Handle users who aren't authenticated
+    if (!auth.userId && !auth.isPublicRoute) {
+      return redirectToSignIn({ returnBackUrl: req.url });
+    }
+```
 
-refactor: rename to auth route group for sign-up
+```ts
+    // If user is logged-in and on the landing page, redirect them
+    if (
+      auth.userId && 
+      req.nextUrl.pathname === "/") 
+    {
+      const orgSelection = new URL("/org-selection", req.url);
+      return NextResponse.redirect(orgSelection);
+    }
+```
 
-Renames the route group (clerk) to (auth) in the sign-up page, to avoid being tied to a specific vendor for authentication. This change also updates the imports and links that refer to the sign-up page accordingly. This will make it easier to switch to a different authentication provider in the future if needed.
-
-refactor: rename platform to app in dashboard layout
-
-This commit renames the dynamic segment (platform) to (app) in the dashboard layout file, to follow the convention of using (app) for the application or service name. 
-
-refactor: move organization page to (app) directory
-
-This commit renames the route group (platform) to (app) in the dashboard layout file, to follow the convention of using (app) for the application or service name.
-
-refactor: restructure navbar to app route group
-
-This commit renames the route group (platform) to (app) in the navbar component file, to follow the convention of using (app) for the application or service name. This change also updates the props and imports accordingly.
+In this next condition we redirect users already logged-in and on the landing page to the selection page.
 
