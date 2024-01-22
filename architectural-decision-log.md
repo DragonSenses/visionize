@@ -1598,9 +1598,9 @@ import { OrganizationList } from '@clerk/nextjs';
 export default function OrganizationSelectionPage() {
   return (
     <OrganizationList 
-      afterCreateOrganizationUrl='/organization/:id'
+      afterCreateOrganizationUrl='/org/:id'
       afterSelectPersonalUrl='/user/:id'
-      afterSelectOrganizationUrl='/organization/:id'
+      afterSelectOrganizationUrl='/org/:id'
     />
   );
 };
@@ -1616,7 +1616,7 @@ The urls to navigate to will be in a route group named `(dashboard)`. Inside wil
 
 Add organization page to dashboard
 
-`app\(app)\(dashboard)\organization\[organizationId]\page.tsx`
+`app\(app)\(dashboard)\org\[orgId]\page.tsx`
 ```tsx
 import React from 'react';
 
@@ -1854,9 +1854,9 @@ export const Navbar = () => {
       </div>
       <div className='ml-auto flex items-center gap-x-2'>
         <OrganizationSwitcher 
-          afterCreateOrganizationUrl='/organization/:id'
+          afterCreateOrganizationUrl='/org/:id'
           afterLeaveOrganizationUrl='/org-selection'
-          afterSelectOrganizationUrl="/organization/:id"
+          afterSelectOrganizationUrl="/org/:id"
           afterSelectPersonalUrl='/user/:id'
         />
       </div>
@@ -1872,9 +1872,9 @@ Let's use the `appearance` prop to style the `OrganizationSwitcher` component.
 
 ```tsx
 <OrganizationSwitcher 
-  afterCreateOrganizationUrl='/organization/:id'
+  afterCreateOrganizationUrl='/org/:id'
   afterLeaveOrganizationUrl='/org-selection'
-  afterSelectOrganizationUrl="/organization/:id"
+  afterSelectOrganizationUrl="/org/:id"
   afterSelectPersonalUrl='/user/:id'
   appearance={{
     elements: {
@@ -1917,9 +1917,9 @@ export const Navbar = () => {
       </div>
       <div className='ml-auto flex items-center gap-x-2'>
         <OrganizationSwitcher 
-          afterCreateOrganizationUrl='/organization/:id'
+          afterCreateOrganizationUrl='/org/:id'
           afterLeaveOrganizationUrl='/org-selection'
-          afterSelectOrganizationUrl="/organization/:id"
+          afterSelectOrganizationUrl="/org/:id"
           afterSelectPersonalUrl='/user/:id'
           appearance={{
             elements: {
@@ -2029,9 +2029,9 @@ Now we work on the content of the pages within the dashboard.
 
 So far we have the `Navbar` at the top. We want a layout that wraps the content below the navbar, along with a sidebar to the left that allows users to switch between profiles.
 
-Create a `layout.tsx` inside `app\(app)\(dashboard)\organization`, which accepts a `children` prop and returns a `<main>`.
+Create a `layout.tsx` inside `app\(app)\(dashboard)\org`, which accepts a `children` prop and returns a `<main>`.
 
-`app\(app)\(dashboard)\organization\layout.tsx`
+`app\(app)\(dashboard)\org\layout.tsx`
 ```tsx
 import React from 'react';
 
@@ -2086,3 +2086,22 @@ export default function OrganizationLayout({
   )
 }
 ```
+
+We come across the issue where if you go to a organization page with a specific ID it does not switch to that component. We are going to have to check whether a user ID or organization ID matches the URL and switch to that. Create `OrganizationIdLayout.tsx`.
+
+```tsx
+import React from 'react';
+
+export default function OrganizationIdLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <div>
+      {children}
+    </div>
+  )
+}
+```
+
