@@ -2,7 +2,13 @@
 
 import React from 'react'
 
-export default function Sidebar() {
+interface SidebarProps {
+  key?: string;
+};
+
+export default function Sidebar({
+  key,
+}: SidebarProps ) {
   return (
     <div>Sidebar</div>
   );
