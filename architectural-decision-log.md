@@ -2066,3 +2066,23 @@ export default function UserLayout({
   )
 }
 ```
+
+Start with the `OrganizationLayout`. Style it so that we have padding and space for our content and a sidebar. We also want a `div` that appears only on medium screens and larger with a fixed `w-64`.
+
+```tsx
+export default function OrganizationLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <main className='px-4 pt-20 md:pt-24 mx-auto max-w-6xl 2xl:max-w-screen-xl'>
+      <div className='flex '>
+        <div className='w-64 shrink-0 hidden md:block'>
+        </div>
+        {children}
+      </div>
+    </main>
+  )
+}
+```
