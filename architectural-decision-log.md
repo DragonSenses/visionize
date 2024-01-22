@@ -2023,4 +2023,46 @@ The first case when we handle users who aren't authenticated we want to redirect
 
 In this next condition we redirect users already logged-in and on the landing page to the selection page.
 
-### 
+### Organization and User layouts
+
+Now we work on the content of the pages within the dashboard.
+
+So far we have the `Navbar` at the top. We want a layout that wraps the content below the navbar, along with a sidebar to the left that allows users to switch between profiles.
+
+Create a `layout.tsx` inside `app\(app)\(dashboard)\organization`, which accepts a `children` prop and returns a `<main>`.
+
+`app\(app)\(dashboard)\organization\layout.tsx`
+```tsx
+import React from 'react';
+
+export default function OrganizationLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <main>
+      {children}
+    </main>
+  )
+}
+```
+
+Similarly, create the `UserLayout` inside `app\(app)\(dashboard)\user`/
+
+`app\(app)\(dashboard)\user\layout.tsx`
+```tsx
+import React from 'react';
+
+export default function UserLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <main>
+      {children}
+    </main>
+  )
+}
+```
