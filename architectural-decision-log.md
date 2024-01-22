@@ -2113,6 +2113,10 @@ An issue we come across is that the user may access another organization directl
 
 Create a private components folder with the component `URLMatcher.tsx` inside `[orgId]`.
 
+Create URLMatcher.tsx
+
+Create a component that actively checks the URL and matches the ID with the content currently displayed on the page.
+
 `app\(app)\(dashboard)\org\[orgId]\_components\URLMatcher.tsx`
 ```tsx
 "use client";
@@ -2137,3 +2141,35 @@ export default function URLMatcher() {
   return null;
 }
 ```
+
+Now render that inside `OrganizationIdLayout` right above the `children`.
+
+`app\(app)\(dashboard)\org\[orgId]\layout.tsx`
+```tsx
+import React from 'react';
+import URLMatcher from './_components/URLMatcher';
+
+export default function OrganizationIdLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <>
+      <URLMatcher />
+      {children}
+    </>
+  )
+}
+```
+
+#### Testing to see if URLMatcher fixes the issue
+
+1. Create two organizations. 
+2. Use switcher to choose 1st organization
+3. Copy the URL
+4. Switch to 2nd org.
+5. Paste copied URL of 1st organization and hit Enter
+
+What we should see is that the content and display will sychronize with the ID in the URL. The switcher will also reflect this change and it should be the name of the 1st organization.
+
