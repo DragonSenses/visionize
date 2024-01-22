@@ -2173,3 +2173,42 @@ export default function OrganizationIdLayout({
 
 What we should see is that the content and display will sychronize with the ID in the URL. The switcher will also reflect this change and it should be the name of the 1st organization.
 
+### Installing packages
+
+Before we start developing the Sidebar, we are going to install some packages.
+
+- [npm useHooks.ts](https://www.npmjs.com/package/usehooks-ts) are simple, type-safe react hooks that we can use
+
+```sh
+npm i usehooks-ts
+```
+
+- [shadcn/ui - Skeleton component](https://ui.shadcn.com/docs/components/skeleton) is used to show a placeholder while content is loading
+
+```sh
+npx shadcn-ui@latest add skeleton
+```
+
+- [shadcn/ui - Accordion component](https://ui.shadcn.com/docs/components/accordion) is a vertically stacked set of interactive headings that each reveal a section of content.
+
+```sh
+npx shadcn-ui@latest add accordion
+```
+
+### Sidebar
+
+Create a client component `Sidebar.tsx` under `(dashboard)/_components` folder.
+
+`app\(app)\(dashboard)\_components\Sidebar.tsx`
+```tsx
+"use client";
+
+import React from 'react'
+
+export default function Sidebar() {
+  return (
+    <div>Sidebar</div>
+  );
+};
+```
+
