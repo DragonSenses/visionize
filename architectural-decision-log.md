@@ -2105,3 +2105,35 @@ export default function OrganizationIdLayout({
 }
 ```
 
+#### Issue: ID in the URL does not match the switcher and the content
+
+When using the `OrganizationSwitcher` the URL and the `orgId` will match the chosen group. But if a user were to save the URL of one organization, use the switcher to switch to another, then load the saved URL back to the browser without using the switcher then we come across an issue where the URL and contents are not synchronized.
+
+An issue we come across is that the user may access another organization directly, such as a bookmark. The ID inside the URL may not reflect the content of the layout. We need a way to match and sychronize the ID of the URL to that of the content of the page.
+
+Create a private components folder with the component `URLMatcher.tsx` inside `[orgId]`.
+
+`app\(app)\(dashboard)\org\[orgId]\_components\URLMatcher.tsx`
+```tsx
+"use client";
+
+import { useOrganizationList } from '@clerk/nextjs';
+import { useParams } from 'next/navigation';
+import React, { useEffect } from 'react';
+
+// Checks the organization ID of the URL and synchronize it with the page
+export default function URLMatcher() {
+  const params = useParams();
+  const { setActive } = useOrganizationList();
+
+  useEffect(() => {
+    if (!setActive) return;
+
+    setActive({
+      organization: params.orgId as string,
+    });
+  }, [setActive, params.orgId]);
+
+  return null;
+}
+```
