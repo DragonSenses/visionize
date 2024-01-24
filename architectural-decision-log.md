@@ -2275,7 +2275,7 @@ We want to create this `storageKey` property in the prop interface in order to m
 
 Update Sidebar with local storage to persist state
 
-Save the state of Accordion component with local storage inside the sidebar.
+Save the open or collapse state of Accordion component with local storage inside the sidebar.
 
 - Create prop interface SideBarProps which contain the storageKey
 - Accept a storageKey prop with a default value
@@ -2312,3 +2312,91 @@ Let's also give `useLocalStorage` hook a defined type of what to expect. In this
     {}
   );
 ```
+
+So far:
+
+```tsx
+"use client";
+
+import React from 'react'
+import { useLocalStorage } from 'usehooks-ts';
+
+import { Accordion } from '@/components/ui/accordion';
+
+// Define an interface for the Sidebar component props
+interface SidebarProps {
+  // Optional prop to specify the storage key for the sidebar state
+  storageKey?: string;
+};
+
+// Define the Sidebar component as a default export
+export default function Sidebar({
+  // Destructure the storageKey prop and assign a default value
+  storageKey = "sidebarState",
+}: SidebarProps ) {
+  
+  // Use the useLocalStorage hook to store and retrieve the open state of the sidebar
+  // The open state is an object that maps each accordion item key to a boolean value
+  const [open, setOpen] = useLocalStorage<Record<string, any>>(
+    storageKey, 
+    {} // Initial value is an empty object
+  );
+
+  return (
+    <div>
+      Sidebar
+    </div>  
+  );
+};
+```
+
+With that we can now start taking the active organization and the infinite list of joined organizations.
+
+- [useOrganization | Clerk reference](https://clerk.com/docs/references/react/use-organization)
+- [useOrganizationList | Clerk reference](https://clerk.com/docs/references/react/use-organization-list)
+
+We want to use the useOrganization hook to get the active organization and its loading status. The active organization is the one that the user is currently viewing or managing.
+
+Use the useOrganizationList hook to get the user memberships and their loading status. 
+The user memberships are the organizations that the user belongs to or has access to.
+The infinite option enables pagination and infinite scrolling for the organization list.
+
+```tsx
+export default function Sidebar({
+  storageKey = "sidebarState",
+}: SidebarProps) {
+
+  const [open, setOpen] = useLocalStorage<Record<string, any>>(
+    storageKey,
+    {} 
+  );
+
+  const {
+    organization: activeOrg,
+    isLoaded: isLoadedOrg,
+  } = useOrganization();
+
+
+  const {
+    userMemberships,
+    isLoaded: isLoadedOrgList,
+  } = useOrganizationList({
+    userMemberships: {
+      infinite: true,
+    },
+  });
+
+  return (
+    <div>
+      Sidebar
+    </div>
+  );
+};
+```
+
+feat: add hooks for active org & org list in Sidebar
+
+- Use useOrganization hook to get the active organization and its loading status
+- Use useOrganizationList hook to get the user memberships and their loading status
+- Display the organization name and logo in the sidebar header
+- Display the user memberships in the sidebar accordion
