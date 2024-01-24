@@ -12,12 +12,17 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface SidebarProps {
-  key?: string;
+  storageKey?: string;
 };
 
 export default function Sidebar({
-  key,
+  storageKey = "sidebarState",
 }: SidebarProps ) {
+  const [open, setOpen] = useLocalStorage<Record<string, any>>(
+    storageKey, 
+    {}
+  );
+
   return (
     <div>
       Sidebar
