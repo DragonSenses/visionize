@@ -2398,5 +2398,52 @@ feat: add hooks for active org & org list in Sidebar
 
 - Use useOrganization hook to get the active organization and its loading status
 - Use useOrganizationList hook to get the user memberships and their loading status
-- Display the organization name and logo in the sidebar header
-- Display the user memberships in the sidebar accordion
+- Display the organization name in the sidebar header
+- Display the organization list in the sidebar accordion
+
+Finally define the function `onOpen` that uses the `setOpen` method to toggle the open state of an accordion item by its id. Copy the current open state and update the id key with the opposite value.
+
+Then we handle the loading states for active organization, organization list and `userMemberships`. In place of it, we use the `Skeleton` component as a placeholder for the loading progress.
+
+```tsx
+  /**
+   * Toggles the open state of an accordion item by its id
+   * Use the setOpen function to update the open state object
+   * Use the spread operator to copy the current open state and 
+   * update the id key with the opposite value
+   * @param id the id of the accordion item
+   */
+  function onOpen(id: string) {
+    setOpen((current) => ({
+      ...current,
+      [id]: !open[id],
+    }));
+  };
+
+  // Check if the organization data and the user memberships data are loaded
+  // If any of them is not loaded or is loading, return a div element with a Skeleton component
+  // The Skeleton component is a placeholder that shows the loading progress
+  if (!isLoadedOrg || !isLoadedOrgList || userMemberships.isLoading) {
+    return (
+      <div>
+        <Skeleton />
+      </div>
+    )
+  }
+
+  // Return the JSX for the sidebar component
+  return (
+    <div>
+      Sidebar
+    </div>
+  );
+};
+```
+Handle the open & loading states in sidebar
+
+feat: add onOpen function and loading logic
+
+- Add onOpen function to toggle the open state of an accordion item by its id
+- Use the spread operator to copy and update the open state object
+- Check the loading status of the organization data and the user memberships data
+- Return a Skeleton component if any of the data is not loaded or is loading
