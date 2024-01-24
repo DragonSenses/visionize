@@ -2254,3 +2254,61 @@ To do that we will use [localStorage](https://javascript.info/localstorage) and 
 Let's start with the imports we may need to use for the `Sidebar`.
 
 `app\(app)\(dashboard)\_components\Sidebar.tsx`
+```tsx
+"use client";
+
+import Link from 'next/link';
+import React from 'react'
+import { Plus } from 'lucide-react';
+import { useLocalStorage } from 'usehooks-ts';
+import { useOrganization, useOrganizationList } from '@clerk/nextjs';
+
+import { Accordion } from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+```
+
+Then we create the prop interface that has the `storageKey` property. We call it `storageKey` because in the [useLocalStorage docs](https://usehooks-ts.com/react-hook/use-local-storage), the hook is used like `useState` except that you must pass the **storage key** in the 1st parameter.
+
+We want to create this `storageKey` property in the prop interface in order to make the `Sidebar` component more re-usable.
+
+Update Sidebar with local storage to persist state
+
+Save the state of Accordion component with local storage inside the sidebar.
+
+- Create prop interface SideBarProps which contain the storageKey
+- Accept a storageKey prop with a default value
+- Create a state variable open and persist it with local storage so that it remains after a page refresh
+
+```tsx
+"use client";
+
+import React from 'react'
+import { useLocalStorage } from 'usehooks-ts';
+
+interface SidebarProps {
+  storageKey?: string;
+};
+
+export default function Sidebar({
+  storageKey = "sidebarState",
+}: SidebarProps ) {
+  const [open, setOpen] = useLocalStorage(storageKey, {});
+
+  return (
+    <div>
+      Sidebar
+    </div>  
+  );
+};
+```
+
+Let's also give `useLocalStorage` hook a defined type of what to expect. In this case we expect a [Record](https://www.typescriptlang.org/docs/handbook/utility-types.html#recordkeys-type), with `string` as keys and `any` as values.
+
+```tsx
+  const [open, setOpen] = useLocalStorage<Record<string, any>>(
+    storageKey, 
+    {}
+  );
+```
