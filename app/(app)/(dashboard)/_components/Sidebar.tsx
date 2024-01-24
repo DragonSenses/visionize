@@ -49,6 +49,45 @@ export default function Sidebar({
     },
   });
 
+  // Define a variable to store the previous accordion value as an array of keys
+  // Use the Object.keys method to get the keys of the open state object
+  // Use the reduce method to filter out the keys that have a false value
+  const previousAccordionValue: string[] = Object.keys(open)
+    .reduce((accumulator: string[], key: string) => {
+      // If the value of the key is true, add it to the accumulator array
+      if (open[key]) {
+        accumulator.push(key);
+      }
+
+      // Return the accumulator array
+      return accumulator;
+    },[])
+
+  /**
+   * Toggles the open state of an accordion item by its id
+   * Use the setOpen function to update the open state object
+   * Use the spread operator to copy the current open state and 
+   * update the id key with the opposite value
+   * @param id the id of the accordion item
+   */
+  function onOpen(id: string) {
+    setOpen((current) => ({
+      ...current,
+      [id]: !open[id],
+    }));
+  };
+
+  // Check if the organization data and the user memberships data are loaded
+  // If any of them is not loaded or is loading, return a div element with a Skeleton component
+  // The Skeleton component is a placeholder that shows the loading progress
+  if (!isLoadedOrg || !isLoadedOrgList || userMemberships.isLoading) {
+    return (
+      <div>
+        <Skeleton />
+      </div>
+    )
+  }
+
   // Return the JSX for the sidebar component
   return (
     <div>
