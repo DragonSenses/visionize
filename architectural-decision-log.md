@@ -2177,22 +2177,28 @@ What we should see is that the content and display will sychronize with the ID i
 
 Before we start developing the Sidebar, we are going to install some packages.
 
-- [npm useHooks.ts](https://www.npmjs.com/package/usehooks-ts) are simple, type-safe react hooks that we can use
+- [npm useHooks.ts](https://usehooks-ts.com/) are simple, type-safe react hooks that we can use
 
 ```sh
 npm i usehooks-ts
 ```
 
-- [shadcn/ui - Skeleton component](https://ui.shadcn.com/docs/components/skeleton) is used to show a placeholder while content is loading
+- [shadcn/ui - Accordion](https://ui.shadcn.com/docs/components/accordion) is a vertically stacked set of interactive headings that each reveal a section of content.
+
+```sh
+npx shadcn-ui@latest add accordion
+```
+
+- [shadcn/ui - Skeleton](https://ui.shadcn.com/docs/components/skeleton) is used to show a placeholder while content is loading
 
 ```sh
 npx shadcn-ui@latest add skeleton
 ```
 
-- [shadcn/ui - Accordion component](https://ui.shadcn.com/docs/components/accordion) is a vertically stacked set of interactive headings that each reveal a section of content.
+-[shadcn/ui - Separator](https://ui.shadcn.com/docs/components/separator), visually or semantically separates content.
 
 ```sh
-npx shadcn-ui@latest add accordion
+npx shadcn-ui@latest add separator
 ```
 
 ### Sidebar
@@ -2212,3 +2218,39 @@ export default function Sidebar() {
 };
 ```
 
+Now render the `Sidebar` inside `OrganizationLayout`.
+
+`app\(app)\(dashboard)\org\layout.tsx`
+```tsx
+import React from 'react';
+import Sidebar from '../_components/Sidebar';
+
+export default function OrganizationLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <main className='px-4 pt-20 md:pt-24 mx-auto max-w-6xl 2xl:max-w-screen-xl'>
+      <div className='flex '>
+        <div className='w-64 shrink-0 hidden md:block'>
+          <Sidebar />
+        </div>
+        {children}
+      </div>
+    </main>
+  )
+}
+```
+
+#### Preserve user interaction with Accordion component in Sidebar
+
+The Accordion is a component that expands to reveals a section of content, or collapses to hide the content. 
+
+We need to preserve the user's interaction with the accordion across UI reloads. The Accordion should maintain its previous state after reloading.
+
+To do that we will use [localStorage](https://javascript.info/localstorage) and the hook [useLocalStorage](https://usehooks-ts.com/react-hook/use-local-storage) to store this information.
+
+Let's start with the imports we may need to use for the `Sidebar`.
+
+`app\(app)\(dashboard)\_components\Sidebar.tsx`
