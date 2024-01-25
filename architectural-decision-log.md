@@ -2535,3 +2535,68 @@ export default function Sidebar({
 };
 ```
 
+Hold on what's `prevAccordionValue`? Well the way we store values inside local storage through the `open` state is not compatible to how the `defaultValue` is expected inside the `Accordion`. So we need to create a constant that transforms and reduces the data we have inside local storage and the open state into something that matches with the prop `defaultValue` and what default values expect.
+
+`prevAccordionValue` converts the accordion data in local storage to conform to `defaultValue` prop of the `Accordion` component.
+
+- Define a variable to store the previous accordion value as an array of keys
+- Use the `Object.keys` method to get the keys of the `open` state object
+- Use the `reduce` method to filter out the keys that have a `false` value
+- If the value of the key is `true` (i.e., it is open & expanded), add it to the accumulator array
+
+```tsx
+export default function Sidebar({
+  storageKey = "sidebarState",
+}: SidebarProps) {
+
+  // Use the useLocalStorage hook to store and retrieve the open state of the sidebar
+  // The open state is an object that maps each accordion item key to a boolean value
+  const [open, setOpen] = useLocalStorage<Record<string, any>>(
+    storageKey,
+    {} // Initial value is an empty object
+  );
+
+  // Define a variable to store the previous accordion value as an array of keys
+  // Use the Object.keys method to get the keys of the open state object
+  // Use the reduce method to filter out the keys that have a false value
+  const prevAccordionValue: string[] = Object.keys(open)
+    .reduce((accumulator: string[], key: string) => {
+      // If the value of the key is true, add it to the accumulator array
+      if (open[key]) {
+        accumulator.push(key);
+      }
+
+      // Return the accumulator array
+      return accumulator;
+    }, [])
+
+  return (
+    <>
+      <div className='flex items-center mb-1 font-medium text-xs'>
+        <span className='pl-4'>
+          Workspaces
+        </span>
+        <Button
+          asChild
+          className='ml-auto'
+          size='icon'
+          type='button'
+          variant='ghost'
+        >
+          <Link href='/org-selection'>
+            <Plus
+              className='h-4 w-4'
+            />
+          </Link>
+        </Button>
+      </div>
+      <Accordion
+        type='multiple'
+        defaultValue={prevAccordionValue}
+      >
+
+      </Accordion>
+    </>
+  );
+};
+```
