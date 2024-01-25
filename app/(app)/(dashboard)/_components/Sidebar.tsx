@@ -10,6 +10,7 @@ import { Accordion } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
+import SidebarItem from './SidebarItem';
 
 // Define an interface for the Sidebar component props
 interface SidebarProps {
@@ -115,9 +116,15 @@ export default function Sidebar({
         className='space-y-2'
       >
         {userMemberships.data.map(({ organization }) => (
-          <p key={organization.id}>
-            {organization.id}
-          </p>
+          <SidebarItem
+            key={organization.id}
+            isActive={activeOrg?.id === organization.id}
+            isOpen={open[organization.id]}
+            onOpen={onOpen}
+            organization={organization}
+          >
+
+          </SidebarItem>
         ))}
       </Accordion>
     </>
