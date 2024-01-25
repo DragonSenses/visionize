@@ -112,8 +112,13 @@ export default function Sidebar({
       <Accordion
         type='multiple'
         defaultValue={prevAccordionValue}
+        className='space-y-2'
       >
-
+        {userMemberships.data.map(({ organization }) => (
+          <p key={organization.id}>
+            {organization.id}
+          </p>
+        ))}
       </Accordion>
     </>
   );
