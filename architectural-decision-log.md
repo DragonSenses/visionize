@@ -2447,3 +2447,44 @@ feat: add onOpen function and loading logic
 - Use the spread operator to copy and update the open state object
 - Check the loading status of the organization data and the user memberships data
 - Return a Skeleton component if any of the data is not loaded or is loading
+
+#### Sidebar output
+
+Add a link styled as a button that adds workspaces, an organization or user board, to the sidebar.
+
+```tsx
+"use client";
+
+import Link from 'next/link';
+
+import { Button } from '@/components/ui/button';
+
+export default function Sidebar({
+  storageKey = "sidebarState",
+}: SidebarProps) {
+
+  // ...
+
+  // Return the JSX for the sidebar component
+  return (
+    <div className='flex items-center mb-1 font-medium text-xs'>
+      <span className='pl-4'>
+        Workspaces
+      </span>
+      <Button 
+        asChild
+        className='ml-auto'
+        size='icon'
+        type='button'
+        variant='ghost'
+      >
+        <Link href='/org-selection'>
+          <Plus 
+            className='h-4 w-4'
+          />
+        </Link>
+      </Button>
+    </div>
+  );
+};
+```
