@@ -2488,3 +2488,50 @@ export default function Sidebar({
   );
 };
 ```
+
+Now we want to actually render the actual workspaces with the `Accordion` component.
+
+- [Accordion | radix-ui Reference](https://www.radix-ui.com/primitives/docs/components/accordion)
+
+For the props: a `type` of `multiple`, so that multiple items can be opened at the same time. And a `defaultValue` prop set to `prevAccordionValue`.
+
+```tsx
+import { Accordion } from '@/components/ui/accordion';
+
+export default function Sidebar({
+  storageKey = "sidebarState",
+}: SidebarProps) {
+
+  // ...
+  // Return the JSX for the sidebar component
+  return (
+    <>
+      <div className='flex items-center mb-1 font-medium text-xs'>
+        <span className='pl-4'>
+          Workspaces
+        </span>
+        <Button
+          asChild
+          className='ml-auto'
+          size='icon'
+          type='button'
+          variant='ghost'
+        >
+          <Link href='/org-selection'>
+            <Plus
+              className='h-4 w-4'
+            />
+          </Link>
+        </Button>
+      </div>
+      <Accordion
+        type='multiple'
+        defaultValue={prevAccordionValue}
+      >
+
+      </Accordion>
+    </>
+  );
+};
+```
+
