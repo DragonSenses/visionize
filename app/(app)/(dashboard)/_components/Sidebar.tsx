@@ -52,7 +52,7 @@ export default function Sidebar({
   // Define a variable to store the previous accordion value as an array of keys
   // Use the Object.keys method to get the keys of the open state object
   // Use the reduce method to filter out the keys that have a false value
-  const previousAccordionValue: string[] = Object.keys(open)
+  const prevAccordionValue: string[] = Object.keys(open)
     .reduce((accumulator: string[], key: string) => {
       // If the value of the key is true, add it to the accumulator array
       if (open[key]) {
@@ -61,7 +61,7 @@ export default function Sidebar({
 
       // Return the accumulator array
       return accumulator;
-    },[])
+    }, [])
 
   /**
    * Toggles the open state of an accordion item by its id
@@ -90,23 +90,31 @@ export default function Sidebar({
 
   // Return the JSX for the sidebar component
   return (
-    <div className='flex items-center mb-1 font-medium text-xs'>
-      <span className='pl-4'>
-        Workspaces
-      </span>
-      <Button 
-        asChild
-        className='ml-auto'
-        size='icon'
-        type='button'
-        variant='ghost'
+    <>
+      <div className='flex items-center mb-1 font-medium text-xs'>
+        <span className='pl-4'>
+          Workspaces
+        </span>
+        <Button
+          asChild
+          className='ml-auto'
+          size='icon'
+          type='button'
+          variant='ghost'
+        >
+          <Link href='/org-selection'>
+            <Plus
+              className='h-4 w-4'
+            />
+          </Link>
+        </Button>
+      </div>
+      <Accordion
+        type='multiple'
+        defaultValue={prevAccordionValue}
       >
-        <Link href='/org-selection'>
-          <Plus 
-            className='h-4 w-4'
-          />
-        </Link>
-      </Button>
-    </div>
+
+      </Accordion>
+    </>
   );
 };
