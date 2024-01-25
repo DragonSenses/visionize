@@ -90,8 +90,23 @@ export default function Sidebar({
 
   // Return the JSX for the sidebar component
   return (
-    <div>
-      Sidebar
+    <div className='flex items-center mb-1 font-medium text-xs'>
+      <span className='pl-4'>
+        Workspaces
+      </span>
+      <Button 
+        asChild
+        className='ml-auto'
+        size='icon'
+        type='button'
+        variant='ghost'
+      >
+        <Link href='/org-selection'>
+          <Plus 
+            className='h-4 w-4'
+          />
+        </Link>
+      </Button>
     </div>
   );
 };
