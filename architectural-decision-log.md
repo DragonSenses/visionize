@@ -2600,3 +2600,36 @@ export default function Sidebar({
   );
 };
 ```
+
+In short, it reduces over the `open` state object, which looks like this as an example:
+
+```js
+{
+  "my-organization-id" : true
+}
+```
+
+It reduces this entire `open` object to create an array that only holds active IDs. e.g.,
+
+```js
+// open state object
+{ "123" : true } 
+// prevAccordionValue
+["123"]
+```
+
+Now let's style and render the organizations inside `Accordion`. We map the `userMemberships.data` to a `<p>` with `key` prop as the `organization.id`
+
+```tsx
+      <Accordion
+        type='multiple'
+        defaultValue={prevAccordionValue}
+        className='space-y-2'
+      >
+        {userMemberships.data.map(({ organization }) => (
+          <p key={organization.id}>
+            {organization.id}
+          </p>
+        ))}
+      </Accordion>
+```
