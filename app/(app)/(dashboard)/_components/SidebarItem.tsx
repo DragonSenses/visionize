@@ -32,12 +32,16 @@ export default function SidebarItem({
         onClick={() => onOpen(organization.id)}
         className={cn()}
       >
-        <div className=''>
-          <div className=''>
-            <Image 
+        <div className='flex items-center gap-x-2'>
+          <div className='relative w-7 h-7'>
+            <Image
+              fill
+              src={organization.imageUrl}
+              alt="organization image"
+              className='rounded-sm object-cover'
             />
           </div>
-          <span className=''>
+          <span className='font-medium text-sm'>
             {organization.name}
           </span>
         </div>
