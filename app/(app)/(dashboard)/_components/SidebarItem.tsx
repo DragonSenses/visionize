@@ -70,7 +70,11 @@ export default function SidebarItem({
     >
       <AccordionTrigger
         onClick={() => onOpen(organization.id)}
-        className={cn()}
+        className={cn(
+          'flex items-center p-1.5 gap-x-2 rounded-md',
+          'transition text-start text-neutral-700 hover:bg-neutral-500/10 no-underline hover:no-underline',
+          isActive && !isOpen && 'bg-sky-500/10 text-sky-700'
+        )}
       >
         <div className='flex items-center gap-x-2'>
           <div className='relative w-7 h-7'>
@@ -86,7 +90,7 @@ export default function SidebarItem({
           </span>
         </div>
       </AccordionTrigger>
-      <AccordionContent className=''>
+      <AccordionContent className='pt-1 text-neutral-700'>
         {routes.map((route) => (
           <Button
             key={route.href}
