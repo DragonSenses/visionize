@@ -2654,38 +2654,22 @@ export default function SidebarItem() {
 
 Then import and use `SidebarItem`
 
+Add SidebarItem to display user workspaces
+
 ```tsx
-"use client";
-
-import Link from 'next/link';
-import React from 'react'
-import { Plus } from 'lucide-react';
-import { useLocalStorage } from 'usehooks-ts';
-import { useOrganization, useOrganizationList } from '@clerk/nextjs';
-
-import { Accordion } from '@/components/ui/accordion';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
 import SidebarItem from './SidebarItem';
 
-// Define an interface for the Sidebar component props
 interface SidebarProps {
-  // Optional prop to specify the storage key for the sidebar state
   storageKey?: string;
 };
 
-// Define the Sidebar component as a default export
 export default function Sidebar({
-  // Destructure the storageKey prop and assign a default value
   storageKey = "sidebarState",
 }: SidebarProps) {
 
-  // Use the useLocalStorage hook to store and retrieve the open state of the sidebar
-  // The open state is an object that maps each accordion item key to a boolean value
   const [open, setOpen] = useLocalStorage<Record<string, any>>(
     storageKey,
-    {} // Initial value is an empty object
+    {}
   );
 
   // Use the useOrganization hook to get the active organization and its loading status
@@ -2787,4 +2771,20 @@ export default function Sidebar({
     </>
   );
 };
+```
+
+##### SidebarItem props
+
+Before making the prop interface, create a `types/Organization.ts` file. Inside an `Organization` type with `{ id, imageUrl, name, slug }`, and export it.
+
+`types\Organization.ts`
+```ts
+type Organization = {
+  id: string;
+  imageUrl: string;
+  name: string;
+  slug: string;
+};
+
+export default Organization;
 ```
