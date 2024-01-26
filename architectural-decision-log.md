@@ -2763,9 +2763,7 @@ export default function Sidebar({
             isOpen={open[organization.id]}
             onOpen={onOpen}
             organization={organization}
-          >
-
-          </SidebarItem>
+          />
         ))}
       </Accordion>
     </>
@@ -2828,13 +2826,13 @@ SidebarItem.tsx(9, 3): The expected type comes from property 'organization' whic
 in this code:
 
 ```tsx
-          <SidebarItem
-            key={organization.id}
-            isActive={activeOrg?.id === organization.id}
-            isOpen={open[organization.id]}
-            onOpen={onOpen}
-            organization={organization}
-          >
+<SidebarItem
+  key={organization.id}
+  isActive={activeOrg?.id === organization.id}
+  isOpen={open[organization.id]}
+  onOpen={onOpen}
+  organization={organization}
+/>
 ```
 
 We can fix that with 
@@ -2842,13 +2840,13 @@ We can fix that with
 ```tsx
 import Organization from '@/types/Organization';
 // ...
-          <SidebarItem
-            key={organization.id}
-            isActive={activeOrg?.id === organization.id}
-            isOpen={open[organization.id]}
-            onOpen={onOpen}
-            organization={organization as Organization}
-          >
+  <SidebarItem
+    key={organization.id}
+    isActive={activeOrg?.id === organization.id}
+    isOpen={open[organization.id]}
+    onOpen={onOpen}
+    organization={organization as Organization}
+  />
 ```
 
 ##### Output of SidebarItem
@@ -2995,21 +2993,20 @@ export default function SidebarItem({
     },
     {
       displayName: "Activity",
-      href: `/org/${organization.id}`,
+      href: `/org/${organization.id}/activity`,
       icon: <Activity className='h-4 w-4 mr-2' />,
     },
     {
       displayName: "Settings",
-      href: `/org/${organization.id}`,
+      href: `/org/${organization.id}/settings`,
       icon: <Settings className='h-4 w-4 mr-2' />,
     },
     {
       displayName: "Billing",
-      href: `/org/${organization.id}`,
+      href: `/org/${organization.id}/billing`,
       icon: <CreditCard className='h-4 w-4 mr-2' />,
     },
   ];
-
 ```
 
 Next import hooks `useRouter` and `usePathname` from `next/navigation`. Create the click handler function `navigateTo` that takes in `href` string as parameter, and pushes to the specified href URL.
@@ -3122,7 +3119,7 @@ Similarly, add conditional styling for the `Button` inside `AccordionContent`.
             onClick={() => navigateTo(route.href)}
             className={cn(
               'justify-start w-full font-normal pl-10 mb-1',
-              pathname === route.href && 'bg-sky-500 text-sky-700'
+              pathname === route.href && 'bg-sky-500/10 text-sky-700'
             )}
             variant='ghost'
           >
@@ -3131,4 +3128,32 @@ Similarly, add conditional styling for the `Button` inside `AccordionContent`.
           </Button>
         ))}
       </AccordionContent>
+```
+
+#### Sidebar testing
+
+With that we can now test the functionality of the Sidebar. We can see the conditional styling makes it visually easy for the user to determine which route or organization is active at any given moment. 
+
+Another key feature is that clicking the `Boards` of another organization while a different one is active, will switch to that organization while also reflecting that change in both the URL and switcher component.
+
+The next issue that comes up is that we need a way to render the `Sidebar` menu on mobile screens.
+
+### Mobile Sidebar
+
+There are a few ways to implement a mobile sidebar. One way is to put the sidebar in a column layout where it would be at the top, pushing the content downwards. Another way is to have a sidebar pop out with a button.
+
+The architectural decision we'll go with for the mobile sidebar is to use state to control the mobile sidebar.
+
+Let's install what we need:
+
+- [zustand | Reference](https://docs.pmnd.rs/zustand/getting-started/introduction)
+
+```sh
+npm install zustand
+```
+
+- [Sheet | shadcn/ui Reference](https://ui.shadcn.com/docs/components/sheet)
+
+```sh
+npx shadcn-ui@latest add sheet
 ```
