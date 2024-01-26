@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import SidebarItem from './SidebarItem';
-import Organization from '@/types/organization';
+import Organization from '@/types/Organization';
 
 // Define an interface for the Sidebar component props
 interface SidebarProps {
@@ -123,9 +123,7 @@ export default function Sidebar({
             isOpen={open[organization.id]}
             onOpen={onOpen}
             organization={organization as Organization}
-          >
-
-          </SidebarItem>
+          />
         ))}
       </Accordion>
     </>
