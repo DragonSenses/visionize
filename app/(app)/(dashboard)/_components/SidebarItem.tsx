@@ -1,6 +1,20 @@
 import React from 'react';
 
-export default function SidebarItem() {
+import Organization from '@/types/organization';
+
+interface SidebarItemProps {
+  isActive: boolean;
+  isOpen: boolean;
+  onOpen: (id: string) => void;
+  organization: Organization;
+}
+
+export default function SidebarItem({
+  isActive,
+  isOpen,
+  onOpen,
+  organization,
+}: SidebarItemProps ) {
   return (
     <div>SidebarItem</div>
   )
