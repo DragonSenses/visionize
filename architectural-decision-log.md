@@ -2840,7 +2840,7 @@ in this code:
 We can fix that with 
 
 ```tsx
-import Organization from '@/types/organization';
+import Organization from '@/types/Organization';
 // ...
           <SidebarItem
             key={organization.id}
@@ -2862,7 +2862,7 @@ import React from 'react';
 import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
-import Organization from '@/types/organization';
+import Organization from '@/types/Organization';
 import {
   Accordion,
   AccordionContent,
@@ -2905,4 +2905,133 @@ export default function SidebarItem({
     </AccordionItem>
   )
 }
+```
+
+Add styles `SidebarItem` and fill out `Image` properties.
+
+```tsx
+export default function SidebarItem({
+  isActive,
+  isOpen,
+  onOpen,
+  organization,
+}: SidebarItemProps ) {
+  return (
+    <AccordionItem
+      value={organization.id}
+      className='border-none'
+    >
+      <AccordionTrigger
+        onClick={() => onOpen(organization.id)}
+        className={cn()}
+      >
+        <div className='flex items-center gap-x-2'>
+          <div className='relative w-7 h-7'>
+            <Image
+              fill
+              src={organization.imageUrl}
+              alt="organization image"
+              className='rounded-sm object-cover'
+            />
+          </div>
+          <span className='font-medium text-sm'>
+            {organization.name}
+          </span>
+        </div>
+      </AccordionTrigger>
+    </AccordionItem>
+  )
+}
+```
+
+###### Unhandled runtime error - invalid `src` prop for next/image
+
+We get an error because the `src` prop for `Image` is not configured in `next.config.js`, to allow images to be used from that source.
+
+Go to `next.config.js` and add the `images` object
+
+feat(images): add remotePatterns to nextConfig
+
+Configure Next.js to allow images from img.clerk.com domain. This enables the use of Clerk's image service for user avatars and other images in the app.
+
+```js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'img.clerk.com',
+      },
+    ],
+  },
+}
+
+module.exports = nextConfig
+```
+
+###### AccordionContent
+
+feat(routes): add routes array and navigateTo function
+
+Create an array of routes with display name, href, and icon for each route. Create a navigateTo function that takes an href as a parameter and uses the router hook to perform client-side navigation. Use the useRouter and usePathname hooks to get the router instance and the current URL pathname.
+
+To finish our `SidebarItem` we need `AccordionContent`, but we need to create `routes`, an array of objects that contain `{ displayName, href, icon }`. These properties will be used to render a `Button` when we map the `routes` inside the `AccordionContent`.
+
+Here is the `routes` we create before we return `SidebarItem`
+
+```tsx
+import { Activity, CreditCard, Layout, Settings } from 'lucide-react';
+// ...
+export default function SidebarItem({
+  // ...
+}: SidebarItemProps ) {
+
+  const routes = [
+    {
+      displayName: "Boards",
+      href: `/org/${organization.id}`,
+      icon: <Layout className='h-4 w-4 mr-2' />,
+    },
+    {
+      displayName: "Activity",
+      href: `/org/${organization.id}`,
+      icon: <Activity className='h-4 w-4 mr-2' />,
+    },
+    {
+      displayName: "Settings",
+      href: `/org/${organization.id}`,
+      icon: <Settings className='h-4 w-4 mr-2' />,
+    },
+    {
+      displayName: "Billing",
+      href: `/org/${organization.id}`,
+      icon: <CreditCard className='h-4 w-4 mr-2' />,
+    },
+  ];
+
+```
+
+Next import hooks `useRouter` and `usePathname` from `next/navigation`. Create the click handler function `navigateTo` that takes in `href` string as parameter, and pushes to the specified href URL.
+
+```tsx
+
+import { usePathname, useRouter } from 'next/navigation';
+
+export default function SidebarItem({
+  // ...
+}: SidebarItemProps ) {
+  // Get router instance from useRouter hook to perform client-side navigation
+  const router = useRouter();
+
+  // Get current URL pathname from the usePathname hook
+  const pathname = usePathname();
+
+  /**
+   * Click handler that performs client-side navigation to the specified href.
+   * @param href the URL link to navigate to
+   */
+  function navigateTo(href: string): void {
+    router.push(href);
+  }
 ```
