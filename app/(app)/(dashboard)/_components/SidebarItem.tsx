@@ -1,14 +1,15 @@
 import React from 'react';
 import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
+import { Activity, CreditCard, Layout, Settings } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import Organization from '@/types/organization';
 import {
-  Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import Organization from '@/types/Organization';
 
 interface SidebarItemProps {
   isActive: boolean;
@@ -22,7 +23,45 @@ export default function SidebarItem({
   isOpen,
   onOpen,
   organization,
-}: SidebarItemProps ) {
+}: SidebarItemProps) {
+
+  // Get router instance from useRouter hook to perform client-side navigation
+  const router = useRouter();
+
+  // Get current URL pathname from the usePathname hook
+  const pathname = usePathname();
+
+  const routes = [
+    {
+      displayName: "Boards",
+      href: `/org/${organization.id}`,
+      icon: <Layout className='h-4 w-4 mr-2' />,
+    },
+    {
+      displayName: "Activity",
+      href: `/org/${organization.id}`,
+      icon: <Activity className='h-4 w-4 mr-2' />,
+    },
+    {
+      displayName: "Settings",
+      href: `/org/${organization.id}`,
+      icon: <Settings className='h-4 w-4 mr-2' />,
+    },
+    {
+      displayName: "Billing",
+      href: `/org/${organization.id}`,
+      icon: <CreditCard className='h-4 w-4 mr-2' />,
+    },
+  ];
+
+  /**
+   * Click handler that performs client-side navigation to the specified href.
+   * @param href the URL link to navigate to
+   */
+  function navigateTo(href: string): void {
+    router.push(href);
+  }
+
   return (
     <AccordionItem
       value={organization.id}
