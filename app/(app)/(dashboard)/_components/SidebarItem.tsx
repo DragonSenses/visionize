@@ -9,6 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { Button } from '@/components/ui/button';
 import Organization from '@/types/Organization';
 
 interface SidebarItemProps {
@@ -85,6 +86,20 @@ export default function SidebarItem({
           </span>
         </div>
       </AccordionTrigger>
+      <AccordionContent className=''>
+        {routes.map((route) => (
+          <Button
+            key={route.href}
+            size='sm'
+            onClick={() => navigateTo(route.href)}
+            className={cn()}
+            variant='ghost'
+          >
+            {route.icon}
+            {route.displayName}
+          </Button>
+        ))}
+      </AccordionContent>
     </AccordionItem>
   )
 }
