@@ -40,17 +40,17 @@ export default function SidebarItem({
     },
     {
       displayName: "Activity",
-      href: `/org/${organization.id}`,
+      href: `/org/${organization.id}/activity`,
       icon: <Activity className='h-4 w-4 mr-2' />,
     },
     {
       displayName: "Settings",
-      href: `/org/${organization.id}`,
+      href: `/org/${organization.id}/settings`,
       icon: <Settings className='h-4 w-4 mr-2' />,
     },
     {
       displayName: "Billing",
-      href: `/org/${organization.id}`,
+      href: `/org/${organization.id}/billing`,
       icon: <CreditCard className='h-4 w-4 mr-2' />,
     },
   ];
@@ -98,7 +98,7 @@ export default function SidebarItem({
             onClick={() => navigateTo(route.href)}
             className={cn(
               'justify-start w-full font-normal pl-10 mb-1',
-              pathname === route.href && 'bg-sky-500 text-sky-700'
+              pathname === route.href && 'bg-sky-500/10 text-sky-700'
             )}
             variant='ghost'
           >
