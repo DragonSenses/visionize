@@ -3110,3 +3110,25 @@ Add conditional styling to AccordionTrigger
         )}
       >
 ```
+
+Similarly, add conditional styling for the `Button` inside `AccordionContent`.
+
+```tsx
+      <AccordionContent className='pt-1 text-neutral-700'>
+        {routes.map((route) => (
+          <Button
+            key={route.href}
+            size='sm'
+            onClick={() => navigateTo(route.href)}
+            className={cn(
+              'justify-start w-full font-normal pl-10 mb-1',
+              pathname === route.href && 'bg-sky-500 text-sky-700'
+            )}
+            variant='ghost'
+          >
+            {route.icon}
+            {route.displayName}
+          </Button>
+        ))}
+      </AccordionContent>
+```
