@@ -3038,6 +3038,10 @@ export default function SidebarItem({
 
 Finally after `AccordionTrigger`, add `AccordionContent` which maps each route to a `Button` that has an `onClick` function of `navigateTo` along with the `icon` and `displayName` interpolated inside.
 
+Add AccordionContent component to SidebarItem
+
+This component maps each route to a Button component and renders them inside an AccordionItem. It allows the user to navigate to different pages within the organization. The routes are defined as an array of objects with the displayName, href, and icon properties.
+
 ```tsx
 import { Button } from '@/components/ui/button';
 
@@ -3085,4 +3089,24 @@ export default function SidebarItem({
     </AccordionItem>
   )
 }
+```
+
+##### Style SidebarItem
+
+Add conditional styling to AccordionTrigger
+
+- Add flex, items-center, padding, gap, and rounded-md
+- Align text to the start with neutral gray color. On hover, set background to neutral gray. Remove the underline of text in both non-hover and hover states
+- Conditional styling that will give a background and text color change to the AccordionItem that is currently active using the `isActive` prop, but lose the styling when the AccordionItem is open and expanded.
+- When AccordionItem is expanded it should highlight the active element within it.
+
+```tsx
+      <AccordionTrigger
+        onClick={() => onOpen(organization.id)}
+        className={cn(
+          'flex items-center p-1.5 gap-x-2 rounded-md',
+          'transition text-start text-neutral-700 hover:bg-neutral-500/10 no-underline hover:no-underline',
+          isActive && !isOpen && 'bg-sky-500/10 text-sky-700'
+        )}
+      >
 ```
