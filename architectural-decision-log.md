@@ -2788,3 +2788,121 @@ type Organization = {
 
 export default Organization;
 ```
+
+Next we want to create the `SidebarItemProps`, containing `{ isActive, isOpen, onOpen, organization }`. Have `SidebarItem` component accept these props.
+
+```tsx
+import React from 'react';
+
+import Organization from '@/types/organization';
+
+interface SidebarItemProps {
+  isActive: boolean;
+  isOpen: boolean;
+  onOpen: (id: string) => void;
+  organization: Organization;
+}
+
+export default function SidebarItem({
+  isActive,
+  isOpen,
+  onOpen,
+  organization,
+}: SidebarItemProps ) {
+  return (
+    <div>SidebarItem</div>
+  )
+}
+```
+
+Back in `Sidebar.tsx`, we have an error:
+
+```sh
+Type 'OrganizationResource' is not assignable to type 'Organization'.
+  Types of property 'slug' are incompatible.
+    Type 'string | null' is not assignable to type 'string'.
+      Type 'null' is not assignable to type 'string'.ts(2322)
+SidebarItem.tsx(9, 3): The expected type comes from property 'organization' which is declared here on type 'IntrinsicAttributes & SidebarItemProps'
+```
+
+in this code:
+
+```tsx
+          <SidebarItem
+            key={organization.id}
+            isActive={activeOrg?.id === organization.id}
+            isOpen={open[organization.id]}
+            onOpen={onOpen}
+            organization={organization}
+          >
+```
+
+We can fix that with 
+
+```tsx
+import Organization from '@/types/organization';
+// ...
+          <SidebarItem
+            key={organization.id}
+            isActive={activeOrg?.id === organization.id}
+            isOpen={open[organization.id]}
+            onOpen={onOpen}
+            organization={organization as Organization}
+          >
+```
+
+##### Output of SidebarItem
+
+- [Accordion | Reference](https://ui.shadcn.com/docs/components/accordion)
+
+Now render an `AccordionItem` as output of SidebarItem. After that an `AccordionTrigger`, which contains the `onClick` property set to `onOpen` function. Within that is a nested `div` containing an `Image` from next and a `span` that contains the organization name. Import `cn` to combine tailwind utility classes for the trigger.
+
+```tsx
+import React from 'react';
+import Image from 'next/image';
+
+import { cn } from '@/lib/utils';
+import Organization from '@/types/organization';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+
+interface SidebarItemProps {
+  isActive: boolean;
+  isOpen: boolean;
+  onOpen: (id: string) => void;
+  organization: Organization;
+}
+
+export default function SidebarItem({
+  isActive,
+  isOpen,
+  onOpen,
+  organization,
+}: SidebarItemProps ) {
+  return (
+    <AccordionItem
+      value={organization.id}
+      className='border-none'
+    >
+      <AccordionTrigger
+        onClick={() => onOpen(organization.id)}
+        className={cn()}
+      >
+        <div className=''>
+          <div className=''>
+            <Image 
+            />
+          </div>
+          <span className=''>
+            {organization.name}
+          </span>
+        </div>
+      </AccordionTrigger>
+    </AccordionItem>
+  )
+}
+```
