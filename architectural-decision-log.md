@@ -2972,7 +2972,7 @@ module.exports = nextConfig
 
 ###### AccordionContent
 
-feat(routes): add routes array and navigateTo function
+Add routes array and navigateTo function
 
 Create an array of routes with display name, href, and icon for each route. Create a navigateTo function that takes an href as a parameter and uses the router hook to perform client-side navigation. Use the useRouter and usePathname hooks to get the router instance and the current URL pathname.
 
@@ -3034,4 +3034,55 @@ export default function SidebarItem({
   function navigateTo(href: string): void {
     router.push(href);
   }
+```
+
+Finally after `AccordionTrigger`, add `AccordionContent` which maps each route to a `Button` that has an `onClick` function of `navigateTo` along with the `icon` and `displayName` interpolated inside.
+
+```tsx
+import { Button } from '@/components/ui/button';
+
+export default function SidebarItem({
+  // ...
+  }: SidebarItemProps) {
+    // ...
+  return (
+    <AccordionItem
+      value={organization.id}
+      className='border-none'
+    >
+      <AccordionTrigger
+        onClick={() => onOpen(organization.id)}
+        className={cn()}
+      >
+        <div className='flex items-center gap-x-2'>
+          <div className='relative w-7 h-7'>
+            <Image
+              fill
+              src={organization.imageUrl}
+              alt="organization image"
+              className='rounded-sm object-cover'
+            />
+          </div>
+          <span className='font-medium text-sm'>
+            {organization.name}
+          </span>
+        </div>
+      </AccordionTrigger>
+      <AccordionContent className=''>
+        {routes.map((route) => (
+          <Button
+            key={route.href}
+            size='sm'
+            onClick={() => navigateTo(route.href)}
+            className={cn()}
+            variant='ghost'
+          >
+            {route.icon}
+            {route.displayName}
+          </Button>
+        ))}
+      </AccordionContent>
+    </AccordionItem>
+  )
+}
 ```
