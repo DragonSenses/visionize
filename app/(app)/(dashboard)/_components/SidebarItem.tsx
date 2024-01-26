@@ -96,7 +96,10 @@ export default function SidebarItem({
             key={route.href}
             size='sm'
             onClick={() => navigateTo(route.href)}
-            className={cn()}
+            className={cn(
+              'justify-start w-full font-normal pl-10 mb-1',
+              pathname === route.href && 'bg-sky-500 text-sky-700'
+            )}
             variant='ghost'
           >
             {route.icon}
