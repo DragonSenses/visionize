@@ -3377,6 +3377,28 @@ feat: implement onOpen and onClose actions for mobile sidebar
 - Set isOpen to true when onOpen is called
 - Set isOpen to false when onClose is called
 
+Then export the custom hook `useMobileSidebar` and also add [currying parenthesis](#zustand-with-typescript) to `create` by rewriting `create(...)` to `create<T>()(...)`.
+
+```ts
+import { create } from 'zustand';
+
+type MobileSidebarStore = {
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+};
+
+export const useMobileSidebar = create<MobileSidebarStore>()((set) => ({
+  isOpen: false,
+  onOpen: () => set({ isOpen: true }),
+  onClose: () => set({ isOpen: false }),
+}));
+```
+
+feat: export useMobileSidebar hook
+
+Export the useMobileSidebar hook from the module, so that it can be imported and used by other components. This hook provides the state and actions for the mobile sidebar component, using Zustand and TypeScript.
+
 ##### zustand with TypeScript
 
 There is one final change we have to make in our code, we have to add the currying `()(...)` as a workaround for [microsoft/TypeScript#10571](https://github.com/microsoft/TypeScript/issues/10571).
@@ -3455,3 +3477,85 @@ export default function MobileSidebar() {
   )
 }
 ```
+
+Inside `Navbar`, import and add the `MobileSidebar` right under the `<nav>`.
+
+`app\(app)\(dashboard)\_components\Navbar.tsx`
+```tsx
+import MobileSidebar from './MobileSidebar';
+
+export const Navbar = () => {
+  return (
+    <nav className='flex items-center fixed px-4 z-10 top-0 w-full h-14 border-b shadow-sm bg-white'>
+      <MobileSidebar />
+```
+
+Back to `MobileSidebar.tsx`, mark it as `"use client"` at the top. Then add the imports we need:
+
+- import { usePathname } from 'next/navigation';
+- import React, { useEffect, useState } from 'react';
+- import { useMobileSidebar } from '@/hooks/useMobileSidebar';
+
+Then get the `pathname` from the `usePathname` hook. Afterwards, get the the state values from the `useMobileSidebar` hook.
+
+```tsx
+"use client";
+
+import { usePathname } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+
+import { useMobileSidebar } from '@/hooks/useMobileSidebar';
+
+export default function MobileSidebar() {
+  // Get the current path of the page
+  const pathname = usePathname();
+
+  /* These values are used to control the visibility and behavior 
+  of the mobile sidebar component */
+  const isOpen = useMobileSidebar((state) => state.isOpen);
+  const onOpen = useMobileSidebar((state) => state.onOpen);
+  const onClose = useMobileSidebar((state) => state.onClose);
+
+  return (
+    <div>MobileSidebar</div>
+  )
+}
+```
+
+After adding the imports, state and actions to `MobileSidebar` we need to make sure that it runs only after component has mounted. In other words, we want to guarantee that the component runs on the client-side.
+
+Before I explain it myself, there is a wonderful blog post named [The Perils of Hydration](https://www.joshwcomeau.com/react/the-perils-of-rehydration/) by Josh Comeau that discusses this in a user-friendly, accessible way that goes into deeper details of React, server-side rendering of Next.js, React app hydration and the DOM.
+
+##### Mounting trick to fix Hydration errors in Next.js
+
+What are hydration errors?
+
+Hydration errors are errors that occur when React tries to attach event handlers and manage the state of a component that doesn't match the initial rendering. This mismatch can lead to unexpected behavior, such as missing or doubled event listeners, unhandled state changes, or even crashing the application. Hydration errors can happen when the server-rendered HTML and the client-rendered HTML are different, or when the client-side code relies on browser-only APIs or checks.
+
+The mounting trick creates a `isMounted` state variable. It then runs `setIsMounted` to `true` inside a `useEffect`. Finally, it checks if the component has been mounted. If it hasn't, it returns `null`. Otherwise, it continues to render the component. This can help prevent hydration errors in Next.js.
+
+```tsx
+  // Declare isMounted state variable and initialize it to false
+  const [isMounted, setIsMounted] = useState(false);
+
+  // useEffect hook to set isMounted variable to true
+  // Delays the execution of client-side-only code until after hydration
+  useEffect(() => {
+    setIsMounted(true);
+  }, []); // Only run once after the initial render
+
+  // Prevent rendering of the component before the effect has run
+  // To protect from hydration errors or unwanted flashes of content
+  if (!isMounted) {
+    return null;
+  }
+```
+
+This code does the following:
+
+- It uses the `useState` hook to create a state variable called `isMounted` and a function to update it called `setIsMounted`. The initial value of `isMounted` is `false`, which means the component is not mounted yet.
+- It uses the `useEffect` hook to run a function that sets `isMounted` to `true` after the component is mounted. The empty dependency array `[]` ensures that this function only runs once, after the initial render.
+- It uses a conditional statement to return `null` if `isMounted` is `false`. This prevents the component from rendering anything before the `useEffect` function has run. This is done to avoid hydration errors or unwanted flashes of content.
+
+To prevent hydration errors, the code above delays the execution of any client-side-only code until after the hydration process is completed. By returning `null` until `isMounted` is `true`, the code ensures that the server-rendered HTML and the client-rendered HTML are identical, and that no browser-only APIs or checks are used before the component is mounted. This way, the hydration process can succeed without any errors or flashes of content.
+
