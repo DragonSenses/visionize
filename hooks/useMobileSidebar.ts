@@ -5,3 +5,9 @@ type MobileSidebarStore = {
   onOpen: () => void;
   onClose: () => void;
 };
+
+const useMobileSidebar = create<MobileSidebarStore>((set) => ({
+  isOpen: false,
+  onOpen: () => {},
+  onClose: () => {},
+}));
