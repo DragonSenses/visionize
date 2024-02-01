@@ -3268,6 +3268,47 @@ increasePopulation()
 
 This will update the state and cause the components that depend on the `bears` property to re-render.
 
+###### Note: arrow function expression and function body
+
+- [MDN - Arrow Functions and function body](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions#function_body)
+
+Let's take a closer look at the callback function inside `create()`.
+
+```js
+(set) => ({
+  object: 1
+})
+```
+
+is the same as
+
+```js
+(set) => {
+  return {
+    object: 1
+  }
+}
+```
+
+Arrow functions can have either an *expression* body or the usual *block body*.
+
+In an expression body, only a single expression is specified, which becomes the implicit return value. In a block body, you must use an explicit `return` statement.
+
+Returning object literals using the expression body syntax `(params) => { object: literal }` does not work as expected.
+
+```js
+// Calling func() returns undefined!
+const func = () => { object: 1 }
+```
+
+This is because JavaScript only sees the arrow function as having an expression body if the token following the arrow is not a left brace, so the code inside braces ({}) is parsed as a sequence of statements, where `object` is a label, not a key in an object literal.
+
+To fix this, wrap the object literal in parentheses:
+
+```js
+const func = () => ({ object: 1 });
+```
+
 ##### zustand store
 
 What's a "store" exactly? Are all hooks made in zustand a store?
@@ -3336,6 +3377,22 @@ feat: implement onOpen and onClose actions for mobile sidebar
 - Set isOpen to true when onOpen is called
 - Set isOpen to false when onClose is called
 
+##### zustand with TypeScript
+
+There is one final change we have to make in our code, we have to add the currying `()(...)` as a workaround for [microsoft/TypeScript#10571](https://github.com/microsoft/TypeScript/issues/10571).
+
+Going to provide two sources that states we need the currying parenthesis.
+
+1. [zustand TypeScript Guide](https://docs.pmnd.rs/zustand/guides/typescript)
+
+  The difference when using TypeScript is that instead of writing `create(...)`, you have to write `create<T>()(...)` (notice the extra parentheses `()` too along with the type parameter) where `T` is the type of the state to annotate it.
+
+2. [zustand Github TypeScript Usage](https://github.com/pmndrs/zustand?tab=readme-ov-file#typescript-usage)
+
+  Basic typescript usage doesn't require anything special except for writing `create<State>()(...)` instead of `create(...)`...
+
+This is because the TypeScript version of `create` is a curried function that takes a type parameter and a state creator function as separate arguments. Without the parentheses, TypeScript will not be able to infer the type of the state correctly.
+
 ##### Why use a state management library like zustand?
 
 I'll address some common questions that even I had when learning React and the intricacies of state.
@@ -3365,7 +3422,7 @@ Cons to adding a third-party state management library is:
 - Additional depedendency to be maintained
 - More boilerplate code to repo
 
-We should use itt only if rendering components with React's built-in statemanagement causes our UI to be heavy, slow or sluggish.
+We should use it only if rendering components with React's built-in state management causes our UI to be heavy, slow or sluggish.
 
 4. What state management library should we use?
 
