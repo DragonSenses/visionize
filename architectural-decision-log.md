@@ -3268,6 +3268,18 @@ increasePopulation()
 
 This will update the state and cause the components that depend on the `bears` property to re-render.
 
+##### zustand store
+
+What's a "store" exactly? Are all hooks made in zustand a store?
+
+In zustand, a store is a container for a specific piece of state and any functions that modify that state.
+
+You can create a store with the `create` function, which returns a custom hook that you can use to access and update the state in your React components. So, yes, all hooks made in zustand are stores, and you can have multiple stores for different parts of your state.
+
+There isn't a standard naming convention for zustand hooks, but the general rule is to use the "hook" prefix such as `useStore`, `useTodo` or `useCounter`. This is because zustand stores are custom hooks that can be used in React components.
+
+In our case, we can name our hook either `useMobileSidebarStore` or just `useMobileSidebar`. I will go with the latter since it is shorter and more consistent with the hook prefix convention.
+
 #### Use zustand to handle the state for our mobile sidebar
 
 Now we can create a hook to help manage our state for the mobile sidebar.
@@ -3276,6 +3288,50 @@ Create a `hooks` folder at the base of the project, with a file named `useMobile
 
 - `import { create } from 'zustand'`
 - Create type `MobileSidebar` which has the following properties: `{ isOpen, onOpen, onClose }`
-- Use the `create` function to create the custom hook
+- Use the `create` function to create the custom hook `useMobileSidebar` with *one* property `isOpen` and *two* actions `onOpen` and `onClose`
 
 `hooks\useMobileSidebar.ts`
+
+```ts
+import { create } from 'zustand';
+
+type MobileSidebarStore = {
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+};
+
+const useMobileSidebar = create<MobileSidebarStore>((set) => ({
+  isOpen: false,
+  onOpen: () => {},
+  onClose: () => {},
+}));
+```
+
+Let's assign the functions to the actions. We want to change the property of `isOpen` in the `useMobileSidebar`. 
+
+To update and change the state we must use the `set` function.
+- `onOpen` will use `set` to change the state of `isOpen` to `true`
+- `onClose` will use `set` to change the state of `isOpen` to `false`
+
+```ts
+import { create } from 'zustand';
+
+type MobileSidebarStore = {
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+};
+
+const useMobileSidebar = create<MobileSidebarStore>((set) => ({
+  isOpen: false,
+  onOpen: () => set({ isOpen: true }),
+  onClose: () => set({ isOpen: false }),
+}));
+```
+
+feat: implement onOpen and onClose actions for mobile sidebar
+
+- Use the set function from zustand to update the isOpen state
+- Set isOpen to true when onOpen is called
+- Set isOpen to false when onClose is called
