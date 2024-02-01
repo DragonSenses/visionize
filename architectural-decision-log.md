@@ -61,7 +61,7 @@ Programming Language
 
 Browsers
   - Google Chrome
-  - Microsoftt Edge
+  - Microsoft Edge
 
 Code Editor
 - VSCode
@@ -3146,14 +3146,89 @@ The architectural decision we'll go with for the mobile sidebar is to use state 
 
 Let's install what we need:
 
-- [zustand | Reference](https://docs.pmnd.rs/zustand/getting-started/introduction)
-
-```sh
-npm install zustand
-```
-
 - [Sheet | shadcn/ui Reference](https://ui.shadcn.com/docs/components/sheet)
 
 ```sh
 npx shadcn-ui@latest add sheet
 ```
+
+feat: add shadcn/ui Sheet component
+
+- Install shadcn/ui Sheet component from [shadcn-ui/ui](https://github.com/shadcn-ui/ui) repository
+- Copy and paste the code from [Sheet - shadcn/ui](https://ui.shadcn.com/docs/components/sheet) documentation
+- Modify the code to fit the project requirements
+- Import and use the Sheet component in `components\ui\sheet.tsx`
+
+Next we want to use `zustand`, a state management solution.
+
+- [zustand | Reference](https://docs.pmnd.rs/zustand/getting-started/introduction), a state management package
+
+```sh
+npm install zustand
+```
+
+#### zustand state management
+
+First let's walktrhough the [introduction of the zustand docs](https://docs.pmnd.rs/zustand/getting-started/introduction).
+
+1. Installation, we've already installed zustand with npm
+
+```sh
+npm install zustand
+```
+
+2. First create a store
+
+Your store is a hook! You can put anything in it: primitives, objects, functions. The `set` function merges state.
+
+```js
+import { create } from 'zustand'
+
+const useStore = create((set) => ({
+  bears: 0,
+  increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
+  removeAllBears: () => set({ bears: 0 }),
+}))
+```
+
+3. Then bind your components, and that's it!
+
+You can use the hook anywhere, without the need of providers. Select your state and the consuming component will re-render when that state changes.
+
+```js
+function BearCounter() {
+  const bears = useStore((state) => state.bears)
+  return <h1>{bears} around here...</h1>
+}
+
+function Controls() {
+  const increasePopulation = useStore((state) => state.increasePopulation)
+  return <button onClick={increasePopulation}>one up</button>
+}
+```
+
+Ok let's explain step 2.
+
+zustand library is a state management solution for React. Zustand allows you to create a custom hook that can store and update your application's state.
+
+```js
+import { create } from 'zustand'
+
+const useStore = create((set) => ({
+  bears: 0,
+  increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
+  removeAllBears: () => set({ bears: 0 }),
+}))
+```
+
+#### Use zustand to handle the state for our mobile sidebar
+
+Now we can create a hook to help manage our state for the mobile sidebar.
+
+Create a `hooks` folder at the base of the project, with a file named `useMobileSidebar.ts`.
+
+- `import { create } from 'zustand'`
+- Create type `MobileSidebar` which has the following properties: `{ isOpen, onOpen, onClose }`
+- Use the `create` function to create the 
+
+`hooks\useMobileSidebar.ts`
