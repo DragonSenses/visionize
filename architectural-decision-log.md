@@ -3335,3 +3335,57 @@ feat: implement onOpen and onClose actions for mobile sidebar
 - Use the set function from zustand to update the isOpen state
 - Set isOpen to true when onOpen is called
 - Set isOpen to false when onClose is called
+
+##### Why use a state management library like zustand?
+
+I'll address some common questions that even I had when learning React and the intricacies of state.
+
+1. What problem do state management libraries try to solve? Doesn't React have built-in state management solutions like [React useContext](https://react.dev/reference/react/useContext)?
+
+- `useContext` is a React Hook that lets you read and subscribe to [context](https://react.dev/learn/passing-data-deeply-with-context) from your component.
+
+**Answer: it's about preventing React from unnecessarily re-rendering our components.** 
+
+We commonly build views where a certain data is accessed in multiple components. Data accessed in multiple components needs to be handled in a higher level common component. Handling the data accessed in multiple components in a common is called [lifting the state up](https://react.dev/learn/sharing-state-between-components). A side-effect of lifting the state up is that it causes unnecessary rendering of some components.
+
+A state management library allows us to have a global state while re-rendering only those components that use the changing parts of the global state. With a state management library, our lifted-up sttate doesn't cause re-render of those children components that don't use the changing parts of the state.
+
+2. How about React context API?
+
+React Context API only enables us to avoid prop-drilling. It doesn't prevent the re-renders. On any changed to the lifted-up state, every component and its children that use the Context containing the state re-render. Context API does not provide a way to re-render only for a subset of the state changes.
+
+3. So shouldn't we always use a state management library? 
+
+No. There may be situations where we may not need a state management library even when we may have a global state.
+
+We don't need to ooptimize state management if our global state changes in-frequently or if it causes only a few components to re-render.
+
+Cons to adding a third-party state management library is:
+- Additional learning
+- Additional depedendency to be maintained
+- More boilerplate code to repo
+
+We should use itt only if rendering components with React's built-in statemanagement causes our UI to be heavy, slow or sluggish.
+
+4. What state management library should we use?
+
+It depends on the kind of state we seek to manage. There's two kinds of these.
+
+ - I. Manage state based on the data on the sever?
+ 
+ e.g., display products fetched from the server & allow update, delete for these product records stored on the server
+
+ Use server state management libraries like react-query, redux-query, swx
+
+- II. Manage state based on the client-side activity and no server-side syncing?
+
+  e.g., browser-side filtering, slicing, zoom-in / zoom-out of the data on an analytics dashboard
+
+  Use state management libraries like Zustand, Redux toolkit
+
+Here is a an [npm package download trends for React state managment in the last 3 years](https://npm-compare.com/@reduxjs/toolkit,zustand,recoil,jotai,valtio/#timeRange=THREE_YEARS). As of Jan. 2024, @reduxjs/toolkit has had weekly downloads of 3,126,930 over zustand's 2,913,681 downloads. But @reduxjs/toolkit has 10,219 Github stars and zustand has 39,641 Github stars.
+
+Here is a table that describes some of the features of some trending state management packages for React:
+
+<table style="width:max-content;min-width:100%;table-layout:auto"><colgroup><col style="width:100px"><col style="width:300px"><col style="width:300px"><col style="width:300px"><col style="width:300px"><col style="width:300px"></colgroup><thead class="ant-table-thead"><tr><th class="ant-table-cell">Features</th><th class="ant-table-cell">@reduxjs/toolkit</th><th class="ant-table-cell">zustand</th><th class="ant-table-cell">recoil</th><th class="ant-table-cell">jotai</th><th class="ant-table-cell">valtio</th></tr></thead><tbody class="ant-table-tbody"><tr aria-hidden="true" class="ant-table-measure-row" style="height:0;font-size:0"><td style="padding:0;border:0;height:0"><div style="height:0;overflow:hidden">&nbsp;</div></td><td style="padding:0;border:0;height:0"><div style="height:0;overflow:hidden">&nbsp;</div></td><td style="padding:0;border:0;height:0"><div style="height:0;overflow:hidden">&nbsp;</div></td><td style="padding:0;border:0;height:0"><div style="height:0;overflow:hidden">&nbsp;</div></td><td style="padding:0;border:0;height:0"><div style="height:0;overflow:hidden">&nbsp;</div></td><td style="padding:0;border:0;height:0"><div style="height:0;overflow:hidden">&nbsp;</div></td></tr><tr class="ant-table-row ant-table-row-level-0"><td class="ant-table-cell"><b>State Management</b></td><td class="ant-table-cell"><div class="package-desc-cell">Redux Toolkit is a comprehensive state management library for React applications that simplifies Redux setup and reduces boilerplate code.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Zustand is a minimalistic state management library for React that focuses on simplicity and performance. It uses hooks to manage state.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Recoil is a state management library for React that provides a set of hooks and utilities for managing complex and derived state.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Jotai is a small, fast, and scalable state management library for React that uses atoms and providers to manage state.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Valtio is a minimalistic reactivity library for managing local component state and derived state in React applications.</div></td></tr><tr class="ant-table-row ant-table-row-level-0"><td class="ant-table-cell"><b>Developer Experience</b></td><td class="ant-table-cell"><div class="package-desc-cell">Redux Toolkit offers a well-defined structure and tools for managing state, making it developer-friendly.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Zustand is known for its simplicity and minimal API, leading to a straightforward developer experience.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Recoil provides a set of hooks and a dev tool for inspecting and debugging the state, improving the developer experience.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Jotai aims for a minimal API with good performance and ease of use, enhancing the developer experience.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Valtio offers a straightforward API for managing state in React components, focusing on ease of use.</div></td></tr><tr class="ant-table-row ant-table-row-level-0"><td class="ant-table-cell"><b>Performance</b></td><td class="ant-table-cell"><div class="package-desc-cell">Redux Toolkit can have good performance when used with best practices and memoization techniques.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Zustand is designed for high performance due to its minimal reactivity system and hook-based approach.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Recoil is optimized for performance, with features like selective re-renders and a store that avoids unnecessary updates.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Jotai aims for excellent performance by minimizing reactivity overhead and focusing on direct updates.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Valtio provides a performant reactivity model that updates only what's necessary in React components.</div></td></tr><tr class="ant-table-row ant-table-row-level-0"><td class="ant-table-cell"><b>Community</b></td><td class="ant-table-cell"><div class="package-desc-cell">Redux Toolkit benefits from the large Redux ecosystem and community, making it widely adopted.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Zustand has a growing community and is favored by developers looking for a lightweight state management solution.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Recoil is gaining popularity, with a growing community and adoption within the React community.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Jotai is relatively new but is gaining attention for its simplicity and performance.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Valtio is a newer library with a small but growing user base, especially among developers looking for minimalistic solutions.</div></td></tr><tr class="ant-table-row ant-table-row-level-0"><td class="ant-table-cell"><b>Ease of Learning</b></td><td class="ant-table-cell"><div class="package-desc-cell">Redux Toolkit can have a steeper learning curve for newcomers due to Redux concepts and setup.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Zustand is known for its ease of learning and minimal API surface, making it accessible to beginners.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Recoil provides clear documentation and a relatively easy learning curve for those familiar with React hooks.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Jotai is designed to be straightforward and easy to learn, especially for developers already comfortable with React.</div></td><td class="ant-table-cell"><div class="package-desc-cell">Valtio's simplicity and minimal API make it a good choice for beginners looking for an uncomplicated state management solution.</div></td></tr></tbody></table>
+
