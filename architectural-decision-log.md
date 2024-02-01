@@ -3565,7 +3565,7 @@ Add a mounting trick to the MobileSidebar component to prevent hydration errors 
 
 #### Mobile Sidebar functionality and output
 
-feat: add UI elements and logic to MobileSidebar component
+feat: add UI elements and logic to MobileSidebar
 
 Add UI elements such as Button, Menu, Sheet, and SheetContent to the MobileSidebar component. Use the useMobileSidebar hook to access and update the state of the sidebar. Add logic to close the sidebar when the pathname changes or before the component is mounted. This improves the user experience and performance of the mobile sidebar component.
 
