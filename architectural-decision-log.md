@@ -3159,19 +3159,15 @@ feat: add shadcn/ui Sheet component
 - Modify the code to fit the project requirements
 - Import and use the Sheet component in `components\ui\sheet.tsx`
 
+#### zustand state management
+
 Next we want to use `zustand`, a state management solution.
 
 - [zustand | Reference](https://docs.pmnd.rs/zustand/getting-started/introduction), a state management package
 
-```sh
-npm install zustand
-```
-
-#### zustand state management
-
 First let's walktrhough the [introduction of the zustand docs](https://docs.pmnd.rs/zustand/getting-started/introduction).
 
-1. Installation, we've already installed zustand with npm
+1. Installation
 
 ```sh
 npm install zustand
@@ -3221,6 +3217,57 @@ const useStore = create((set) => ({
 }))
 ```
 
+```js
+import { create } from 'zustand'
+```
+
+The first line of the code imports the `create` function from zustand, which is used to create a store hook. The `create` function takes a callback function as an argument, which receives a `set` function as a parameter. The `set` function is used to update the state immutably.
+
+```js
+const useStore = create((set) => ({
+  // ...
+}))
+```
+
+The second line of the code declares a constant called `useStore`, which is the name of the custom hook. The value of `useStore` is the result of calling the `create` function with a callback function.
+
+```js
+const useStore = create((set) => ({
+  bears: 0,
+  increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
+  removeAllBears: () => set({ bears: 0 }),
+}))
+```
+
+- The callback function returns an object that represents the initial state and some actions that can modify the state. 
+- The state has *one* property called `bears`, which is a number that indicates how many bears are in the store. 
+- The actions are *two* functions: `increasePopulation`, `removeAllBears`. 
+- The `increasePopulation` function increments the `bears` property by one using the `set` function. 
+- The `removeAllBears` function sets the `bears` property to zero using the `set` function. 
+
+Lastly, with step 3 we "bind our components", which means to use the custom hook that you create with the `create` function to access and update state in your React components.
+
+- [React Hooks | Reference](https://react.dev/reference/react/hooks), hooks let you use different React features from your components. TThey often start with the word `use`.
+
+You can use the zustand hook anywhere, without the need of providers. You can also pass a selector function to the hook to get a slice of the state that you are interested in. 
+
+To use the store hook in a React component, you can call it with a selector function as an argument. The selector function takes the state object as a parameter and returns a slice of the state that you want to access. For example, if you want to get the number of bears, you can write:
+
+```js
+const bears = useStore((state) => state.bears)
+```
+
+This will make the component re-render whenever the `bears` property changes. 
+
+You can also access the actions from the state object and use them to update the state. For example, if you want to increase the population of bears, you can write:
+
+```js
+const increasePopulation = useStore((state) => state.increasePopulation)
+increasePopulation()
+```
+
+This will update the state and cause the components that depend on the `bears` property to re-render.
+
 #### Use zustand to handle the state for our mobile sidebar
 
 Now we can create a hook to help manage our state for the mobile sidebar.
@@ -3229,6 +3276,6 @@ Create a `hooks` folder at the base of the project, with a file named `useMobile
 
 - `import { create } from 'zustand'`
 - Create type `MobileSidebar` which has the following properties: `{ isOpen, onOpen, onClose }`
-- Use the `create` function to create the 
+- Use the `create` function to create the custom hook
 
 `hooks\useMobileSidebar.ts`
