@@ -6,7 +6,7 @@ type MobileSidebarStore = {
   onClose: () => void;
 };
 
-const useMobileSidebar = create<MobileSidebarStore>((set) => ({
+const useMobileSidebar = create<MobileSidebarStore>()((set) => ({
   isOpen: false,
   onOpen: () => set({ isOpen: true }),
   onClose: () => set({ isOpen: false }),
