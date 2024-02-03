@@ -8,8 +8,7 @@ import { useOrganization, useOrganizationList } from '@clerk/nextjs';
 
 import { Accordion } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
+import SkeletonSidebar from '@/components/SkeletonSidebar';
 import SidebarItem from './SidebarItem';
 import Organization from '@/types/Organization';
 
@@ -80,13 +79,11 @@ export default function Sidebar({
   };
 
   // Check if the organization data and the user memberships data are loaded
-  // If any of them is not loaded or is loading, return a div element with a Skeleton component
-  // The Skeleton component is a placeholder that shows the loading progress
+  // If any of them is not loaded or is loading, return a SkeletonSidebar
+  // The SkeletonSidebar is a placeholder that shows the loading progress
   if (!isLoadedOrg || !isLoadedOrgList || userMemberships.isLoading) {
     return (
-      <div>
-        <Skeleton />
-      </div>
+      <SkeletonSidebar />
     )
   }
 
