@@ -3696,9 +3696,9 @@ Goal: create a `Skeleton` for the `Sidebar`. Let's look at the place where we re
 
 Instead we should return a component that follows the same structure as the output of the `Sidebar`.
 
-Create a component `SkeletonSidebar` inside the global `components` folder. We want it to be server-side rendered and in global `components` so it can be loaded in first as a way to improve user experience by reducing the perceived loading time.
+Create a component `SkeletonSidebar` inside the global `components/ui` folder. We want it to be server-side rendered and in global `components/ui` so it can be loaded in first as a way to improve user experience by reducing the perceived loading time.
 
-`components\SkeletonSidebar.tsx`
+`components\ui\SkeletonSidebar.tsx`
 ```tsx
 import React from 'react';
 
@@ -3774,4 +3774,80 @@ We want to emulate the output of the `Sidebar` component:
     </>
   );
 };
+```
+
+Let's first create a `Skeleton` for the `span`, `Button` and `Link`.
+
+```tsx
+import React from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
+
+export default function SkeletonSidebar() {
+  return (
+    <div className='flex items-center justify-between mb-2'>
+      {/* Skeleton for the Workspace text and Button */}
+      <Skeleton className='h-10 w-[60%]' />
+    </div>
+  )
+}
+```
+
+Next we want a way to represent the `SidebarItem`, to do that we need to create `SkeletonSidebarItem` component.
+
+- Create the two styled `divs`that contains the `SidebarItem`
+- Create the `Skeleton` for the `Image` component
+- Create the `Skeleton` for the `Accordion` component
+
+Enhance SkeletonSidebarItem component
+
+This commit improves the SkeletonSidebarItem component, which renders
+a placeholder for the SidebarItem component while it is loading.
+It uses the Skeleton component from shadcn/ui to create the
+image and accordion shapes.
+
+`components\ui\SkeletonSidebarItem.tsx`
+```tsx
+import React from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
+
+export default function SkeletonSidebarItem() {
+  return (
+    <div className="flex items-center gap-x-2">
+      {/* Skeleton for the Image component of SidebarItem */}
+      <div className="w-10 h-10 relative shrink-0">
+        <Skeleton className='h-full w-full absolute'/>
+      </div>
+      {/* Skeleton for the Accordion component of SidebarItem */}
+      <Skeleton className='h-10 w-full'/>
+    </div>
+  );
+};
+```
+
+Now we can go back to the `SkeletonSidebar` and add a `div` withh `SkeletonSidebarItem` to represent the organizations.
+
+```tsx
+import React from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
+import SkeletonSidebarItem from '@/components/ui/SkeletonSidebarItem';
+
+/**
+ * A skeleton component is a UI element that shows a placeholder for 
+ * the expected shape of a Sidebar component while it is loading.
+ * @returns A placeholder for the expected shape of a Sidebar
+ */
+export default function SkeletonSidebar() {
+  return (
+    <div className='flex items-center justify-between mb-2'>
+      {/* Skeleton for the Workspace text and Button */}
+      <Skeleton className='h-10 w-[60%]' />
+      {/* Skeleton for the Sidebar item list */}
+      <div className='space-y-2'>
+        <SkeletonSidebarItem />
+        <SkeletonSidebarItem />
+        <SkeletonSidebarItem />
+      </div>
+    </div>
+  )
+}
 ```
