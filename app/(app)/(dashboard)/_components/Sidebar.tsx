@@ -94,12 +94,12 @@ export default function Sidebar({
   return (
     <>
       <div className='flex items-center mb-1 font-medium text-xs'>
-        <span className='pl-4'>
+        <span className='text-base pl-4'>
           Workspaces
         </span>
         <Button
           asChild
-          className='ml-auto'
+          className='ml-1'
           size='icon'
           type='button'
           variant='ghost'
