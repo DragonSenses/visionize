@@ -3851,3 +3851,20 @@ export default function SkeletonSidebar() {
   )
 }
 ```
+
+### Settings Page
+
+- [Clerk Organization Profile component | Reference](https://clerk.com/docs/references/javascript/clerk/organization-profile)
+
+Next we need to create the `SettingsPage` for the organization.
+
+`app\(app)\(dashboard)\org\settings\page.tsx`
+```tsx
+import React from 'react';
+
+export default function SettingsPage() {
+  return (
+    <div>page</div>
+  )
+}
+```
