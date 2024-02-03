@@ -8,7 +8,7 @@ import { useOrganization, useOrganizationList } from '@clerk/nextjs';
 
 import { Accordion } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import SkeletonSidebar from '@/components/SkeletonSidebar';
+import SkeletonSidebar from '@/components/ui/SkeletonSidebar';
 import SidebarItem from './SidebarItem';
 import Organization from '@/types/Organization';
 
