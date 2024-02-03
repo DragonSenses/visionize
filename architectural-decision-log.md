@@ -3877,6 +3877,25 @@ import { OrganizationProfile } from '@clerk/nextjs';
 export default function SettingsPage() {
   return (
     <div className='w-full'>
+     <OrganizationProfile />
+    </div>
+  )
+}
+```
+
+Now add the `appearance` and `card` prop to `OrganizationProfile` to enhance the appearance of the component.
+
+style: update OrganizationProfile appearance
+
+Use the appearance prop of the OrganizationProfile component from @clerk/nextjs to customize the rootBox and card elements. Remove the boxShadow and add a border to the card element. Set the width of both elements to 100% to fit the container.
+
+```tsx
+import React from 'react';
+import { OrganizationProfile } from '@clerk/nextjs';
+
+export default function SettingsPage() {
+  return (
+    <div className='w-full'>
      <OrganizationProfile
       appearance={{
         elements: {
@@ -3884,6 +3903,11 @@ export default function SettingsPage() {
             boxShadow: "none",
             width: "100%"
           },
+          card: {
+            border: "1px solid #e5e5e5",
+            boxShadow: "none",
+            width: "100%"
+          }
         }
       }}
       />
