@@ -2942,6 +2942,27 @@ export default function SidebarItem({
 }
 ```
 
+We also need to improve `Image` performance by addding `sizes` prop which gives info on how wide the image will be at different breakpoints.
+
+- [NextJS Image and sizes](https://nextjs.org/docs/app/api-reference/components/image#sizes)
+
+feat: add sizes prop to Image in SidebarItem
+
+This commit adds the sizes prop to the Image component from nextjs
+in the SidebarItem component. This prop allows the image to adjust
+its size according to the viewport width, improving the performance
+and responsiveness of the app.
+
+```tsx
+<Image
+  fill
+  src={organization.imageUrl}
+  alt="organization image"
+  className='rounded-sm object-cover'
+  sizes="(max-width: 768px) 33vw, (max-width: 1200px) 30vw, 25vw"
+/>
+```
+
 ###### Unhandled runtime error - invalid `src` prop for next/image
 
 We get an error because the `src` prop for `Image` is not configured in `next.config.js`, to allow images to be used from that source.
@@ -3650,4 +3671,28 @@ export default function MobileSidebar() {
   )
 }
 ```
+
+### Skeleton for Sidebar
+
+- [Skeleton from shadcn/ui](https://ui.shadcn.com/docs/components/skeleton)
+
+A skeleton component is a UI element that shows a placeholder for the expected shape of a component while it is loading. It is often used to improve the user experience by reducing the perceived loading time and avoiding layout shifts.
+
+Goal: create a `Skeleton` for the `Sidebar`. Let's look at the place where we render the placeholder.
+
+`app\(app)\(dashboard)\_components\Sidebar.tsx`
+```tsx
+  // Check if the organization data and the user memberships data are loaded
+  // If any of them is not loaded or is loading, return a div element with a Skeleton component
+  // The Skeleton component is a placeholder that shows the loading progress
+  if (!isLoadedOrg || !isLoadedOrgList || userMemberships.isLoading) {
+    return (
+      <div>
+        <Skeleton />
+      </div>
+    )
+  }
+```
+
+Instead we should return a component that follows the same structure as the output of the `Sidebar`.
 
