@@ -3868,3 +3868,26 @@ export default function SettingsPage() {
   )
 }
 ```
+
+Then use `OrganizationProfile` component inside the `SettingsPage`
+
+```tsx
+import { OrganizationProfile } from '@clerk/nextjs';
+
+export default function SettingsPage() {
+  return (
+    <div className='w-full'>
+     <OrganizationProfile
+      appearance={{
+        elements: {
+          rootBox: {
+            boxShadow: "none",
+            width: "100%"
+          },
+        }
+      }}
+      />
+    </div>
+  )
+}
+```
