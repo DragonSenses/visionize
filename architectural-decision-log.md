@@ -3696,3 +3696,82 @@ Goal: create a `Skeleton` for the `Sidebar`. Let's look at the place where we re
 
 Instead we should return a component that follows the same structure as the output of the `Sidebar`.
 
+Create a component `SkeletonSidebar` inside the global `components` folder. We want it to be server-side rendered and in global `components` so it can be loaded in first as a way to improve user experience by reducing the perceived loading time.
+
+`components\SkeletonSidebar.tsx`
+```tsx
+import React from 'react';
+
+export default function SkeletonSidebar() {
+  return (
+    <div>SkeletonSidebar</div>
+  )
+}
+```
+
+Now import `SkeletonSidebar` and return that when conditionally rendering the placeholder.
+
+feat: add SkeletonSidebar component to Sidebar
+
+This commit adds the SkeletonSidebar component, which shows a placeholder for the sidebar while the data is loading, improving the user experience and avoiding layout shifts.
+
+```tsx
+import SkeletonSidebar from '@/components/SkeletonSidebar';
+
+export default function Sidebar({
+  storageKey = "sidebarState",
+}: SidebarProps) {
+
+  if (!isLoadedOrg || !isLoadedOrgList || userMemberships.isLoading) {
+    return (
+      <SkeletonSidebar />
+    )
+  }
+
+}
+```
+
+We want to emulate the output of the `Sidebar` component:
+
+`app\(app)\(dashboard)\_components\Sidebar.tsx`
+```tsx
+  // Return the JSX for the sidebar component
+  return (
+    <>
+      <div className='flex items-center mb-1 font-medium text-xs'>
+        <span className='text-base pl-4'>
+          Workspaces
+        </span>
+        <Button
+          asChild
+          className='ml-1'
+          size='icon'
+          type='button'
+          variant='ghost'
+        >
+          <Link href='/org-selection'>
+            <Plus
+              className='h-4 w-4'
+            />
+          </Link>
+        </Button>
+      </div>
+      <Accordion
+        type='multiple'
+        defaultValue={prevAccordionValue}
+        className='space-y-2'
+      >
+        {userMemberships.data.map(({ organization }) => (
+          <SidebarItem
+            key={organization.id}
+            isActive={activeOrg?.id === organization.id}
+            isOpen={open[organization.id]}
+            onOpen={onOpen}
+            organization={organization as Organization}
+          />
+        ))}
+      </Accordion>
+    </>
+  );
+};
+```
