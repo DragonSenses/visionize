@@ -3915,3 +3915,33 @@ export default function SettingsPage() {
   )
 }
 ```
+
+Why remove the box shadow? Well we don't want it to look like a Modal. The `OrganizationProfile` should be on the page.
+
+## Database
+
+Let's setup the database. We are going to use Prisma.
+
+- [Relational databases](https://www.prisma.io/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases-typescript-postgresql)
+
+Let's start by installing:
+
+```sh
+npm install prisma --save-dev
+```
+
+You can now invoke the Prisma CLI by prefixing it with npx:
+```sh
+npx prisma
+```
+vNext, set up your Prisma project by creating your [Prisma schema](https://www.prisma.io/docs/orm/prisma-schema) file template with the following command:
+
+```sh
+npx prisma init
+```
+
+This command does two things:
+
+1. creates a new directory called `prisma` that contains a file called `schema.prisma`, which contains the Prisma schema with your database connection variable and schema models
+
+2. creates the [.env file](https://www.prisma.io/docs/orm/more/development-environment/environment-variables/env-files) in the root directory of the project, which is used for defining environment variables (such as your database connection)
