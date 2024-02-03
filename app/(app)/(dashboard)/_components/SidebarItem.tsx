@@ -83,6 +83,7 @@ export default function SidebarItem({
               src={organization.imageUrl}
               alt="organization image"
               className='rounded-sm object-cover'
+              sizes="(max-width: 768px) 33vw, (max-width: 1200px) 30vw, 25vw"
             />
           </div>
           <span className='font-medium text-sm'>
