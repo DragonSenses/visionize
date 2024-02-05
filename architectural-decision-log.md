@@ -4042,6 +4042,12 @@ Here's a quick overview of the different parts of the code snippet:
 4. Call the `main` function
 5. Close the database connections when the script terminates
 
+Initialize Prisma Client and handle errors
+
+- Import Prisma Client from @prisma/client
+- Create a prisma instance and use it in an async main function
+- Use .then() and .catch() to disconnect from the database and exit the process with an appropriate status code
+
 ### Planetscale
 
 To streamline the process we will use prisma with SQL on planetscale.
@@ -4099,5 +4105,77 @@ Now to prototype the schema we can run the command
 
 ```sh
 npx prisma db push
+```
+
+## Server Actions
+
+[Server Actions & Mutations | Nextjs reference](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations)
+
+- Server Actions are **asynchronous functions** that are executed on the server. They can be used in Server and Client Components to handle form submissions and data mutations in Next.js applications.
+
+### Mutate data in a server component
+
+Instead of creating a POST route and API to create a `Board` in our database, we can use server actions.
+
+Navigate to `[orgId]` page and render a `form` with an `input`.
+
+`app\(app)\(dashboard)\org\[orgId]\page.tsx`
+```tsx
+import React from 'react';
+import { auth } from '@clerk/nextjs';
+
+const OrganizationIdPage = () => {
+  const { userId, orgId } = auth();
+
+  return (
+    <div>
+      <form>
+        <input 
+          id='title'
+          name='title'
+          placeholder='Enter a board title'
+          required
+          className='border-black border p-1'
+        />
+      </form>
+    </div>
+  );
+};
+
+export default OrganizationIdPage
+```
+
+Next we create an `async` function that takes the `title` from the `form` `input` and creates it in our database. Then we assign the function to the `action` property of the `form`.
+
+```tsx
+const OrganizationIdPage = () => {
+  const { userId, orgId } = auth();
+
+  async function create(formData: FormData) {
+    "use server";
+
+    const title = formData.get("title") as string;
+
+    await database.board.create({
+      data: {
+        title,
+      },
+    });
+  }
+
+  return (
+    <div>
+      <form action={create}>
+        <input 
+          id='title'
+          name='title'
+          placeholder='Enter a board title'
+          required
+          className='border-black border p-1'
+        />
+      </form>
+    </div>
+  );
+};
 ```
 
