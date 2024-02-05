@@ -3945,3 +3945,35 @@ This command does two things:
 1. creates a new directory called `prisma` that contains a file called `schema.prisma`, which contains the Prisma schema with your database connection variable and schema models
 
 2. creates the [.env file](https://www.prisma.io/docs/orm/more/development-environment/environment-variables/env-files) in the root directory of the project, which is used for defining environment variables (such as your database connection)
+
+Next we either host our own database locally on our computer or use a database service. Whatever we go with we need two things:
+
+1. database connection string, save it under `DATABASE_URL` inside `.env` file
+2. Configure `schema.prisma`
+
+### Planetscale
+
+To streamline the process we will use prisma with SQL on planetscale.
+
+**Option 2**: postgresql with [neon tech](https://neon.tech/docs/connect/connect-from-any-app)
+
+Go through the [planetscale documentation](https://planetscale.com/docs) to set it up and get your DB connection string and paste into `.env` file.
+
+Now in our `.env` file we have a variable `DATABASE_URL`, where it will store our connection string.
+
+Next configure `schema.prisma`, for planetscale mySQL
+
+```prisma
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma
+}
+```
