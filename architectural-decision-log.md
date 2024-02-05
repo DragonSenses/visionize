@@ -3946,10 +3946,54 @@ This command does two things:
 
 2. creates the [.env file](https://www.prisma.io/docs/orm/more/development-environment/environment-variables/env-files) in the root directory of the project, which is used for defining environment variables (such as your database connection)
 
+The output of `npx prisma init`
+
+```sh
+npx prisma init                                                                                      
+
+✔ Your Prisma schema was created at prisma/schema.prisma
+  You can now open it in your favorite editor.
+
+warn You already have a .gitignore file. Don't forget to add `.env` in it to not commit any private information.
+
+Next steps:
+1. Set the DATABASE_URL in the .env file to point to your existing database. If your database has no tables yet, read https://pris.ly/d/getting-started
+2. Set the provider of the datasource block in schema.prisma to match your database: postgresql, mysql, sqlite, sqlserver, mongodb or cockroachdb.
+3. Run prisma db pull to turn your database schema into a Prisma schema.
+4. Run prisma generate to generate the Prisma Client. You can then start querying your database.
+
+More information in our documentation:
+https://pris.ly/d/getting-started
+```
+
 Next we either host our own database locally on our computer or use a database service. Whatever we go with we need two things:
 
 1. database connection string, save it under `DATABASE_URL` inside `.env` file
 2. Configure `schema.prisma`
+
+Whenever we create changes to `schema.prisma`, we need to run the command:
+
+```sh
+prisma generate
+```
+
+This command will generate the Prisma Client. Then we can start querying our database. 
+
+Next, we want to run the following command in the terminal
+
+```sh
+npx prisma db push
+```
+
+This will push the initial schema to the database. It will also synchronize it with a database provider service like planetscale, so that they will be in sync with any changes we made to the schema.
+
+- [Prototyping your schema](https://www.prisma.io/docs/orm/prisma-migrate/workflows/prototyping-your-schema)
+
+The command npx prisma db push is a way to prototype your database schema using Prisma. It does the following:
+
+- It introspects your database to infer the current schema and compares it with your Prisma schema file.
+- It executes the changes required to make your database schema reflect the state of your Prisma schema file. This may involve creating, altering, or dropping tables, columns, indexes, etc.
+- It triggers the generators defined in your Prisma schema file, such as Prisma Client, to update your application code with the latest database schema.
 
 ### Planetscale
 
@@ -3977,3 +4021,10 @@ datasource db {
   relationMode = "prisma
 }
 ```
+
+### Models
+
+The Prisma schema is a declarative way to define your application models and map them to your database. The Prisma schema is independent of the database provider you choose, so you can use the same syntax and logic to define your models for MySQL or PostgreSQL. However, there may be some differences in how Prisma handles certain features or data types depending on the database provider. For example, PostgreSQL supports enums and arrays, while MySQL does not. Prisma will automatically generate the appropriate SQL code for each database provider based on your Prisma schema.
+
+#### Board Model
+
