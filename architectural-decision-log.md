@@ -3995,6 +3995,18 @@ The command npx prisma db push is a way to prototype your database schema using 
 - It executes the changes required to make your database schema reflect the state of your Prisma schema file. This may involve creating, altering, or dropping tables, columns, indexes, etc.
 - It triggers the generators defined in your Prisma schema file, such as Prisma Client, to update your application code with the latest database schema.
 
+### Prisma Client
+
+- [Install Prisma Client](https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/install-prisma-client-typescript-postgresql)
+
+```sh
+npm install @prisma/client
+```
+
+The install command invokes `prisma generate` for you which reads your Prisma schema and generates a version of Prisma Client that is tailored to your models.
+
+Whenever you update your Prisma schema, you will have to update your database schema using either `prisma migrate dev` or `prisma db push`. This will keep your database schema in sync with your Prisma schema. The commands will also regenerate Prisma Client.
+
 ### Planetscale
 
 To streamline the process we will use prisma with SQL on planetscale.
@@ -4026,5 +4038,31 @@ datasource db {
 
 The Prisma schema is a declarative way to define your application models and map them to your database. The Prisma schema is independent of the database provider you choose, so you can use the same syntax and logic to define your models for MySQL or PostgreSQL. However, there may be some differences in how Prisma handles certain features or data types depending on the database provider. For example, PostgreSQL supports enums and arrays, while MySQL does not. Prisma will automatically generate the appropriate SQL code for each database provider based on your Prisma schema.
 
+
 #### Board Model
+
+Let's create the first Model, `Board` which will have a `id` and `title`.
+
+`prisma\schema.prisma`
+```prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Board {
+  id String @id @default(uuid())
+  title String
+}
+```
+
+Now to prototype the schema we can run the command
+
+```sh
+npx prisma db push
+```
 
