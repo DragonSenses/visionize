@@ -4007,6 +4007,41 @@ The install command invokes `prisma generate` for you which reads your Prisma sc
 
 Whenever you update your Prisma schema, you will have to update your database schema using either `prisma migrate dev` or `prisma db push`. This will keep your database schema in sync with your Prisma schema. The commands will also regenerate Prisma Client.
 
+#### Querying the database
+
+- [Querying the database | Prisma](https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/querying-the-database-typescript-postgresql)
+
+Create a library called `database.ts`, and set up Prisma Client.
+
+`lib\database.ts`
+```ts
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
+
+async function main() {
+  // ... you will write your Prisma Client queries here
+}
+
+main()
+  .then(async () => {
+    await prisma.$disconnect()
+  })
+  .catch(async (e) => {
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })
+```
+
+Here's a quick overview of the different parts of the code snippet:
+
+1. Import the `PrismaClient` constructor from the `@prisma/client` node module
+2. Instantiate `PrismaClient`
+3. Define an `async` function named `main` to send queries to the database
+4. Call the `main` function
+5. Close the database connections when the script terminates
+
 ### Planetscale
 
 To streamline the process we will use prisma with SQL on planetscale.
