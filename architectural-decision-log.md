@@ -3618,7 +3618,7 @@ import {
 import Sidebar from './Sidebar';
 
 export default function MobileSidebar() {
-  // Get the current path of the page
+  // Get 0the current path of the page
   const pathname = usePathname();
 
   /* These values are used to control the visibility and behavior 
@@ -4048,6 +4048,38 @@ Initialize Prisma Client and handle errors
 - Create a prisma instance and use it in an async main function
 - Use .then() and .catch() to disconnect from the database and exit the process with an appropriate status code
 
+#### Use global variable to avoid multiple Prisma Client instances
+
+Since we are using NextJS 14, there is a feature in development called [Fast Refresh](https://nextjs.org/docs/architecture/fast-refresh) which gives you instantaneous feedback on edits made to your React components. Fast Refresh is enabled by default in all Next.js applications on 9.4 or newer. With Next.js Fast Refresh enabled, most edits should be visible within a second, **without losing component state**.
+
+Fast Refresh however, can become an issue with Prisma Client in that it may create more than one instance. To solve this we need to create a utility in the `lib` that creates a global variable that saves the existing global prisma instance. We then compare the global instance of Prisma Client or create a new one. We also check if the environment is in production, then set it to the global instance.
+
+feat: use global variable to avoid multiple Prisma Client instances
+
+`lib\db.ts`
+```ts
+// Import Prisma Client from @prisma/client
+import { PrismaClient } from '@prisma/client';
+
+// Declare a global variable prisma of type PrismaClient or undefined
+declare global {
+  var prisma: PrismaClient | undefined;
+};
+
+// Export a db variable that is either the existing global prisma instance or a new one
+export const db = globalThis.prisma || new PrismaClient();
+
+// If the environment is not production, assign the db variable to the global prisma variable
+if(process.env.NODE_ENV !== "production") {
+  globalThis.prisma = db;
+}
+
+/* This code is a way to prevent creating multiple instances of 
+Prisma Client in your application, which can lead to performance
+issues or errors. */
+```
+
+
 ### Planetscale
 
 To streamline the process we will use prisma with SQL on planetscale.
@@ -4179,3 +4211,19 @@ const OrganizationIdPage = () => {
 };
 ```
 
+Let's refactor the server action and move it to a folder named `actions` at the base of the project. Name the file `createBoard.ts` and cut and paste the server action into it. Also move the `"use server"` directive to the top.
+
+`actions\createBoard.ts`
+```tsx
+"use server";
+
+async function create(formData: FormData) {
+  const title = formData.get("title") as string;
+
+  await database.board.create({
+    data: {
+      title,
+    },
+  });
+}
+```
