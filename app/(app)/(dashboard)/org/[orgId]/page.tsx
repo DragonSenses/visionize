@@ -1,24 +1,13 @@
 import React from 'react';
 import { auth } from '@clerk/nextjs';
+import createBoard from '@/actions/createBoard';
 
 const OrganizationIdPage = () => {
   const { userId, orgId } = auth();
 
-  async function create(formData: FormData) {
-    "use server";
-
-    const title = formData.get("title") as string;
-
-    await database.board.create({
-      data: {
-        title,
-      },
-    });
-  }
-
   return (
     <div>
-      <form action={create}>
+      <form action={createBoard}>
         <input 
           id='title'
           name='title'
