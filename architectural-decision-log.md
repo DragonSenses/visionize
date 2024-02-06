@@ -4058,27 +4058,29 @@ feat: use global variable to avoid multiple Prisma Client instances
 
 `lib\db.ts`
 ```ts
-// Import Prisma Client from @prisma/client
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client'
+
+/** 
+ * Instantiate Prisma Client by defining a global prisma instance.
+ *  
+ * This code is a way to prevent creating multiple instances of 
+ * Prisma Client in your application, which can lead to performance
+ * issues or errors.
+*/
 
 // Declare a global variable prisma of type PrismaClient or undefined
 declare global {
   var prisma: PrismaClient | undefined;
 };
 
-// Export a db variable that is either the existing global prisma instance or a new one
-export const db = globalThis.prisma || new PrismaClient();
+// Export a database variable that is either the existing global prisma instance or a new one
+export const database = globalThis.prisma || new PrismaClient();
 
-// If the environment is not production, assign the db variable to the global prisma variable
+// If the environment is not production, assign the database variable to the global prisma variable
 if(process.env.NODE_ENV !== "production") {
-  globalThis.prisma = db;
+  globalThis.prisma = database;
 }
-
-/* This code is a way to prevent creating multiple instances of 
-Prisma Client in your application, which can lead to performance
-issues or errors. */
 ```
-
 
 ### Planetscale
 
@@ -4180,10 +4182,12 @@ export default OrganizationIdPage
 Next we create an `async` function that takes the `title` from the `form` `input` and creates it in our database. Then we assign the function to the `action` property of the `form`.
 
 ```tsx
+import { database } from "@/lib/database";
+
 const OrganizationIdPage = () => {
   const { userId, orgId } = auth();
 
-  async function create(formData: FormData) {
+  async function createBoard(formData: FormData) {
     "use server";
 
     const title = formData.get("title") as string;
@@ -4197,7 +4201,7 @@ const OrganizationIdPage = () => {
 
   return (
     <div>
-      <form action={create}>
+      <form action={createBoard}>
         <input 
           id='title'
           name='title'
@@ -4213,11 +4217,15 @@ const OrganizationIdPage = () => {
 
 Let's refactor the server action and move it to a folder named `actions` at the base of the project. Name the file `createBoard.ts` and cut and paste the server action into it. Also move the `"use server"` directive to the top.
 
+refactor: move createBoard logic to actions folder
+
 `actions\createBoard.ts`
 ```tsx
 "use server";
 
-async function create(formData: FormData) {
+import { database } from "@/lib/database";
+
+export default async function createBoard(formData: FormData) {
   const title = formData.get("title") as string;
 
   await database.board.create({
@@ -4226,4 +4234,109 @@ async function create(formData: FormData) {
     },
   });
 }
+```
+
+Then we can clean up the org id page and simply import the server action and use it like this:
+
+`app\(app)\(dashboard)\org\[orgId]\page.tsx`
+```tsx
+import createBoard from '@/actions/createBoard';
+
+const OrganizationIdPage = () => {
+  return (
+    <div>
+      <form action={createBoard}>
+        <input 
+          id='title'
+          name='title'
+          placeholder='Enter a board title'
+          required
+          className='border-black border p-1'
+        />
+      </form>
+    </div>
+  );
+};
+```
+
+Let's also add a submit button for the org ID page.
+
+```tsx
+import { Button } from '@/components/ui/button';
+
+const OrganizationIdPage = () => {
+  return (
+    <div>
+      <form action={createBoard}>
+        <input 
+          id='title'
+          name='title'
+          placeholder='Enter a board title'
+          required
+          className='border-black border p-1'
+        />
+      </form>
+      <Button type='submit'>
+        Submit
+      </Button>
+    </div>
+  );
+};
+```
+
+### Form Validation
+
+As of now, the only form of validation and error checking we have is the native HTML that adds a `required` property to the form input. Let's improve it with [Zod](https://zod.dev/).
+
+What is Zod?
+
+Zod is a TypeScript-first schema declaration and validation library. It allows you to define the structure and constraints of your data types, and then validate them against any input. Zod can also infer the static TypeScript type from your schema, eliminating the need for duplicating type declarations. Zod is designed to be developer-friendly, flexible, and performant. You can use Zod to validate user input, API requests, configuration files, and more.
+
+feat: use zod validation library for user data
+
+Use Zod to define and validate the structure and constraints of user data types. Zod can also infer the TypeScript types from the schemas, eliminating the need for duplicating type declarations. Zod improves the readability, maintainability, and performance of the validation logic.
+
+Install zod
+
+```sh
+npm install zod
+```
+
+- [zod basic usage](https://zod.dev/?id=basic-usage)
+
+Create a `CreateBoard` object schema in `createBoard` server action.
+
+`actions\createBoard.ts`
+```ts
+import { z } from "zod";
+
+const CreateBoard = z.object({
+  title: z.string(),
+});
+
+// ...
+```
+
+Then we can add form validation to the `title`.
+
+Before zod validation:
+
+`actions\createBoard.ts`
+```ts
+export default async function createBoard(formData: FormData) {
+  const title = formData.get("title") as string;
+```
+
+After zod validation:
+```ts
+import { z } from "zod";
+
+const CreateBoard = z.object({
+  title: z.string(),
+});
+
+export default async function createBoard(formData: FormData) {
+  const { title } = CreateBoard.parse({
+    title: formData.get("title"),
+  });
 ```
