@@ -4381,3 +4381,46 @@ const OrganizationIdPage = async () => {
   );
 };
 ```
+
+### Display new boards
+
+A current issue at the moment is that when a user submits a new board in the org ID page, the new board does not display in the mapping. However the new board is in the database.
+
+We need to revalidate the path so that the newly added board will be display immediately to the user.
+
+Introducing a new feature for revalidation in [Next.js_14](https://nextjs.org/blog/next-14)
+- [revalidatePath() | Nextjs 14](https://nextjs.org/docs/app/api-reference/functions/revalidatePath)
+
+`revalidatePath` allows you to purge [cached data](https://nextjs.org/docs/app/building-your-application/caching) on-demand for a specific path.
+
+We want to do this in our server action `createBoard`. We should pass in the path to the `/org` with the dynamic organization id. For now we can hardcode it, but later we will dynamically get the org ID.
+
+`actions\createBoard.ts`
+```typescript
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
+
+import { database } from "@/lib/database";
+
+const CreateBoard = z.object({
+  title: z.string(),
+});
+
+export default async function createBoard(formData: FormData) {
+  const { title } = CreateBoard.parse({
+    title: formData.get("title"),
+  });
+
+  await database.board.create({
+    data: {
+      title,
+    },
+  });
+
+  revalidatePath('/org/org_yourOrgIdHere');
+}
+```
+
+With this in place, we can now add a new board in the org ID page and when we hit submit we will see the list of boards update to incorporate the new board.
