@@ -4678,3 +4678,108 @@ export default function BoardForm() {
   )
 }
 ```
+
+Now refactor `OrganizationIdPage` with `BoardForm`
+
+refactor: use BoardForm component
+
+- Replace the inline form with the BoardForm component
+- Import BoardForm from '@/components/BoardForm'
+- Remove unused imports and comments
+
+```tsx
+import React from 'react';
+import { database } from '@/lib/database';
+import Board from '@/components/ui/Board';
+import BoardForm from '@/components/BoardForm';
+
+const OrganizationIdPage = async () => {
+  // Fetch the boards from the database
+  const boards = await database.board.findMany();
+
+  return (
+    <div className='flex flex-col space-y-4'>
+      <BoardForm />
+      {/* Create a div for displaying the boards */}
+      <div className='space-y-2'>
+        {/* Map over the boards and render a Board component for each one */}
+        {boards.map((board) => (
+          <Board
+            key={board.id}
+            id={board.id}
+            title={board.title}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default OrganizationIdPage
+```
+
+## Loading states and errors in form fields
+
+An advantage of refactoring the `BoardForm` client component is that we can have specific loading states and display errors inside the fields. We will be using `useFormState` hook.
+
+- [useFormState | React Reference](https://react.dev/reference/react-dom/hooks/useFormState)
+- `useFormState` is a Hook that allows you to update state based on the result of a form action.
+- Usage: `const [state, formAction] = useFormState(fn, initialState, permalink?);`
+  
+Call useFormState at the top level of your component to create component state that is updated when a form action is invoked. You pass `useFormState` an existing form action function as well as an initial state, and it returns a new action that you use in your form, along with the latest form state. The latest form state is also passed to the function that you provided.
+
+The form state is the value returned by the action when the form was last submitted. If the form has not yet been submitted, it is the initial state that you pass.
+
+If used with a **Server Action**, `useFormState` **allows the server's response from submitting the form to be shown even before hydration has completed.**
+
+Parameters of `useFormState`:
+
+- `fn`: The function to be called when the form is submitted or button pressed. When the function is called, it will receive the previous state of the form (initially the `initialState` that you pass, subsequently its previous return value) as its initial argument, followed by the arguments that a form action normally receives.
+- `initialState`: The value you want the state to be initially. It can be any serializable value. This argument is ignored after the action is first invoked.
+
+### Use `useFormState` hook for form control
+
+feat: use useFormState hook for form control
+
+- Import useFormState hook from react-dom
+- Create a state and an action for the form using useFormState
+- Pass the formAction as the action prop to the form element
+
+Let's create the `initialState` and call the hook `useFormState` inside the `BoardForm`. Instead of using the`createBoard` server action directly inside the form's `action`, we use the `formAction` that we get from the `useFormState` hook.
+
+`components\BoardForm.tsx`
+```tsx
+"use client";
+
+import React from 'react';
+import { useFormState } from 'react-dom';
+
+import createBoard from '@/actions/createBoard';
+import { Button } from '@/components/ui/button';
+
+/* Create a form for creating a new board */
+export default function BoardForm() {
+
+  const initialState = {
+    message: null,
+    errors: {},
+  };
+
+  const [state, formAction] = useFormState(createBoard, initialState);
+
+  return (
+    <form action={formAction}>
+      <input
+        id='title'
+        name='title'
+        placeholder='Enter a board title'
+        required
+        className='border-black border p-1'
+      />
+      <Button type='submit'>
+        Submit
+      </Button>
+    </form>
+  )
+}
+```
