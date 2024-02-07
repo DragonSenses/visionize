@@ -4424,3 +4424,59 @@ export default async function createBoard(formData: FormData) {
 ```
 
 With this in place, we can now add a new board in the org ID page and when we hit submit we will see the list of boards update to incorporate the new board.
+
+### Passing data into Server action
+
+Now that we can create a board, how do we update and delete? 
+
+We need to have access to an ID inside the server action `createBoard`.
+
+Let's first refactor the code where we map out the Board. Create a `Board.tsx` component inside `/components/ui` which accepts two props: `{ id, title }` and renders them as output. 
+
+```tsx
+import React from 'react';
+
+interface BoardProps {
+  id: string;
+  title: string;
+};
+
+export default function Board({
+  id,
+  title,
+}: BoardProps) {
+  return (
+    <div>
+      {title}
+      {id}
+    </div>
+  )
+}
+```
+
+Then inside org ID page, import the Board component and map out the fetched boards into a `Board` component.
+
+```tsx
+import Board from '@/components/ui/Board';
+
+const OrganizationIdPage = async () => {
+  const boards = await database.board.findMany();
+
+  return (
+    <div className='flex flex-col space-y-4'>
+      {/* ... */}
+      <div className='space-y-2'>
+
+        {boards.map((board) => (
+          <Board  
+            key={board.id} 
+            id={board.id}
+            title={board.title}
+          />
+        ))}
+
+      </div>
+    </div>
+  );
+};
+```
