@@ -22,9 +22,10 @@ export default function Board({
     await deleteBoard(id);
   };
   
-  const handleUpdate = async (boardData: BoardData) => {
+  const handleUpdate = async () => {
     console.log('Updating board with id:', id);
-    await updateBoard(id, boardData);
+    const data = { title: "updated_title"};
+    await updateBoard(id, data);
   };
 
   return (
@@ -35,7 +36,7 @@ export default function Board({
         type="submit"
         variant="default"
         size="sm"
-        onClick={handleUpdate({title: title})}
+        onClick={handleUpdate}
       >
         Update
       </Button>
