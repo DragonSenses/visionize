@@ -4480,3 +4480,77 @@ const OrganizationIdPage = async () => {
   );
 };
 ```
+
+### Develop the Board component
+
+feat: add update and delete buttons to Board
+
+- Convert the `div` to a `form` in the output
+- Add update and delete buttons
+
+```tsx
+import React from 'react';
+import { Button } from '@/components/ui/button';
+
+interface BoardProps {
+  id: string;
+  title: string;
+};
+
+export default function Board({
+  id,
+  title,
+}: BoardProps) {
+  return (
+    <form className='flex items-center gap-x-2'>
+      <p>{title}</p>
+      <p>{id}</p>
+      <Button 
+        type="submit"
+        variant="default"
+        size="sm"
+      >
+        Update
+      </Button>
+      <Button 
+        type="submit"
+        variant="destructive"
+        size="sm"
+      >
+        Delete
+      </Button>
+    </form>
+  )
+}
+```
+
+Next we create the server actions to add the functionality to the buttons.
+
+In `/actions` create the files: `updateBoard.ts` and `deleteBoard.ts`.
+
+#### Update Board server action
+
+`actions\updateBoard.ts`
+```ts
+import { revalidatePath } from 'next/cache';
+
+import { database } from '@/lib/database';
+
+interface BoardData {
+  title: string;
+};
+
+export default async function updateBoard(id: string, boardData: BoardData) {
+
+  await database.board.update({
+    where: {
+      id: id,
+    },
+    data: {
+      title: boardData.title
+    }
+  });
+
+  revalidatePath('/org/org_yourOrgIdHere');
+}
+```
