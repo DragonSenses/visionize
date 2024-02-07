@@ -4528,10 +4528,15 @@ Next we create the server actions to add the functionality to the buttons.
 
 In `/actions` create the files: `updateBoard.ts` and `deleteBoard.ts`.
 
-#### Update Board server action
+updateBoard server action will
+- Have `{ id, boardData }` as parameters
+- Update the board un the database with `boardData` using the the `id`
+- Revalidate path to reflect the newly updated board
 
 `actions\updateBoard.ts`
 ```ts
+"use server";
+
 import { revalidatePath } from 'next/cache';
 
 import { database } from '@/lib/database';
@@ -4552,5 +4557,88 @@ export default async function updateBoard(id: string, boardData: BoardData) {
   });
 
   revalidatePath('/org/org_yourOrgIdHere');
+}
+```
+
+deleteBoard server action wwill
+- Have `id` as parameters
+- Delete the board in the database given the `id`
+- Revalidate path to reflect the deleted board
+
+```ts
+"use server";
+
+import { revalidatePath } from 'next/cache';
+
+import { database } from '@/lib/database';
+
+export default async function deleteBoard(id: string) {
+  // 
+  await database.board.delete({
+    where: {
+      id: id
+    }
+  });
+
+  revalidatePath('/org/org_yourOrgIdHere');
+}
+```
+
+Now we can use the server actions and assign it to the corresponding buttons in the `Board` component
+
+`components\ui\Board.tsx`
+```tsx
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import deleteBoard from '@/actions/deleteBoard';
+import updateBoard from '@/actions/updateBoard';
+
+interface BoardProps {
+  id: string;
+  title: string;
+};
+
+interface BoardData {
+  title: string;
+};
+
+export default function Board({
+  id,
+  title,
+}: BoardProps) {
+  
+  const handleDelete = async () => {
+    console.log('Deleting board with id:', id);
+    await deleteBoard(id);
+  };
+  
+  const handleUpdate = async () => {
+    console.log('Updating board with id:', id);
+    const data = { title: "updated_title"};
+    await updateBoard(id, data);
+  };
+
+  return (
+    <form className='flex items-center gap-x-2'>
+      <p>{title}</p>
+      <p>{id}</p>
+      <Button 
+        type="submit"
+        variant="default"
+        size="sm"
+        onClick={handleUpdate}
+      >
+        Update
+      </Button>
+      <Button 
+        type="submit"
+        variant="destructive"
+        size="sm"
+        onClick={handleDelete}
+      >
+        Delete
+      </Button>
+    </form>
+  )
 }
 ```
