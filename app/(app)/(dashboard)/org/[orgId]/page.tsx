@@ -2,12 +2,13 @@ import React from 'react';
 import { auth } from '@clerk/nextjs';
 import createBoard from '@/actions/createBoard';
 import { Button } from '@/components/ui/button';
+import { database } from '@/lib/database';
 
-const OrganizationIdPage = () => {
-  const { userId, orgId } = auth();
+const OrganizationIdPage = async () => {
+  const boards = await database.board.findMany();
 
   return (
-    <div>
+    <div className='flex flex-col space-y-4'>
       <form action={createBoard}>
         <input 
           id='title'
@@ -20,6 +21,13 @@ const OrganizationIdPage = () => {
       <Button type='submit'>
         Submit
       </Button>
+      <div className='space-y-2'>
+        {boards.map((board) => (
+          <div key={board.id}>
+            {board.title}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
