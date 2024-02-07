@@ -4328,6 +4328,7 @@ export default async function createBoard(formData: FormData) {
 ```
 
 After zod validation:
+
 ```ts
 import { z } from "zod";
 
@@ -4339,4 +4340,44 @@ export default async function createBoard(formData: FormData) {
   const { title } = CreateBoard.parse({
     title: formData.get("title"),
   });
+```
+
+refactor(board): validate user input with zod
+
+Use Zod to define and validate the structure and constraints of the title field. Zod can also infer the TypeScript types from the schemas, eliminating the need for duplicating type declarations. Zod improves the readability, maintainability, and performance of the validation logic.
+
+### Query and display Boards
+
+In the org ID page, query the boards. Then create a `div` below the output to map out each board to a div.
+
+```tsx
+import { database } from '@/lib/database';
+
+const OrganizationIdPage = async () => {
+  const boards = await database.board.findMany();
+
+  return (
+    <div className='flex flex-col space-y-4'>
+      <form action={createBoard}>
+        <input 
+          id='title'
+          name='title'
+          placeholder='Enter a board title'
+          required
+          className='border-black border p-1'
+        />
+      </form>
+      <Button type='submit'>
+        Submit
+      </Button>
+      <div className='space-y-2'>
+        {boards.map((board) => (
+          <div key={board.id}>
+            {board.title}
+          </div>
+        ))} 
+      </div>
+    </div>
+  );
+};
 ```
