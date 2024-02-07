@@ -4268,17 +4268,18 @@ const OrganizationIdPage = () => {
   return (
     <div>
       <form action={createBoard}>
-        <input 
+        <input
           id='title'
           name='title'
           placeholder='Enter a board title'
           required
           className='border-black border p-1'
         />
+        {/* Submit Button */}
+        <Button type='submit'>
+          Submit
+        </Button>
       </form>
-      <Button type='submit'>
-        Submit
-      </Button>
     </div>
   );
 };
@@ -4359,17 +4360,18 @@ const OrganizationIdPage = async () => {
   return (
     <div className='flex flex-col space-y-4'>
       <form action={createBoard}>
-        <input 
+        <input
           id='title'
           name='title'
           placeholder='Enter a board title'
           required
           className='border-black border p-1'
         />
+        {/* Submit Button */}
+        <Button type='submit'>
+          Submit
+        </Button>
       </form>
-      <Button type='submit'>
-        Submit
-      </Button>
       <div className='space-y-2'>
         {boards.map((board) => (
           <div key={board.id}>
@@ -4637,6 +4639,40 @@ export default function Board({
         onClick={handleDelete}
       >
         Delete
+      </Button>
+    </form>
+  )
+}
+```
+
+### BoardForm component
+
+Looking at the org ID page, we should also isolate the form that creates a board. Refactor the create `form` including the submit button into a component called `BoardForm`.
+
+Let's also make it a client component
+
+`components\BoardForm.tsx`
+```tsx
+"use client";
+
+import React from 'react';
+
+import createBoard from '@/actions/createBoard';
+import { Button } from '@/components/ui/button';
+
+/* Create a form for creating a new board */
+export default function BoardForm() {
+  return (
+    <form action={createBoard}>
+      <input
+        id='title'
+        name='title'
+        placeholder='Enter a board title'
+        required
+        className='border-black border p-1'
+      />
+      <Button type='submit'>
+        Submit
       </Button>
     </form>
   )
