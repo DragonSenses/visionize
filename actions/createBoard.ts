@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { database } from "@/lib/database";
@@ -18,4 +19,6 @@ export default async function createBoard(formData: FormData) {
       title,
     },
   });
+
+  revalidatePath('/org/org_yourOrgIdHere');
 }
