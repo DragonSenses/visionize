@@ -5,6 +5,7 @@ import { useFormState } from 'react-dom';
 
 import createBoard from '@/actions/createBoard';
 import { Button } from '@/components/ui/button';
+import BoardFormInput from '@/components/BoardFormInput';
 
 /* Create a form for creating a new board */
 export default function BoardForm() {
@@ -24,24 +25,7 @@ export default function BoardForm() {
   // Pass the formAction as the action prop to the form element
   return (
     <form action={formAction}>
-      <div className="flex flex-col space-y-2">
-        <input
-          id='title'
-          name='title'
-          placeholder='Enter a board title'
-          required
-          className='border-black border p-1'
-        />
-        {state?.errors?.title ? (
-           <div>
-              {state.errors.title.map((error: string) => (
-                <p key={error} className='text-rose-500'>
-                  {error}
-                </p>
-              ))}
-           </div>
-        ) : null}
-      </div>
+      <BoardFormInput errors={state?.errors}/>
       <Button type='submit'>
         Submit
       </Button>
