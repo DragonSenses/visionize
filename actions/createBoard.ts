@@ -5,20 +5,45 @@ import { z } from "zod";
 
 import { database } from "@/lib/database";
 
+export type State = {
+  errors?: {
+    title?: string[];
+  };
+  message?: string | null;
+};
+
 const CreateBoard = z.object({
-  title: z.string(),
+  title: z.string().min(3, {
+    message: "Must be 3 or more characters long",
+  }),
 });
 
-export default async function createBoard(formData: FormData) {
-  const { title } = CreateBoard.parse({
+export default async function createBoard(
+  prevState: State,
+  formData: FormData
+) {
+  const validatedFields = CreateBoard.safeParse({
     title: formData.get("title"),
   });
 
-  await database.board.create({
-    data: {
-      title,
-    },
-  });
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing fields.",
+    };
+  }
 
-  revalidatePath('/org/org_yourOrgIdHere');
+  const { title } = validatedFields.data;
+
+  try {
+    await database.board.create({
+      data: {
+        title,
+      },
+    });
+  } catch (error) {
+    console.log(`Database Error: ${error}`);
+  }
+
+  revalidatePath("/org/org_yourOrgIdHere");
 }
