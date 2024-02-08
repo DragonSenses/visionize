@@ -4,8 +4,8 @@ import React from 'react';
 import { useFormState } from 'react-dom';
 
 import createBoard from '@/actions/createBoard';
-import { Button } from '@/components/ui/button';
 import BoardFormInput from '@/components/BoardFormInput';
+import BoardFormButton from '@/components/BoardFormButton';
 
 /* Create a form for creating a new board */
 export default function BoardForm() {
@@ -26,9 +26,7 @@ export default function BoardForm() {
   return (
     <form action={formAction}>
       <BoardFormInput errors={state?.errors}/>
-      <Button type='submit'>
-        Submit
-      </Button>
+      <BoardFormButton />
     </form>
   )
 }
