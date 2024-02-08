@@ -4761,8 +4761,8 @@ import { Button } from '@/components/ui/button';
 export default function BoardForm() {
 
   const initialState = {
-    message: null,
     errors: {},
+    message: "",
   };
 
   const [state, formAction] = useFormState(createBoard, initialState);
@@ -4799,6 +4799,8 @@ No overload matches this call.
 ```
 
 Navigate to `createBoard.ts`.
+
+feat: add field validation & state to createBoard
 
 - Add [zod's string-specific validations](https://zod.dev/?id=strings) to the object schema, a minimum of 3 characters and a message on error
 - Create a type `State` which is similar in shape as the `initialState`, meaning it contains a message of type string and errors
@@ -4859,4 +4861,75 @@ export default async function createBoard(
 }
 ```
 
-feat: add field validation & state to createBoard
+Let's also add a redirect to the path at the end:
+
+```ts
+import { redirect } from "next/navigation";
+
+export default async function createBoard(
+  prevState: State,
+  formData: FormData
+) {
+  // ...
+
+  const pathname = `/org/org_yourOrgIdHere`;
+  revalidatePath(pathname);
+  redirect(pathname);
+}
+```
+
+Now with that setup this should fix the "No overload matches this call" error.
+
+#### Render the error message for the form field
+
+feat(board): display validation errors in BoardForm
+
+Back to `BoardForm`, let's render the error message if it exists within the `state`
+
+```tsx
+"use client";
+
+import React from 'react';
+import { useFormState } from 'react-dom';
+
+import createBoard from '@/actions/createBoard';
+import { Button } from '@/components/ui/button';
+
+export default function BoardForm() {
+
+  const initialState = {
+    errors: {},
+    message: "",
+  };
+
+  const [state, formAction] = useFormState(createBoard, initialState);
+
+  return (
+    <form action={formAction}>
+      <div className="flex flex-col space-y-2">
+        <input
+          id='title'
+          name='title'
+          placeholder='Enter a board title'
+          required
+          className='border-black border p-1'
+        />
+        {state?.errors?.title ? (
+           <div>
+              {state.errors.title.map((error: string) => (
+                <p key={error} className='text-rose-500'>
+                  {error}
+                </p>
+              ))}
+           </div>
+        ) : null}
+      </div>
+      <Button type='submit'>
+        Submit
+      </Button>
+    </form>
+  )
+}
+```
+
+Why is this really interesting? We do not need to have javascript enabled to have form validation or error states. We are doing this purely on the server-side.
