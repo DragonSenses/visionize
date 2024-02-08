@@ -13,6 +13,7 @@ export type State = {
   message?: string | null;
 };
 
+// Define the CreateBoard object schema
 const CreateBoard = z.object({
   title: z.string().min(3, {
     message: "Must be 3 or more characters long",
@@ -23,19 +24,23 @@ export default async function createBoard(
   prevState: State,
   formData: FormData
 ) {
+  // Validate the form data using the CreateBoard schema
   const validatedFields = CreateBoard.safeParse({
     title: formData.get("title"),
   });
 
+  // If zod validation fails, then we will have an array of errors for a specific field
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: "Missing fields.",
-    };
+    }
   }
 
+  // Destructure the title property from the validated data
   const { title } = validatedFields.data;
 
+  // Try to create a new board in the database
   try {
     await database.board.create({
       data: {
@@ -43,9 +48,13 @@ export default async function createBoard(
       },
     });
   } catch (error) {
-    console.log(`Database Error: ${error}`);
+    console.log(error);
+    return {
+      message: `Database Error: {error}`,
+    }
   }
 
+  // Revalidate and redirect to given path
   const pathname = `/org/org_yourOrgIdHere`;
   revalidatePath(pathname);
   redirect(pathname);
