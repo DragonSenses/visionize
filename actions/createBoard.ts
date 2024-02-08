@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { database } from "@/lib/database";
@@ -8,7 +9,7 @@ import { database } from "@/lib/database";
 export type State = {
   errors?: {
     title?: string[];
-  };
+  },
   message?: string | null;
 };
 
@@ -45,5 +46,7 @@ export default async function createBoard(
     console.log(`Database Error: ${error}`);
   }
 
-  revalidatePath("/org/org_yourOrgIdHere");
+  const pathname = `/org/org_yourOrgIdHere`;
+  revalidatePath(pathname);
+  redirect(pathname);
 }
