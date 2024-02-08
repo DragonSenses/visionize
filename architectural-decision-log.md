@@ -4783,3 +4783,80 @@ export default function BoardForm() {
   )
 }
 ```
+
+#### Modify `createBoard` server action to fix "No overload matches this call"
+
+By adding `useFormState` we also need to modify the `createBoard` server action as we get this error in the terminal:
+
+```sh
+No overload matches this call.
+  Overload 1 of 2, '(action: (state: void) => void | Promise<void>, initialState: void, permalink?: string | undefined): [state: void, dispatch: () => void]', gave the following error.
+    Argument of type '(formData: FormData) => Promise<void>' is not assignable to parameter of type '(state: void) => void | Promise<void>'.
+      Types of parameters 'formData' and 'state' are incompatible.
+        Type 'void' is not assignable to type 'FormData'.
+  Overload 2 of 2, '(action: (state: void, payload: unknown) => void | Promise<void>, initialState: void, permalink?: string | undefined): [state: void, dispatch: (payload: unknown) => void]', gave the following error.
+    Argument of type '(formData: FormData) => Promise<void>' is not assignable to parameter of type '(state: void, payload: unknown) => void | Promise<void>'.
+```
+
+Navigate to `createBoard.ts`.
+
+- Add [zod's string-specific validations](https://zod.dev/?id=strings) to the object schema, a minimum of 3 characters and a message on error
+- Create a type `State` which is similar in shape as the `initialState`, meaning it contains a message of type string and errors
+- Assign the type of `State` to a new parameter called `prevState` to the `createBoard` function
+- During validation we do not want Zod to throw an error, but an error instance so replace `parse()` with [safeParse](https://zod.dev/?id=safeparse) method and assign it to variable called `validatedFields`
+- Check if `validateFields` has `success` property, if not then return with error message
+
+`actions\createBoard.ts`
+```tsx
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
+
+import { database } from "@/lib/database";
+
+export type State = {
+  errors?: {
+    title?: string[];
+  };
+  message?: string | null;
+};
+
+const CreateBoard = z.object({
+  title: z.string().min(3, {
+    message: "Must be 3 or more characters long",
+  }),
+});
+
+export default async function createBoard(
+  prevState: State,
+  formData: FormData
+) {
+  const validatedFields = CreateBoard.safeParse({
+    title: formData.get("title"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing fields.",
+    };
+  }
+
+  const { title } = validatedFields.data;
+
+  try {
+    await database.board.create({
+      data: {
+        title,
+      },
+    });
+  } catch (error) {
+    console.log(`Database Error: ${error}`);
+  }
+
+  revalidatePath("/org/org_yourOrgIdHere");
+}
+```
+
+feat: add field validation & state to createBoard
