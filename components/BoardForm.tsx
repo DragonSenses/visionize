@@ -26,7 +26,9 @@ export default function BoardForm() {
   return (
     <form action={formAction}>
       <BoardFormInput errors={state?.errors}/>
-      <BoardFormButton />
+      <BoardFormButton type="submit" variant="default" size="default">
+        Submit
+      </BoardFormButton>
     </form>
   )
 }
