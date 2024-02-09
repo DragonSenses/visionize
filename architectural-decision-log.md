@@ -4459,7 +4459,7 @@ export default function Board({
 Then inside org ID page, import the Board component and map out the fetched boards into a `Board` component.
 
 ```tsx
-import Board from '@/components/ui/Board';
+import Board from '@/components/Board';
 
 const OrganizationIdPage = async () => {
   const boards = await database.board.findMany();
@@ -4588,7 +4588,7 @@ export default async function deleteBoard(id: string) {
 
 Now we can use the server actions and assign it to the corresponding buttons in the `Board` component
 
-`components\ui\Board.tsx`
+`components\Board.tsx`
 ```tsx
 import React from 'react';
 import { Button } from '@/components/ui/button';
@@ -4690,7 +4690,7 @@ refactor: use BoardForm component
 ```tsx
 import React from 'react';
 import { database } from '@/lib/database';
-import Board from '@/components/ui/Board';
+import Board from '@/components/Board';
 import BoardForm from '@/components/BoardForm';
 
 const OrganizationIdPage = async () => {

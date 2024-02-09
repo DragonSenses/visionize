@@ -1,6 +1,6 @@
 import React from 'react';
 import { database } from '@/lib/database';
-import Board from '@/components/ui/Board';
+import Board from '@/components/Board';
 import BoardForm from '@/components/BoardForm';
 
 const OrganizationIdPage = async () => {
