@@ -1,4 +1,9 @@
+"use client";
+
 import React from 'react';
+import { useFormStatus } from 'react-dom';
+
+import { Input } from '@/components/ui/input';
 
 interface BoardFormInputProps {
   errors?: {
@@ -9,14 +14,17 @@ interface BoardFormInputProps {
 export default function BoardFormInput({
   errors
 } : BoardFormInputProps) {
+
+  const { pending } = useFormStatus();
+
   return (
     <div className="flex flex-col space-y-2">
-      <input
+      <Input
         id='title'
         name='title'
         placeholder='Enter a board title'
         required
-        className='border-black border p-1'
+        disabled={pending}
       />
       {errors?.title ? (
         <div>
