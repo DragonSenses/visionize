@@ -5023,7 +5023,7 @@ export default function BoardFormInput({
 
 Now we can add the loading state by using the `pending` property from `useFormStatus` hook. We can now add the `disabled` prop to the `Input` component using the `pending` status:
 
-feat: useFormStatus to disable input when submitting BoardForm
+useFormStatus to disable input on form submission
 
 ```tsx
 import { useFormStatus } from 'react-dom';
@@ -5068,3 +5068,105 @@ export default function BoardFormButton() {
   )
 }
 ```
+
+So far `BoardFormButton` hardcodes "Submit" as the children prop, but we want to re-use this component to also handle other types of buttons such as the delete button. Let's parameterize `BoardFormButton`.
+
+Parameterize BoardFormButton component
+
+The BoardFormButton component was previously hard-coded to render a submit button with the text "Submit". This commit adds props to the component to allow customization of the button content, size, type, variant, and onClick handler. This makes the component more re-usable and flexible for different use cases.
+
+```tsx
+"use client";
+
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { useFormStatus } from 'react-dom';
+
+interface BoardFormButtonProps {
+  children: React.ReactNode;
+  size?: "default" | "sm" | "lg" | "icon" | null | undefined;
+  type: "submit" | "reset" | "button";
+  variant?: "default" | "destructive" | "outline" | "secondary" | 
+            "ghost" | "link" | "primary" | null | undefined;
+  onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
+}
+
+export default function BoardFormButton({
+  children,
+  size,
+  type,
+  variant,
+  onClick,
+}: BoardFormButtonProps ) {
+
+  const { pending } = useFormStatus();
+
+  return (
+    <Button 
+      disabled={pending} 
+      type={type} 
+      variant={variant} 
+      size={size} 
+      onClick={onClick}
+    >
+      {children}
+    </Button>
+  )
+}
+```
+
+Now we can pass the right props to "Submit" button in the `BoardForm`
+
+`components\BoardForm.tsx`
+```tsx
+export default function BoardForm() {
+  // ...
+  return (
+    <form action={formAction}>
+      <BoardFormInput errors={state?.errors}/>
+      <BoardFormButton type="submit" variant="default" size="default">
+        Submit
+      </BoardFormButton>
+    </form>
+  )
+}
+```
+
+And also re-use the `BoardFormButton` component to create a delete button with the `onClick` assigned to a delete handler.
+
+Refactor delete button to BoardFormButton in Board
+
+The BoardFormButton component is a parameterized version of the Button component that can be customized with props. This commit replaces the Button component with the BoardFormButton component in deleting a board. The variant prop is set to destructive to characterize the desired functionality and appearance of the button.
+
+```tsx
+export default function Board({
+  id,
+  title,
+}: BoardProps) {
+  
+  const handleDelete = async () => {
+    console.log('Deleting board with id:', id);
+    await deleteBoard(id);
+  };
+  
+  // ...
+
+  return (
+    <form className='flex items-center gap-x-2'>
+      <p>{title}</p>
+      <p>{id}</p>
+
+      <BoardFormButton
+        type="submit"
+        variant="destructive"
+        size="sm"
+        onClick={handleDelete}
+      >
+        Delete
+      </BoardFormButton>
+
+    </form>
+  )
+}
+```
+
