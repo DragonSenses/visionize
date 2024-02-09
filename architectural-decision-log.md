@@ -5172,6 +5172,14 @@ export default function Board({
 
 ## Server Action Abstraction
 
+---
+
+Add section on server action abstraction
+
+This commit adds a new section to the markdown file that explains how to create a server action abstraction that is type safe. The server action abstraction is a asynchronous function that is executed on the server to handle form submissions and data mutations. The abstraction handles the input, output, validation, and error handling. The section describes the motivation, design, implementation, and usage of the creating the function.
+
+---
+
 I plan to use as much server actions and as little API routes as possible in this project.
 
 This section will be a way to aggregate my notes and design phase of the app.
@@ -5204,7 +5212,8 @@ We can break this up into 3 sections:
 
 Approaches:
 
-- Currently plan to create this as a hook called `useServerAction`.
+- Currently plan to create this as a function called `useServerAction`.
+- Higher order function
 - Type safe on both inputs and outputs
 - Wrap each of these distinct segments with a wrapper
   - useSafeServerAction?
@@ -5222,6 +5231,28 @@ let useServerAction(execute, data, error) {
 }
 ```
 
+A function that creates another function is called a **higher-order function**. Higher-order functions are functions that can take other functions as arguments or return other functions as results. For example, in JavaScript, the `map` function is a higher-order function that takes a function and an array as arguments, and returns a new array with the function applied to each element.
+
+A wrapper function is a specific kind of higher-order function that calls another function with little or no additional computation. Wrapper functions are used to simplify complex systems by hiding the details of the inner function and focusing on the essential features of the outer function. For example, in Java, the `MouseAdapter` class is a wrapper function that implements the `MouseListener` interface with empty methods, so that subclasses can override only the methods they need.
+
+A factory in programming is a function or a method that creates and returns objects of different types or classes, without specifying the exact type or class of the object in advance. A factory can be useful for simplifying complex systems, reusing code, and increasing flexibility and modularity. A factory can be implemented in various ways, such as using abstract data types, subroutines, polymorphism, or software components. There are also different design patterns that use factories, such as the factory method pattern and the abstract factory pattern.
+
+A factory for functions is a higher-order function that creates and returns other functions, without specifying the exact type or implementation of the function in advance. A factory for functions can be implemented in various ways, depending on the programming language and the design pattern. For example, in JavaScript, a factory for functions can be a function that takes some parameters and returns a closure that uses those parameters in its scope. In Java, a factory for functions can be a method that uses lambda expressions or method references to create instances of functional interfaces.
+
 ### Implementation
 
-This commit adds a new section to the markdown file that explains how to create a server action abstraction that is type safe. The server action abstraction is a asynchronous function that is executed on the server to handle form submissions and data mutations. The abstraction handles the input, output, validation, and error handling. The section describes the motivation, design, implementation, and usage of the creating the function.
+Create a file named `createServerAction.ts` inside `/lib`.
+
+It follows the convention of starting with `create`, which indicates that it is a factory function that returns a new object or function. It also uses a descriptive name that reflects the purpose of the function, which is to create a server action. 
+
+However, it does not specify what kind of server action it creates, or how it is different from other server actions. It also does not reflect the return value or type of the function, which could be useful for type checking and documentation.
+
+An alternative could be: 
+
+```ts
+createServerActionEffect<T, U, V>(input: T, schema: z.Schema<U>, handler: (output: U) => Promise<V>)
+```
+
+This name indicates that the function creates a server action effect, which is a async function that performs a side effect based on the input, schema, and handler parameters. It also uses generics to specify the types of the input, output, and return value of the function. The name is descriptive, concise, and follows the convention of factory functions.
+
+For now let's keep it at `createServerAction`.
