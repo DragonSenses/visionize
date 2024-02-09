@@ -4932,4 +4932,139 @@ export default function BoardForm() {
 }
 ```
 
-Why is this really interesting? We do not need to have javascript enabled to have form validation or error states. We are doing this purely on the server-side.
+Why is this really interesting? We do not need to have javascript enabled to have form validation or error states. We are doing server-side form validation and error state management through server actions.
+
+#### Loading states 
+
+When user submits an item in the `BoardForm` and it was successful, during that time we would want to disable the submit button.
+
+- [useFormStatus | React Reference](https://react.dev/reference/react-dom/hooks/useFormStatus)
+- `useFormStatus` is a Hook that gives you status information of the last form submission.
+- `const { pending, data, method, action } = useFormStatus();`
+- To get status information, the `Submit` component must be rendered within a `<form>`. The Hook returns information like the `pending` property which tells you if the form is actively submitting.
+
+Let's first refactor the output of the `BoardForm` into `BoardFormInput` component (create it in `/components` folder) that accepts the prop `errors` where we will pass in the `state.errors` directly.
+
+Refactor both board form input and board form button inside `BoardForm`.
+
+```tsx
+import BoardFormInput from '@/components/BoardFormInput';
+import BoardFormButton from '@/components/BoardFormButton';
+
+export default function BoardForm() {
+
+  const initialState = {
+    errors: {},
+    message: "",
+  };
+
+  const [state, formAction] = useFormState(createBoard, initialState);
+
+  return (
+    <form action={formAction}>
+      <BoardFormInput errors={state?.errors}/>
+      <BoardFormButton />
+    </form>
+  )
+}
+```
+
+Install [shadcn/ui Input](https://ui.shadcn.com/docs/components/input)
+
+```sh
+npx shadcn-ui@latest add input
+```
+
+Then inside the `BoardFormInput`
+
+- Create `BoardFormInputProps` interface to accept `errors`
+- Return a `div` that contains the `input` and the conditional render for error messages
+- Replace the `input` element with `Input` component, and we can remove the `className` prop
+
+`components\BoardFormInput.tsx`
+```tsx
+"use client";
+
+import React from 'react';
+
+import { Input } from '@/components/ui/input';
+
+interface BoardFormInputProps {
+  errors?: {
+    title?: string[];
+  }
+}
+
+export default function BoardFormInput({
+  errors
+} : BoardFormInputProps) {
+
+  return (
+    <div className="flex flex-col space-y-2">
+      <Input
+        id='title'
+        name='title'
+        placeholder='Enter a board title'
+        required
+      />
+      {errors?.title ? (
+        <div>
+          {errors.title.map((error: string) => (
+            <p key={error} className='text-rose-500'>
+              {error}
+            </p>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  )
+}
+```
+
+Now we can add the loading state by using the `pending` property from `useFormStatus` hook. We can now add the `disabled` prop to the `Input` component using the `pending` status:
+
+feat: useFormStatus to disable input when submitting BoardForm
+
+```tsx
+import { useFormStatus } from 'react-dom';
+// ...
+export default function BoardFormInput({
+  errors
+} : BoardFormInputProps) {
+
+  const { pending } = useFormStatus();
+
+  return (
+    <div className="flex flex-col space-y-2">
+      <Input
+        id='title'
+        name='title'
+        placeholder='Enter a board title'
+        required
+        disabled={pending}
+      />
+```
+
+Similary, extract out `BoardFormButton` and add the `disabled` prop
+
+useFormStatus to disable button when submitting
+
+`components\BoardFormButton.tsx`
+```tsx
+"use client";
+
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { useFormStatus } from 'react-dom';
+
+export default function BoardFormButton() {
+
+  const { pending } = useFormStatus();
+
+  return (
+    <Button disabled={pending} type='submit'>
+      Submit
+    </Button>
+  )
+}
+```
