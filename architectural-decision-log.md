@@ -5170,3 +5170,58 @@ export default function Board({
 }
 ```
 
+## Server Action Abstraction
+
+I plan to use as much server actions and as little API routes as possible in this project.
+
+This section will be a way to aggregate my notes and design phase of the app.
+
+Here is a diagram of the use case for server actions. 
+
+- Server Action
+  - Input & Output
+  - Zod Validation
+  - Server Action Handler
+
+We may have an individual action such as `createBoard` which represents a single server action.
+
+We can break this up into 3 sections:
+
+1. Input & Output
+   - types.ts
+   - Defines the shape of the data that the user will input
+   - Defines the shape of the data that we expect to output from the server action
+     - e.g., an Error or specific type from Prisma Database
+2. Zod Validation
+  - schema.ts
+  - Contains our zod validation, schema, etc.
+  - The schema will be our input type
+3. Server Action
+  - index.ts
+  - The server action itself
+  - Executes the asynchrounouse function that are executed on the server
+  - Handle form submissions and data mutations in Next.js applications
+
+Approaches:
+
+- Currently plan to create this as a hook called `useServerAction`.
+- Type safe on both inputs and outputs
+- Wrap each of these distinct segments with a wrapper
+  - useSafeServerAction?
+  - createAction?
+  - useActionEffect<T, U, V>(input: T, schema: z.Schema<U>, handler: (output: U) => Promise<V>)
+
+Code playground to test ideas:
+```tsx
+let useServerAction(execute, data, error) {
+  useServerAction(
+    onSuccess: data: Output
+    onError: error: string message
+    finally: "always execute code regardless of success or error"
+  )
+}
+```
+
+### Implementation
+
+This commit adds a new section to the markdown file that explains how to create a server action abstraction that is type safe. The server action abstraction is a asynchronous function that is executed on the server to handle form submissions and data mutations. The abstraction handles the input, output, validation, and error handling. The section describes the motivation, design, implementation, and usage of the creating the function.
