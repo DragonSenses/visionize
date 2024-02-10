@@ -5267,6 +5267,16 @@ Let's say we want to break down the `createBoard` server action. When abstractin
     // Other helper functions or database interactions...
     ```
 
+In summary, we can break it down to these 3 distinct parts:
+
+- Server Action Abstraction (Type-safe)
+  1. **Type Definitions: Inputs & Outputs** 
+      - `serverActionTypes.ts`
+  2. **Validation Rules**
+      - `serverActionSchema.ts`
+  3. **Server Action**    
+      - `serverAction.ts`
+
 ### Benefits of Abstraction in programming
 
 The form of abstraction we described, where we break down a single file into three distinct parts, has several related terms in programming:
@@ -5339,10 +5349,13 @@ For now let's keep it at `createServerAction`.
 
 ### Implementation of createBoard with abstraction
 
-- Server Action
-  1. Input & Output (serverActionTypes.ts)
-  2. Zod Validation (serverActionSchema.ts)
-  3. Server Action  (serverAction.ts)
+- Server Action Abstraction (Type-safe)
+  1. **Type Definitions: Inputs & Outputs** 
+      - `serverActionTypes.ts`
+  2. **Validation Rules**
+      - `serverActionSchema.ts`
+  3. **Server Action**    
+      - `serverAction.ts`
 
 Let's try re-creating `createBoard` server action with the abstraction.
 
@@ -5420,10 +5433,11 @@ Inside of `/actions` create a folder `createBoard`. Inside we will create the fo
   2. Zod Validation (createBoardSchema.ts)
   3. Server Action  (createBoard.ts)
 
-#### createBoard schema
+#### createBoard: schema that defines Validation Rules
 
 `createBoardSchema.ts` is a zod object schema that defines validation rules for creating a board.
 
+`actions\createBoard\createBoardSchema.ts`
 ```ts
 import { z } from 'zod';
 
@@ -5451,3 +5465,39 @@ In this code snippet:
 - We customize the error messages for required fields and invalid types.
 - Additionally, we specify that the `title` must be at least 3 characters long.
 
+#### createBoard: Type Definitions (Inputs & Outputs)
+
+`createBoardTypes.ts` defines the TypeScript types or interfaces that represent the inputs and outputs for creating a board. These types should capture the relevant data structures needed for the `createBoard` functionality.
+
+`actions\createBoard\createBoardTypes.ts`
+```ts
+import { z } from 'zod';
+
+// Import Board, the expected output type, from Prisma client
+import { Board } from '@prisma/client';
+
+// Import the 'CreateBoard' schema (validation rules)
+import { CreateBoard } from './createBoardSchema';
+
+// Define a TypeScript type named 'Input'
+// The type is inferred from the 'CreateBoard' schema using 'z.infer'
+export type Input = z.infer<typeof CreateBoard>;
+```
+
+Here's what each part does:
+
+1. **Importing 'z' Module**:
+    - We import the `z` module from the Zod library. This module provides tools for defining validation schemas and working with data types.
+
+2. **Importing 'Board' Type**:
+    - We import the `Board` type from the Prisma client. This type likely represents a database entity related to boards (e.g., a table in the database).
+
+3. **Importing 'CreateBoard' Schema**:
+    - We import the `CreateBoard` schema from the local file `createBoardSchema.ts`. This schema likely defines validation rules for creating a board (e.g., title length, required fields).
+
+4. **Defining 'Input' Type**:
+    - We create a TypeScript type called `Input`.
+    - The type is inferred using `z.infer<typeof CreateBoard>`, which means it takes on the shape of the `CreateBoard` schema.
+    - In other words, `Input` represents the expected input data structure when creating a board, based on the validation rules defined in `CreateBoard`.
+
+#### createBoard: Server Action
