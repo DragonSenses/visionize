@@ -5187,9 +5187,9 @@ This section will be a way to aggregate my notes and design phase of the app.
 Here is a diagram of the use case for server actions. 
 
 - Server Action
-  - Input & Output
-  - Zod Validation
-  - Server Action Handler
+  1. Input & Output (serverActionTypes.ts)
+  2. Zod Validation (serverActionSchema.ts)
+  3. Server Action  (serverAction.ts)
 
 We may have an individual action such as `createBoard` which represents a single server action.
 
@@ -5239,7 +5239,7 @@ A factory in programming is a function or a method that creates and returns obje
 
 A factory for functions is a higher-order function that creates and returns other functions, without specifying the exact type or implementation of the function in advance. A factory for functions can be implemented in various ways, depending on the programming language and the design pattern. For example, in JavaScript, a factory for functions can be a function that takes some parameters and returns a closure that uses those parameters in its scope. In Java, a factory for functions can be a method that uses lambda expressions or method references to create instances of functional interfaces.
 
-### Implementation
+### Implementation Attempt 1
 
 Create a file named `createServerAction.ts` inside `/lib`.
 
@@ -5256,3 +5256,118 @@ createServerActionEffect<T, U, V>(input: T, schema: z.Schema<U>, handler: (outpu
 This name indicates that the function creates a server action effect, which is a async function that performs a side effect based on the input, schema, and handler parameters. It also uses generics to specify the types of the input, output, and return value of the function. The name is descriptive, concise, and follows the convention of factory functions.
 
 For now let's keep it at `createServerAction`.
+
+### Implementation of createBoard with abstraction
+
+- Server Action
+  1. Input & Output (serverActionTypes.ts)
+  2. Zod Validation (serverActionSchema.ts)
+  3. Server Action  (serverAction.ts)
+
+Let's try re-creating `createBoard` server action with the abstraction.
+
+Let's look at the `createBoard.ts` server action in its entirety and see how we can break it down to the 3 parts.
+
+`actions\createBoard.ts`
+```ts
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { z } from "zod";
+
+import { database } from "@/lib/database";
+
+export type State = {
+  errors?: {
+    title?: string[];
+  },
+  message?: string | null;
+};
+
+// Define the CreateBoard object schema
+const CreateBoard = z.object({
+  title: z.string().min(3, {
+    message: "Must be 3 or more characters long",
+  }),
+});
+
+export default async function createBoard(
+  prevState: State,
+  formData: FormData
+) {
+  // Validate the form data using the CreateBoard schema
+  const validatedFields = CreateBoard.safeParse({
+    title: formData.get("title"),
+  });
+
+  // If zod validation fails, then we will have an array of errors for a specific field
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing fields.",
+    }
+  }
+
+  // Destructure the title property from the validated data
+  const { title } = validatedFields.data;
+
+  // Try to create a new board in the database
+  try {
+    await database.board.create({
+      data: {
+        title,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return {
+      message: `Database Error: {error}`,
+    }
+  }
+
+  // Revalidate and redirect to given path
+  const pathname = `/org/org_yourOrgIdHere`;
+  revalidatePath(pathname);
+  redirect(pathname);
+}
+```
+
+Inside of `/actions` create a folder `createBoard`. Inside we will create the following files:
+
+- Server Action: createBoard
+  1. Input & Output (createBoardTypes.ts)
+  2. Zod Validation (createBoardSchema.ts)
+  3. Server Action  (createBoard.ts)
+
+#### createBoard schema
+
+`createBoardSchema.ts` is a zod object schema that defines validation rules for creating a board.
+
+```ts
+import { z } from 'zod';
+
+/**
+ * Define the CreateBoard object schema.
+ * 
+ * Add custom error messages for: required fields, 
+ * invalid type and minimum length.
+ */
+export const CreateBoard = z.object({
+  title: z.string({
+    required_error: "Title is required", 
+    invalid_type_error: "Title is required", 
+  }).min(3, {
+    message: "Must be 3 or more characters long.", 
+  }),
+});
+```
+
+In this code snippet:
+- We import the `z` module from the Zod library.
+- We create a schema called `CreateBoard` using `z.object()`.
+- The `CreateBoard` schema defines an object with a single property called `title`.
+- The `title` property is of type `z.string()`, which means it should be a string.
+- We customize the error messages for required fields and invalid types.
+- Additionally, we specify that the `title` must be at least 3 characters long.
+
