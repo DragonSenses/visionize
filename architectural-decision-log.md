@@ -5191,8 +5191,6 @@ Here is a diagram of the use case for server actions.
   2. Zod Validation (serverActionSchema.ts)
   3. Server Action  (serverAction.ts)
 
-We may have an individual action such as `createBoard` which represents a single server action.
-
 We can break this up into 3 sections:
 
 1. Input & Output
@@ -5209,6 +5207,88 @@ We can break this up into 3 sections:
   - The server action itself
   - Executes the asynchrounouse function that are executed on the server
   - Handle form submissions and data mutations in Next.js applications
+
+### Server Action Abstraction
+
+Let's say we want to break down the `createBoard` server action. When abstracting the `createBoard.ts` file into three distinct parts, you can organize them as follows:
+
+1. **Type Definitions (Inputs and Outputs)**:
+    - In this section, define the TypeScript types or interfaces that represent the inputs and outputs for creating a board. These types should capture the relevant data structures needed for the `createBoard` functionality. For example:
+
+    ```typescript
+    // createBoardTypes.ts
+
+    // Input type for creating a board
+    export interface CreateBoardInput {
+      title: string;
+      // Other relevant properties...
+    }
+
+    // Output type for the result of creating a board
+    export interface CreateBoardOutput {
+      boardId: string;
+      // Other relevant properties...
+    }
+    ```
+
+2. **Validation Rules**:
+    - Here, encapsulate the validation rules specific to creating a board. You can use a library like Zod (as mentioned earlier) to define validation schemas. For instance:
+
+    ```typescript
+    // createBoardValidation.ts
+
+    import { z } from 'zod';
+
+    export const CreateBoardSchema = z.object({
+      title: z.string().min(3, 'Must be 3 or more characters long.'),
+      // Other validation rules...
+    });
+    ```
+
+3. **Server Action (createBoard)**:
+    - Implement the actual server action responsible for creating a board. This section should handle business logic, database interactions, and any other necessary steps. For example:
+
+    ```typescript
+    // createBoardServerAction.ts
+
+    import { CreateBoardInput, CreateBoardOutput } from './createBoardTypes';
+    import { CreateBoardSchema } from './createBoardValidation';
+
+    export async function createBoard(input: CreateBoardInput): Promise<CreateBoardOutput> {
+      // Validate input using CreateBoardSchema
+      const validatedInput = CreateBoardSchema.parse(input);
+
+      // Perform database operations, create the board, and return the result
+      const boardId = await createBoardInDatabase(validatedInput);
+
+      return { boardId };
+    }
+
+    // Other helper functions or database interactions...
+    ```
+
+### Benefits of Abstraction in programming
+
+The form of abstraction we described, where we break down a single file into three distinct parts, has several related terms in programming:
+
+1. **Data Abstraction**:
+    - This pertains to abstracting data entities. It involves defining types, interfaces, and structures that represent data without exposing the internal implementation details. In our case, defining the types of inputs and outputs for creating a board falls under data abstraction.
+
+2. **Process Abstraction**:
+    - Process abstraction hides the underlying implementation of a process or functionality. It focuses on how a task is performed rather than the specific details of how it's done. Our third part, the `createBoard` server action itself, aligns with process abstraction.
+
+3. **Modularization**:
+    - Modularization is the practice of dividing a program into smaller, self-contained modules or components. Each module handles a specific aspect of functionality. In our scenario, splitting the `createBoard.ts` file into separate parts demonstrates modularization.
+
+4. **Decomposition**:
+    - Decomposition involves breaking down a complex problem or system into smaller, manageable parts. By separating the validation rules, type definitions, and server action, we're effectively decomposing the original file.
+
+5. **Separation of Concerns (SoC)**:
+    - SoC is a design principle that advocates separating different aspects of a software system to improve maintainability and readability. Our approach aligns with SoC by clearly delineating responsibilities for validation, types, and server logic.
+
+Remember that these terms are not mutually exclusive, and often, multiple concepts overlap when designing well-structured software. 
+
+#### Extra notes to help create server action abstraction
 
 Approaches:
 
