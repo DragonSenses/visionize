@@ -5624,7 +5624,27 @@ feat: add createServerAction function
 
 This commit introduces the createServerAction function to the lib/createServerAction.ts file. The function validates input data using the provided schema and invokes the performAction handler. It enhances our error handling and action state management.
 
+#### createBoard: Type Definitions (Inputs & Outputs) Pt. 2
 
+We can now improve our type definitions for `createBoard` by defining the inputs and output types.
+
+Define InputType and ReturnType
+
+This commit defines the InputType (inferred from CreateBoard schema) and ReturnType
+(ActionState with Board as the output data type) in the createBoardTypes.ts file.
+
+```ts
+import { z } from 'zod';
+
+// Import Board, the expected output type, from Prisma client
+import { Board } from '@prisma/client';
+
+import { ActionState } from '@/lib/createServerAction';
+
+import { CreateBoard } from './createBoardSchema';
+
+export type InputType = z.infer<typeof CreateBoard>;
+export type ReturnType = ActionState<InputType, Board>;
 ```
 
 #### createBoard: Server Action
