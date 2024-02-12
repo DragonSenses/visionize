@@ -5189,7 +5189,7 @@ Here is a diagram of the use case for server actions.
 - Server Action
   1. Input & Output (serverActionTypes.ts)
   2. Zod Validation (serverActionSchema.ts)
-  3. Server Action  (serverAction.ts)
+  3. Server Action  (serverAction.ts) or (index.ts)
 
 We can break this up into 3 sections:
 
@@ -5355,7 +5355,7 @@ For now let's keep it at `createServerAction`.
   2. **Validation Rules**
       - `serverActionSchema.ts`
   3. **Server Action**    
-      - `serverAction.ts`
+      - `index.ts`
 
 Let's try re-creating `createBoard` server action with the abstraction.
 
@@ -5431,7 +5431,7 @@ Inside of `/actions` create a folder `createBoard`. Inside we will create the fo
 - Server Action: createBoard
   1. Input & Output (createBoardTypes.ts)
   2. Zod Validation (createBoardSchema.ts)
-  3. Server Action  (createBoard.ts)
+  3. Server Action  (index.ts)
 
 #### createBoard: schema that defines Validation Rules
 
@@ -5499,5 +5499,66 @@ Here's what each part does:
     - We create a TypeScript type called `Input`.
     - The type is inferred using `z.infer<typeof CreateBoard>`, which means it takes on the shape of the `CreateBoard` schema.
     - In other words, `Input` represents the expected input data structure when creating a board, based on the validation rules defined in `CreateBoard`.
+
+### Improve createServerAction
+
+Currently, `createServerAction.ts` just has this:
+
+`lib\createServerAction.ts`
+```ts
+/* Imports */
+import { z } from "zod";
+
+/* Types */
+
+/* Function */
+function createServerActionEffect<T, U, V>(input: T, schema: z.Schema<U>, handler: (output: U) => Promise<V>)
+
+export const createServerAction = <Input, Output>(
+  schema: string,
+  handler: (data: object) => null
+) => {
+  return async (data: Input): Promise<V> => {
+    // Handle validation for schema
+    // Safely parse result
+    // Return errors
+
+    let validatedData = { 1: "test" };
+    return handler(validatedData);
+  }
+}
+```
+
+```ts
+/* Types */
+export type FieldErrors<T> = {
+  [K in keyof T]?: string[];
+};
+
+export type ActionState<InputType, OutputType> = {
+  fieldErrors?: FieldErrors<InputType>;
+  error?: string | null;
+  data?: OutputType;
+};
+```
+
+Let's defines two types: `FieldErrors<T>` and `ActionState<InputType, OutputType>`. Let's break it down:
+
+1. **`FieldErrors<T>`**:
+    - This type is a generic type that takes another type `T` as a parameter.
+    - It represents an object where each property key (denoted by `K`) corresponds to a key in the `T` type.
+    - The value associated with each property key is an array of strings (denoted by `string[]`).
+    - Essentially, it's a way to define error messages for specific fields in an input object.
+
+2. **`ActionState<InputType, OutputType>`**:
+    - Another generic type that takes two type parameters: `InputType` and `OutputType`.
+    - It represents the state of an action or operation.
+    - The properties it can have are:
+        - `fieldErrors`: An optional object of field errors (using the `FieldErrors<InputType>` type).
+        - `error`: An optional string representing a general error message.
+        - `data`: An optional value of type `OutputType`, which could be the result of the action.
+    - This type is useful for handling responses from APIs, form submissions, or any other asynchronous operations.
+
+In summary, this code snippet provides a foundation for handling errors and action states in a TypeScript application. It defines reusable types that can be used to structure data related to validation errors and action outcomes.
 
 #### createBoard: Server Action
