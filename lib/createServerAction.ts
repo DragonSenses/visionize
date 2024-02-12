@@ -12,18 +12,19 @@ export type ActionState<InputType, OutputType> = {
   data?: OutputType;
 };
 
-/* Function */
+export function createServerAction<InputType, OutputType>(
+  schema: z.Schema<InputType>,
+  performAction: (validatedData: InputType) => Promise<ActionState<InputType, OutputType>>
+): (data: InputType) => Promise<ActionState<InputType, OutputType>> {
+  return async (data: InputType): Promise<ActionState<InputType, OutputType>> => {
+    const validation = schema.safeParse(data);
 
-export const createServerAction = <Input, Output>(
-  schema: string,
-  handler: (data: object) => null
-) => {
-  return async (data: Input): Promise<V> => {
-    // Handle validation for schema
-    // Safely parse result
-    // Return errors
+    if (!validation.success) {
+      return {
+        fieldErrors: validation.error.flatten().fieldErrors as FieldErrors<InputType>,
+      };
+    }
 
-    let validatedData = { 1: "test" };
-    return handler(validatedData);
-  }
+    return performAction(validation.data);
+  };
 }
