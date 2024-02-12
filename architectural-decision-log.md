@@ -5529,6 +5529,21 @@ export const createServerAction = <Input, Output>(
 }
 ```
 
+We need to define a type with [generics](https://www.typescriptlang.org/docs/handbook/2/generics.html) which should be type-safe for every action we create. All we need is the `Input` type we expect the user to pass in, and the `Output` type which we expect the user to receive.
+
+- Output could either be a 
+  - success like `data` which can either be a `Board` type from prisma 
+  - error which is a string
+  - fieldErrors which is an object with keys inside and values set to an array of errors (string)
+
+Let's defines two types: `FieldErrors<T>` and `ActionState<InputType, OutputType>`. 
+
+feat: add FieldErrors and ActionState types
+
+This commit adds the FieldErrors<T> and ActionState<InputType, OutputType> types
+to the lib/createServerAction.ts file. These types will be used for handling
+validation errors and action outcomes in our application.
+
 ```ts
 /* Types */
 export type FieldErrors<T> = {
@@ -5542,7 +5557,7 @@ export type ActionState<InputType, OutputType> = {
 };
 ```
 
-Let's defines two types: `FieldErrors<T>` and `ActionState<InputType, OutputType>`. Let's break it down:
+Let's break it down:
 
 1. **`FieldErrors<T>`**:
     - This type is a generic type that takes another type `T` as a parameter.
@@ -5560,5 +5575,65 @@ Let's defines two types: `FieldErrors<T>` and `ActionState<InputType, OutputType
     - This type is useful for handling responses from APIs, form submissions, or any other asynchronous operations.
 
 In summary, this code snippet provides a foundation for handling errors and action states in a TypeScript application. It defines reusable types that can be used to structure data related to validation errors and action outcomes.
+
+#### Create the `createServerAction` function
+
+The type-safe `createServerAction` should accept `schema` and `performAction` as parameters. It then returns an `async` function. The async function has a `data: InputType` parameter and returns a `Promise`.
+
+Here is the function `createServerAction` method signature:
+
+`lib\createServerAction.ts`
+```ts
+export function createServerAction<InputType, OutputType>(
+  schema: z.Schema<InputType>,
+  performAction: (validatedData: InputType) => Promise<ActionState<InputType, OutputType>>
+): (data: InputType) => Promise<ActionState<InputType, OutputType>> {
+  return async (data: InputType): Promise<ActionState<InputType, OutputType>> => {
+```
+
+Next implement the function called `createServerAction` along with related types.
+
+Let's break it down:
+
+3. **`createServerAction` Function**:
+    - This function takes two parameters:
+        - `schema`: A `zod.Schema<InputType>` representing a validation schema for the input data.
+        - `performAction`: A function that takes validated data of type `InputType` and returns a promise of `ActionState<InputType, OutputType>`.
+    - Inside the function:
+        - It validates the input data using the provided schema.
+        - If validation fails, it returns an object with field errors extracted from the validation error.
+        - Otherwise, it invokes the `performAction` function with the validated data and returns its result.
+
+In summary, this provides a function for creating server actions with input validation.
+
+```ts
+export type FieldErrors<T> = {
+  [K in keyof T]?: string[];
+};
+
+export type ActionState<InputType, OutputType> = {
+  fieldErrors?: FieldErrors<InputType>;
+  error?: string | null;
+  data?: OutputType;
+};
+
+/* Function */
+export function createServerAction<InputType, OutputType>(
+  schema: z.Schema<InputType>,
+  performAction: (validatedData: InputType) => Promise<ActionState<InputType, OutputType>>
+): (data: InputType) => Promise<ActionState<InputType, OutputType>> {
+  return async (data: InputType): Promise<ActionState<InputType, OutputType>> => {
+    const validation = schema.safeParse(data);
+
+    if (!validation.success) {
+      return {
+        fieldErrors: validation.error.flatten().fieldErrors as FieldErrors<InputType>,
+      };
+    }
+
+    return performAction(validation.data);
+  };
+}
+```
 
 #### createBoard: Server Action
