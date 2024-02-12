@@ -2,9 +2,17 @@
 import { z } from "zod";
 
 /* Types */
+export type FieldErrors<T> = {
+  [K in keyof T]?: string[];
+};
+
+export type ActionState<InputType, OutputType> = {
+  fieldErrors?: FieldErrors<InputType>;
+  error?: string | null;
+  data?: OutputType;
+};
 
 /* Function */
-function createServerActionEffect<T, U, V>(input: T, schema: z.Schema<U>, handler: (output: U) => Promise<V>)
 
 export const createServerAction = <Input, Output>(
   schema: string,
