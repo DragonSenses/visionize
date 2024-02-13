@@ -11,13 +11,18 @@ interface UseServerActionOptions<OutputType> {
   onSucces?: (data: OutputType) => void;
 };
 
-export const useServerAction = <InputType, OutputType>(
-  action: ServerAction<InputType, OutputType>
+export const useServerAction = <InputType, OutputType> (
+  action: ServerAction<InputType, OutputType>,
+  options: UseServerActionOptions<OutputType> = {},
 ) => {
+
+  const [data, setData] = useState<OutputType | undefined>(undefined);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors<InputType> | undefined>(
     undefined
   );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const cachedFn = useCallback(
     async (input) => {
