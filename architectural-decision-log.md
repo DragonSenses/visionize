@@ -5648,3 +5648,90 @@ export type ReturnType = ActionState<InputType, Board>;
 ```
 
 #### createBoard: Server Action
+
+Finally, create an `index.ts` file inside `/createBoard`. Here we create the server action.
+
+Implement performAction function
+
+This commit adds the performAction function to createBoard.ts. The function authenticates the user, creates a board in the database, and handles error cases. Additionally, it revalidates the path related to the newly created board.
+
+```ts
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { auth } from "@clerk/nextjs";
+
+import { database } from "@/lib/database";
+
+import { InputType, ReturnType } from "./createBoardTypes";
+
+async function performAction (data: InputType): Promise<ReturnType> {
+  // Authenticate userId with Clerk
+  const { userId } = auth();
+
+  // If user is not logged-in
+  if (!userId) {
+    return {
+      error: 'Unauthorized',
+    }
+  }
+
+  const { title } = data;
+
+  let board;
+
+  try {
+    board = await database.board.create({
+      data: {
+        title,
+      }
+    });
+  } catch(error) {
+    return {
+      error: "Internal error: failed to create in database."
+    }
+  }
+
+  revalidatePath(`/board/${board.id}`);
+  return { data: board };
+}
+
+// Create server action here
+```
+
+Certainly! Let's break down the provided TypeScript code:
+
+1. **Imports**:
+    - The code imports necessary modules and functions:
+        - `revalidatePath` from `"next/cache"`: A function used for revalidating a specific path in Next.js.
+        - `auth` from `"@clerk/nextjs"`: A function for authenticating users using Clerk authentication.
+        - `database` from `"@/lib/database"`: Presumably, this module provides access to database-related functionality.
+
+2. **Function Definition**:
+    - The function is named `performAction`.
+    - It takes an input of type `InputType` (inferred from the `CreateBoard` schema) and returns a promise of type `ReturnType`.
+    - The purpose of this function is to perform an action (presumably related to creating a board) based on the provided input data.
+
+3. **Authentication**:
+    - It authenticates the user by extracting the `userId` using the `auth()` function.
+    - If the user is not logged in (no `userId`), it returns an error with the message `'Unauthorized'`.
+
+4. **Database Interaction**:
+    - The function extracts the `title` from the input data.
+    - It attempts to create a new board in the database using the `database.board.create` method.
+    - If successful, it assigns the created board to the `board` variable.
+    - If an error occurs during database interaction, it returns an error message indicating an internal error.
+
+5. **Revalidation**:
+    - It revalidates the path `/board/${board.id}` (presumably to update cached data related to the board).
+
+6. **Return Value**:
+    - The function returns an object:
+        - If there was an error during authentication or database interaction, it includes an `error` property.
+        - Otherwise, it includes a `data` property containing the created board.
+
+7. **Server Action**:
+    - The comment at the end suggests that this function is part of a server action.
+
+In summary, this code handles user authentication, creates a board in the database, and provides appropriate responses based on the outcome.
+
