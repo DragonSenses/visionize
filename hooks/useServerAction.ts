@@ -8,7 +8,12 @@ type ServerAction<InputType, OutputType> = (data: InputType) =>
 export const useServerAction = <InputType, OutputType>(
   action: ServerAction<InputType, OutputType>
 ) => {
- const cachedFn = useCallback(
+
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors<InputType> | undefined>(
+    undefined
+  );
+
+  const cachedFn = useCallback(
     async (input) => {
       return input;
     }, [action]
