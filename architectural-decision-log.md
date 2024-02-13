@@ -5777,3 +5777,64 @@ Let's break down the provided TypeScript code:
 
 With the server action created with the `createServerAction` abstraction, we now need to create a hook that accepts the newly created server action. The hook will give us access to callbacks such as `onSuccess` and `onComplete`.
 
+Create the file `useServerAction.ts` in `/hooks`.
+
+Then we define a custom hook called `useServerAction` that takes a server action as a parameter and returns a memoized callback function. A server action is a function that runs on the server and can be invoked from the client using a special URL. A memoized callback function is a function that is cached and does not get redefined on every render. This can improve performance and prevent unnecessary re-rendering of components.
+
+```ts
+import { useCallback } from "react";
+
+import { ActionState } from "@/lib/createServerAction";
+
+type ServerAction<InputType, OutputType> = (data: InputType) => 
+  Promise<ActionState<InputType, OutputType>>;
+
+export const useServerAction = <InputType, OutputType>(
+  action: ServerAction<InputType, OutputType>
+) => {
+const cachedFn = useCallback(
+    async (input) => {
+      return input;
+    }, [action]
+  );
+
+  return cachedFn;
+}
+```
+
+Also add a `fieldErrors` state
+
+```ts
+import { useCallback, useState } from "react";
+
+import { ActionState, FieldErrors } from "@/lib/createServerAction";
+
+// A generic type alias for a server action function
+// A server action function takes an input data of type InputType and returns a
+// promise that resolves to an object of type ActionState<InputType, OutputType>
+type ServerAction<InputType, OutputType> = (data: InputType) => 
+  Promise<ActionState<InputType, OutputType>>;
+
+// A custom hook that takes a server action function as a parameter and returns
+//  a memoized callback function
+export const useServerAction = <InputType, OutputType>(
+  action: ServerAction<InputType, OutputType>
+) => {
+
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors<InputType> | undefined>(
+    undefined
+  );
+
+  // Declare a constant called cachedFn and assign it to the result of calling the useCallback hook with a callback function and an array of dependencies
+  // The useCallback hook returns a memoized version of the callback function that only changes if one of the dependencies has changed
+  // The callback function simply returns the input data as it is
+  // The only dependency is the action function that is passed as a parameter
+  const cachedFn = useCallback(
+    async (input) => {
+      return input;
+    }, [action]
+  );
+
+  return cachedFn;
+}
+```
