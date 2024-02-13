@@ -5563,8 +5563,6 @@ In summary, this code snippet provides a foundation for handling errors and acti
 
 The type-safe `createServerAction` should accept `schema` and `performAction` as parameters. It then returns an `async` function. The async function has a `data: InputType` parameter and returns a `Promise`.
 
-Next implement the function called `createServerAction` along with related types.
-
 `lib\createServerAction.ts`
 ```ts
 import { z } from "zod";
@@ -5582,7 +5580,31 @@ export type ActionState<InputType, OutputType> = {
   data?: OutputType; // Optional output data
 };
 
-// Create a function called createServerAction.
+/**
+ * Creates a type-safe server action, an async function that runs on the server
+ * and can be invoked from the client using a special URL. This returns another
+ * function  that takes the input data as a parameter and returns a promise 
+ * that resolves to an object that contains the output data or any errors. 
+ * 
+ * This function does the following:
+ * - It validates the input data using the provided schema. It uses Zod, a 
+ *  library that allows defining and parsing TypeScript types at runtime.
+ * - If the validation fails, it returns an object with a fieldErrors property
+ *  that contains an array of error messages for each invalid field.
+ * - If the validation succeeds, it invokes the handler function with the 
+ *  validated data and returns the result of the handler function.
+ * 
+ * The createServerAction function can be used to create different server 
+ * actions for different purposes. For example, the code you provided creates
+ * a server action called createBoard that creates a new board in the database. 
+ * 
+ * @param schema - defines the shape and validation rules of the input data for the server action.
+ * @param performAction - handler function performs the actual logic of the server action and 
+ * returns an object that contains the output data or any errors.
+ * @returns  another function that takes the input data as a parameter and 
+ * returns a promise that resolves to an object that contains the output data
+ * or any errors.
+ */
 export function createServerAction<InputType, OutputType>(
   // Input validation schema
   schema: z.Schema<InputType>,
@@ -5604,12 +5626,11 @@ export function createServerAction<InputType, OutputType>(
     return performAction(validation.data);
   };
 }
-
 ```
 
 Let's break it down:
 
-3. **`createServerAction` Function**:
+1. **`createServerAction` Function**:
     - This function takes two parameters:
         - `schema`: A `zod.Schema<InputType>` representing a validation schema for the input data.
         - `performAction`: A function that takes validated data of type `InputType` and returns a promise of `ActionState<InputType, OutputType>`.
@@ -5650,6 +5671,8 @@ export type ReturnType = ActionState<InputType, Board>;
 #### createBoard: Server Action
 
 Finally, create an `index.ts` file inside `/createBoard`. Here we create the server action.
+
+In summary, this code handles user authentication, creates a board in the database, and provides appropriate responses based on the outcome.
 
 Implement performAction function
 
@@ -5699,7 +5722,7 @@ async function performAction (data: InputType): Promise<ReturnType> {
 // Create server action here
 ```
 
-Certainly! Let's break down the provided TypeScript code:
+Let's break down the provided TypeScript code:
 
 1. **Imports**:
     - The code imports necessary modules and functions:
@@ -5731,7 +5754,7 @@ Certainly! Let's break down the provided TypeScript code:
         - Otherwise, it includes a `data` property containing the created board.
 
 7. **Server Action**:
-    - The comment at the end suggests that this function is part of a server action.
-
-In summary, this code handles user authentication, creates a board in the database, and provides appropriate responses based on the outcome.
+    - The `createServerAction` function returns an object that contains the server action itself and some helper components for rendering forms and displaying errors
+    - Two arguments: CreateBoard and performAction
+    - The first argument is the schema that validates the input data, and the second argument is the function that performs the actual logic of the server action
 
