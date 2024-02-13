@@ -5302,24 +5302,13 @@ Remember that these terms are not mutually exclusive, and often, multiple concep
 
 Approaches:
 
-- Currently plan to create this as a function called `useServerAction`.
+- Planning to create a function called `createServerAction`.
 - Higher order function
 - Type safe on both inputs and outputs
 - Wrap each of these distinct segments with a wrapper
   - useSafeServerAction?
   - createAction?
   - useActionEffect<T, U, V>(input: T, schema: z.Schema<U>, handler: (output: U) => Promise<V>)
-
-Code playground to test ideas:
-```tsx
-let useServerAction(execute, data, error) {
-  useServerAction(
-    onSuccess: data: Output
-    onError: error: string message
-    finally: "always execute code regardless of success or error"
-  )
-}
-```
 
 A function that creates another function is called a **higher-order function**. Higher-order functions are functions that can take other functions as arguments or return other functions as results. For example, in JavaScript, the `map` function is a higher-order function that takes a function and an array as arguments, and returns a new array with the function applied to each element.
 
@@ -5685,24 +5674,28 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs";
 
 import { database } from "@/lib/database";
+import { createServerAction } from "@/lib/createServerAction";
 
 import { InputType, ReturnType } from "./createBoardTypes";
+import { CreateBoard } from "./createBoardSchema";
 
 async function performAction (data: InputType): Promise<ReturnType> {
-  // Authenticate userId with Clerk
+  // Verify that the user is logged in with Clerk & get their unique identifier
   const { userId } = auth();
 
-  // If user is not logged-in
+  // If user is not logged-in, return an object with error property: Unauthorized
   if (!userId) {
     return {
       error: 'Unauthorized',
     }
   }
 
+  // Destructure the title property from the validated data
   const { title } = data;
 
   let board;
 
+  // Try to create a new board in the database
   try {
     board = await database.board.create({
       data: {
@@ -5715,11 +5708,33 @@ async function performAction (data: InputType): Promise<ReturnType> {
     }
   }
 
+  // Invalidates the cache for a given path on the server 
+  // and triggers a re-fetch of the data for that page
   revalidatePath(`/board/${board.id}`);
+
+  // Return an object with a data property set to the board object, which 
+  // contains the information about the newly created board
   return { data: board };
 }
 
-// Create server action here
+/**
+ * Create and export a type-safe server action createBoard, that creates a 
+ * Board in the database with validated input data from the user. 
+ * 
+ * createServerAction function with two arguments: CreateBoard and performAction.
+ * 
+ * First argument is the schema that validates the input data. 
+ * Second argument is the function that performs the actual logic of the server action.
+ * 
+ * createServerAction takes two parameters: a schema and a handler function.
+ * 
+ * The schema defines the shape and validation rules of the input data for the 
+ * server action. 
+ * 
+ * The handler function performs the actual logic of the server action and 
+ * returns an object that contains the output data or any errors.
+ */
+export const createBoard = createServerAction(CreateBoard, performAction);
 ```
 
 Let's break down the provided TypeScript code:
@@ -5757,4 +5772,8 @@ Let's break down the provided TypeScript code:
     - The `createServerAction` function returns an object that contains the server action itself and some helper components for rendering forms and displaying errors
     - Two arguments: CreateBoard and performAction
     - The first argument is the schema that validates the input data, and the second argument is the function that performs the actual logic of the server action
+
+## useServerAction hook
+
+With the server action created with the `createServerAction` abstraction, we now need to create a hook that accepts the newly created server action. The hook will give us access to callbacks such as `onSuccess` and `onComplete`.
 
