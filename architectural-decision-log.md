@@ -5782,29 +5782,6 @@ Create the file `useServerAction.ts` in `/hooks`.
 Then we define a custom hook called `useServerAction` that takes a server action as a parameter and returns a memoized callback function. A server action is a function that runs on the server and can be invoked from the client using a special URL. A memoized callback function is a function that is cached and does not get redefined on every render. This can improve performance and prevent unnecessary re-rendering of components.
 
 ```ts
-import { useCallback } from "react";
-
-import { ActionState } from "@/lib/createServerAction";
-
-type ServerAction<InputType, OutputType> = (data: InputType) => 
-  Promise<ActionState<InputType, OutputType>>;
-
-export const useServerAction = <InputType, OutputType>(
-  action: ServerAction<InputType, OutputType>
-) => {
-const cachedFn = useCallback(
-    async (input) => {
-      return input;
-    }, [action]
-  );
-
-  return cachedFn;
-}
-```
-
-Also add a `fieldErrors` state
-
-```ts
 import { useCallback, useState } from "react";
 
 import { ActionState, FieldErrors } from "@/lib/createServerAction";
@@ -5816,19 +5793,74 @@ type ServerAction<InputType, OutputType> = (data: InputType) =>
   Promise<ActionState<InputType, OutputType>>;
 
 // A custom hook that takes a server action function as a parameter and returns
-//  a memoized callback function
+// a memoized callback function
 export const useServerAction = <InputType, OutputType>(
   action: ServerAction<InputType, OutputType>
 ) => {
-
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors<InputType> | undefined>(
-    undefined
-  );
-
   // Declare a constant called cachedFn and assign it to the result of calling the useCallback hook with a callback function and an array of dependencies
   // The useCallback hook returns a memoized version of the callback function that only changes if one of the dependencies has changed
   // The callback function simply returns the input data as it is
   // The only dependency is the action function that is passed as a parameter
+  const cachedFn = useCallback(
+    async (input) => {
+      return input;
+    }, [action]
+  );
+
+  return cachedFn;
+}
+```
+
+
+### useServerActionOptions interface
+
+Define the interface for what we expect from this hook.
+
+The `UseServerActionOptions` interface has three optional properties: `onSuccess`, `onError`, and `onComplete`. Each property is a function that can be passed as an option to a server action hook. A server action hook is a custom hook that lets you memoize a server action function. A server action function is a function that runs on the server and can be invoked from the client using a special URL.
+
+- The `onSuccess` property is a function that takes the output data as a parameter and returns nothing. This function is called when the server action succeeds and returns some data. 
+- The `onError` property is a function that takes an error message as a parameter and returns nothing. This function is called when the server action fails and returns an error. 
+- The `onComplete` property is a function that takes no parameters and returns nothing. This function is called when the server action is finished, regardless of whether it succeeded or failed.
+
+```ts
+interface UseServerActionOptions<OutputType> {
+  onComplete?: () => void;
+  onError?: (error: string) => void;
+  onSucces?: (data: OutputType) => void;
+};
+```
+
+### useServerAction state variables
+
+Then we define our state variables: `data`, `error`, `fieldErrors` and `isLoading`
+
+```ts
+import { useCallback, useState } from "react";
+
+import { ActionState, FieldErrors } from "@/lib/createServerAction";
+
+type ServerAction<InputType, OutputType> = (data: InputType) => 
+  Promise<ActionState<InputType, OutputType>>;
+
+interface UseServerActionOptions<OutputType> {
+  onComplete?: () => void;
+  onError?: (error: string) => void;
+  onSucces?: (data: OutputType) => void;
+};
+
+export const useServerAction = <InputType, OutputType> (
+  action: ServerAction<InputType, OutputType>,
+  options: UseServerActionOptions<OutputType> = {},
+) => {
+
+  const [data, setData] = useState<OutputType | undefined>(undefined);
+  const [error, setError] = useState<string | undefined>(undefined);
+
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors<InputType> | undefined>(
+    undefined
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const cachedFn = useCallback(
     async (input) => {
       return input;
