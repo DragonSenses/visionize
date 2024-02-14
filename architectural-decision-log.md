@@ -5889,3 +5889,59 @@ The useCallback hook takes two parameters: a callback function and an array of d
 
 You can use the useCallback hook when you have a component that passes a callback function to a child component as a prop. If the callback function is not memoized, it will be recreated on every render of the parent component, which will cause the child component to re-render as well, even if the props have not changed. By using the useCallback hook, you can prevent this unnecessary re-rendering and improve the performance of your application.
 
+### useServerAction logic
+
+Now for the `cachedFn`, inside the `useCallback` hook we want to have a an `async` function with `input` as the argument. Inside the function we immediately set the `loading` state to `true`. Then open up a `try..catch` where we call `action(input)` and take save the result to `actionOutput`. Then we check for a series of conditions.
+
+- if `actionOutput` is falsy then we have an early `return`
+- Otherise, check the properties of `actionOutput` if they contain `error`, `fieldErrors` or `data` and set the state variables accordingly.
+
+
+```ts
+export const useServerAction = <InputType, OutputType> (
+  action: ServerAction<InputType, OutputType>,
+  options: UseServerActionOptions<OutputType> = {},
+) => {
+
+  const [data, setData] = useState<OutputType | undefined>(undefined);
+  const [error, setError] = useState<string | undefined>(undefined);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors<InputType> | undefined>(
+    undefined
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const cachedFn = useCallback(
+    async (input: InputType) => {
+      setIsLoading(true);
+
+      try {
+        const actionOutput = await action(input);
+
+        if (!actionOutput) {
+          return;
+        }
+
+        if (actionOutput.error) {
+          setError(actionOutput.error);
+        }
+
+        if (actionOutput.fieldErrors) {
+          setFieldErrors(actionOutput.fieldErrors);
+        }
+        
+        if(actionOutput.data) {
+          setData(actionOutput.data);
+        }
+
+      } catch (error) {
+
+      }
+
+
+      return input;
+    }, [action]
+  );
+
+  return cachedFn;
+}
+```
