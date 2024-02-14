@@ -5870,3 +5870,22 @@ export const useServerAction = <InputType, OutputType> (
   return cachedFn;
 }
 ```
+
+Add state and options to useServerAction hook
+
+The useServerAction hook is a custom hook that lets you memoize a server action function. A server action is a function that runs on the server and can be invoked from the client using a special URL. The useServerAction hook takes a server action function and an optional object of options as parameters, and returns a memoized callback function. The options object can contain three functions: onSuccess, onError, and onComplete, which are called when the server action succeeds, fails, or finishes, respectively. The useServerAction hook also manages the state of the server action, such as the output data, the error message, the field errors, and the loading status. The useServerAction hook uses the useState hook from React to create and update the state variables, and the useCallback hook to create the memoized callback function.
+
+### useServerAction callback function
+
+#### useCallback hook
+
+- [useCallback | React Reference](https://react.dev/reference/react/useCallback)
+- `useCallback` is a React Hook that lets you cache a function definition between re-renders.
+- `const cachedFn = useCallback(fn, dependencies)`
+
+The useCallback hook is a React hook that lets you memoize a callback function. Memoization is a technique that caches the result of a function so that it does not need to be recalculated every time it is called with the same arguments. This can improve the performance and avoid unnecessary re-rendering of components that depend on the callback function.
+
+The useCallback hook takes two parameters: a callback function and an array of dependencies. The callback function is the function that you want to memoize. The array of dependencies is a list of values that the callback function depends on. The useCallback hook returns a memoized version of the callback function that only changes if one of the dependencies has changed.
+
+You can use the useCallback hook when you have a component that passes a callback function to a child component as a prop. If the callback function is not memoized, it will be recreated on every render of the parent component, which will cause the child component to re-render as well, even if the props have not changed. By using the useCallback hook, you can prevent this unnecessary re-rendering and improve the performance of your application.
+
