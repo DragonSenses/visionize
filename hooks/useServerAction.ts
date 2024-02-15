@@ -18,14 +18,40 @@ export const useServerAction = <InputType, OutputType> (
 
   const [data, setData] = useState<OutputType | undefined>(undefined);
   const [error, setError] = useState<string | undefined>(undefined);
-
   const [fieldErrors, setFieldErrors] = useState<FieldErrors<InputType> | undefined>(
     undefined
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const cachedFn = useCallback(
-    async (input) => {
+    async (input: InputType) => {
+      setIsLoading(true);
+
+      try {
+        const actionOutput = await action(input);
+
+        if (!actionOutput) {
+          return;
+        }
+
+        if (actionOutput.error) {
+          setError(actionOutput.error);
+        }
+
+        if (actionOutput.fieldErrors) {
+          setFieldErrors(actionOutput.fieldErrors);
+        }
+        
+        if(actionOutput.data) {
+          setData(actionOutput.data);
+        }
+
+      } catch (error) {
+        console.error(`An error occurred during a server action.\n${error}`);
+      } finally {
+        setIsLoading(false);
+      }
+
       return input;
     }, [action]
   );
