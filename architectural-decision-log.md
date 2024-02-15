@@ -6174,3 +6174,41 @@ export default function BoardForm() {
   )
 }
 ```
+
+## Form components
+
+Goal is to make a set of re-usable components for the `Form`. This will allow us to refactor `BoardForm` and other components accordingly.
+
+Create `/form` folder in `/components`. 
+
+### FormInput component
+
+Inside `/form/components/` create file `FormInput.tsx`.
+
+`components\form\FormInput.tsx`
+```tsx
+import React from 'react'
+
+export default function FormInput() {
+  return (
+    <div>FormInput</div>
+  )
+}
+```
+
+Let's add the `FormInputProp` interface with the properties we plan to have
+
+```tsx
+interface FormInputProps {
+  id: string;
+  className?: string;
+  defaultValue?: string;
+  label?: string;
+  placeholder?: string;
+  type?: string;
+  disabled?: boolean;
+  required?: boolean;
+  errors?: Record<string, string[] | undefined>;
+  onBlur?: () => void;
+}
+```
