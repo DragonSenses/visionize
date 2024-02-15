@@ -5889,13 +5889,26 @@ The useCallback hook takes two parameters: a callback function and an array of d
 
 You can use the useCallback hook when you have a component that passes a callback function to a child component as a prop. If the callback function is not memoized, it will be recreated on every render of the parent component, which will cause the child component to re-render as well, even if the props have not changed. By using the useCallback hook, you can prevent this unnecessary re-rendering and improve the performance of your application.
 
+Inside `useServerAction` we call the `useCallback` hook like this:
+
+```ts
+  const cachedFn = useCallback(
+    async (input) => {
+      return input;
+    }, [action]
+  );
+```
+
+We will call this `cachedFn`, which we call inside our components, which calls an `async` function that takes the `input` argument. We send that input inside of our `action`. This `action` will run through our `ActionState` to be validated. Afterwards, it will follow the server action logic.
+
 ### useServerAction logic
 
-Now for the `cachedFn`, inside the `useCallback` hook we want to have a an `async` function with `input` as the argument. Inside the function we immediately set the `loading` state to `true`. Then open up a `try..catch` where we call `action(input)` and take save the result to `actionOutput`. Then we check for a series of conditions.
+Now for the `cachedFn`, inside the `useCallback` hook we want to have a an `async` function with `input` as the argument. Inside the function we immediately set the `loading` state to `true`. Then open up a `try..catch..finally` where we call `action(input)` and take save the result to `actionOutput`. Then we check for a series of conditions.
 
 - if `actionOutput` is falsy then we have an early `return`
 - Otherise, check the properties of `actionOutput` if they contain `error`, `fieldErrors` or `data` and set the state variables accordingly.
 
+Next let's catch any errors and log it to the console. Then in the `finally` block we should set the `loading` state to `false`.
 
 ```ts
 export const useServerAction = <InputType, OutputType> (
@@ -5934,9 +5947,10 @@ export const useServerAction = <InputType, OutputType> (
         }
 
       } catch (error) {
-
+        console.error(`An error occurred during a server action.\n${error}`);
+      } finally {
+        setIsLoading(false);
       }
-
 
       return input;
     }, [action]
@@ -5945,3 +5959,18 @@ export const useServerAction = <InputType, OutputType> (
   return cachedFn;
 }
 ```
+
+feat: add useServerAction hook to handle server actions
+
+This commit adds a custom React hook that takes a server action function and an optional options object as parameters. The hook returns a cached function that can be called with an input to execute the server action. The hook also manages the state of the data, error, field errors, and loading status of the server action. The options object can specify callback functions to handle the completion, error, or success of the server action.
+
+- If the server action had no output our results then we do an early return and have no callbacks. 
+- If output has `fieldErrors` then something went wrong with validation
+  - This has no callback function
+- If output has a `error`, which is a server error, we set the `error` state
+  - Invoke options callback for `onError` since this is not an error we want for the input field but rather pass in that error to something else like an error notification such as toast
+- If output has `data` then it successfully created the record
+  - Invoke options callback for `onSuccess` and pass in the the record so we can operate on the record (e.g., redirecting to a specific ID of a page, or success message)
+- In the `finally` block, we set the `loading` state to `false`
+  - Invoke options callback for `onComplete`
+  
