@@ -6145,3 +6145,32 @@ refactor: replace useFormState with useServerAction
 This commit replaces the useFormState hook with the useServerAction hook in the BoardForm component. The useServerAction hook simplifies the logic and state management of the server action by handling the data, error, field errors, and loading status internally. The BoardForm component only needs to pass the createBoard action and the input to the executeServerAction function returned by the hook. This improves the readability and maintainability of the code and the component usage.
 
 
+Next let's add the callback functions depending on the server action outcomes: `onSuccess` and `onError`
+
+feat: add callback functions to useServerAction hook
+
+This commit adds an options object to the useServerAction hook in the BoardForm component that specifies callback functions to handle the error and success of the createBoard action. The hook will invoke the corresponding callback function depending on the outcome of the action and log the error or data to the console. This allows the BoardForm component to customize the behavior and side effects of the hook.
+
+```tsx
+export default function BoardForm() {
+  const { executeServerAction, fieldErrors } = useServerAction(createBoard, {
+    onError: (error) => { console.error(error); },
+    onSuccess: (data) => { console.log(data, 'Successfully created Board!'); },
+  });
+
+  function onSubmit(formData: FormData) {
+    const title = formData.get('title') as string;
+
+    executeServerAction({ title });
+  }
+
+  return (
+    <form action={onSubmit}>
+      <BoardFormInput errors={fieldErrors}/>
+      <BoardFormButton type="submit" variant="default" size="default">
+        Submit
+      </BoardFormButton>
+    </form>
+  )
+}
+```

@@ -9,7 +9,10 @@ import { useServerAction } from '@/hooks/useServerAction';
 
 /* Create a form for creating a new board */
 export default function BoardForm() {
-  const { executeServerAction, fieldErrors } = useServerAction(createBoard);
+  const { executeServerAction, fieldErrors } = useServerAction(createBoard, {
+    onError: (error) => { console.error(error); },
+    onSuccess: (data) => { console.log(data, 'Successfully created Board!'); },
+  });
 
   function onSubmit(formData: FormData) {
     const title = formData.get('title') as string;
