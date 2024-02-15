@@ -5826,7 +5826,7 @@ The `UseServerActionOptions` interface has three optional properties: `onSuccess
 interface UseServerActionOptions<OutputType> {
   onComplete?: () => void;
   onError?: (error: string) => void;
-  onSucces?: (data: OutputType) => void;
+  onSuccess?: (data: OutputType) => void;
 };
 ```
 
@@ -5845,7 +5845,7 @@ type ServerAction<InputType, OutputType> = (data: InputType) =>
 interface UseServerActionOptions<OutputType> {
   onComplete?: () => void;
   onError?: (error: string) => void;
-  onSucces?: (data: OutputType) => void;
+  onSuccess?: (data: OutputType) => void;
 };
 
 export const useServerAction = <InputType, OutputType> (
@@ -5960,9 +5960,11 @@ export const useServerAction = <InputType, OutputType> (
 }
 ```
 
-feat: add useServerAction hook to handle server actions
+#### Add options object to specify callback functions
 
-This commit adds a custom React hook that takes a server action function and an optional options object as parameters. The hook returns a cached function that can be called with an input to execute the server action. The hook also manages the state of the data, error, field errors, and loading status of the server action. The options object can specify callback functions to handle the completion, error, or success of the server action.
+Lastly, we will use the options object to specify callback functions to handle the completion, error, or success of the server action.
+
+We just need to add the callback functions to the `error` and `data` conditions, and the `onComplete` in the finally block. To recap:
 
 - If the server action had no output our results then we do an early return and have no callbacks. 
 - If output has `fieldErrors` then something went wrong with validation
@@ -5973,4 +5975,84 @@ This commit adds a custom React hook that takes a server action function and an 
   - Invoke options callback for `onSuccess` and pass in the the record so we can operate on the record (e.g., redirecting to a specific ID of a page, or success message)
 - In the `finally` block, we set the `loading` state to `false`
   - Invoke options callback for `onComplete`
-  
+
+feat: add callback functions to useServerAction
+
+This commit modifies the useServerAction hook to accept an options object that can specify callback functions to handle the completion, error, or success of the server action. The hook will invoke the corresponding callback function depending on the outcome of the action. This allows the caller code to customize the behavior and side effects of the hook.
+
+`hooks\useServerAction.ts`
+```ts
+import { useCallback, useState } from "react";
+
+import { ActionState, FieldErrors } from "@/lib/createServerAction";
+
+type ServerAction<InputType, OutputType> = (data: InputType) => 
+  Promise<ActionState<InputType, OutputType>>;
+
+interface UseServerActionOptions<OutputType> {
+  onComplete?: () => void;
+  onError?: (error: string) => void;
+  onSuccess?: (data: OutputType) => void;
+};
+
+export const useServerAction = <InputType, OutputType> (
+  action: ServerAction<InputType, OutputType>,
+  options: UseServerActionOptions<OutputType> = {},
+) => {
+
+  const [data, setData] = useState<OutputType | undefined>(undefined);
+  const [error, setError] = useState<string | undefined>(undefined);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors<InputType> | undefined>(
+    undefined
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const cachedFn = useCallback(
+    async (input: InputType) => {
+      setIsLoading(true);
+
+      try {
+        const actionOutput = await action(input);
+
+        if (!actionOutput) {
+          return;
+        }
+
+        if (actionOutput.error) {
+          setError(actionOutput.error);
+          options.onError?.(actionOutput.error);
+        }
+
+        if (actionOutput.fieldErrors) {
+          setFieldErrors(actionOutput.fieldErrors);
+        }
+        
+        if(actionOutput.data) {
+          setData(actionOutput.data);
+          options.onSuccess?.(actionOutput.data);
+        }
+
+      } catch (error) {
+        console.error(`An error occurred during a server action.\n${error}`);
+      } finally {
+        setIsLoading(false);
+        options.onComplete?.();
+      }
+
+      return input;
+    }, [action, options]
+  );
+
+  return {
+    cachedFn,
+    data,
+    error,
+    fieldErrors,
+    isLoading,
+  };
+}
+```
+
+feat: add useServerAction hook to handle server actions
+
+This commit adds a custom React hook that takes a server action function and an optional options object as parameters. The hook returns a cached function that can be called with an input to execute the server action. The hook also manages the state of the data, error, field errors, and loading status of the server action. The options object can specify callback functions to handle the completion, error, or success of the server action.
