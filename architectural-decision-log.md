@@ -5889,7 +5889,7 @@ The useCallback hook takes two parameters: a callback function and an array of d
 
 You can use the useCallback hook when you have a component that passes a callback function to a child component as a prop. If the callback function is not memoized, it will be recreated on every render of the parent component, which will cause the child component to re-render as well, even if the props have not changed. By using the useCallback hook, you can prevent this unnecessary re-rendering and improve the performance of your application.
 
-Inside `useServerAction` we call the `useCallback` hook like this:
+Inside `useServerAction` we call the `useCallback` hook and save it to a cached function called `cachedFn` like this:
 
 ```ts
   const cachedFn = useCallback(
@@ -5899,11 +5899,11 @@ Inside `useServerAction` we call the `useCallback` hook like this:
   );
 ```
 
-We will call this `cachedFn`, which we call inside our components, which calls an `async` function that takes the `input` argument. We send that input inside of our `action`. This `action` will run through our `ActionState` to be validated. Afterwards, it will follow the server action logic.
+Rename this to `executeServerAction`, which we call inside our components, which calls an `async` function that takes the `input` argument. We send that input inside of our `action`. This `action` will run through our `ActionState` to be validated. Afterwards, it will follow the server action logic.
 
 ### useServerAction logic
 
-Now for the `cachedFn`, inside the `useCallback` hook we want to have a an `async` function with `input` as the argument. Inside the function we immediately set the `loading` state to `true`. Then open up a `try..catch..finally` where we call `action(input)` and take save the result to `actionOutput`. Then we check for a series of conditions.
+Now for the `executeServerAction`, inside the `useCallback` hook we want to have a an `async` function with `input` as the argument. Inside the function we immediately set the `loading` state to `true`. Then open up a `try..catch..finally` where we call `action(input)` and take save the result to `actionOutput`. Then we check for a series of conditions.
 
 - if `actionOutput` is falsy then we have an early `return`
 - Otherise, check the properties of `actionOutput` if they contain `error`, `fieldErrors` or `data` and set the state variables accordingly.
@@ -5923,7 +5923,7 @@ export const useServerAction = <InputType, OutputType> (
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const cachedFn = useCallback(
+  const executeServerAction = useCallback(
     async (input: InputType) => {
       setIsLoading(true);
 
@@ -5956,7 +5956,7 @@ export const useServerAction = <InputType, OutputType> (
     }, [action]
   );
 
-  return cachedFn;
+  return executeServerAction;
 }
 ```
 
@@ -6007,7 +6007,7 @@ export const useServerAction = <InputType, OutputType> (
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const cachedFn = useCallback(
+  const executeServerAction = useCallback(
     async (input: InputType) => {
       setIsLoading(true);
 
@@ -6044,7 +6044,7 @@ export const useServerAction = <InputType, OutputType> (
   );
 
   return {
-    cachedFn,
+    executeServerAction,
     data,
     error,
     fieldErrors,
@@ -6056,3 +6056,92 @@ export const useServerAction = <InputType, OutputType> (
 feat: add useServerAction hook to handle server actions
 
 This commit adds a custom React hook that takes a server action function and an optional options object as parameters. The hook returns a cached function that can be called with an input to execute the server action. The hook also manages the state of the data, error, field errors, and loading status of the server action. The options object can specify callback functions to handle the completion, error, or success of the server action.
+
+refactor: rename cachedFn to executeServerAction
+
+This commit renames the variable cachedFn to executeServerAction in the useServerAction hook to better reflect the proper name and context it will be used in. The new name indicates that the variable is a function that executes a server action with a given input, rather than a generic cached function. This improves the readability and clarity of the code and the hook usage.
+
+## BoardForm: use createBoard using createServerAction abstraction
+
+Navigate back to `BoardForm.tsx`, as a reminder:
+
+`components\BoardForm.tsx`
+```tsx
+"use client";
+
+import React from 'react';
+import { useFormState } from 'react-dom';
+
+import createBoard from '@/actions/createBoard';
+import BoardFormInput from '@/components/BoardFormInput';
+import BoardFormButton from '@/components/BoardFormButton';
+
+/* Create a form for creating a new board */
+export default function BoardForm() {
+
+  const initialState = {
+    errors: {},
+    message: "",
+  };
+
+  // Use the useFormState hook to create a state and an action for the form
+  const [state, formAction] = useFormState(createBoard, initialState);
+
+  /* The state will be updated by the createBoard action when the form is submitted
+  The createBoard action is a function that takes the previous state and the form 
+  data as arguments and returns a new state */
+
+  // Pass the formAction as the action prop to the form element
+  return (
+    <form action={formAction}>
+      <BoardFormInput errors={state?.errors}/>
+      <BoardFormButton type="submit" variant="default" size="default">
+        Submit
+      </BoardFormButton>
+    </form>
+  )
+}
+```
+
+We can remove the `createBoard` import, the `useFormState` hook and the `initialState` too.
+
+Then import and invoke `useServerAction` and destructure out `{ executeServerAction, fieldErrors }`. Create an `onSubmit` function handler that extracts the `title` from the `formData` and passes `title` into `executeServerAction`.
+
+Finally, pass in `onSubmit` and `fieldErrors` to their corresponding props.
+
+```tsx
+"use client";
+
+import React from 'react';
+
+import { createBoard } from "@/actions/createBoard/index";
+import BoardFormInput from '@/components/BoardFormInput';
+import BoardFormButton from '@/components/BoardFormButton';
+import { useServerAction } from '@/hooks/useServerAction';
+
+/* Create a form for creating a new board */
+export default function BoardForm() {
+  const { executeServerAction, fieldErrors } = useServerAction(createBoard);
+
+  function onSubmit(formData: FormData) {
+    const title = formData.get('title') as string;
+
+    executeServerAction({ title });
+  }
+
+  return (
+    <form action={onSubmit}>
+      <BoardFormInput errors={fieldErrors}/>
+      <BoardFormButton type="submit" variant="default" size="default">
+        Submit
+      </BoardFormButton>
+    </form>
+  )
+}
+```
+
+refactor: replace useFormState with useServerAction
+
+This commit replaces the useFormState hook with the useServerAction hook in the BoardForm component. The useServerAction hook simplifies the logic and state management of the server action by handling the data, error, field errors, and loading status internally. The BoardForm component only needs to pass the createBoard action and the input to the executeServerAction function returned by the hook. This improves the readability and maintainability of the code and the component usage.
+
+
