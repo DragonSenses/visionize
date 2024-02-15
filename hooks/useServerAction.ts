@@ -23,7 +23,7 @@ export const useServerAction = <InputType, OutputType> (
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const cachedFn = useCallback(
+  const executeServerAction = useCallback(
     async (input: InputType) => {
       setIsLoading(true);
 
@@ -60,7 +60,7 @@ export const useServerAction = <InputType, OutputType> (
   );
 
   return {
-    cachedFn,
+    executeServerAction,
     data,
     error,
     fieldErrors,
