@@ -8,7 +8,7 @@ type ServerAction<InputType, OutputType> = (data: InputType) =>
 interface UseServerActionOptions<OutputType> {
   onComplete?: () => void;
   onError?: (error: string) => void;
-  onSucces?: (data: OutputType) => void;
+  onSuccess?: (data: OutputType) => void;
 };
 
 export const useServerAction = <InputType, OutputType> (
@@ -36,6 +36,7 @@ export const useServerAction = <InputType, OutputType> (
 
         if (actionOutput.error) {
           setError(actionOutput.error);
+          options.onError?.(actionOutput.error);
         }
 
         if (actionOutput.fieldErrors) {
@@ -44,17 +45,25 @@ export const useServerAction = <InputType, OutputType> (
         
         if(actionOutput.data) {
           setData(actionOutput.data);
+          options.onSuccess?.(actionOutput.data);
         }
 
       } catch (error) {
         console.error(`An error occurred during a server action.\n${error}`);
       } finally {
         setIsLoading(false);
+        options.onComplete?.();
       }
 
       return input;
-    }, [action]
+    }, [action, options]
   );
 
-  return cachedFn;
+  return {
+    cachedFn,
+    data,
+    error,
+    fieldErrors,
+    isLoading,
+  };
 }
