@@ -1,6 +1,7 @@
 import React, { forwardRef } from 'react'
 import { useFormStatus } from 'react-dom';
 
+import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -29,7 +30,7 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
   errors,
   onBlur,
 }, ref) => {
-  const { pending, data, method, action } = useFormStatus();
+  const { pending } = useFormStatus();
 
   return (
     <div className='space-y-2'>
@@ -37,11 +38,26 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
         {label ? (
           <Label 
             htmlFor={id}
+            className='text-xs font-semibold text-neutral-700'
           >
             Label
           </Label>
         ) : null}
-        <Input />
+        <Input 
+          id={id}
+          defaultValue={defaultValue}
+          name={id}
+          placeholder={placeholder}
+          type={type}
+          disabled={pending || disabled}
+          required={required}
+          onBlur={onBlur}
+          ref={ref}
+          className={cn(
+            'text-sm px-2 py-1 h-7',
+            className,
+          )}
+        />
       </div>
     </div>
   )
