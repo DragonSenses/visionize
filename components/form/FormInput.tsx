@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 
 interface FormInputProps {
   id: string;
@@ -13,10 +13,24 @@ interface FormInputProps {
   onBlur?: () => void;
 }
 
-const FormInput = {
+const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
+  id,
+  className,
+  defaultValue = "",
+  label,
+  placeholder,
+  type,
+  disabled,
+  required,
+  errors,
+  onBlur,
+}, ref) => {
+
   return (
     <div>FormInput</div>
   )
-}
+});
+
+FormInput.displayName = "FormInput";
 
 export default FormInput;
