@@ -6256,3 +6256,63 @@ function Form() {
   );
 }
 ```
+
+### FormInput and forwardRef
+
+feat: use forwardRef for FormInput component
+
+Use the forwardRef utility function to pass a ref from the parent component to the FormInput component. This allows the parent component to access or manipulate the input element directly. Add a displayName property to the component for debugging purposes.
+
+Now let's use `forwardRef` and assign the props to `FormInput` component.
+
+```tsx
+import React, { forwardRef } from 'react'
+
+interface FormInputProps {
+  id: string;
+  className?: string;
+  defaultValue?: string;
+  label?: string;
+  placeholder?: string;
+  type?: string;
+  disabled?: boolean;
+  required?: boolean;
+  errors?: Record<string, string[] | undefined>;
+  onBlur?: () => void;
+}
+
+const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
+  id,
+  className,
+  defaultValue = "",
+  label,
+  placeholder,
+  type,
+  disabled,
+  required,
+  errors,
+  onBlur,
+}, ref) => {
+
+  return (
+    <div>FormInput</div>
+  )
+});
+
+export default FormInput;
+```
+
+There is an issue if we hover over the return,
+
+```sh
+Component definition is missing display name eslint react/display-name
+```
+
+This error means that you have not specified a `displayName` property for your component, which is required by the ESLint rule [react/display-name](https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/display-name.md). This rule helps with debugging and testing by giving your component a human-readable name.
+
+We can fix this by adding the following line after the component
+
+```tsx
+FormInput.displayName = "FormInput";
+```
+
