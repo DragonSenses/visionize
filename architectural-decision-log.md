@@ -6212,3 +6212,47 @@ interface FormInputProps {
   onBlur?: () => void;
 }
 ```
+
+#### forwardRef API
+
+Before we assign the props, we have to learn about `forwardRef` and what it means to manipulate the DOM with Refs.
+
+- [forwardRef | React Reference](https://react.dev/reference/react/forwardRef)
+- `forwardRef` lets your component expose a DOM node to parent component with a [ref](https://react.dev/learn/manipulating-the-dom-with-refs).
+  
+**forwardRef** in React is a utility function that allows you to pass a **ref** (a reference to a DOM element or a component instance) from a parent component to a child component. This is useful when you need to access or manipulate the child's DOM element or instance directly from the parent component. For example, you may want to focus an input field, scroll to a position, or measure the size and position of an element.
+
+**Manipulating the DOM with Refs** means using refs to access and modify the DOM elements managed by React. React usually updates the DOM automatically to match your render output, but sometimes you may need to interact with the underlying HTML elements directly. For example, you may want to trigger an animation, integrate with a third-party library, or manage focus, text selection, or media playback.
+
+To use refs in React, you need to import the **useRef** Hook and use it to create a ref object. Then, you can pass the ref object as the **ref** attribute to the JSX element that you want to get a reference to. You can then access the DOM node or instance from the ref object's **current** property and use any browser APIs on it.
+
+Here is a simple example of using forwardRef and manipulating the DOM with refs:
+
+```jsx
+// Import the useRef and forwardRef Hooks
+import { useRef, forwardRef } from "react";
+
+// Define a child component that takes a ref as the second argument
+const MyInput = forwardRef(function MyInput(props, ref) {
+  return <input type="text" ref={ref} />;
+});
+
+// Define a parent component that creates and passes a ref to the child
+function Form() {
+  // Create a ref object
+  const inputRef = useRef(null);
+
+  // Define a function that focuses the input using the ref
+  function focusInput() {
+    inputRef.current.focus();
+  }
+
+  // Render the child component and pass the ref as the ref attribute
+  return (
+    <div>
+      <MyInput ref={inputRef} />
+      <button onClick={focusInput}>Focus the input</button>
+    </div>
+  );
+}
+```
