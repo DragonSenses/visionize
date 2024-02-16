@@ -6257,7 +6257,31 @@ function Form() {
 }
 ```
 
-### FormInput and forwardRef
+Here is a simple example of focusing a text input:
+
+`App.js`
+```js
+import { useRef } from 'react';
+
+export default function Form() {
+  const inputRef = useRef(null);
+
+  function handleClick() {
+    inputRef.current.focus();
+  }
+
+  return (
+    <>
+      <input ref={inputRef} />
+      <button onClick={handleClick}>
+        Focus the input
+      </button>
+    </>
+  );
+}
+```
+
+#### FormInput and forwardRef
 
 feat: use forwardRef for FormInput component
 
@@ -6316,3 +6340,43 @@ We can fix this by adding the following line after the component
 FormInput.displayName = "FormInput";
 ```
 
+#### FormInput output
+
+Now onto the form output.
+
+First lets extract the `pending` status with [useFormStatus](https://react.dev/reference/react-dom/hooks/useFormStatus) so we can disable the FormInput when loading.
+
+Next install [Label](https://ui.shadcn.com/docs/components/label) from shadcn/ui.
+
+```sh
+npx shadcn-ui@latest add label
+```
+
+Then we create a `div` within a `div` with vertical space between. Inside we conditionally render the `Label` component. Then assign the prop `htmlFor` to improve accessibility and usability of the form. The htmlFor attribute is an HTML attribute that is used with the `<label>` element. It specifies the id of the form element that the label is associated with. This way, when the user clicks on the label, the focus will move to the input field. After the `Label` render the `Input` component.
+
+feat: add output for FormInput component
+
+Use the forwardRef utility function to pass a ref from the parent component to the FormInput component. Render a Label and an Input element inside a div with spacing. Use the useFormStatus hook to get the status of the form submission.
+
+```tsx
+const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
+  // ...
+}, ref) => {
+  const { pending, data, method, action } = useFormStatus();
+
+  return (
+    <div className='space-y-2'>
+      <div className='space-y-1'>
+        {label ? (
+          <Label 
+            htmlFor={id}
+          >
+            Label
+          </Label>
+        ) : null}
+        <Input />
+      </div>
+    </div>
+  )
+});
+```
