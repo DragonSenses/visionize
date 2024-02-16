@@ -6460,3 +6460,63 @@ FormInput.displayName = "FormInput";
 export default FormInput;
 ```
 
+#### FormErrors component
+
+To assign the `errors` prop in `FormInput`, create a `FormErrors` component in `/components/form`.
+
+`components\form\FormErrors.tsx`
+```tsx
+import React from 'react'
+
+export default function FormErrors() {
+  return (
+    <div>FormErrors</div>
+  )
+}
+```
+
+Then import and render `FormErrors` in `FormInput`, assign the props `id` and `errors`. While here we can also add the `aria-describedby` prop to the `Input` component, and set it to `${id}-error`.
+
+`components\form\FormInput.tsx`
+```tsx
+const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
+  // ...
+}, ref) => {
+  const { pending } = useFormStatus();
+
+  return (
+    <div className='space-y-2'>
+      <div className='space-y-1'>
+        {label ? (
+          <Label 
+            htmlFor={id}
+            className='text-xs font-semibold text-neutral-700'
+          >
+            Label
+          </Label>
+        ) : null}
+        <Input 
+          id={id}
+          defaultValue={defaultValue}
+          name={id}
+          placeholder={placeholder}
+          type={type}
+          disabled={pending || disabled}
+          required={required}
+          onBlur={onBlur}
+          ref={ref}
+          className={cn(
+            'text-sm px-2 py-1 h-7',
+            className,
+          )}
+          aria-describedby={`${id}-error`}
+        />
+      </div>
+      <FormErrors 
+        id={id}
+        errors={errors}
+      />
+    </div>
+  )
+});
+```
