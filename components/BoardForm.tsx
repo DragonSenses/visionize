@@ -3,9 +3,9 @@
 import React from 'react';
 
 import { createBoard } from "@/actions/createBoard/index";
-import BoardFormInput from '@/components/BoardFormInput';
 import BoardFormButton from '@/components/BoardFormButton';
 import { useServerAction } from '@/hooks/useServerAction';
+import FormInput from '@/components/form/FormInput';
 
 /* Create a form for creating a new board */
 export default function BoardForm() {
@@ -22,7 +22,11 @@ export default function BoardForm() {
 
   return (
     <form action={onSubmit}>
-      <BoardFormInput errors={fieldErrors}/>
+      <FormInput 
+        errors={fieldErrors}
+        id="title"
+        label="Board Title"
+      />
       <BoardFormButton type="submit" variant="default" size="default">
         Submit
       </BoardFormButton>
