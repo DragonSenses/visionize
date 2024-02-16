@@ -1,4 +1,8 @@
 import React, { forwardRef } from 'react'
+import { useFormStatus } from 'react-dom';
+
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface FormInputProps {
   id: string;
@@ -25,9 +29,21 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
   errors,
   onBlur,
 }, ref) => {
+  const { pending, data, method, action } = useFormStatus();
 
   return (
-    <div>FormInput</div>
+    <div className='space-y-2'>
+      <div className='space-y-1'>
+        {label ? (
+          <Label 
+            htmlFor={id}
+          >
+            Label
+          </Label>
+        ) : null}
+        <Input />
+      </div>
+    </div>
   )
 });
 
