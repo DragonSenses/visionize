@@ -6520,3 +6520,48 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
   )
 });
 ```
+
+Inside the output of `FormErrors` we want to map out the `errors` into a new array of JSX elements. The JSX element will be a div that contains the XCircle icon and the error string as children.
+
+Implement FormErrors component
+
+Use id prop to link input and error elements.  Use aria-live attribute to announce errors to screen readers. Use XCircle icon from lucide-react to display errors for each input.
+
+`components\form\FormErrors.tsx`
+```tsx
+import { XCircle } from 'lucide-react';
+import React from 'react'
+
+interface FormErrorsProp {
+  id: string;
+  errors?: Record<string, string[] | undefined>;
+};
+
+export default function FormErrors({
+  id, 
+  errors,
+}: FormErrorsProp) {
+  
+  if (!errors) {
+    return null;
+  }
+
+  return (
+    <div
+      id={`${id}-error`}
+      aria-live='polite'
+      className='mt-2 text-xs text-rose-500'
+    >
+      {errors?.[id]?.map((error: string) => (
+        <div
+          key={error}
+          className='flex items-center rounded-sm font-medium p-2 border border-rose-500 bg-rose-500/10'
+        >
+          <XCircle className='h-4 w-4 mr-2'/>
+          {error}
+        </div>
+      ))}
+    </div>
+  )
+}
+```
