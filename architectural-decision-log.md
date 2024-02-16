@@ -6380,3 +6380,83 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
   )
 });
 ```
+
+feat: implement FormInput component with useFormStatus hook
+
+Create a FormInput component that renders a Label and an Input element with spacing. Use the useFormStatus hook to get the status of the form submission. Use the forwardRef utility function to pass a ref from the parent component to the FormInput component.
+
+Assign props to Input component
+
+Use forwardRef to pass ref to Input component and add label, placeholder, type, disabled, required, errors, and onBlur props. Use useFormStatus hook to get pending state and disable input accordingly. Use cn utility to combine class names.
+
+```tsx
+import React, { forwardRef } from 'react'
+import { useFormStatus } from 'react-dom';
+
+import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+
+interface FormInputProps {
+  id: string;
+  className?: string;
+  defaultValue?: string;
+  label?: string;
+  placeholder?: string;
+  type?: string;
+  disabled?: boolean;
+  required?: boolean;
+  errors?: Record<string, string[] | undefined>;
+  onBlur?: () => void;
+}
+
+const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
+  id,
+  className,
+  defaultValue = "",
+  label,
+  placeholder,
+  type,
+  disabled,
+  required,
+  errors,
+  onBlur,
+}, ref) => {
+  const { pending } = useFormStatus();
+
+  return (
+    <div className='space-y-2'>
+      <div className='space-y-1'>
+        {label ? (
+          <Label 
+            htmlFor={id}
+            className='text-xs font-semibold text-neutral-700'
+          >
+            Label
+          </Label>
+        ) : null}
+        <Input 
+          id={id}
+          defaultValue={defaultValue}
+          name={id}
+          placeholder={placeholder}
+          type={type}
+          disabled={pending || disabled}
+          required={required}
+          onBlur={onBlur}
+          ref={ref}
+          className={cn(
+            'text-sm px-2 py-1 h-7',
+            className,
+          )}
+        />
+      </div>
+    </div>
+  )
+});
+
+FormInput.displayName = "FormInput";
+
+export default FormInput;
+```
+
