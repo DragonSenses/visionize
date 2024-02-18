@@ -6371,7 +6371,7 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
           <Label 
             htmlFor={id}
           >
-            Label
+            {label}
           </Label>
         ) : null}
         <Input />
@@ -6432,7 +6432,7 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
             htmlFor={id}
             className='text-xs font-semibold text-neutral-700'
           >
-            Label
+            {label}
           </Label>
         ) : null}
         <Input 
@@ -6492,7 +6492,7 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
             htmlFor={id}
             className='text-xs font-semibold text-neutral-700'
           >
-            Label
+            {label}
           </Label>
         ) : null}
         <Input 
@@ -6562,6 +6562,51 @@ export default function FormErrors({
         </div>
       ))}
     </div>
+  )
+}
+```
+
+With this complete, we can refactor our `BoardForm` to replace the `BoardFormInput` with the more re-usable `FormInput` component.
+
+refactor: BoardForm to use FormInput component
+
+Replace BoardFormInput component with FormInput component to avoid duplication and improve reusability. Pass errors, id and label props to FormInput component.
+
+`components\BoardForm.tsx`
+```tsx
+"use client";
+
+import React from 'react';
+
+import { createBoard } from "@/actions/createBoard/index";
+import BoardFormButton from '@/components/BoardFormButton';
+import { useServerAction } from '@/hooks/useServerAction';
+import FormInput from '@/components/form/FormInput';
+
+/* Create a form for creating a new board */
+export default function BoardForm() {
+  const { executeServerAction, fieldErrors } = useServerAction(createBoard, {
+    onError: (error) => { console.error(error); },
+    onSuccess: (data) => { console.log(data, 'Successfully created Board!'); },
+  });
+
+  function onSubmit(formData: FormData) {
+    const title = formData.get('title') as string;
+
+    executeServerAction({ title });
+  }
+
+  return (
+    <form action={onSubmit}>
+      <FormInput 
+        errors={fieldErrors}
+        id="title"
+        label="Board Title"
+      />
+      <BoardFormButton type="submit" variant="default" size="default">
+        Submit
+      </BoardFormButton>
+    </form>
   )
 }
 ```
