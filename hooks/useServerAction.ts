@@ -34,13 +34,11 @@ export const useServerAction = <InputType, OutputType> (
           return;
         }
 
+        setFieldErrors(actionOutput.fieldErrors);
+
         if (actionOutput.error) {
           setError(actionOutput.error);
           options.onError?.(actionOutput.error);
-        }
-
-        if (actionOutput.fieldErrors) {
-          setFieldErrors(actionOutput.fieldErrors);
         }
         
         if(actionOutput.data) {
