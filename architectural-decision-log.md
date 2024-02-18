@@ -6696,3 +6696,287 @@ export default function FormSubmitButton({
   )
 }
 ```
+
+Now add the re-usable `FormSubmitButton` inside the `BoardForm`.
+
+refactor: BoardForm to use FormSubmitButton component
+
+Replace BoardFormButton component with FormSubmitButton component to avoid duplication and improve reusability.
+
+`components\BoardForm.tsx`
+```tsx
+"use client";
+
+import React from 'react';
+
+import { createBoard } from "@/actions/createBoard/index";
+import { useServerAction } from '@/hooks/useServerAction';
+import FormInput from '@/components/form/FormInput';
+import FormSubmitButton from '@/components/form/FormSubmitButton';
+
+/* Create a form for creating a new board */
+export default function BoardForm() {
+  const { executeServerAction, fieldErrors } = useServerAction(createBoard, {
+    onError: (error) => { console.error(error); },
+    onSuccess: (data) => { console.log(data, 'Successfully created Board!'); },
+  });
+
+  function onSubmit(formData: FormData) {
+    const title = formData.get('title') as string;
+
+    executeServerAction({ title });
+  }
+
+  return (
+    <form action={onSubmit}>
+      <FormInput 
+        errors={fieldErrors}
+        id="title"
+        label="Board Title"
+      />
+      <FormSubmitButton 
+        size="default" 
+        variant="default" 
+        className='p-1'
+      >
+        Save
+      </FormSubmitButton>
+    </form>
+  )
+}
+```
+
+## Debug Issue: `FormErrors` component message on `FormInput` validation does not reset.
+
+Steps to reproduce the error:
+
+1. Navigate to `BoardForm`
+2. Type an invalid title (i.e., less than 3 characters) for the Board inside the input
+3. Hit the submit button
+4. After form submission, type a valid title name for the Board and submit
+5. Error message displays below the input but does not go away after a valid input is placed
+
+The error message can be traced back to the zod validation:
+
+`actions\createBoard\createBoardSchema.ts`
+```ts
+/**
+ * Define the CreateBoard object schema.
+ * 
+ * Add custom error messages for: required fields, 
+ * invalid type and minimum length.
+ */
+export const CreateBoard = z.object({
+  title: z.string({
+    required_error: "Title is required", 
+    invalid_type_error: "Title is required", 
+  }).min(3, {
+    message: "Must be 3 or more characters long.", 
+  }),
+});
+```
+
+Error message does not reset inside the `FormInput` component wwhich renders `FormErrors`
+
+```tsx
+const FormInput = forwardRef<HTMLInputElement, FormInputProps>(({
+// ...
+}, ref) => {
+  return (
+    <div className='space-y-2'>
+      <div className='space-y-1'>
+        {label ? (
+          <Label 
+            htmlFor={id}
+            className='text-xs font-semibold text-neutral-700'
+          >
+            {label}
+          </Label>
+        ) : null}
+        <Input 
+          id={id}
+          defaultValue={defaultValue}
+          name={id}
+          placeholder={placeholder}
+          type={type}
+          disabled={pending || disabled}
+          required={required}
+          onBlur={onBlur}
+          ref={ref}
+          className={cn(
+            'text-sm px-2 py-1 h-7',
+            className,
+          )}
+          aria-describedby={`${id}-error`}
+        />
+      </div>
+      <FormErrors 
+        id={id}
+        errors={errors}
+      />
+    </div>
+  )
+});
+```
+
+The issue can be traced back to 
+
+`hooks\useServerAction.ts`
+```ts
+  const executeServerAction = useCallback(
+    async (input: InputType) => {
+      setIsLoading(true);
+
+      try {
+        const actionOutput = await action(input);
+
+        // ...
+
+        if (actionOutput.fieldErrors) {
+          setFieldErrors(actionOutput.fieldErrors);
+        }
+```
+
+As we can see we invoke `setFieldErrors(actionOutput.fieldErrors)` IF we have the `actionOutput.fieldErrors` to be truthy.
+
+HOWEVER, let's navigate back to our creator function `createServerAction`
+
+`lib\createServerAction.ts`
+```ts
+export function createServerAction<InputType, OutputType>(
+  schema: z.Schema<InputType>,
+  performAction: (validatedData: InputType) => Promise<ActionState<InputType, OutputType>> 
+): (data: InputType) => Promise<ActionState<InputType, OutputType>> {
+  return async (data: InputType): Promise<ActionState<InputType, OutputType>> => {
+    // Validate input data using the provided schema.
+    const validation = schema.safeParse(data);
+
+    if (!validation.success) {
+      // If validation fails, return field errors.
+      return {
+        fieldErrors: validation.error.flatten().fieldErrors as FieldErrors<InputType>,
+      };
+    }
+
+    return performAction(validation.data);
+  };
+}
+```
+
+Look closely where we return `fieldErrors` object only when validation is NOT successful.
+
+This means that because of 
+
+`lib\createServerAction.ts`
+```ts
+    if (!validation.success) {
+      // If validation fails, return field errors.
+      return {
+        fieldErrors: validation.error.flatten().fieldErrors as FieldErrors<InputType>,
+      };
+    }
+```
+
+The `setFieldErrors` will not update in `useServerAction` hook, because `actionOutput.fieldErrors` must be truthy. That means we ONLY update the `fieldErrors` state when we do have a `fieldError` object being returned.
+
+`hooks\useServerAction.ts`
+```ts
+  const executeServerAction = useCallback(
+    async (input: InputType) => {
+      setIsLoading(true);
+
+      try {
+        const actionOutput = await action(input);
+
+        // ...
+
+        if (actionOutput.fieldErrors) {
+          setFieldErrors(actionOutput.fieldErrors);
+        }
+```
+
+Fix: always update the `fieldErrors` state variable, regardless if `fieldErrors` exists or not.
+
+Field errors are usually returned by the server when the input data does not meet some validation criteria. If you want to display the field errors to the user, then you should always check for them and render them accordingly. 
+
+refactor: update fieldErrors state in useServerAction
+
+Update the fieldErrors state in the useServerAction hook whenever the actionOutput is received. This ensures that the field errors are always in sync with the server response, regardless of whether there is an error or data.
+
+```ts
+import { useCallback, useState } from "react";
+
+import { ActionState, FieldErrors } from "@/lib/createServerAction";
+
+type ServerAction<InputType, OutputType> = (data: InputType) => 
+  Promise<ActionState<InputType, OutputType>>;
+
+interface UseServerActionOptions<OutputType> {
+  onComplete?: () => void;
+  onError?: (error: string) => void;
+  onSuccess?: (data: OutputType) => void;
+};
+
+export const useServerAction = <InputType, OutputType> (
+  action: ServerAction<InputType, OutputType>,
+  options: UseServerActionOptions<OutputType> = {},
+) => {
+
+  const [data, setData] = useState<OutputType | undefined>(undefined);
+  const [error, setError] = useState<string | undefined>(undefined);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors<InputType> | undefined>(
+    undefined
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const executeServerAction = useCallback(
+    async (input: InputType) => {
+      setIsLoading(true);
+
+      try {
+        const actionOutput = await action(input);
+
+        if (!actionOutput) {
+          return;
+        }
+
+        setFieldErrors(actionOutput.fieldErrors);
+
+        if (actionOutput.error) {
+          setError(actionOutput.error);
+          options.onError?.(actionOutput.error);
+        }
+        
+        if(actionOutput.data) {
+          setData(actionOutput.data);
+          options.onSuccess?.(actionOutput.data);
+        }
+
+      } catch (error) {
+        console.error(`An error occurred during a server action.\n${error}`);
+      } finally {
+        setIsLoading(false);
+        options.onComplete?.();
+      }
+
+      return input;
+    }, [action, options]
+  );
+
+  return {
+    executeServerAction,
+    data,
+    error,
+    fieldErrors,
+    isLoading,
+  };
+}
+```
+
+fix: update FormErrors state on input submission
+
+Update the FormErrors state in the FormInput component whenever a new input value is submitted. This also changes the useServerAction hook to update the state of the fieldErrors every time an actionOutput is receieved. This ensures that the form validation errors are always in sync with the user input.
+
+refactor: update fieldErrors state in useServerAction
+
+Update the fieldErrors state in the useServerAction hook whenever the actionOutput is received. This ensures that the field errors are always in sync with the server response, regardless of whether there is an error or data. This fixes the issue where the FormErrors component does not disappear on subsequent form submissions.
