@@ -6652,3 +6652,47 @@ export default function FormSubmitButton({
 
 Now for the output let's get the `pending` from `useFormStatus` hook. Then we return a `Button` component which has the props assigned.
 
+feat: add size prop to FormSubmitButton
+
+Add size prop to FormSubmitButton component to allow different button sizes. The size prop can be one of 'default', 'sm', 'lg', or 'icon'. The component also uses the useFormStatus hook to disable the button when the form is pending. Also add cn utility function to merge Tailwind CSS class names.
+
+```tsx
+"use client";
+
+import React from 'react';
+import { useFormStatus } from 'react-dom';
+
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+
+interface FormSubmitProps {
+  children: React.ReactNode;
+  className?: string;
+  disabled?: boolean;
+  size: 'default' | 'sm' | 'lg' | 'icon';
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' 
+    | 'link' | 'primary';
+};
+
+export default function FormSubmitButton({
+  children,
+  className,
+  disabled,
+  size,
+  variant,
+}: FormSubmitProps) {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      disabled={pending || disabled}
+      size={size}
+      type='submit'
+      variant={variant}
+      className={cn(className)}
+    >
+      {children}
+    </Button>
+  )
+}
+```
