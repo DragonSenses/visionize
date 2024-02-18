@@ -6610,3 +6610,45 @@ export default function BoardForm() {
   )
 }
 ```
+
+### FormSubmitButton component
+
+Create client component `FormSubmitButton` in `/components/form`. Then create the prop interface with `{children, disabled, className, variant }`.
+
+feat: add FormSubmitProps interface
+
+Add FormSubmitProps interface to define the props for the FormSubmitButton component. The interface includes the following properties:
+
+- children: the content of the button
+- className: an optional CSS class name
+- disabled: an optional boolean flag to disable the button
+- variant: an optional string to specify the button style
+
+`components\form\FormSubmitButton.tsx`
+```tsx
+"use client";
+
+import React from 'react';
+
+interface FormSubmitProps {
+  children: React.ReactNode;
+  className?: string;
+  disabled?: boolean;
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' 
+    | 'link' | 'primary';
+};
+
+export default function FormSubmitButton({
+  children,
+  className,
+  disabled,
+  variant,
+}: FormSubmitProps) {
+  return (
+    <div>FormSubmitButton</div>
+  )
+}
+```
+
+Now for the output let's get the `pending` from `useFormStatus` hook. Then we return a `Button` component which has the props assigned.
+
