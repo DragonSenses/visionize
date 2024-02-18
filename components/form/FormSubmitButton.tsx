@@ -2,7 +2,20 @@
 
 import React from 'react';
 
-export default function FormSubmitButton() {
+interface FormSubmitProps {
+  children: React.ReactNode;
+  className?: string;
+  disabled?: boolean;
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' 
+    | 'link' | 'primary';
+};
+
+export default function FormSubmitButton({
+  children,
+  className,
+  disabled,
+  variant,
+}: FormSubmitProps) {
   return (
     <div>FormSubmitButton</div>
   )
