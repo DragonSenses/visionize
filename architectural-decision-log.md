@@ -6699,7 +6699,7 @@ export default function FormSubmitButton({
 
 Now add the re-usable `FormSubmitButton` inside the `BoardForm`.
 
-refactor: BoardForm to use FormSubmitButton component
+refactor: BoardForm to use FormSubmitButton
 
 Replace BoardFormButton component with FormSubmitButton component to avoid duplication and improve reusability.
 
@@ -6980,3 +6980,67 @@ Update the FormErrors state in the FormInput component whenever a new input valu
 refactor: update fieldErrors state in useServerAction
 
 Update the fieldErrors state in the useServerAction hook whenever the actionOutput is received. This ensures that the field errors are always in sync with the server response, regardless of whether there is an error or data. This fixes the issue where the FormErrors component does not disappear on subsequent form submissions.
+
+## Redesign of organization ID page
+
+The current org ID page:
+
+`app\(app)\(dashboard)\org\[orgId]\page.tsx`
+```tsx
+import React from 'react';
+import { database } from '@/lib/database';
+import Board from '@/components/Board';
+import BoardForm from '@/components/BoardForm';
+
+const OrganizationIdPage = async () => {
+  // Fetch the boards from the database
+  const boards = await database.board.findMany();
+
+  return (
+    <div className='flex flex-col space-y-4'>
+      <BoardForm />
+      {/* Create a div for displaying the boards */}
+      <div className='space-y-2'>
+        {/* Map over the boards and render a Board component for each one */}
+        {boards.map((board) => (
+          <Board
+            key={board.id}
+            id={board.id}
+            title={board.title}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default OrganizationIdPage
+```
+
+Let's redesign it.
+
+Going to build an `Info` component which describes a quick summary of the currently selected team, organization, or personal profile. Then another component `BoardList` that should render a list of boards. Make basic react functional components in `/components` and then use them in the org ID page.
+
+refactor: org ID page with BoardList & Info
+
+```tsx
+import BoardList from '@/components/BoardList';
+import Info from '@/components/Info';
+import { Separator } from '@/components/ui/separator';
+import React from 'react';
+
+const OrganizationIdPage = () => {
+
+  return (
+    <div className='flex flex-col w-full mb-20'>
+      <Info />
+      <Separator className='my-4'/>
+      <div className='px-2 md:px-4'>
+        <BoardList />
+      </div>
+    </div>
+  );
+};
+
+export default OrganizationIdPage
+```
