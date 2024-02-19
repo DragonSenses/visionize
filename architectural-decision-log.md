@@ -7084,3 +7084,82 @@ export default function Info() {
   )
 }
 ```
+
+#### Issue: the `src` prop in `Image` gives an error
+
+Hovering over the `src` prop in the `Image` gives a type not assignable to type error.
+
+```sh
+Type 'string | undefined' is not assignable to type 'string | StaticImport'.
+  Type 'undefined' is not assignable to type 'string | StaticImport'.ts(2322)
+image-component.d.ts(7, 5): The expected type comes from property 'src' which is declared here on type 'IntrinsicAttributes & Omit<DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>, "ref" | ... 5 more ... | "srcSet"> & { ...; } & RefAttributes<...>'
+(property) src: string | StaticImport
+```
+
+This error means that the `src` prop of the `Image` component expects either a string or a StaticImport type, but the value you are passing to it (`organization?.imageUrl`) could be undefined if `organization` is null or undefined. TypeScript does not allow assigning a possibly undefined value to something that expects a specific type.
+
+There are a few ways to fix this error, depending on your use case and preference. Here are some possible solutions:
+
+- Use the non-null assertion operator (!) to tell TypeScript that you are sure that `organization` and `organization.imageUrl` are not null or undefined. This will suppress the error, but it could cause runtime errors if your assumption is wrong. For example:
+
+```TSX
+<Image
+  fill
+  src={organization!.imageUrl!} // use ! to assert non-null
+  alt="organization image"
+  className='rounded-md object-cover'
+  sizes="(max-width: 768px) 33vw, (max-width: 1200px) 30vw, 25vw"
+/>
+```
+
+- Use the optional chaining operator (?.) and the nullish coalescing operator (??) to provide a fallback value for `src` in case `organization` or `organization.imageUrl` is null or undefined. This will ensure that `src` always receives a valid value, but you need to decide what the fallback value should be. For example:
+
+```TSX
+<Image
+  fill
+  src={organization?.imageUrl ?? "/default.png"} // use ?? to provide a fallback
+  alt="organization image"
+  className='rounded-md object-cover'
+  sizes="(max-width: 768px) 33vw, (max-width: 1200px) 30vw, 25vw"
+/>
+```
+
+- Use a type guard to check if `organization` and `organization.imageUrl` are defined before rendering the `Image` component. This will ensure that `src` only receives a valid value when `organization` and `organization.imageUrl` are not null or undefined, but it will also prevent the `Image` component from rendering otherwise. For example:
+
+```TSX
+{organization && organization.imageUrl && ( // use && to check if both are defined
+  <Image
+    fill
+    src={organization.imageUrl}
+    alt="organization image"
+    className='rounded-md object-cover'
+    sizes="(max-width: 768px) 33vw, (max-width: 1200px) 30vw, 25vw"
+  />
+)}
+```
+
+Going with the second option by providing a fallback image with nullish coalescing.
+
+fix: use default image when imageUrl is undefined
+
+`components\Info.tsx`
+```tsx
+export default function Info() {
+  const { organization, isLoaded } = useOrganization();
+  // ...
+  return (
+    <div className='flex items-center gap-x-4'>
+      {/* Image container */}
+      <div className='relative w-[60px] h-[60px]'>
+        <Image
+          fill
+          src={organization?.imageUrl ?? '/logo.svg'}
+          alt="organization image"
+          className='rounded-md object-cover'
+          sizes="(max-width: 768px) 33vw, (max-width: 1200px) 30vw, 25vw"
+        />
+      </div>
+    </div>
+  )
+}
+```
