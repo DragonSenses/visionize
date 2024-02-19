@@ -7044,3 +7044,43 @@ const OrganizationIdPage = () => {
 
 export default OrganizationIdPage
 ```
+
+### Info component
+
+In `Info`, we want to render an `Image` for the organization or team. We will use the `useOrganization` hook to get the `organization` data and the `isLoaded`. We will conditionally render a loading element when the `isLoaded` is `false`. In the output we create an imagee container to hold the organization image.
+
+feat: display organization image in Info component
+
+`components\Info.tsx`
+```tsx
+"use client";
+
+import React from 'react';
+import Image from 'next/image';
+import { useOrganization } from '@clerk/nextjs';
+
+export default function Info() {
+  const { organization, isLoaded } = useOrganization();
+
+  if (!isLoaded) {
+    return (
+      <p>Loading...</p>
+    )
+  }
+
+  return (
+    <div className='flex items-center gap-x-4'>
+      {/* Image container */}
+      <div className='relative w-[60px] h-[60px]'>
+        <Image
+          fill
+          src={organization?.imageUrl}
+          alt="organization image"
+          className='rounded-md object-cover'
+          sizes="(max-width: 768px) 33vw, (max-width: 1200px) 30vw, 25vw"
+        />
+      </div>
+    </div>
+  )
+}
+```
