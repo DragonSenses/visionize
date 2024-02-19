@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { useOrganization } from '@clerk/nextjs';
+import { CreditCard } from 'lucide-react';
 
 export default function Info() {
   const { organization, isLoaded } = useOrganization();
@@ -24,6 +25,17 @@ export default function Info() {
           className='rounded-md object-cover'
           sizes="(max-width: 768px) 33vw, (max-width: 1200px) 30vw, 25vw"
         />
+      </div>
+      {/* Organization Info */}
+      <div className='space-y-1'>
+        <p className='font-semibold text-xl'>
+          {organization?.name}
+        </p>
+        {/* Premium or Free info is dynamically rendered */}
+        <div className='flex items-center text-xs text-muted-foreground'>
+          <CreditCard />
+          Free
+        </div>
       </div>
     </div>
   )
