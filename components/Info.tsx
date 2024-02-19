@@ -19,7 +19,7 @@ export default function Info() {
       <div className='relative w-[60px] h-[60px]'>
         <Image
           fill
-          src={organization?.imageUrl}
+          src={organization?.imageUrl ?? '/logo.svg'}
           alt="organization image"
           className='rounded-md object-cover'
           sizes="(max-width: 768px) 33vw, (max-width: 1200px) 30vw, 25vw"
