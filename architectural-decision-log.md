@@ -7163,3 +7163,120 @@ export default function Info() {
   )
 }
 ```
+
+Finish up the output of the `Info` component with the org name and a icon next to text indicating whether its premium or free.
+
+```tsx
+export default function Info() {
+  const { organization, isLoaded } = useOrganization();
+
+  if (!isLoaded) {
+    return (
+      <p>Loading...</p>
+    )
+  }
+
+  return (
+    <div className='flex items-center gap-x-4'>
+      {/* Image container */}
+      <div className='relative w-[60px] h-[60px]'>
+        <Image
+          fill
+          src={organization?.imageUrl ?? '/logo.svg'}
+          alt="organization image"
+          className='rounded-md object-cover'
+          sizes="(max-width: 768px) 33vw, (max-width: 1200px) 30vw, 25vw"
+        />
+      </div>
+      {/* Organization Info */}
+      <div className='space-y-1'>
+        <p className='font-semibold text-xl'>
+          {organization?.name}
+        </p>
+        {/* Premium or Free info is dynamically rendered */}
+        <div className='flex items-center text-xs text-muted-foreground'>
+          <CreditCard />
+          Free
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+#### Info skeleton
+
+Wrap the `Info` component up with a skeleton, a placeholder preview of the content before it fully loads. It mimics the layout and structure of the actual content, but without the details. It reduces the perceived loading time, keeps the user engaged improving the user experience.
+
+Instead of creating a new component called `InfoSkeleton`, we are going to define a static property for the `Info` component.
+
+##### Defining skeletons inside components as static properties
+
+In React, a static property is a property that belongs to the component class or function, not to the instance. It can be accessed without creating an instance of the component. Static properties are useful for defining constants, default props, context types, or subcomponents.
+
+There are different ways to define a static property in React, depending on whether you are using a class component or a function component, and whether you are using TypeScript or JavaScript. Here are some examples:
+
+- For a class component in JavaScript, you can define a static property inside the class body, using the `static` keyword. For example:
+
+```jsx
+class Example extends React.Component {
+  // Define a static property called displayName
+  static displayName = "Example";
+
+  render() {
+    return <p>This is an example component.</p>;
+  }
+}
+```
+
+- For a function component in JavaScript, you can define a static property on the function itself, using the dot notation. For example:
+
+```jsx
+function Example(props) {
+  return <p>This is an example component.</p>;
+}
+
+// Define a static property called displayName
+Example.displayName = "Example";
+```
+
+- For a class component in TypeScript, you can define a static property inside the class body, using the `static` keyword, and optionally provide a type annotation. For example:
+
+```tsx
+class Example extends React.Component {
+  // Define a static property called displayName with a string type
+  static displayName: string = "Example";
+
+  render() {
+    return <p>This is an example component.</p>;
+  }
+}
+```
+
+- For a function component in TypeScript, you can define a static property on the function itself, using the dot notation, and optionally provide a type annotation. You can also use a generic type parameter to specify the props type for the component. For example:
+
+```tsx
+function Example<T>(props: T) {
+  return <p>This is an example component.</p>;
+}
+
+// Define a static property called displayName with a string type
+Example.displayName: string = "Example";
+```
+
+So let's create the `Info.Skeleton`
+
+```tsx
+import { Skeleton } from '@/components/ui/skeleton';
+
+export default function Info() {
+  // ...
+}
+
+
+Info.Skeleton = function InfoSkeleton() {
+  return (
+    <Skeleton />
+  )
+}
+```
