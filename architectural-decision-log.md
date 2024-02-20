@@ -7363,3 +7363,56 @@ Info.Skeleton = function InfoSkeleton() {
   )
 }
 ```
+
+### BoardList component
+
+Before making the `BoardList`, we are going to make a `BoardCreationButton`. This will be a `Button` along with some text "Create new board" and text indicating how many free boards are left for the user. Also give it a hover effect and styling.
+
+`components\BoardCreationButton.tsx`
+```tsx
+import React from 'react';
+import { Button } from '@/components/ui/button';
+
+export default function BoardCreationButton() {
+  return (
+    <Button
+      className='relative flex flex-col items-center h-full w-full rounded-sm aspect-video bg-muted gap-y-1 justify-center transition hover:opacity-75'
+    >
+      <p className='text-sm'>Create new board</p>
+      <span className='text-xs'>
+        15 remaining
+      </span>
+    </Button>
+  )
+}
+```
+
+Now import the `BoardCreationButton` inside `BoardList.tsx`.
+
+Then inside add a board list header containing a header containg a user icon (`UserRound` icon from lucide-react) and text. Then after a `div` container for the responsive board of grids. Then render the `BoardCreationButton` inside the grid.
+
+`components\BoardList.tsx`
+```tsx
+import React from 'react';
+import { UserRound } from 'lucide-react';
+import BoardCreationButton from '@/components/BoardCreationButton';
+
+export default function BoardList() {
+  // Fetch boards here
+
+  return (
+    <div className='space-y-4'>
+      {/* User icon header */}
+      <div className='flex items-center text-lg text-neutral-700 font-semibold'>
+        <UserRound className='h-6 w-6 mr-2' />
+        Your boards
+      </div>
+      {/* Grid of boards */}
+      <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4'>
+        <BoardCreationButton />
+      </div>
+
+    </div>
+  )
+}
+```
