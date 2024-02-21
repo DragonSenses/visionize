@@ -7500,3 +7500,44 @@ export default function BoardTooltip({
 }: BoardTooltipProps) {
 ```
 
+feat: assign props & add styles to BoardTooltip
+
+Create a reusable BoardTooltip component that accepts children, description, sideOffset, and side props. Use the Tooltip, TooltipContent, TooltipProvider, and TooltipTrigger components to implement the BoardTooltip component. The BoardTooltip component displays a tooltip with the given description on the specified side of the children element, with an optional sideOffset value.
+
+Now we can add the `BoardTooltip` to the `BoardCreationButton`, and assign the right props.
+
+feat: add BoardTooltip to BoardCreationButton component
+
+Use the BoardTooltip component to display a tooltip with the number of remaining free boards and an upgrade option on the BoardCreationButton component. The tooltip appears on the bottom right corner of the button, with a 40px side offset. The tooltip uses the HelpCircle icon from lucide-react as a trigger.
+
+```tsx
+import React from 'react';
+import { HelpCircle } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import BoardTooltip from '@/components/BoardTooltip';
+
+const freeBoards = 15;
+
+export default function BoardCreationButton() {
+  return (
+    <Button
+      className='relative flex flex-col items-center h-full w-full rounded-sm aspect-video bg-muted gap-y-1 justify-center transition hover:opacity-75'
+    >
+      <p className='text-sm'>Create new board</p>
+      <span className='text-xs'>
+        {freeBoards} remaining
+      </span>
+      <BoardTooltip 
+        sideOffset={40}
+        description={`
+          Free workspaces allow up to ${freeBoards} boards. 
+          Upgrade this workspace to create unlimited boards.
+        `}
+      >
+        <HelpCircle className='absolute bottom-2 right-2 h-[14px] w-[14px]'/>
+      </BoardTooltip>
+    </Button>
+  )
+}
+```
