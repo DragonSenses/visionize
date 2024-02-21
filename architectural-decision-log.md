@@ -7443,3 +7443,60 @@ export default function BoardTooltip({
   )
 }
 ```
+
+Next install the [Tooltip from shadcn/ui](https://ui.shadcn.com/docs/components/tooltip).
+
+```sh
+npx shadcn-ui@latest add tooltip
+```
+
+Now import and add the `Tooltip` component inside `BoardTooltip`.
+
+```tsx
+import React from 'react'
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
+interface BoardTooltipProps {
+  children: React.ReactNode;
+};
+
+export default function BoardTooltip({
+  children,
+}: BoardTooltipProps) {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger>{children}</TooltipTrigger>
+        <TooltipContent>
+          <p>Add to library</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
+}
+```
+
+We are going to need more props: `{description, side, sideOffset}`. The `description` is the content the tooltip will contain. The `side` will determine where the tooltip will be within the component, default at bottom. The `sideOffset` is the offset of the tooltip relative to the parent component, default at 0.
+
+```tsx
+interface BoardTooltipProps {
+  children: React.ReactNode;
+  description: string;
+  sideOffset?: number;
+  side?: 'top' | 'right' | 'bottom' | 'left';
+};
+
+export default function BoardTooltip({
+  children,
+  description,
+  sideOffset = 0,
+  side = 'bottom',
+}: BoardTooltipProps) {
+```
+
