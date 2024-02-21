@@ -22,10 +22,14 @@ export default function BoardTooltip({
 }: BoardTooltipProps) {
   return (
     <TooltipProvider>
-      <Tooltip>
+      <Tooltip delayDuration={0}>
         <TooltipTrigger>{children}</TooltipTrigger>
-        <TooltipContent>
-          <p>Add to library</p>
+        <TooltipContent
+          side={side}
+          sideOffset={sideOffset}
+          className='text-xs max-w-[220px] break-words'
+        >
+          {description}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
