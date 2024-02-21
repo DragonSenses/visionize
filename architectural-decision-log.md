@@ -7416,3 +7416,30 @@ export default function BoardList() {
   )
 }
 ```
+
+## Board popover
+
+### Board tooltip
+
+Now for the `BoardCreationButton` we added the hover effect because we want the user to hover over it and be able to see the hint or tooltip that gives the user more information on what it means to have boards remaining.
+
+To do that we need to create another component `BoardTooltip`.
+
+`components\BoardTooltip.tsx`
+```tsx
+import React from 'react'
+
+interface BoardTooltipProps {
+  children: React.ReactNode;
+};
+
+export default function BoardTooltip({
+  children,
+}: BoardTooltipProps) {
+  return (
+    <div>
+      {children}
+    </div>
+  )
+}
+```
