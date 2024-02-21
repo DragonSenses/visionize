@@ -9,10 +9,16 @@ import {
 
 interface BoardTooltipProps {
   children: React.ReactNode;
+  description: string;
+  sideOffset?: number;
+  side?: 'top' | 'right' | 'bottom' | 'left';
 };
 
 export default function BoardTooltip({
   children,
+  description,
+  sideOffset = 0,
+  side = 'bottom',
 }: BoardTooltipProps) {
   return (
     <TooltipProvider>
