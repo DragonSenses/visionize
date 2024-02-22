@@ -1,7 +1,10 @@
 import React from 'react';
+import { X } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
 import {
   Popover,
+  PopoverClose,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
@@ -33,6 +36,14 @@ export default function FormPopover({
         <div className='pb-4 font-medium text-sm text-center text-neutral-600'>
           Create board
         </div>
+        <PopoverClose asChild>
+          <Button
+            variant='destructive'
+            className='absolute top-2 right-2 h-auto w-auto text-neutral-600'
+          >
+            <X className='h-4 w-4' />
+          </Button>
+        </PopoverClose>
       </PopoverContent>
     </Popover>
   )
