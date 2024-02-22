@@ -7665,3 +7665,36 @@ This commit enhances the FormPopover component by incorporating Popover function
    - `side`: Specifies the side of the target element where the popover should appear (options: 'top', 'right', 'bottom', 'left').
 
 This enhancement enhances the flexibility and user experience of the FormPopover component.
+
+#### Use popover functionality
+
+As we can see, we pass in the `children` to the `PopoverTrigger`. This means that we can wrap a component with the `FormPopover` component which modifies the functionality of the children to serve as a trigger.
+
+Let's wrap the `BoardCreationButton` inside of `BoardList`:
+
+`components\BoardList.tsx`
+```tsx
+import FormPopover from '@/components/form/FormPopover';
+
+export default function BoardList() {
+
+  return (
+    <div className='space-y-4'>
+      <div className='flex items-center text-lg text-neutral-700 font-semibold'>
+        <UserRound className='h-6 w-6 mr-2' />
+        Your boards
+      </div>
+      <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4'>
+
+        <FormPopover side='right' sideOffset={10}>
+          <BoardCreationButton />
+        </FormPopover>
+
+      </div>
+
+    </div>
+  )
+}
+```
+
+Now when we click the `BoardCreationButton` we should see a popover window to the right with the text "Create board".
