@@ -1,6 +1,7 @@
 import React from 'react';
 import { UserRound } from 'lucide-react';
 import BoardCreationButton from '@/components/BoardCreationButton';
+import FormPopover from '@/components/form/FormPopover';
 
 export default function BoardList() {
   // Fetch boards here
@@ -14,7 +15,9 @@ export default function BoardList() {
       </div>
       {/* Grid of boards */}
       <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4'>
-        <BoardCreationButton />
+        <FormPopover side='right' sideOffset={10}>
+          <BoardCreationButton />
+        </FormPopover>
       </div>
 
     </div>
