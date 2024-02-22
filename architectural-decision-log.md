@@ -7544,14 +7544,15 @@ export default function BoardCreationButton() {
 
 ### Form Popover
 
-Now time to implement the Popover.
-
 - [Popover from shadcn/ui](https://ui.shadcn.com/docs/components/popover)
 
 ```sh
 npx shadcn-ui@latest add popover
 ```
 
+Now time to implement the Popover. Create `FormPopover` component inside `/components/form`, with the `FormPropoverProps` interface that contains `children`.
+
+`components\form\FormPopover.tsx`
 ```tsx
 import React from 'react';
 
@@ -7570,3 +7571,97 @@ export default function FormPopover({
   )
 }
 ```
+
+Also add a `align`, `side` and `sideOffset` props. The default offset is 0 and side is bottom.
+
+feat: Add more props to FormPopover component
+
+Additional props to the FormPopover component are now available:
+
+- `align`: Specifies the alignment of the popover content (options: 'start', 'center', 'end').
+- `sideOffset`: Allows adjusting the distance between the popover and its target element.
+- `side`: Determines the side of the target element where the popover should appear (options: 'top', 'right', 'bottom', 'left').
+
+These props enhance the flexibility and customization options for the FormPopover component.
+
+```tsx
+interface FormPopoverProps {
+  children: React.ReactNode;
+  align?: 'start' | 'center' | 'end';
+  sideOffset?: number;
+  side?: 'top' | 'right' | 'bottom' | 'left';
+};
+
+export default function FormPopover({
+  children,
+  align,
+  sideOffset = 0,
+  side = 'bottom',
+}: FormPopoverProps) {
+```
+
+Add the `Popover` imports and render them in the output.
+  - return `Popover`
+  - For `PopoverTrigger`
+    - assign `asChild` prop
+    - render `children`
+  - `PopoverContent`
+    - Assign props to `align, side, sideOffset`
+    - Add `className` w-80 and pt-3 styles
+    - Create a `div` inside
+  - `div` will contain the text "Create board" with styles:
+    - pb-4 font-medium text-sm text-center text-neutral-600
+
+`components\form\FormPopover.tsx`
+```tsx
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
+interface FormPopoverProps {
+  children: React.ReactNode;
+  align?: 'start' | 'center' | 'end';
+  sideOffset?: number;
+  side?: 'top' | 'right' | 'bottom' | 'left';
+};
+
+export default function FormPopover({
+  children,
+  align,
+  sideOffset = 0,
+  side = 'bottom',
+}: FormPopoverProps) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+      {children}
+      </PopoverTrigger>
+      <PopoverContent
+        align={align}
+        sideOffset={sideOffset}
+        side={side}
+        className='w-80 pt-3'
+      >
+        <div className='pb-4 font-medium text-sm text-center text-neutral-600'>
+          Create board
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}
+```
+
+feat: add Popover functionality to FormPopover
+
+This commit enhances the FormPopover component by incorporating Popover functionality. The following changes have been made:
+
+1. Added a Popover wrapper around the existing content.
+2. Utilized the PopoverTrigger component to trigger the popover display.
+3. Introduced the PopoverContent component with customizable props:
+   - `align`: Determines the alignment of the popover content (options: 'start', 'center', 'end').
+   - `sideOffset`: Allows adjusting the distance between the popover and its target element.
+   - `side`: Specifies the side of the target element where the popover should appear (options: 'top', 'right', 'bottom', 'left').
+
+This enhancement enhances the flexibility and user experience of the FormPopover component.
