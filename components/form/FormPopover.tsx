@@ -11,6 +11,9 @@ import {
 import FormInput from '@/components/form/FormInput';
 import FormSubmitButton from '@/components/form/FormSubmitButton';
 
+import { useServerAction } from '@/hooks/useServerAction';
+import { createBoard } from "@/actions/createBoard/index";
+
 interface FormPopoverProps {
   children: React.ReactNode;
   align?: 'start' | 'center' | 'end';
@@ -24,6 +27,21 @@ export default function FormPopover({
   sideOffset = 0,
   side = 'bottom',
 }: FormPopoverProps) {
+  const { executeServerAction, fieldErrors } = useServerAction(createBoard, {
+    onSuccess: (data) => { 
+      console.log({ data }); 
+    },
+    onError: (error) => {
+      console.log({ error });
+    },
+  });
+
+  function onSubmit(formData: FormData){
+    const title = formData.get('title') as string;
+
+    executeServerAction({ title });
+  }
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -46,12 +64,13 @@ export default function FormPopover({
             <X className='h-4 w-4' />
           </Button>
         </PopoverClose>
-        <form className='space-y-4'>
+        <form action={onSubmit} className='space-y-4'>
           <div className='space-y-4'>
             <FormInput
               id='title'
               label='Board title'
               type='text'
+              errors={fieldErrors}
             />
           </div>
           <FormSubmitButton 
