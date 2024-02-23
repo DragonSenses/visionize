@@ -7986,3 +7986,41 @@ export default function FormPopover({
   )
 }
 ```
+
+### React toast component 
+
+Going to use **sonner**, an opinionated toast component for React. It has clean enter and exit animations. Here are the [motivations to why sonner was made](https://emilkowal.ski/ui/building-a-toast-component).
+
+- [sonner](https://sonner.emilkowal.ski/)
+- [sonner | npm](https://www.npmjs.com/package/sonner)
+  
+```sh
+npm install sonner
+```
+
+Then render the toaster in the root of the app. For our Next.js 14 app router, it's inside the uppermost layout we need the toast notifications in. For some they may want it in the `RootLayout` (app\layout.tsx), but for this project we can put it inside the `app\(app)` layout.
+
+Go ahead and import `Toaster` from sonner and render it right before the `children` inside `ClerkProvider`.
+
+`app\(app)\layout.tsx`
+```tsx
+import React from 'react';
+import { ClerkProvider } from '@clerk/nextjs';
+import { Toaster } from "sonner";
+
+const AppLayout = ({
+  children
+}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <ClerkProvider>
+      <Toaster />
+      {children}
+    </ClerkProvider>
+  )
+}
+
+export default AppLayout
+```
+
