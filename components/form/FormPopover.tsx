@@ -8,6 +8,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import FormInput from '@/components/form/FormInput';
+import FormSubmitButton from '@/components/form/FormSubmitButton';
 
 interface FormPopoverProps {
   children: React.ReactNode;
@@ -44,6 +46,22 @@ export default function FormPopover({
             <X className='h-4 w-4' />
           </Button>
         </PopoverClose>
+        <form className='space-y-4'>
+          <div className='space-y-4'>
+            <FormInput
+              id='title'
+              label='Board title'
+              type='text'
+            />
+          </div>
+          <FormSubmitButton 
+            size='default'
+            variant='default'
+            className='w-full'
+          >
+            Create
+          </FormSubmitButton>
+        </form>
       </PopoverContent>
     </Popover>
   )
