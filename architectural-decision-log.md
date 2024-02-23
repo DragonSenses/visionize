@@ -7828,3 +7828,62 @@ export default function FormPopover({
   )
 }
 ```
+
+#### Add form inputs to FormPopover
+
+Now to make the popover into a `FormPopover`, we need to add the inputs, mainly the `form` element including the `FormInput` and `FormSubmit` components. Add these after the ending tag for `PopoverClose`.
+
+feat: Add form to FormPopover component
+
+This commit introduces a form within the FormPopover component. The form allows users to input a board title when creating a new board. The form includes a text input field for the title and a 'Create' button for submission.
+
+```tsx
+import FormInput from '@/components/form/FormInput';
+import FormSubmitButton from '@/components/form/FormSubmitButton';
+
+export default function FormPopover({
+  // ...props
+}: FormPopoverProps) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        {children}
+      </PopoverTrigger>
+      <PopoverContent
+        align={align}
+        sideOffset={sideOffset}
+        side={side}
+        className='w-80 pt-3'
+      >
+        <div className='pb-4 font-medium text-sm text-center text-neutral-600'>
+          Create board
+        </div>
+        <PopoverClose asChild>
+          <Button
+            variant='destructive'
+            className='absolute top-2 right-2 h-auto w-auto text-neutral-600'
+          >
+            <X className='h-4 w-4' />
+          </Button>
+        </PopoverClose>
+        <form className='space-y-4'>
+          <div className='space-y-4'>
+            <FormInput
+              id='title'
+              label='Board title'
+              type='text'
+            />
+          </div>
+          <FormSubmitButton 
+            size='default'
+            variant='default'
+            className='w-full'
+          >
+            Create
+          </FormSubmitButton>
+        </form>
+      </PopoverContent>
+    </Popover>
+  )
+}
+```
