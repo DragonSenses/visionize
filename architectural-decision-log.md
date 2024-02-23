@@ -7698,3 +7698,133 @@ export default function BoardList() {
 ```
 
 Now when we click the `BoardCreationButton` we should see a popover window to the right with the text "Create board".
+
+#### Add close functionality to Popover component
+
+One thing to add to to the current popover component is the ability to close it. We'd like to add a close button to the popover itself to make it behave like a window.
+
+Let's look at the `Popover` component:
+
+`components\ui\popover.tsx`
+```tsx
+"use client"
+
+import * as React from "react"
+import * as PopoverPrimitive from "@radix-ui/react-popover"
+
+import { cn } from "@/lib/utils"
+
+const Popover = PopoverPrimitive.Root
+
+const PopoverTrigger = PopoverPrimitive.Trigger
+
+const PopoverContent = React.forwardRef<
+  React.ElementRef<typeof PopoverPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
+>(({ className, align = "center", sideOffset = 4, ...props }, ref) => (
+  <PopoverPrimitive.Portal>
+    <PopoverPrimitive.Content
+      ref={ref}
+      align={align}
+      sideOffset={sideOffset}
+      className={cn(
+        "z-50 w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        className
+      )}
+      {...props}
+    />
+  </PopoverPrimitive.Portal>
+))
+PopoverContent.displayName = PopoverPrimitive.Content.displayName
+
+export { Popover, PopoverTrigger, PopoverContent }
+```
+
+Let's add a `PopoverClose` and export it.
+
+feat: extend Popover with close functionality
+
+This commit enhances the Popover component by adding the PopoverClose component, allowing users to close the popover when needed.
+
+```tsx
+"use client"
+
+import * as React from "react"
+import * as PopoverPrimitive from "@radix-ui/react-popover"
+
+import { cn } from "@/lib/utils"
+
+const Popover = PopoverPrimitive.Root
+
+const PopoverTrigger = PopoverPrimitive.Trigger
+
+// Add close functionality to the Popover
+const PopoverClose = PopoverPrimitive.Close
+
+const PopoverContent = React.forwardRef<
+  // ...
+))
+PopoverContent.displayName = PopoverPrimitive.Content.displayName
+
+export { Popover, PopoverTrigger, PopoverContent, PopoverClose }
+```
+
+Navigate back to `FormPopover` and import and render the `PopoverClose` component. Inside we can add a `Button` and an `X` icon.
+
+feat: implement close feature for FormPopover
+
+This commit enhances the FormPopover component by introducing the PopoverClose component, enabling users to easily close the popover. An 'X' icon button has also been included for improved user experience.
+
+`components\form\FormPopover.tsx`
+```tsx
+import React from 'react';
+import { X } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import {
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
+interface FormPopoverProps {
+  children: React.ReactNode;
+  align?: 'start' | 'center' | 'end';
+  sideOffset?: number;
+  side?: 'top' | 'right' | 'bottom' | 'left';
+};
+
+export default function FormPopover({
+  children,
+  align,
+  sideOffset = 0,
+  side = 'bottom',
+}: FormPopoverProps) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        {children}
+      </PopoverTrigger>
+      <PopoverContent
+        align={align}
+        sideOffset={sideOffset}
+        side={side}
+        className='w-80 pt-3'
+      >
+        <div className='pb-4 font-medium text-sm text-center text-neutral-600'>
+          Create board
+        </div>
+        <PopoverClose asChild>
+          <Button
+            variant='destructive'
+            className='absolute top-2 right-2 h-auto w-auto text-neutral-600'
+          >
+            <X className='h-4 w-4' />
+          </Button>
+        </PopoverClose>
+      </PopoverContent>
+    </Popover>
+  )
+}
+```
