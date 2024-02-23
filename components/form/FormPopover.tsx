@@ -1,5 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -29,10 +30,12 @@ export default function FormPopover({
 }: FormPopoverProps) {
   const { executeServerAction, fieldErrors } = useServerAction(createBoard, {
     onSuccess: (data) => { 
-      console.log({ data }); 
+      console.log({ data });
+      toast.success("Board created.")
     },
     onError: (error) => {
       console.log({ error });
+      toast.error(error);
     },
   });
 
