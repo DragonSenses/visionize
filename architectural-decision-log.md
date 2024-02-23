@@ -7989,6 +7989,12 @@ export default function FormPopover({
 
 ### React toast component 
 
+React toast is a term that can refer to different packages or components that allow you to display notifications or messages to your users in a pop-up style. These notifications are often called toasts because they appear and disappear like a toast popping out of a toaster. Some examples of react toast packages are:
+
+- [react-hot-toast](https://react-hot-toast.com/): A lightweight and customizable package that supports RTL, swipe to close, emoji, animations, and more.
+- [react-toastify](https://www.npmjs.com/package/react-toastify): A popular package that offers easy setup, dark mode, pause on hover, promise API, and more.
+- [sonner](https://sonner.emilkowal.ski/), an opinionated toast component with fluid animations for swiping and transitions.
+
 Going to use **sonner**, an opinionated toast component for React. It has clean enter and exit animations. Here are the [motivations to why sonner was made](https://emilkowal.ski/ui/building-a-toast-component).
 
 - [sonner](https://sonner.emilkowal.ski/)
@@ -8001,6 +8007,8 @@ npm install sonner
 Then render the toaster in the root of the app. For our Next.js 14 app router, it's inside the uppermost layout we need the toast notifications in. For some they may want it in the `RootLayout` (app\layout.tsx), but for this project we can put it inside the `app\(app)` layout.
 
 Go ahead and import `Toaster` from sonner and render it right before the `children` inside `ClerkProvider`.
+
+feat: add sonner toaster component to app layout
 
 `app\(app)\layout.tsx`
 ```tsx
@@ -8024,3 +8032,61 @@ const AppLayout = ({
 export default AppLayout
 ```
 
+Now with this we can return to the `FormPopover` and add react toast notifications to the callback functions. Note that we can pass in `error` to `toast.error()` because we specify the type of there error that comes from the databse as a `string`.
+
+Add toast notifications for createBoard action
+
+This commit adds toast notifications for the createBoard action using the sonner library. The notifications show success or error within the callback functions. 
+
+```tsx
+import { toast } from 'sonner';
+
+import { useServerAction } from '@/hooks/useServerAction';
+import { createBoard } from "@/actions/createBoard/index";
+
+export default function FormPopover({
+  // ...
+}: FormPopoverProps) {
+  const { executeServerAction, fieldErrors } = useServerAction(createBoard, {
+    onSuccess: (data) => { 
+      console.log({ data });
+      toast.success("Board created.")
+    },
+    onError: (error) => {
+      console.log({ error });
+      toast.error(error);
+    },
+  });
+```
+
+Now to test out the notifications for two scenarios:
+
+1. Create a board successfully
+2. Throw an error and display it successfully
+
+We can simulate the error inside the `createBoard` server action.
+
+`actions\createBoard\index.ts`
+```ts
+async function performAction (data: InputType): Promise<ReturnType> {
+  // ...
+
+  let board;
+
+  try {
+    // Add an error to test the toast notification
+    throw new Error("Error_for_toast_notification");
+
+    board = await database.board.create({
+      data: {
+        title,
+      }
+    });
+  } catch(error) {
+    return {
+      error: "Internal error: failed to create in database."
+    }
+  }
+```
+
+With that we should see both toast notifications display on the bottom side of the page.
