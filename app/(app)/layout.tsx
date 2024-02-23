@@ -1,5 +1,6 @@
-import { ClerkProvider } from '@clerk/nextjs';
 import React from 'react';
+import { ClerkProvider } from '@clerk/nextjs';
+import { Toaster } from "sonner";
 
 const AppLayout = ({
   children
@@ -8,6 +9,7 @@ const AppLayout = ({
 }) => {
   return (
     <ClerkProvider>
+      <Toaster />
       {children}
     </ClerkProvider>
   )
