@@ -8164,3 +8164,30 @@ const browserApi = createApi({
 
 */
 ```
+
+Issue: we get a type error under `accessKey: process.env.UNSPLASH_ACCESS_KEY`.
+
+Tried adding an `apiUrl` property but it still throws the error.
+
+```ts
+export const unsplashApi = createApi({
+  accessKey: process.env.UNSPLASH_ACCESS_KEY,
+  fetch: fetch,
+  apiUrl: 'https://api.unsplash.com',
+});
+```
+
+So just added a `!` and it fixed the issue.
+
+fix: add non-null assertion operator to unsplash API access key
+
+```ts
+export const unsplashApi = createApi({
+  accessKey: process.env.UNSPLASH_ACCESS_KEY!,
+  fetch: fetch,
+});
+```
+
+This code works because it uses the **non-null assertion operator** (!) to tell TypeScript that the value of `process.env.UNSPLASH_ACCESS_KEY` is not null or undefined. This operator is a postfix expression that is used to exclude null and undefined from the type of a variable. It is useful when you have some knowledge that the TypeScript compiler lacks, such as the existence of an environment variable.
+
+The non-null assertion operator is simply removed in the emitted JavaScript code, so it has no runtime effect. However, it can help you avoid type errors and unnecessary checks when you are confident that a value is not nullish.
