@@ -4,10 +4,9 @@ import { createApi } from 'unsplash-js';
 from https://unsplash.com
  */
 export const unsplashApi = createApi({
-  accessKey: process.env.UNSPLASH_ACCESS_KEY,
+  accessKey: process.env.UNSPLASH_ACCESS_KEY!,
   fetch: fetch,
 });
-
 
 /** 
  * 
