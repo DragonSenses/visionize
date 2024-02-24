@@ -8179,7 +8179,9 @@ export const unsplashApi = createApi({
 
 So just added a `!` and it fixed the issue.
 
-fix: add non-null assertion operator to unsplash API access key
+fix: add non-null assertion operator access key
+
+This commit adds a non-null assertion operator to the environment variable that stores the unsplash API access key. The operator excludes null and undefined from the type, which is useful for when we have knowledge that the TypeScript compiler lacks, such as the existence of an environment variable.
 
 ```ts
 export const unsplashApi = createApi({
@@ -8191,3 +8193,94 @@ export const unsplashApi = createApi({
 This code works because it uses the **non-null assertion operator** (!) to tell TypeScript that the value of `process.env.UNSPLASH_ACCESS_KEY` is not null or undefined. This operator is a postfix expression that is used to exclude null and undefined from the type of a variable. It is useful when you have some knowledge that the TypeScript compiler lacks, such as the existence of an environment variable.
 
 The non-null assertion operator is simply removed in the emitted JavaScript code, so it has no runtime effect. However, it can help you avoid type errors and unnecessary checks when you are confident that a value is not nullish.
+
+### FormSelector component
+
+Create client component `FormSelector.tsx` in `/components/form`.
+
+It will contain a prop interface that contains an `id`, and `errors` which will contain the `fieldErrors` from `useServerAction.ts`
+
+```tsx
+"use client";
+
+import React from 'react';
+
+interface FormPickerProps {
+  id: string;
+  errors?: Record<string, string[] | undefined>;
+};
+
+export default function FormSelector({
+  id,
+  errors,
+}: FormPickerProps) {
+  return (
+    <div>FormSelector</div>
+  )
+}
+```
+
+With that we can import and use `FormSelector` inside `FormPopover`. Render it inside the `form` and above the `FormInput`.
+
+```tsx
+import FormSelector from '@/components/form/FormSelector';
+
+export default function FormPopover({
+  // ...
+}: FormPopoverProps) {
+  const { executeServerAction, fieldErrors } = useServerAction(createBoard, {
+    // ...
+  });
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        {children}
+      </PopoverTrigger>
+      <PopoverContent
+        align={align}
+        sideOffset={sideOffset}
+        side={side}
+        className='w-80 pt-3'
+      >
+        <div className='pb-4 font-medium text-sm text-center text-neutral-600'>
+          Create board
+        </div>
+        <PopoverClose asChild>
+          <Button
+            variant='destructive'
+            className='absolute top-2 right-2 h-auto w-auto text-neutral-600'
+          >
+            <X className='h-4 w-4' />
+          </Button>
+        </PopoverClose>
+
+        <form action={onSubmit} className='space-y-4'>
+          <div className='space-y-4'>
+
+            <FormSelector 
+              id='image-id'
+              errors={fieldErrors}
+            />
+
+            <FormInput
+              id='title'
+              label='Board title'
+              type='text'
+              errors={fieldErrors}
+            />
+          </div>
+          <FormSubmitButton 
+            size='default'
+            variant='default'
+            className='w-full'
+          >
+            Create
+          </FormSubmitButton>
+        </form>
+
+      </PopoverContent>
+    </Popover>
+  )
+}
+```
