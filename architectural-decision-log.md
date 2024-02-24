@@ -8099,6 +8099,7 @@ The next feature we'd want to focus on is to allow the user to pick an image for
 
 - [Unsplash Image API](https://unsplash.com/developers)
 - [Unsplash documentation - Getting started](https://unsplash.com/documentation#getting-started)
+- [Unsplash-js](https://github.com/unsplash/unsplash-js)
 
 Going to use Unsplash image API to gather images for the user to choose from. Go ahead and register as a developer at https://unsplash.com/developers
 
@@ -8112,8 +8113,54 @@ A kanban productivity app.
 
 We are now in the page for "Apply for production". If you are going to make your application live then you can run this but for visionize, which is currently in development, we won't apply for production.
 
+#### Add Unsplash API to environment variables
+
 We can scroll down to find our `Keys` section which contains the:
 
 - Application ID
 - Access Key
 - Secret Key
+
+Inside `.env`, create the environment variable: `UNSPLASH_ACCESS_KEY` and assign the `Access Key` to it.
+
+#### Install Unsplash API for JS
+
+Let's install the official JS wrapper for [Unsplash API](https://github.com/unsplash/unsplash-js).
+
+```sh
+npm i unsplash-js
+```
+
+Now what we need to do is create an instance of unsplash. Create the file `unsplashAPI.ts` in the `/lib` folder.
+
+```ts
+import { createApi } from 'unsplash-js';
+
+/* Create API object from unsplash-js library, to access and manipulate photos
+from https://unsplash.com
+ */
+export const unsplashApi = createApi({
+  accessKey: process.env.UNSPLASH_ACCESS_KEY,
+  fetch: fetch,
+});
+
+/** 
+ * 
+ * @see https://github.com/unsplash/unsplash-js?tab=readme-ov-file#usage
+*/
+/* 
+
+// on your node server
+const serverApi = createApi({
+  accessKey: 'MY_ACCESS_KEY',
+  //...other fetch options
+});
+
+// in the browser
+const browserApi = createApi({
+  apiUrl: 'https://mywebsite.com/unsplash-proxy',
+  //...other fetch options
+});
+
+*/
+```
