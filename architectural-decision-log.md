@@ -8090,3 +8090,30 @@ async function performAction (data: InputType): Promise<ReturnType> {
 ```
 
 With that we should see both toast notifications display on the bottom side of the page.
+
+## Board image selector
+
+The next feature we'd want to focus on is to allow the user to pick an image for the Board. These images allow the users to customize their workspaces.
+
+### Unsplash Image API
+
+- [Unsplash Image API](https://unsplash.com/developers)
+- [Unsplash documentation - Getting started](https://unsplash.com/documentation#getting-started)
+
+Going to use Unsplash image API to gather images for the user to choose from. Go ahead and register as a developer at https://unsplash.com/developers
+
+After registering, click "Your applications" and click "New Applications". Go ahead and checkbox all the guides and terms. Add app name and description, the create application.
+
+```sh
+Visionize
+
+A kanban productivity app.
+```
+
+We are now in the page for "Apply for production". If you are going to make your application live then you can run this but for visionize, which is currently in development, we won't apply for production.
+
+We can scroll down to find our `Keys` section which contains the:
+
+- Application ID
+- Access Key
+- Secret Key
