@@ -14,6 +14,7 @@ import FormSubmitButton from '@/components/form/FormSubmitButton';
 
 import { useServerAction } from '@/hooks/useServerAction';
 import { createBoard } from "@/actions/createBoard/index";
+import FormSelector from '@/components/form/FormSelector';
 
 interface FormPopoverProps {
   children: React.ReactNode;
@@ -69,6 +70,10 @@ export default function FormPopover({
         </PopoverClose>
         <form action={onSubmit} className='space-y-4'>
           <div className='space-y-4'>
+            <FormSelector 
+              id='image-id'
+              errors={fieldErrors}
+            />
             <FormInput
               id='title'
               label='Board title'
