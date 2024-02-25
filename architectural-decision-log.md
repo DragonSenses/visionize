@@ -8334,7 +8334,7 @@ export default function FormSelector({
 
   const selectionCount: number = 9;
 
-  // Fetch images with useEffect
+  // Use useEffect hook to fetch images on component mount
   useEffect(() => {
     // Fetch images from collection 317099, curated by Unsplash Editorial
     const fetchImages = async () => {
@@ -8356,7 +8356,9 @@ export default function FormSelector({
         setImages([]);
       }
     }
-  });
+
+    fetchImages();
+  }, []);
 
   return (
     <div>FormSelector</div>
@@ -8410,7 +8412,9 @@ export default function FormSelector({
         setIsLoading(false);
       }
     };
-  });
+    
+    fetchImages();
+  }, []);
 
   if (isLoading) {
     return (
@@ -8425,3 +8429,159 @@ export default function FormSelector({
   )
 }
 ```
+
+#### FormSelector output
+
+For the output we want to display a grid of images we fetched from Unsplash and allow users to select one of them. Before we work on the return get two variables
+
+- `pending` from `useFormStatus`
+- `selectedImageId` state variable
+
+```tsx
+import { useFormStatus } from 'react-dom';
+import { Loader2 } from 'lucide-react';
+
+import { unsplashApi } from '@/lib/unsplashAPI';
+
+export default function FormSelector({
+  // ...
+}: FormPickerProps) {
+  const { pending } = useFormStatus();
+  
+  const [images, setImages] = useState<Array<Record<string, any>>>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  const [selectedImageId, setSelectedImageId] = useState(null);
+```
+
+Next create a `div` that contains a grid which will store the images. The `images` will be mapped to a `div` with an `Image` inside. The `div` will have the `key` set to `image.id`, an `onClick` that does returns early if `pending` state of form is `true`, otherwise it sets the `selectedImageId`.
+
+feat: add image selection to FormSelector
+
+- Use useFormStatus hook to get the pending state of the form
+- Use useState hook to store images, isLoading, and selectedImageId in local state
+- Display images in a grid using Image and Loader2 components
+- Add onClick handler to select an image and update selectedImageId state
+- Use cn utility function to apply conditional class names based on the pending state
+
+`components\form\FormSelector.tsx`
+```tsx
+"use client";
+
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
+import { useFormStatus } from 'react-dom';
+import { Loader2 } from 'lucide-react';
+
+import { unsplashApi } from '@/lib/unsplashAPI';
+import { cn } from '@/lib/utils';
+
+interface FormPickerProps {
+  id: string;
+  errors?: Record<string, string[] | undefined>;
+};
+
+export default function FormSelector({
+  id,
+  errors,
+}: FormPickerProps) {
+  // Use useFormStatus hook to get the pending state of the form
+  const { pending } = useFormStatus();
+
+  // Define images state variable as an array of objects
+  const [images, setImages] = useState<Array<Record<string, any>>>([]);
+
+  // Add isLoading state, true by default because fetch starts immediately
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Define a state for storing the selected image
+  const [selectedImageId, setSelectedImageId] = useState(null);
+
+  // Selection count determines how many images to fetch
+  const selectionCount: number = 9;
+
+  // Use useEffect hook to fetch images on component mount
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        // Use unsplashApi to get random photos from collection 317099
+        const result = await unsplashApi.photos.getRandom({
+          collectionIds: ["317099"],
+          count: selectionCount,
+        });
+        
+        if (result && result.response) {
+          // Cast result.response as an array of objects & assign it to imageData
+          const imageData = (result.response as Array<Record<string, any>>);
+          setImages(imageData);
+        } else {
+          console.error("Failed to fetch images from Unsplash.")
+        }
+
+      } catch(error) {
+        console.log(error);
+        // Reset images state to an empty array
+        setImages([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchImages();
+  }, []);
+
+  // Return a loader component when isLoading state is true
+  if (isLoading) {
+    return (
+      <div className='flex items-center justify-center p-6'>
+        <Loader2 className='h-6 w-6 text-sky-700 animate-spin' />
+      </div>
+    )
+  }
+
+  // Return a div element with a grid of images
+  return (
+    <div className='relative'>
+      <div className="grid grid-cols-3 gap-2 mb-2">
+        {images.map((image) => (
+          <div 
+            key={image.id}
+            onClick={() => {
+              // Check if the form is pending and return early if true
+              if (pending) {
+                return;
+              }
+              setSelectedImageId(image.id)
+            }}
+            // Use cn function to apply conditional class names based on the pending state
+            className={cn(
+              'relative aspect-video bg-muted cursor-pointer group transition hover:opacity-75',
+              pending && 'cursor-auto opacity-50 hover:opacity-50'
+            )}
+          >
+            <Image
+              src={image.urls.thumb} 
+              alt="Image from Unsplash"
+              className='object-cover rounded-sm'
+              fill
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+```
+
+So far:
+
+feat: add FormSelector component with Unsplash API integration and image selection
+
+- Use unsplashApi to fetch random images from collection 317099
+- Use useEffect hook to fetch images on component mount
+- Use useState hook to store images, isLoading, and selectedImageId in local state
+- Use useFormStatus hook to get the pending state of the form
+- Display images in a grid using Image and Loader2 components
+- Add onClick handler to select an image and update selectedImageId state
+- Use cn utility function to apply conditional class names based on the pending state
+
