@@ -8616,3 +8616,25 @@ const nextConfig = {
 module.exports = nextConfig
 ```
 
+#### Issue: Unsplash API requests are limited to 50 an hour, too little for development
+
+To fix this issue we want to create a constant that stores 9 images that we can use as a fallback for when we run out of requests. We can create a `constants` folder. 
+
+##### constants folder
+
+A constants folder in a Next.js project is a folder that contains files with constant values that can be used throughout the application. Constants are variables that have a fixed value and do not change during the execution of the program. They can be useful for storing configuration options, API keys, URLs, colors, themes, and other data that are not expected to change.
+
+There is no official or standard way to create a constants folder in a Next.js project, but one common approach is to create a `constants` folder inside the `src` folder, which is an optional folder that can be used to organize the application source code. Inside the `constants` folder, one can create different files for different categories of constants, such as `api.ts`, `colors.ts`, `routes.ts`, etc. Each file can export one or more constants using the `export` keyword.
+
+Using a constants folder can help to keep the code more organized, maintainable, and consistent. It can also make it easier to change the values of the constants in one place, without having to update them in multiple files. However, it is not a mandatory or enforced convention, and some developers may prefer to use other ways to manage their constants, such as environment variables, custom configuration files, or inline values. Ultimately, the choice of how to structure and use constants in a Next.js project depends on the preferences and needs of the developer and the project.
+
+##### Use images constants as fallback
+
+- Create `/constants/images.ts` at the root of the project.
+  
+```ts
+// An array of default images to use as a fallback
+export const defaultImages = [];
+```
+
+We can get the default images from Unsplash like this.
