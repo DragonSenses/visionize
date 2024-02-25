@@ -8200,6 +8200,12 @@ Create client component `FormSelector.tsx` in `/components/form`.
 
 It will contain a prop interface that contains an `id`, and `errors` which will contain the `fieldErrors` from `useServerAction.ts`
 
+feat: add prop interface to FormSelector
+
+Define the FormPickerProps interface with id and errors properties
+and use it as the prop type for the FormSelector component.
+This improves the type safety and readability of the code.
+
 ```tsx
 "use client";
 
@@ -8281,6 +8287,76 @@ export default function FormPopover({
 
       </PopoverContent>
     </Popover>
+  )
+}
+```
+
+Now develop the `FormSelector`.
+
+Start with the imports:
+
+```tsx
+import React, { useEffect, useState } from 'react';
+import { unsplashApi } from '@/lib/unsplashAPI';
+```
+
+- create `images` state variable which is type `Array<Record<string, any>>>`
+- Inside a `useEffect` hook create an arrow function which contains a `fetchImages` async function
+- `fetchImages` opens up a `try..catch` where it uses `unsplashApi` to get 9 random photos from collection 317099.
+- Set the `images` to the result of the fetch's response property, if it exists
+- Otherwise, print an error to the console for failing to fetch images
+- catch any errors, reset the images array in these situations
+
+The collectionId we will use is `317099` which leads to the [Unsplash Editorial - 317099](https://unsplash.com/collections/317099/unsplash-editorial) a collection with the theme "The Road Less Traveled".
+
+1. It features photos of landscapes, nature and adventure from around the world
+2. Curated by the Unsplash Editorial team
+3. Wallpaper compatible photos, which fits the resolution and/or aspect ratio that we need to fit our boards
+
+```tsx
+"use client";
+
+import React, { useEffect, useState } from 'react';
+import { unsplashApi } from '@/lib/unsplashAPI';
+
+interface FormPickerProps {
+  id: string;
+  errors?: Record<string, string[] | undefined>;
+};
+
+export default function FormSelector({
+  id,
+  errors,
+}: FormPickerProps) {
+  const [images, setImages] = useState<Array<Record<string, any>>>([]);
+
+  // Fetch images with useEffect
+  useEffect(() => {
+    // Fetch images from collection 317099, curated by Unsplash Editorial
+    const fetchImages = async () => {
+      try {
+        const result = await unsplashApi.photos.getRandom({
+          collectionIds: ["317099"],
+          count: 9,
+        });
+        
+        if (result && result.response) {
+          const imageData = (result.response as Array<Record<string, any>>);
+          setImages(imageData);
+        } else {
+          console.error("Failed to fetch images from Unsplash.")
+        }
+
+      } catch(error) {
+        console.log(error);
+        // Reset images array
+        setImages([]);
+      }
+    }
+  });
+
+  return (
+    <div>FormSelector</div>
   )
 }
 ```
