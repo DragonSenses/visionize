@@ -8300,6 +8300,8 @@ import React, { useEffect, useState } from 'react';
 import { unsplashApi } from '@/lib/unsplashAPI';
 ```
 
+Next what we want to attempt is to a set of images from a collection. Will use [photos.getRandom()](https://github.com/unsplash/unsplash-js?tab=readme-ov-file#photosgetrandomarguments-additionalfetchoptions) method from Unsplash.
+
 - create `images` state variable which is type `Array<Record<string, any>>>`
 - Inside a `useEffect` hook create an arrow function which contains a `fetchImages` async function
 - `fetchImages` opens up a `try..catch` where it uses `unsplashApi` to get 9 random photos from collection 317099.
@@ -8330,6 +8332,8 @@ export default function FormSelector({
 }: FormPickerProps) {
   const [images, setImages] = useState<Array<Record<string, any>>>([]);
 
+  const selectionCount: number = 9;
+
   // Fetch images with useEffect
   useEffect(() => {
     // Fetch images from collection 317099, curated by Unsplash Editorial
@@ -8337,9 +8341,8 @@ export default function FormSelector({
       try {
         const result = await unsplashApi.photos.getRandom({
           collectionIds: ["317099"],
-          count: 9,
+          count: selectionCount,
         });
-        
         if (result && result.response) {
           const imageData = (result.response as Array<Record<string, any>>);
           setImages(imageData);
@@ -8354,6 +8357,68 @@ export default function FormSelector({
       }
     }
   });
+
+  return (
+    <div>FormSelector</div>
+  )
+}
+```
+
+feat: integrate Unsplash API with FormSelector 
+
+- Use unsplashApi to fetch random images from collection 317099
+- Use useEffect hook to fetch images on component mount
+- Use useState hook to store images in local state
+- Display images in FormSelector component
+
+Next add a `isLoading` state, true by default and set to false in the finally block. Then render a `Loading2` from lucide-react with a spin animation to indicate to the user that the image fetch is still underway.
+
+Add loading state & parameterize selectionCount
+
+- Add isLoading state to show a loader while fetching images from Unsplash API
+- Add selectionCount variable to control the number of images to fetch
+- Use selectionCount as a parameter in unsplashApi.photos.getRandom method
+- Handle errors and loading state in fetchImages function
+
+```tsx
+"use client";
+
+import React, { useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
+
+import { unsplashApi } from '@/lib/unsplashAPI';
+
+export default function FormSelector({
+  // ...
+}: FormPickerProps) {
+  const [images, setImages] = useState<Array<Record<string, any>>>([]);
+
+  // Add isLoading state, true by default because fetch starts immediately
+  const [isLoading, setIsLoading] = useState(true);
+
+  const selectionCount: number = 9;
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        // Fetch images from collection 317099, curated by Unsplash Editorial
+        // ...
+      } catch(error) {
+        console.log(error);
+        setImages([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  });
+
+  if (isLoading) {
+    return (
+      <div className='flex items-center justify-center p-6'>
+        <Loader2 className='h-6 w-6 text-sky-700 animate-spin' />
+      </div>
+    )
+  }
 
   return (
     <div>FormSelector</div>
