@@ -8585,3 +8585,34 @@ feat: add FormSelector component with Unsplash API integration and image selecti
 - Add onClick handler to select an image and update selectedImageId state
 - Use cn utility function to apply conditional class names based on the pending state
 
+##### Issue: Unhandled Runtime Error, Invalid src prop "images.unsplash.com" is not configred under images in your `next.config.js`
+
+Add unsplash to remotePatterns in next.config.js
+
+- Resolve the Unhandled Runtime Error caused by invalid src prop for Next.js Image component
+- Allow Next.js Image component to optimize images from Unsplash
+- Add a new object with protocol and hostname properties to the remotePatterns array
+
+Add another remote pattern to fix the error:
+
+`next.config.js`
+```js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'img.clerk.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
+  },
+}
+
+module.exports = nextConfig
+```
+
