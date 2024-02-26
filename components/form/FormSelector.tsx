@@ -7,6 +7,7 @@ import { Loader2 } from 'lucide-react';
 
 import { unsplashApi } from '@/lib/unsplashAPI';
 import { cn } from '@/lib/utils';
+import { defaultImages } from '@/constants/images';
 
 interface FormPickerProps {
   id: string;
@@ -21,7 +22,9 @@ export default function FormSelector({
   const { pending } = useFormStatus();
 
   // Define images state variable as an array of objects
-  const [images, setImages] = useState<Array<Record<string, any>>>([]);
+  const [images, setImages] = useState<Array<Record<string, any>>>(
+    defaultImages
+  );
 
   // Add isLoading state, true by default because fetch starts immediately
   const [isLoading, setIsLoading] = useState(true);
@@ -52,8 +55,8 @@ export default function FormSelector({
 
       } catch(error) {
         console.log(error);
-        // Reset images state to an empty array
-        setImages([]);
+        // Use the images constant as fallback in case of fetch error
+        setImages(defaultImages);
       } finally {
         setIsLoading(false);
       }
