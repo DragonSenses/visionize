@@ -8235,7 +8235,23 @@ We can scroll down to find our `Keys` section which contains the:
 - Access Key
 - Secret Key
 
-Inside `.env`, create the environment variable: `UNSPLASH_ACCESS_KEY` and assign the `Access Key` to it.
+Inside `.env`, create the environment variable: `NEXT_PUBLIC_UNSPLASH_ACCESS_KEY` and assign the `Access Key` to it.
+
+##### Allow Next.js to expose the environment variable to the browser
+
+Use `NEXT_PUBLIC_UNSPLASH_ACCESS_KEY` as the name of the environment variable.
+
+The name of the environment variable is important here as it allows you to use the Unsplash API in your Next.js application without exposing your access key to the public. 
+
+The prefix `NEXT_PUBLIC_` tells Next.js to expose the environment variable to the browser, where it can be used to fetch images from Unsplash. However, the access key is still hidden from the source code and the build output, as it is only injected at runtime
+
+`.env`
+```.env
+<!-- ...environment variables and other sensitive data here -->
+
+# Unsplash API
+NEXT_PUBLIC_UNSPLASH_ACCESS_KEY="YOUR_ACCESS_KEY_HERE"
+```
 
 #### Install Unsplash API for JS
 
@@ -8254,7 +8270,7 @@ import { createApi } from 'unsplash-js';
 from https://unsplash.com
  */
 export const unsplashApi = createApi({
-  accessKey: process.env.UNSPLASH_ACCESS_KEY,
+  accessKey: process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY,
   fetch: fetch,
 });
 
@@ -8279,13 +8295,13 @@ const browserApi = createApi({
 */
 ```
 
-Issue: we get a type error under `accessKey: process.env.UNSPLASH_ACCESS_KEY`.
+Issue: we get a type error under `accessKey: process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY`.
 
 Tried adding an `apiUrl` property but it still throws the error.
 
 ```ts
 export const unsplashApi = createApi({
-  accessKey: process.env.UNSPLASH_ACCESS_KEY,
+  accessKey: process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY,
   fetch: fetch,
   apiUrl: 'https://api.unsplash.com',
 });
@@ -8299,12 +8315,12 @@ This commit adds a non-null assertion operator to the environment variable that 
 
 ```ts
 export const unsplashApi = createApi({
-  accessKey: process.env.UNSPLASH_ACCESS_KEY!,
+  accessKey: process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY!,
   fetch: fetch,
 });
 ```
 
-This code works because it uses the **non-null assertion operator** (!) to tell TypeScript that the value of `process.env.UNSPLASH_ACCESS_KEY` is not null or undefined. This operator is a postfix expression that is used to exclude null and undefined from the type of a variable. It is useful when you have some knowledge that the TypeScript compiler lacks, such as the existence of an environment variable.
+This code works because it uses the **non-null assertion operator** (!) to tell TypeScript that the value of `process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY` is not null or undefined. This operator is a postfix expression that is used to exclude null and undefined from the type of a variable. It is useful when you have some knowledge that the TypeScript compiler lacks, such as the existence of an environment variable.
 
 The non-null assertion operator is simply removed in the emitted JavaScript code, so it has no runtime effect. However, it can help you avoid type errors and unnecessary checks when you are confident that a value is not nullish.
 
@@ -8750,4 +8766,15 @@ Using a constants folder can help to keep the code more organized, maintainable,
 // An array of default images to use as a fallback
 export const defaultImages = [];
 ```
+
+We can get the default images from Unsplash like this:
+
+1. Open up the project and try to "create new board".
+2. When the `FormSelector` component loads, open up the developer tools (in Chrome, developer tools is [F12] key), and switch to Network tab
+3. In the filters (e.g., All, Fetch/XHR, Doc, CSS, JS, Font, Img, Media, Manifest), click "All".
+4. Then we can see in another pane the "Name", "Status", "Initiator", "Size", "Time" and "Waterfall". We want to find the API request whose "Name" starts with "random?"
+5. The API request is a fetch with the name starting with "random?count". Click it and go to the Response tab, and we can see the images in JSON format.
+6. Highlight the entire Response object and paste it into `/constants/images.ts`
+
+Now we have a set of default images.
 
