@@ -1,6 +1,7 @@
 "use client";
 
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { Loader2 } from 'lucide-react';
@@ -100,6 +101,13 @@ export default function FormSelector({
               className='object-cover rounded-sm'
               fill
             />
+            <Link 
+              href={image.links.html}
+              target='_blank'
+              className='absolute w-full bottom-0 p-1 bg-black/10 text-white text-[10px] truncate hover:underline opacity-0 group-hover:opacity-100'
+            >
+              {image.user.name}
+            </Link>
           </div>
         ))}
       </div>
