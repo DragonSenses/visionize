@@ -8253,6 +8253,15 @@ The prefix `NEXT_PUBLIC_` tells Next.js to expose the environment variable to th
 NEXT_PUBLIC_UNSPLASH_ACCESS_KEY="YOUR_ACCESS_KEY_HERE"
 ```
 
+So if you named this environment variable anything different, you need the following fix.
+
+fix: OAuth error, access token invalid w/ prefix
+
+- Fixes the OAuth error: access token invalid from Unsplash by telling Next.js to expose the environment variable to the browser
+- Use the NEXT_PUBLIC_ prefix to expose the access key to the browser
+- Hide the access key from the source code and the build output
+- Follow Unsplash API guidelines and security best practices
+
 #### Install Unsplash API for JS
 
 Let's install the official JS wrapper for [Unsplash API](https://github.com/unsplash/unsplash-js).
@@ -8778,3 +8787,60 @@ We can get the default images from Unsplash like this:
 
 Now we have a set of default images.
 
+#### Use default images as fallback to image fetch error
+
+Navigate back to `FormSelector` and we can display the `defaultImages` as the initial state of the `images` and also set it during the `catch`.
+
+feat: use defaultImages as fallback for Unsplash API
+
+- Import defaultImages from /constants/images.ts
+- Set images state to defaultImages initially
+- Use defaultImages as fallback in case of fetch error
+
+```tsx
+import { defaultImages } from '@/constants/images';
+
+export default function FormSelector({
+  id,
+  errors,
+}: FormPickerProps) {
+  const { pending } = useFormStatus();
+
+  // Define images state variable as an array of objects
+  const [images, setImages] = useState<Array<Record<string, any>>>(
+    defaultImages
+  );
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [selectedImageId, setSelectedImageId] = useState(null);
+
+  const selectionCount: number = 9;
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const result = await unsplashApi.photos.getRandom({
+          collectionIds: ["317099"],
+          count: selectionCount,
+        });
+        
+        if (result && result.response) {
+          const imageData = (result.response as Array<Record<string, any>>);
+          setImages(imageData);
+        } else {
+          console.error("Failed to fetch images from Unsplash.")
+        }
+
+      } catch(error) {
+        console.log(error);
+        // Use the images constant as fallback in case of fetch error
+        setImages(defaultImages);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchImages();
+  }, []);
+```
