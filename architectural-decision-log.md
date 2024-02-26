@@ -6187,6 +6187,8 @@ Inside `/form/components/` create file `FormInput.tsx`.
 
 `components\form\FormInput.tsx`
 ```tsx
+"use client";
+
 import React from 'react'
 
 export default function FormInput() {
@@ -6290,6 +6292,8 @@ Use the forwardRef utility function to pass a ref from the parent component to t
 Now let's use `forwardRef` and assign the props to `FormInput` component.
 
 ```tsx
+"use client";
+
 import React, { forwardRef } from 'react'
 
 interface FormInputProps {
@@ -6390,6 +6394,8 @@ Assign props to Input component
 Use forwardRef to pass ref to Input component and add label, placeholder, type, disabled, required, errors, and onBlur props. Use useFormStatus hook to get pending state and disable input accordingly. Use cn utility to combine class names.
 
 ```tsx
+"use client";
+
 import React, { forwardRef } from 'react'
 import { useFormStatus } from 'react-dom';
 
@@ -7417,6 +7423,106 @@ export default function BoardList() {
 }
 ```
 
+#### Issue: Hydration error when expected server HTML to contain a matching button
+
+```sh
+Unhandled Runtime Error
+Error: Hydration failed because the initial UI does not match what was rendered on the server.
+
+Warning: Expected server HTML to contain a matching <button> in <button>.
+
+See more info here: https://nextjs.org/docs/messages/react-hydration-error
+```
+
+After debugging, the hydration issue seems to be with the `BoardCreationButton`.
+
+`components\BoardCreationButton.tsx`
+```tsx
+import React from 'react';
+import { HelpCircle } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import BoardTooltip from '@/components/BoardTooltip';
+
+const freeBoards = 15;
+
+export default function BoardCreationButton() {
+  return (
+    <Button
+      className='relative flex flex-col items-center h-full w-full rounded-sm aspect-video bg-muted gap-y-1 justify-center transition hover:opacity-75'
+    >
+      <p className='text-sm'>Create new board</p>
+      <span className='text-xs'>
+        {freeBoards} remaining
+      </span>
+      <BoardTooltip 
+        sideOffset={40}
+        description={`
+          Free workspaces allow up to ${freeBoards} boards. 
+          Upgrade this workspace to create unlimited boards.
+        `}
+      >
+        <HelpCircle className='absolute bottom-2 right-2 h-[14px] w-[14px]'/>
+      </BoardTooltip>
+    </Button>
+  )
+}
+```
+
+Thhe error indicates that the initial UI rendered by the server does not match what was rendered on the client. This can cause problems with React’s hydration process, which tries to attach event listeners and manage the state of the component.
+
+One possible reason for this mismatch is that we are using the `aspect-video` class in `Button` component, which sets the padding-top property to 56.25%. This property is calculated based on the width of the parent element, which may be different on the server and the client.
+
+Possible fixes:
+
+To fix this error, we can try to use a fixed height for the `Button` component instead of relying on the `aspect-video` class. For example, we can use the `h-40` class to set the height to 10rem. Alternatively, we can use a different way to achieve the aspect ratio we want, such as using an invisible image or a pseudo-element.
+
+##### Fix: replace `Button` element with `div` with role of button
+
+```tsx
+import React from 'react';
+import { HelpCircle } from 'lucide-react';
+
+import BoardTooltip from '@/components/BoardTooltip';
+
+const freeBoards = 15;
+
+export default function BoardCreationButton() {
+  return (
+    <div
+      role='button'
+      className='relative flex flex-col items-center h-full w-full rounded-sm aspect-video bg-muted gap-y-1 justify-center transition hover:opacity-75'
+    >
+      <p className='text-sm'>Create new board</p>
+      <span className='text-xs'>
+        {freeBoards} remaining
+      </span>
+      <BoardTooltip 
+        sideOffset={40}
+        description={`
+          Free workspaces allow up to ${freeBoards} boards. 
+          Upgrade this workspace to create unlimited boards.
+        `}
+      >
+        <HelpCircle className='absolute bottom-2 right-2 h-[14px] w-[14px]'/>
+      </BoardTooltip>
+    </div>
+  )
+}
+```
+
+docs: Note button hydration error and its fix
+
+- Explain why Button component causes mismatch between server and client HTML
+- Replace Button component with div element with role='button' attribute
+- Prevent hydration error from React
+
+fix: use div instead of Button component in BoardCreationButton
+
+- Replace Button component with div element with role='button' attribute
+- Avoid mismatch between server and client HTML caused by Button component rendering differently
+- Prevent hydration error from React
+
 ## Board popover
 
 ### Board tooltip
@@ -7554,6 +7660,8 @@ Now time to implement the Popover. Create `FormPopover` component inside `/compo
 
 `components\form\FormPopover.tsx`
 ```tsx
+"use client";
+
 import React from 'react';
 
 interface FormPopoverProps {
@@ -7777,6 +7885,8 @@ This commit enhances the FormPopover component by introducing the PopoverClose c
 
 `components\form\FormPopover.tsx`
 ```tsx
+"use client";
+
 import React from 'react';
 import { X } from 'lucide-react';
 
@@ -7838,6 +7948,8 @@ feat: Add form to FormPopover component
 This commit introduces a form within the FormPopover component. The form allows users to input a board title when creating a new board. The form includes a text input field for the title and a 'Create' button for submission.
 
 ```tsx
+"use client";
+
 import FormInput from '@/components/form/FormInput';
 import FormSubmitButton from '@/components/form/FormSubmitButton';
 
@@ -7898,6 +8010,8 @@ Now we can add the `createBoard` server action to the `form`.
 
 `components\form\FormPopover.tsx`
 ```tsx
+"use client";
+
 import React from 'react';
 import { X } from 'lucide-react';
 
@@ -8637,4 +8751,3 @@ Using a constants folder can help to keep the code more organized, maintainable,
 export const defaultImages = [];
 ```
 
-We can get the default images from Unsplash like this.
