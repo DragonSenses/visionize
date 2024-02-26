@@ -8791,12 +8791,13 @@ Now we have a set of default images.
 
 Navigate back to `FormSelector` and we can display the `defaultImages` as the initial state of the `images` and also set it during the `catch`.
 
-feat: use defaultImages as fallback for Unsplash API
+feat: add defaultImages as fallback to img fetch
 
 - Import defaultImages from /constants/images.ts
 - Set images state to defaultImages initially
 - Use defaultImages as fallback in case of fetch error
 
+`components\form\FormSelector.tsx`
 ```tsx
 import { defaultImages } from '@/constants/images';
 
@@ -8843,4 +8844,72 @@ export default function FormSelector({
 
     fetchImages();
   }, []);
+```
+
+#### Adhere to Unsplash API guidelines
+
+According to [Unsplash API guidelines](https://unsplash.com/documentation#hotlinking), we need to hotlink to the original created.
+
+> Unlike most APIs, we require the image URLs returned by the API to be directly used or embedded in your applications (generally referred to as hotlinking).
+
+So let's create a container at the bottom of every image to attribute to hotlink to the creators.
+
+- import `Link` from next/link
+- Add target='_blank' to open a new tab
+- add styles that indicate a black bar with white text
+- the group hover style will allow it to be visible when the parent contain `div` is also hovered over by the user
+
+feat: add hotlink & image attribution
+
+- Import Link component from next/link
+- Add Link element with image.links.html as href and target='_blank'
+- Style the Link element with CSS classes and hover effects
+- Follow the Unsplash API guidelines on hotlinking and attribution
+
+`components\form\FormSelector.tsx`
+```tsx
+import Link from 'next/link';
+
+export default function FormSelector({
+  id,
+  errors,
+}: FormPickerProps) {
+  // ...
+  return (
+    <div className='relative'>
+      <div className="grid grid-cols-3 gap-2 mb-2">
+        {images.map((image) => (
+          <div 
+            key={image.id}
+            onClick={() => {
+              // Check if the form is pending and return early if true
+              if (pending) {
+                return;
+              }
+              setSelectedImageId(image.id)
+            }}
+            // Use cn function to apply conditional class names based on the pending state
+            className={cn(
+              'relative aspect-video bg-muted cursor-pointer group transition hover:opacity-75',
+              pending && 'cursor-auto opacity-50 hover:opacity-50'
+            )}
+          >
+            <Image
+              src={image.urls.thumb} 
+              alt="Image from Unsplash"
+              className='object-cover rounded-sm'
+              fill
+            />
+            <Link 
+              href={image.links.html}
+              target='_blank'
+              className='absolute w-full bottom-0 p-1 bg-black/10 text-white text-[10px] truncate hover:underline opacity-0 group-hover:opacity-100'
+            >
+              {image.user.name}
+            </Link>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 ```
