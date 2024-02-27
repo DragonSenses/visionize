@@ -8903,7 +8903,7 @@ export default function FormSelector({
             <Link 
               href={image.links.html}
               target='_blank'
-              className='absolute w-full bottom-0 p-1 bg-black/10 text-white text-[10px] truncate hover:underline opacity-0 group-hover:opacity-100'
+              className='absolute w-full bottom-0 p-1 bg-black/70 text-white text-[10px] truncate hover:underline opacity-0 group-hover:opacity-100'
             >
               {image.user.name}
             </Link>
@@ -8912,4 +8912,96 @@ export default function FormSelector({
       </div>
     </div>
   )
+```
+
+By adhering to Unsplash API guidelines, we can later apply for production to increates our rate limits (requests/hour).
+
+#### Display to user the selected image with checkmark overlay
+
+To display to the user that they selected an image, render a checkmark in the middle of the image. We check for the `selectedImageId` and if the current `image.id` are equal then render the overlay. Use `Check` from `lucide-react`.
+
+feat: Display selected image to the user
+
+Add functionality to show the selected image with a checkmark overlay.
+
+```tsx
+"use client";
+
+import Image from 'next/image';
+import Link from 'next/link';
+
+import { Check, Loader2 } from 'lucide-react';
+
+export default function FormSelector({
+  // ...
+}: FormPickerProps) {
+  // ...
+  return (
+    <div className='relative'>
+      <div className="grid grid-cols-3 gap-2 mb-2">
+        {images.map((image) => (
+          <div
+            key={image.id}
+            onClick={() => {
+              if (pending) {
+                return;
+              }
+              setSelectedImageId(image.id)
+            }}
+            className={cn(
+              'relative aspect-video bg-muted cursor-pointer group transition hover:opacity-75',
+              pending && 'cursor-auto opacity-50 hover:opacity-50'
+            )}
+          >
+            <Image
+              src={image.urls.thumb}
+              alt="Image from Unsplash"
+              className='object-cover rounded-sm'
+              fill
+            />
+            {selectedImageId === image.id && (
+              <div className='absolute flex items-center justify-center h-full w-full inset-y-0 bg-black/30'>
+                <Check className='h-4 w-4 text-white' />
+              </div>
+            )}
+            <Link
+              href={image.links.html}
+              target='_blank'
+              className='absolute w-full bottom-0 p-1 bg-black/70 text-white text-[10px] truncate hover:underline opacity-0 group-hover:opacity-100'
+            >
+              {image.user.name}
+            </Link>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+```
+
+#### Display errors in FormSelector
+
+The reason why we had the `errors` prop was to be able to display some form validation for the `FormInput` when user defines the board title. We want the error message to be right above the input and below the grid of images. We can re-use the `FormErrors` component to display this.
+
+feat: Add FormErrors to display validation errors
+
+```tsx
+import FormErrors from '@/components/form/FormErrors';
+
+export default function FormSelector({
+  // ...
+}: FormPickerProps) {
+  // ...
+  return (
+    <div className='relative'>
+      <div className="grid grid-cols-3 gap-2 mb-2">
+        { /* ... */}
+      </div>
+      <FormErrors 
+        id='image'
+        errors={errors}
+      />
+    </div>
+  )
+}
 ```
