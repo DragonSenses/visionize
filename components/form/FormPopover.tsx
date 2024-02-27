@@ -74,7 +74,7 @@ export default function FormPopover({
         <form action={onSubmit} className='space-y-4'>
           <div className='space-y-4'>
             <FormSelector 
-              id='image-id'
+              id='image'
               errors={fieldErrors}
             />
             <FormInput
