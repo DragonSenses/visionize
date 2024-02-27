@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 import { defaultImages } from '@/constants/images';
 import FormErrors from '@/components/form/FormErrors';
 
-interface FormPickerProps {
+interface FormSelectorProps {
   id: string;
   errors?: Record<string, string[] | undefined>;
 };
@@ -19,7 +19,7 @@ interface FormPickerProps {
 export default function FormSelector({
   id,
   errors,
-}: FormPickerProps) {
+}: FormSelectorProps) {
   // Use useFormStatus hook to get the pending state of the form
   const { pending } = useFormStatus();
 
