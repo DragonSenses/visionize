@@ -9,6 +9,7 @@ import { Check, Loader2 } from 'lucide-react';
 import { unsplashApi } from '@/lib/unsplashAPI';
 import { cn } from '@/lib/utils';
 import { defaultImages } from '@/constants/images';
+import FormErrors from '@/components/form/FormErrors';
 
 interface FormPickerProps {
   id: string;
@@ -116,6 +117,10 @@ export default function FormSelector({
           </div>
         ))}
       </div>
+      <FormErrors 
+        id='image'
+        errors={errors}
+      />
     </div>
   )
 }
