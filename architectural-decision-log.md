@@ -9005,3 +9005,62 @@ export default function FormSelector({
   )
 }
 ```
+
+#### Trigger an action when an image is selected in FormSelector
+
+The next goal is to be able to trigger or activate an action when the user selects an image in FormSelector. One way to do this is to use a hidden native HTML `input` element with the `type` set to radio. The `value` however will be in a certain format so that we can parse it for later. How the value is determined is based on the network request when we fetch the images. If we look into the response, or we can check the `/constants/images.ts` we can see an example object:
+
+`constants\images.ts`
+```ts
+export const defaultImages = [
+  {
+      "id": "trYGJ2qpwp0",
+      "slug": "a-couple-of-boats-floating-on-top-of-a-lake-trYGJ2qpwp0",
+      "created_at": "2023-03-23T15:58:09Z",
+      "updated_at": "2024-02-26T06:04:04Z",
+      "promoted_at": "2023-03-26T07:08:01Z",
+      "width": 5981,
+      "height": 3987,
+      "color": "#c07340",
+      "blur_hash": "LeJ=+6}rR+W;^PxFbGfkxZs.s.oe",
+      "description": null,
+      "alt_description": "a couple of boats floating on top of a lake",
+      "breadcrumbs": [],
+      "urls": {
+          "raw": "...",
+          "full": "...",
+          "regular": "...",
+          "small": "...",
+          "thumb": "...",
+          "small_s3": "..."
+      },
+      "links": {
+          "self": "...",
+          "html": "...",
+          "download": "...",
+          "download_location": "..."
+      },
+      "user": {
+          "id": "4ajb4CE1HEI",
+          "updated_at": "2024-01-31T22:39:33Z",
+          "username": "gunderandson",
+          "name": "Kyle Evans",
+          "first_name": "Kyle",
+          "last_name": "Evans",
+```
+
+We can see that an image object has a `urls` property where we can extract an object that contains the urls for certain sized images: `{ raw, full, regular, small, thumb, small_s3 }`. We also have a `user` object that contains their `name`.
+
+The following information we'd like to extract are:
+
+- image.id
+- image.urls.thumb
+- image.urls.full
+- image.links.html
+- image.user.name
+
+We will pass this information down to `value` prop of the `input`, delimited by an `|`.
+
+```tsx
+value={`${image.id}|${image.urls.thumb}|${image.urls.full}|${image.links.html}|${image.user.name}`}
+```
