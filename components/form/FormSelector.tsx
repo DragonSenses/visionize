@@ -104,7 +104,7 @@ export default function FormSelector({
             <Link 
               href={image.links.html}
               target='_blank'
-              className='absolute w-full bottom-0 p-1 bg-black/10 text-white text-[10px] truncate hover:underline opacity-0 group-hover:opacity-100'
+              className='absolute w-full bottom-0 p-1 bg-black/70 text-white text-[10px] truncate hover:underline opacity-0 group-hover:opacity-100'
             >
               {image.user.name}
             </Link>
