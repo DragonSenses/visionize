@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { Loader2 } from 'lucide-react';
+import { Check, Loader2 } from 'lucide-react';
 
 import { unsplashApi } from '@/lib/unsplashAPI';
 import { cn } from '@/lib/utils';
@@ -45,7 +45,7 @@ export default function FormSelector({
           collectionIds: ["317099"],
           count: selectionCount,
         });
-        
+
         if (result && result.response) {
           // Cast result.response as an array of objects & assign it to imageData
           const imageData = (result.response as Array<Record<string, any>>);
@@ -54,7 +54,7 @@ export default function FormSelector({
           console.error("Failed to fetch images from Unsplash.")
         }
 
-      } catch(error) {
+      } catch (error) {
         console.log(error);
         // Use the images constant as fallback in case of fetch error
         setImages(defaultImages);
@@ -80,7 +80,7 @@ export default function FormSelector({
     <div className='relative'>
       <div className="grid grid-cols-3 gap-2 mb-2">
         {images.map((image) => (
-          <div 
+          <div
             key={image.id}
             onClick={() => {
               // Check if the form is pending and return early if true
@@ -96,12 +96,17 @@ export default function FormSelector({
             )}
           >
             <Image
-              src={image.urls.thumb} 
+              src={image.urls.thumb}
               alt="Image from Unsplash"
               className='object-cover rounded-sm'
               fill
             />
-            <Link 
+            {selectedImageId === image.id && (
+              <div className='absolute flex items-center justify-center h-full w-full inset-y-0 bg-black/30'>
+                <Check className='h-4 w-4 text-white' />
+              </div>
+            )}
+            <Link
               href={image.links.html}
               target='_blank'
               className='absolute w-full bottom-0 p-1 bg-black/70 text-white text-[10px] truncate hover:underline opacity-0 group-hover:opacity-100'
