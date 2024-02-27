@@ -96,7 +96,17 @@ export default function FormSelector({
               pending && 'cursor-auto opacity-50 hover:opacity-50'
             )}
           >
+            <input 
+              type='radio'
+              id={id}
+              name={id}
+              checked={selectedImageId === image.id}
+              disabled={pending}
+              className='hidden'
+              value={`${image.id}|${image.urls.thumb}|${image.urls.full}|${image.links.html}|${image.user.name}`}
+            />
             <Image
+              // Use thumbnail-sized image URL from the fetch request
               src={image.urls.thumb}
               alt="Image from Unsplash"
               className='object-cover rounded-sm'
