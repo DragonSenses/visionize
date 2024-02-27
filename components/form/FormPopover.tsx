@@ -44,6 +44,7 @@ export default function FormPopover({
 
   function onSubmit(formData: FormData){
     const title = formData.get('title') as string;
+    const image = formData.get('image') as string;
 
     executeServerAction({ title });
   }
