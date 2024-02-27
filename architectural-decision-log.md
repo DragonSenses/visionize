@@ -9064,3 +9064,71 @@ We will pass this information down to `value` prop of the `input`, delimited by 
 ```tsx
 value={`${image.id}|${image.urls.thumb}|${image.urls.full}|${image.links.html}|${image.user.name}`}
 ```
+
+Now for the hidden radio `input` inside thhe `FormSelector`, render this above the `Image`.
+
+```tsx
+export default function FormSelector({
+  id,
+  errors,
+}: FormPickerProps) {
+  // ...
+ 
+  return (
+    <div className='relative'>
+      <div className="grid grid-cols-3 gap-2 mb-2">
+        {images.map((image) => (
+          <div
+            key={image.id}
+            onClick={() => {
+              if (pending) {
+                return;
+              }
+              setSelectedImageId(image.id)
+            }}
+            className={cn(
+              'relative aspect-video bg-muted cursor-pointer group transition hover:opacity-75',
+              pending && 'cursor-auto opacity-50 hover:opacity-50'
+            )}
+          >
+            <input 
+              type='radio'
+              id={id}
+              name={id}
+              checked={selectedImageId === image.id}
+              disabled={pending}
+              className='hidden'
+              value={`${image.id}|${image.urls.thumb}|${image.urls.full}|${image.links.html}|${image.user.name}`}
+            />
+
+            <Image
+              src={image.urls.thumb}
+              alt="Image from Unsplash"
+              className='object-cover rounded-sm'
+              fill
+            />
+            {selectedImageId === image.id && (
+              <div className='absolute flex items-center justify-center h-full w-full inset-y-0 bg-black/30'>
+                <Check className='h-4 w-4 text-white' />
+              </div>
+            )}
+            <Link
+              href={image.links.html}
+              target='_blank'
+              className='absolute w-full bottom-0 p-1 bg-black/70 text-white text-[10px] truncate hover:underline opacity-0 group-hover:opacity-100'
+            >
+              {image.user.name}
+            </Link>
+          </div>
+        ))}
+      </div>
+      <FormErrors 
+        id='image'
+        errors={errors}
+      />
+    </div>
+  )
+}
+```
+
+feat: add hidden input to pass data on image select
