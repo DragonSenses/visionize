@@ -8341,7 +8341,7 @@ It will contain a prop interface that contains an `id`, and `errors` which will 
 
 feat: add prop interface to FormSelector
 
-Define the FormPickerProps interface with id and errors properties
+Define the FormSelectorProps interface with id and errors properties
 and use it as the prop type for the FormSelector component.
 This improves the type safety and readability of the code.
 
@@ -8350,7 +8350,7 @@ This improves the type safety and readability of the code.
 
 import React from 'react';
 
-interface FormPickerProps {
+interface FormSelectorProps {
   id: string;
   errors?: Record<string, string[] | undefined>;
 };
@@ -8358,7 +8358,7 @@ interface FormPickerProps {
 export default function FormSelector({
   id,
   errors,
-}: FormPickerProps) {
+}: FormSelectorProps) {
   return (
     <div>FormSelector</div>
   )
@@ -8404,7 +8404,7 @@ export default function FormPopover({
           <div className='space-y-4'>
 
             <FormSelector 
-              id='image-id'
+              id='image'
               errors={fieldErrors}
             />
 
@@ -8460,7 +8460,7 @@ The collectionId we will use is `317099` which leads to the [Unsplash Editorial 
 import React, { useEffect, useState } from 'react';
 import { unsplashApi } from '@/lib/unsplashAPI';
 
-interface FormPickerProps {
+interface FormSelectorProps {
   id: string;
   errors?: Record<string, string[] | undefined>;
 };
@@ -8468,7 +8468,7 @@ interface FormPickerProps {
 export default function FormSelector({
   id,
   errors,
-}: FormPickerProps) {
+}: FormSelectorProps) {
   const [images, setImages] = useState<Array<Record<string, any>>>([]);
 
   const selectionCount: number = 9;
@@ -8531,7 +8531,7 @@ import { unsplashApi } from '@/lib/unsplashAPI';
 
 export default function FormSelector({
   // ...
-}: FormPickerProps) {
+}: FormSelectorProps) {
   const [images, setImages] = useState<Array<Record<string, any>>>([]);
 
   // Add isLoading state, true by default because fetch starts immediately
@@ -8584,7 +8584,7 @@ import { unsplashApi } from '@/lib/unsplashAPI';
 
 export default function FormSelector({
   // ...
-}: FormPickerProps) {
+}: FormSelectorProps) {
   const { pending } = useFormStatus();
   
   const [images, setImages] = useState<Array<Record<string, any>>>([]);
@@ -8615,7 +8615,7 @@ import { Loader2 } from 'lucide-react';
 import { unsplashApi } from '@/lib/unsplashAPI';
 import { cn } from '@/lib/utils';
 
-interface FormPickerProps {
+interface FormSelectorProps {
   id: string;
   errors?: Record<string, string[] | undefined>;
 };
@@ -8623,7 +8623,7 @@ interface FormPickerProps {
 export default function FormSelector({
   id,
   errors,
-}: FormPickerProps) {
+}: FormSelectorProps) {
   // Use useFormStatus hook to get the pending state of the form
   const { pending } = useFormStatus();
 
@@ -8804,7 +8804,7 @@ import { defaultImages } from '@/constants/images';
 export default function FormSelector({
   id,
   errors,
-}: FormPickerProps) {
+}: FormSelectorProps) {
   const { pending } = useFormStatus();
 
   // Define images state variable as an array of objects
@@ -8873,7 +8873,7 @@ import Link from 'next/link';
 export default function FormSelector({
   id,
   errors,
-}: FormPickerProps) {
+}: FormSelectorProps) {
   // ...
   return (
     <div className='relative'>
@@ -8934,7 +8934,7 @@ import { Check, Loader2 } from 'lucide-react';
 
 export default function FormSelector({
   // ...
-}: FormPickerProps) {
+}: FormSelectorProps) {
   // ...
   return (
     <div className='relative'>
@@ -8990,7 +8990,7 @@ import FormErrors from '@/components/form/FormErrors';
 
 export default function FormSelector({
   // ...
-}: FormPickerProps) {
+}: FormSelectorProps) {
   // ...
   return (
     <div className='relative'>
@@ -9044,9 +9044,9 @@ export const defaultImages = [
           "id": "4ajb4CE1HEI",
           "updated_at": "2024-01-31T22:39:33Z",
           "username": "gunderandson",
-          "name": "Kyle Evans",
-          "first_name": "Kyle",
-          "last_name": "Evans",
+          "name": "Luna Berry",
+          "first_name": "Luna",
+          "last_name": "Berry",
 ```
 
 We can see that an image object has a `urls` property where we can extract an object that contains the urls for certain sized images: `{ raw, full, regular, small, thumb, small_s3 }`. We also have a `user` object that contains their `name`.
@@ -9067,11 +9067,15 @@ value={`${image.id}|${image.urls.thumb}|${image.urls.full}|${image.links.html}|$
 
 Now for the hidden radio `input` inside thhe `FormSelector`, render this above the `Image`.
 
+feat: Add hidden input for passing image data
+
+Include a hidden input field to store image details (ID, URLs, and photographer name).
+
 ```tsx
 export default function FormSelector({
   id,
   errors,
-}: FormPickerProps) {
+}: FormSelectorProps) {
   // ...
  
   return (
@@ -9131,4 +9135,103 @@ export default function FormSelector({
 }
 ```
 
-feat: add hidden input to pass data on image select
+### Pass image data to server action in FormPopover
+
+Now when the user fills out the form by selecting an image, filling out the board title in the form input then the app has access to the `id` of the image inside of the `FormData`. 
+
+We can extract the image data inside the `onSubmit` handler of the `FormPopover`.
+
+feat: Extract image data from FormData
+
+Retrieve the 'title' and 'image' fields from the FormData object.
+
+`components\form\FormPopover.tsx`
+```tsx
+export default function FormPopover({
+  children,
+  align,
+  sideOffset = 0,
+  side = 'bottom',
+}: FormPopoverProps) {
+  const { executeServerAction, fieldErrors } = useServerAction(createBoard, {
+    onSuccess: (data) => { 
+      console.log({ data });
+      toast.success("Board created.")
+    },
+    onError: (error) => {
+      console.log({ error });
+      toast.error(error);
+    },
+  });
+
+  function onSubmit(formData: FormData){
+    const title = formData.get('title') as string;
+    const image = formData.get('image') as string;
+
+    executeServerAction({ title });
+  }
+```
+
+If we add a log statement inside `onSubmit` and print out the `image` variable we get an object that contains the actual value, with the `id`|`urls.thumb`|`urls.full`|`links.html`|`user.name`. Just as we assigned to `value` of the hidden radio input element from earlier:
+
+```tsx
+value={`${image.id}|${image.urls.thumb}|${image.urls.full}|${image.links.html}|${image.user.name}`}
+```
+
+The example log statement:
+
+```ts
+{image: 'someImageId|https://images.unsplash...|Luna Berry'}
+```
+
+We can follow how the execution of this works:
+
+1. In `FormPopover`, assign "image" to `id` prop of `FormSelector`
+
+```tsx
+export default function FormPopover({
+  // ...
+}: FormPopoverProps) {
+
+  return (
+    // ...
+        <form action={onSubmit} className='space-y-4'>
+          <div className='space-y-4'>
+            <FormSelector 
+              id='image'
+              errors={fieldErrors}
+            />
+```
+
+2. Inside `FormSelector`, we pass the `id` prop data to the `id` and `name` of the hidden `input`
+
+```tsx
+export default function FormSelector({
+  id,
+  errors,
+}: FormSelectorProps) {
+  // ...
+ 
+  return (
+    // ...
+            <input 
+              type='radio'
+              id={id}
+              name={id}
+              checked={selectedImageId === image.id}
+              disabled={pending}
+              className='hidden'
+              value={`${image.id}|${image.urls.thumb}|${image.urls.full}|${image.links.html}|${image.user.name}`}
+            />
+```
+
+fix: Assign the proper prop data to FormSelector
+
+This fix includes renaming the value of the id to "image" instead of "image-id" inside of the FormSelector component. This fix now properly passes the image data coming from `FormSelector` into the parent component `FormPopover` and its corresponding `form` element`.
+
+```tsx
+<FormSelector 
+  id='image'
+  errors={fieldErrors}
+/>
+```
