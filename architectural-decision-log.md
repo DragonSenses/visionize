@@ -9255,3 +9255,50 @@ model Board {
   updatedAt     DateTime  @updatedAt
 }
 ```
+
+### Reset the development database
+
+- [Reset the development database in prisma](https://www.prisma.io/docs/orm/prisma-migrate/workflows/development-and-production#reset-the-development-database)
+  
+You can also reset the database yourself to undo manual changes or db push experiments by running:
+
+```sh
+npx prisma migrate reset
+```
+
+**Warning: migrate reset is a development command and should *never* be used in a production environment.**
+
+This command:
+
+1. Drops the database/schema¹ if possible, or performs a soft reset if the environment does not allow deleting databases/schemas¹
+2. Creates a new database/schema¹ with the same name if the database/schema¹ was dropped
+3. Applies all migrations
+4. Runs seed scripts
+¹ For MySQL and MongoDB this refers to the database, for PostgreSQL and SQL Server to the schema, and for SQLite to the database file.
+
+### Generate Prisma Client with prisma schema changes
+
+docs: reset database & regenerate Prisma client
+
+Here is what we want to do:
+
+- Reset the database in development (because we created `Boards` using the old model without the new fields)
+  
+```sh
+npx prisma migrate reset
+```
+
+- Push the new schema in the MySQL database
+
+```sh
+npx prisma db push
+```
+
+- Generate Prisma Client
+
+```sh
+npx prisma generate
+```
+
+- [Generating Prisma Client](https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/generating-prisma-client)
+
