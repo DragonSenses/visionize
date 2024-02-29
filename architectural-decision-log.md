@@ -9225,13 +9225,33 @@ export default function FormSelector({
             />
 ```
 
-fix: Assign the proper prop data to FormSelector
+3. The hidden `input` is a `radio` button which is `checked` when the user clicks an image and sets the `selectedImageId`
 
-This fix includes renaming the value of the id to "image" instead of "image-id" inside of the FormSelector component. This fix now properly passes the image data coming from `FormSelector` into the parent component `FormPopover` and its corresponding `form` element`.
+## Update Board data model with new fields
+
+Update schema to accept image data
+
+Recall the values we can get from the image data:
 
 ```tsx
-<FormSelector 
-  id='image'
-  errors={fieldErrors}
-/>
+value={`${image.id}|${image.urls.thumb}|${image.urls.full}|${image.links.html}|${image.user.name}`}
+```
+
+We can add the additional [fields](https://www.prisma.io/docs/orm/prisma-schema/data-model/models#defining-fields) to the `Board` model.
+
+Navigate to `schema.prisma` and add `orgId, imageId, imageThumbUrl, imageFullUrl, imageUserName, imageLinkHTML, createdAt, updatedAt`.
+
+```prisma
+model Board {
+  id            String    @id @default(uuid())
+  orgId         String
+  title         String
+  imageId       String
+  imageThumbUrl String    @db.Text
+  imageFullUrl  String    @db.Text
+  imageUserName String    @db.Text
+  imageLinkHTML String    @db.Text
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
 ```
