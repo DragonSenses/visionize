@@ -9241,6 +9241,8 @@ We can add the additional [fields](https://www.prisma.io/docs/orm/prisma-schema/
 
 Navigate to `schema.prisma` and add `orgId, imageId, imageThumbUrl, imageFullUrl, imageUserName, imageLinkHTML, createdAt, updatedAt`.
 
+feat: Update Board model with new fields
+
 ```prisma
 model Board {
   id            String    @id @default(uuid())
@@ -9301,4 +9303,34 @@ npx prisma generate
 ```
 
 - [Generating Prisma Client](https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/generating-prisma-client)
+
+### Validate image data
+
+feat: Add image property to CreateBoard schema
+
+This commit adds the image property to the CreateBoard object schema, which is used to validate the input for creating a new board. The image property is a string that is required and has no minimum length. The commit also adds custom error messages for the image property, similar to the title property.
+
+`actions\createBoard\createBoardSchema.ts`
+```tsx
+import { z } from 'zod';
+
+/**
+ * Define the CreateBoard object schema.
+ * 
+ * Add custom error messages for: required fields, 
+ * invalid type and minimum length.
+ */
+export const CreateBoard = z.object({
+  title: z.string({
+    required_error: "Title is required", 
+    invalid_type_error: "Title is required", 
+  }).min(3, {
+    message: "Must be 3 or more characters long.", 
+  }),
+  image: z.string({
+    required_error: "Image is required",
+    invalid_type_error: "Image is required",
+  }),
+});
+```
 
