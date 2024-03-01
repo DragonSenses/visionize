@@ -27,12 +27,12 @@ async function performAction (data: InputType): Promise<ReturnType> {
     imageId,
     imageThumbUrl,
     imageFullUrl,
-    imageLinkHtml,
+    imageLinkHTML,
     imageUserName,
   ] = image.split("|");
 
   if (!imageId || !imageThumbUrl || !imageFullUrl 
-  || !imageLinkHtml || !imageUserName) {
+  || !imageLinkHTML || !imageUserName) {
     return {
       error: 'Failed to create board. A field is missing.'
     };
@@ -45,6 +45,12 @@ async function performAction (data: InputType): Promise<ReturnType> {
     board = await database.board.create({
       data: {
         title,
+        orgId,
+        imageId,
+        imageThumbUrl,
+        imageFullUrl,
+        imageUserName,
+        imageLinkHTML,
       }
     });
   } catch(error) {
