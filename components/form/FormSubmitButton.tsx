@@ -20,7 +20,7 @@ export default function FormSubmitButton({
   className,
   disabled,
   size,
-  variant,
+  variant = 'primary',
 }: FormSubmitProps) {
   const { pending } = useFormStatus();
 
