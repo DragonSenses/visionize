@@ -738,7 +738,7 @@ In other words, you can nest any elements inside an `<a>` except the following:
 
 [Source: stackoverflow | nest a button element inside an a](https://stackoverflow.com/questions/6393827/can-i-nest-a-button-element-inside-an-a-using-html5)
 
-According to the HTML5 spec, interactive elements such as links and buttons are not allowed to be nested inside each other. This is because it creates confusion and ambiguity for the user’s intention. For example, if a user clicks on a link inside a button, should the link or the button action be triggered? Different browsers may handle this situation differently, resulting in inconsistent and unpredictable behavior.
+According to the HTML5 spec, interactive elements such as links and buttons are not allowed to be nested inside each other. This is because it creates confusion and ambiguity for the user's intention. For example, if a user clicks on a link inside a button, should the link or the button action be triggered? Different browsers may handle this situation differently, resulting in inconsistent and unpredictable behavior.
 
 A link inside a button is bad for accessibility, as it makes it harder for keyboard and screen reader users to navigate and interact with the web page. A link and a button have different roles and expectations for how they should behave when activated. A link should navigate the user to another page or location, while a button should perform a specific action or submit a form. A link inside a button breaks these conventions and confuses the assistive technology and the user.
 
@@ -5308,7 +5308,7 @@ Approaches:
 - Wrap each of these distinct segments with a wrapper
   - useSafeServerAction?
   - createAction?
-  - useActionEffect<T, U, V>(input: T, schema: z.Schema<U>, handler: (output: U) => Promise<V>)
+  - `useActionEffect<T, U, V>(input: T, schema: z.Schema<U>, handler: (output: U) => Promise<V>)`
 
 A function that creates another function is called a **higher-order function**. Higher-order functions are functions that can take other functions as arguments or return other functions as results. For example, in JavaScript, the `map` function is a higher-order function that takes a function and an array as arguments, and returns a new array with the function applied to each element.
 
@@ -6703,6 +6703,34 @@ export default function FormSubmitButton({
 }
 ```
 
+feat: Set FormSubmitButton variant to primary
+
+This change applies the Tailwind styles: "bg-sky-500 hover:bg-sky-600/90 text-primary-foreground".
+It now applies to any FormSubmitButtons that do not specify a variant prop.
+
+```tsx
+import { Button } from '@/components/ui/button';
+
+interface FormSubmitProps {
+  children: React.ReactNode;
+  className?: string;
+  disabled?: boolean;
+  size: 'default' | 'sm' | 'lg' | 'icon';
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' 
+    | 'link' | 'primary';
+};
+
+export default function FormSubmitButton({
+  children,
+  className,
+  disabled,
+  size,
+  variant = 'primary',
+}: FormSubmitProps) {
+```
+
+#### Use FormSubmitButton
+
 Now add the re-usable `FormSubmitButton` inside the `BoardForm`.
 
 refactor: BoardForm to use FormSubmitButton
@@ -7469,7 +7497,7 @@ export default function BoardCreationButton() {
 }
 ```
 
-Thhe error indicates that the initial UI rendered by the server does not match what was rendered on the client. This can cause problems with React’s hydration process, which tries to attach event listeners and manage the state of the component.
+Thhe error indicates that the initial UI rendered by the server does not match what was rendered on the client. This can cause problems with React's hydration process, which tries to attach event listeners and manage the state of the component.
 
 One possible reason for this mismatch is that we are using the `aspect-video` class in `Button` component, which sets the padding-top property to 56.25%. This property is calculated based on the width of the parent element, which may be different on the server and the client.
 
@@ -9451,3 +9479,80 @@ Now in order to test the code we can add a log statement right after we create t
 When we print the data out to the console, we should that none of the properties are undefined.
 
 The toast message should display a successful message of "Board created." which is found in the `FormPopover`.
+
+### Prisma Studio to view data in the database
+
+[Prisma Studio](https://www.prisma.io/docs/orm/tools/prisma-studio)
+
+After successfully creating a new board with the new image fields, we can view our data using the visual editor **Prisma Studio**.
+
+```sh
+npx prisma studio
+```
+
+Before adding the next feature (to close the FormPopover after successful board creation) we are going to have to dive deep on **Ref**. To skip the ref section, go here: [Close FormPopover](#close-formpopover-after-a-successful-board-creation).
+
+### Ref
+
+- [useRef](https://react.dev/reference/react/useRef)
+- [Referencing Values with Refs](https://react.dev/learn/referencing-values-with-refs)
+
+When you want a component to "remember" some information, but you don't want that information to trigger new renders, you can use a ref.
+
+You can access the current value of that ref through the `ref.current` property. This value is intentionally mutable, meaning you can both read and write to it. It's like a secret pocket of your component that React doesn't track. (This is what makes it an **"escape hatch"** from React's one-way data flow).
+
+Like state, refs are retained by React between re-renders. However, setting state re-renders a component. Changing a ref does not!
+
+##### Ref Recap
+
+- Refs are an escape hatch to hold onto values that aren't used for rendering. You won't need them often.
+- A ref is a plain JavaScript object with a single property called `current`, which you can read or set.
+- You can ask React to give you a ref by calling the useRef Hook.
+- Like state, refs let you retain information between re-renders of a component.
+- Unlike state, setting the ref's `current` value does not trigger a re-render.
+- Don't read or write `ref.current` during rendering. This makes your component hard to predict.
+
+##### Differences between refs and state 
+
+Perhaps you're thinking refs seem less "strict" than state -- you can mutate them instead of always having to use a state setting function, for instance. But in most cases, you'll want to use state. Refs are an "escape hatch" you won't need often. Here's how state and refs compare:
+
+|refs|state|
+|----|-----|
+|`useRef(initialValue)` returns `{ current: initialValue }`| `useState(initialValue) `returns the current value of a state variable and a state setter function ( `[value, setValue]`) | 
+| Doesn't trigger re-render when you change it. | Triggers re-render when you change it. |
+| Mutable -- you can modify and update `current`'s value outside of the rendering process. | "Immutable" -- you must use the state setting function to modify state variables to queue a re-render. |
+| You shouldn't read (or write) the current value during rendering. | You can read state at any time. However, each render has its own [snapshot](https://react.dev/learn/state-as-a-snapshot) of state which does not change. |
+
+##### Refs and the DOM
+
+You can point a ref to any value. However, the most common use case for a ref is to access a DOM element. For example, this is handy if you want to focus an input programmatically. When you pass a ref to a `ref` attribute in JSX, like `<div ref={myRef}>`, React will put the corresponding DOM element into `myRef.current`. Once the element is removed from the DOM, React will update `myRef.current` to be `null`. You can read more about this in [Manipulating the DOM with Refs](https://react.dev/learn/manipulating-the-dom-with-refs).
+
+##### Best practices for refs
+
+Following these principles will make your components more predictable:
+
+- **Treat refs as an escape hatch**. Refs are useful when you work with external systems or browser APIs. If much of your application logic and data flow relies on refs, you might want to rethink your approach.
+
+- **Don't read or write `ref.current` during rendering**. If some information is needed during rendering, use [state](https://react.dev/learn/state-a-components-memory) instead. Since React doesn't know when `ref.current` changes, even reading it while rendering makes your component's behavior difficult to predict. (The only exception to this is code like `if (!ref.current) ref.current = new Thing()` which only sets the ref once during the first render.)
+
+Limitations of React state don't apply to refs. For example, state acts like a [snapshot for every render](https://react.dev/learn/state-as-a-snapshot) and [doesn't update synchronously](https://react.dev/learn/queueing-a-series-of-state-updates). But when you mutate the current value of a ref, it changes immediately:
+
+```js
+ref.current = 5;
+console.log(ref.current); // 5
+```
+
+This is because the **ref itself is a regular JavaScript object**, and so it behaves like one.
+
+You also don't need to worry about [avoiding mutation](https://react.dev/learn/updating-objects-in-state) when you work with a ref. As long as the object you're mutating isn't used for rendering, React doesn't care what you do with the ref or its contents.
+
+### Close FormPopover after a successful board creation
+
+- QoL in technology means allowing something to be done more intuitively/easier when it is already being done.
+
+An extra QoL change to make is to close the `FormPopover` component automatically after a successful board creation.
+
+To do that we can use the React hook: **useRef**. 
+
+- A **ref** is an object that provides a way to reference a **DOM node** or a **React component instance**.
+- It allows you to access and interact with the underlying DOM elements directly.
