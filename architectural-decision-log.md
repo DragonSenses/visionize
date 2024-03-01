@@ -9334,3 +9334,43 @@ export const CreateBoard = z.object({
 });
 ```
 
+#### Process image data in createBoard action
+
+Navigate to `/createBoard/index.ts`, then process the image data and add error checking.
+
+feat: Enhance image handling and error checking
+
+- Extract `orgId` in `auth()` and return an error if missing
+- Destructure `image` from `data`
+- Split image data by "|" and destructure values into an array
+- Return an error if any image field is missing
+  
+`actions\createBoard\index.ts`
+```ts
+async function performAction (data: InputType): Promise<ReturnType> {
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
+    return {
+      error: 'Unauthorized',
+    }
+  }
+
+  const { title, image } = data;
+
+  const [
+    imageId,
+    imageThumbUrl,
+    imageFullUrl,
+    imageLinkHTML,
+    imageUserName,
+  ] = image.split("|");
+
+  if (!imageId || !imageThumbUrl || !imageFullUrl 
+  || !imageLinkHTML || !imageUserName) {
+    return {
+      error: 'Failed to create board. A field is missing.'
+    };
+  }
+```
+
