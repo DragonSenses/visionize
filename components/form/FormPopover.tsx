@@ -46,7 +46,7 @@ export default function FormPopover({
     const title = formData.get('title') as string;
     const image = formData.get('image') as string;
 
-    executeServerAction({ title });
+    executeServerAction({ title, image });
   }
 
   return (
