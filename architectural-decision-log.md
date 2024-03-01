@@ -9143,7 +9143,7 @@ We can extract the image data inside the `onSubmit` handler of the `FormPopover`
 
 feat: Extract image data from FormData
 
-Retrieve the 'title' and 'image' fields from the FormData object.
+This commit improves the FormPopover component by extracting the 'title' and 'image' fields from the FormData object. It then uses these fields to execute a server action.
 
 `components\form\FormPopover.tsx`
 ```tsx
@@ -9168,7 +9168,7 @@ export default function FormPopover({
     const title = formData.get('title') as string;
     const image = formData.get('image') as string;
 
-    executeServerAction({ title });
+    executeServerAction({ title, image });
   }
 ```
 
@@ -9374,3 +9374,80 @@ async function performAction (data: InputType): Promise<ReturnType> {
   }
 ```
 
+Now create the board in the database with the new fields
+
+feat: createBoard in database w/ new image fields
+
+```ts
+async function performAction (data: InputType): Promise<ReturnType> {
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
+    return {
+      error: 'Unauthorized',
+    }
+  }
+
+  const { title, image } = data;
+
+  const [
+    imageId,
+    imageThumbUrl,
+    imageFullUrl,
+    imageLinkHTML,
+    imageUserName,
+  ] = image.split("|");
+
+  if (!imageId || !imageThumbUrl || !imageFullUrl 
+  || !imageLinkHTML || !imageUserName) {
+    return {
+      error: 'Failed to create board. A field is missing.'
+    };
+  }
+
+  let board;
+
+  // Try to create a new board in the database
+  try {
+    board = await database.board.create({
+      data: {
+        title,
+        orgId,
+        imageId,
+        imageThumbUrl,
+        imageFullUrl,
+        imageUserName,
+        imageLinkHTML,
+      }
+    });
+  } catch(error) {
+    return {
+      error: "Internal error: failed to create in database."
+    }
+  }
+```
+
+Now in order to test the code we can add a log statement right after we create the array containing the data. We will print it out as an object to make it easier to see a missing property.
+
+```ts
+  const [
+    imageId,
+    imageThumbUrl,
+    imageFullUrl,
+    imageLinkHTML,
+    imageUserName,
+  ] = image.split("|");
+
+  // Print image data to the console
+  console.log({
+    imageId,
+    imageThumbUrl,
+    imageFullUrl,
+    imageLinkHTML,
+    imageUserName,
+  });
+```
+
+When we print the data out to the console, we should that none of the properties are undefined.
+
+The toast message should display a successful message of "Board created." which is found in the `FormPopover`.
