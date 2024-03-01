@@ -11,17 +11,32 @@ import { CreateBoard } from "./createBoardSchema";
 
 async function performAction (data: InputType): Promise<ReturnType> {
   // Verify that the user is logged in with Clerk & get their unique identifier
-  const { userId } = auth();
+  const { userId, orgId } = auth();
 
   // If user is not logged-in, return an object with error property: Unauthorized
-  if (!userId) {
+  if (!userId || !orgId) {
     return {
       error: 'Unauthorized',
     }
   }
 
   // Destructure the title property from the validated data
-  const { title } = data;
+  const { title, image } = data;
+
+  const [
+    imageId,
+    imageThumbUrl,
+    imageFullUrl,
+    imageLinkHtml,
+    imageUserName,
+  ] = image.split("|");
+
+  if (!imageId || !imageThumbUrl || !imageFullUrl 
+  || !imageLinkHtml || !imageUserName) {
+    return {
+      error: 'Failed to create board. A field is missing.'
+    };
+  }
 
   let board;
 
