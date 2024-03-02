@@ -6,6 +6,7 @@ import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 
 import MobileSidebar from './MobileSidebar';
+import FormPopover from '@/components/form/FormPopover';
 
 export const Navbar = () => {
   return (
@@ -16,17 +17,19 @@ export const Navbar = () => {
         <div className='hidden md:flex'>
           <Logo />
         </div>
-        <Button
-          variant='primary'
-          size='sm' 
-          className='rounded-sm py-1.5 px-2 h-auto'
-        >
-          <span className='hidden md:block'>Create</span>
-          <Plus className='block md:pl-1 h-4 w-4'/>
-        </Button>
+        <FormPopover align='start' side='bottom' sideOffset={18}>
+          <Button
+            variant='primary'
+            size='sm'
+            className='rounded-sm py-1.5 px-2 h-auto'
+          >
+            <span className='hidden md:block'>Create</span>
+            <Plus className='block md:pl-1 h-4 w-4' />
+          </Button>
+        </FormPopover>
       </div>
       <div className='ml-auto flex items-center gap-x-2'>
-        <OrganizationSwitcher 
+        <OrganizationSwitcher
           afterCreateOrganizationUrl='/org/:id'
           afterLeaveOrganizationUrl='/org-selection'
           afterSelectOrganizationUrl="/org/:id"
@@ -41,15 +44,15 @@ export const Navbar = () => {
             },
           }}
         />
-        <UserButton 
+        <UserButton
           afterSignOutUrl='/'
           appearance={{
-              elements: {
-                avatarBox: {
-                  height: 30,
-                  width: 30,
-                },
+            elements: {
+              avatarBox: {
+                height: 30,
+                width: 30,
               },
+            },
           }}
         />
       </div>
