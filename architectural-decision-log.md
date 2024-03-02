@@ -9556,3 +9556,67 @@ To do that we can use the React hook: **useRef**.
 
 - A **ref** is an object that provides a way to reference a **DOM node** or a **React component instance**.
 - It allows you to access and interact with the underlying DOM elements directly.
+
+Now to add the automatic close behavior, we want to close the `FormPopover` within the `onSuccess` callback function. We can add a ref to the `button` on the `PopoverClose`.
+
+feat: automatically close popover on board creation
+
+This commit enhances the user experience by automatically closing the FormPopover upon successful board creation. The following changes have been implemented:
+
+- Import `ElementRef` and `useRef` from React
+- Create `closeRef` a ref to the button that will close the `FormPopover`
+- Call the `closeRef.current.?click()` in the success callback function
+- Assign `closeRef` to the `PopoverClose` component
+
+`components\form\FormPopover.tsx`
+```tsx
+import React, { ElementRef, useRef } from 'react';
+
+export default function FormPopover({
+  //  ...props
+}: FormPopoverProps) {
+  
+  const closeRef = useRef<ElementRef<"button">>(null);
+
+  const { executeServerAction, fieldErrors } = useServerAction(createBoard, {
+    onSuccess: (data) => { 
+      toast.success("Board created.")
+      closeRef.current?.click();
+    },
+    onError: (error) => {
+      console.log({ error });
+      toast.error(error);
+    },
+  });
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        {children}
+      </PopoverTrigger>
+      <PopoverContent
+        align={align}
+        sideOffset={sideOffset}
+        side={side}
+        className='w-80 pt-3'
+      >
+        <div className='pb-4 font-medium text-sm text-center text-neutral-600'>
+          Create board
+        </div>
+        <PopoverClose ref={closeRef} asChild>
+          <Button
+            variant='destructive'
+            className='absolute top-2 right-2 h-auto w-auto text-neutral-600'
+          >
+            <X className='h-4 w-4' />
+          </Button>
+        </PopoverClose>
+```
+
+Now test the new close functionality.
+
+1. Click the `BoardCreationButton`
+2. Click an image for the board and fill out the title
+3. Click the "Create" button
+
+- A toast notification for successful board creation should appear and the Popover should close shortly after
