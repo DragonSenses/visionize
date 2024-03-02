@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { ElementRef, useRef } from 'react';
 import { X } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -31,10 +31,12 @@ export default function FormPopover({
   sideOffset = 0,
   side = 'bottom',
 }: FormPopoverProps) {
+  const closeRef = useRef<ElementRef<"button">>(null);
+
   const { executeServerAction, fieldErrors } = useServerAction(createBoard, {
     onSuccess: (data) => { 
-      console.log({ data });
       toast.success("Board created.")
+      closeRef.current?.click();
     },
     onError: (error) => {
       console.log({ error });
@@ -63,7 +65,7 @@ export default function FormPopover({
         <div className='pb-4 font-medium text-sm text-center text-neutral-600'>
           Create board
         </div>
-        <PopoverClose asChild>
+        <PopoverClose ref={closeRef} asChild>
           <Button
             variant='destructive'
             className='absolute top-2 right-2 h-auto w-auto text-neutral-600'
