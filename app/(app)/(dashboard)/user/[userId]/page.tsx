@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { database } from '@/lib/database';
-import Board from '@/components/Board';
-import BoardForm from '@/components/BoardForm';
+import Board from '@/components/_old/Board';
+import BoardForm from '@/components/_old/BoardForm';
 
 export default async function UserIdPage () {
   // Fetch the boards from the database
