@@ -22,7 +22,12 @@ While using only three components:
 
 Uses **Next.js 14**, with features such as [Server Actions](https://nextjs.org/blog/next-14#server-actions-stable).
 
-## Live Link - WIP
+# Work-in-Progress
+
+TODO:
+- [ ] Boards
+- [ ] Lists
+- [ ] Cards
 
 # Technologies:
 
@@ -32,13 +37,16 @@ Uses **Next.js 14**, with features such as [Server Actions](https://nextjs.org/b
 - TailwindCSS
 - MySQL, Prisma and PlanetScale for database
 - Clerk for authentication
-- Stripe API
+- Stripe API for payment handling
 - zustand for state management
+- shadcn/ui for component collection
 
 # Specifications
 
-- User can **create**, **read**, **update** and **delete** 
-
+- User can **create**, **read**, **update** and **delete** boards
+- User can **create**, **read**, **update** and **delete** lists
+- User can **create**, **read**, **update** and **delete** cards
+- 
 
 ## Prerequisites
 
