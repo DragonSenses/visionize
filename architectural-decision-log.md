@@ -2,6 +2,8 @@
 
 ***My aim in writing this document was to share the positive impact it made on me with you.***
 
+Visionize description: A Next.js 14 Kanban productivity app designed for task management. Built with a focus on server actions, [FormData Web API](https://developer.mozilla.org/en-US/docs/Web/API/FormData) and createing loading & error states with [useFormStatus](https://react.dev/reference/react-dom/hooks/useFormStatus) and [useFormState](https://react.dev/reference/react-dom/hooks/useFormState).
+
 - An architecture decision log (**ADL**) is the collection of all ADRs created and maintained for a particular project (or organization).
 
 - An architectural decision record (**ADR**) is a document that captures an important architectural decision made along with its context and consequences. 
@@ -9620,3 +9622,60 @@ Now test the new close functionality.
 3. Click the "Create" button
 
 - A toast notification for successful board creation should appear and the Popover should close shortly after
+
+### Route user to new board page after successful Board creation
+
+Another feature to add to the `FormPopover` is to perform client-side navigation to the board page after successful creation.
+
+feat: Navigate to newly created board page
+
+```tsx
+import { useRouter } from 'next/navigation';
+
+export default function FormPopover({
+  // ...props
+}: FormPopoverProps) {
+  const router = useRouter();
+
+  const closeRef = useRef<ElementRef<"button">>(null);
+
+  const { executeServerAction, fieldErrors } = useServerAction(createBoard, {
+    onSuccess: (data) => { 
+      toast.success("Board created.")
+      closeRef.current?.click();
+      router.push(`/board/${data.id}`);
+    },
+```
+
+### Link up `FormPopover` component with create button in `Navbar`
+
+With FormPopover complete let's use it to wrap the create button from the `Navbar`.
+
+feat: Wrap create button with popover in Navbar
+
+`app\(app)\(dashboard)\_components\Navbar.tsx`
+```tsx
+import FormPopover from '@/components/form/FormPopover';
+
+export const Navbar = () => {
+  return (
+    <nav className='flex items-center fixed px-4 z-10 top-0 w-full h-14 border-b shadow-sm bg-white'>
+      <MobileSidebar />
+      <div className='flex items-center gap-x-4'>
+        {/* For screens 768px and larger  */}
+        <div className='hidden md:flex'>
+          <Logo />
+        </div>
+        <FormPopover align='start' side='bottom' sideOffset={18}>
+          <Button
+            variant='primary'
+            size='sm'
+            className='rounded-sm py-1.5 px-2 h-auto'
+          >
+            <span className='hidden md:block'>Create</span>
+            <Plus className='block md:pl-1 h-4 w-4' />
+          </Button>
+        </FormPopover>
+      </div>
+```
+
