@@ -9868,3 +9868,63 @@ Now when we can test the loading of the `BoardList`,
 
 We should be able to see the placeholder preview of the content in these situations.
 
+## Dynamic Metadata
+
+- [generateMetadata](https://nextjs.org/docs/app/api-reference/functions/generate-metadata#generatemetadata-function)
+
+Dynamic metadata depends on **dynamic information**, such as the current route parameters, external data, or `metadata` in parent segments, can be set by exporting a `generateMetadata` function that returns a [Metadata object](https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadata-fields).
+
+Recall that our `RootLayout` had this:
+
+```tsx
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+
+import { siteConfig } from '@/config/site'
+
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: {
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>{children}</body>
+    </html>
+  )
+}
+```
+
+Let's break down the `metadata` object in the `RootLayout` component in Next.js:
+
+1. **`metadata` Object**:
+   - This object contains metadata information for the layout.
+   - It affects how the page title and description appear in search engine results, browser tabs, and social media previews.
+
+2. **`title` Property**:
+   - The `title` property specifies the page title.
+   - It has two sub-properties:
+     - `default`: Represents the default title (likely the site name).
+     - `template`: A template string where `%s` is a placeholder for dynamic content (e.g., specific page titles).
+
+3. **`description` Property**:
+   - The `description` property provides a brief description of the page.
+   - It may be used by search engines or social media platforms to display additional context about the page.
+
+4. **`siteConfig`**:
+   - The `siteConfig` object contains global configuration settings for the site (e.g., site name, description).
+
+In summary, this `metadata` object helps manage page titles and descriptions dynamically based on the site configuration and specific page content. It's essential for SEO and user experience.
+
+
