@@ -1,10 +1,28 @@
 import React from 'react';
+import Link from 'next/link';
+import { auth } from '@clerk/nextjs';
+import { redirect } from 'next/navigation';
 import { UserRound } from 'lucide-react';
+
+import { database } from '@/lib/database';
 import BoardCreationButton from '@/components/BoardCreationButton';
 import FormPopover from '@/components/form/FormPopover';
 
-export default function BoardList() {
-  // Fetch boards here
+export default async function BoardList() {
+  const { orgId } = auth();
+
+  if (!orgId) {
+    return redirect('/select-org');
+  }
+
+  const boards = await database.board.findMany({
+    where: {
+      orgId,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    }
+  });
 
   return (
     <div className='space-y-4'>
@@ -15,6 +33,17 @@ export default function BoardList() {
       </div>
       {/* Grid of boards */}
       <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4'>
+        {boards.map((board) => (
+          <Link
+            key={board.id}
+            href={`/board/${board.id}`}
+            style={{ backgroundImage: `url(${board.imageThumbUrl})` }}
+          >
+            <p>
+              {board.title}
+            </p>
+          </Link>
+        ))}
         <FormPopover side='right' sideOffset={10}>
           <BoardCreationButton />
         </FormPopover>
