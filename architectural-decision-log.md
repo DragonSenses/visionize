@@ -9927,4 +9927,83 @@ Let's break down the `metadata` object in the `RootLayout` component in Next.js:
 
 In summary, this `metadata` object helps manage page titles and descriptions dynamically based on the site configuration and specific page content. It's essential for SEO and user experience.
 
+### Generate Dynamic Metadata for Organization ID Layout
 
+The goal here is to use the organization name to create the metadata object.
+
+First let's make a function which ensures that the organization name is in a user-friendly [letter-case](https://en.wikipedia.org/wiki/Letter_case#Stylistic_or_specialised_usage).
+
+We will go with "Start case", where the first letter of each word is capitalized.
+
+Here is the function `startCase`:
+
+```ts
+/**
+ * Takes a string (usually in camel case, snake case, or kebab case) 
+ * and returns a new string where each word starts with an uppercase 
+ * letter, and words are separated by spaces.
+ * @param input the input string to convert to
+ * @returns the input string in startCase form
+ */
+function startCase(input: string): string {
+  // Convert the input string to lowercase
+  const lowerCaseInput = input.toLowerCase();
+
+  // Split the string into words, using regex
+  // (/\s+/ matches one or more whitespace characters)
+  const words = lowerCaseInput.split(/\s+/);
+
+  // Capitalize the first letter of each word
+  const startCasedWords = words.map((word) => word.charAt(0).
+      toUpperCase() + word.slice(1)
+  );
+
+  // Join the words back together with spaces
+  return startCasedWords.join(' ');
+}
+```
+
+Now we can use the `generateMetadata` to call return the start case of `orgSlug` (we get from clerk [auth object](https://clerk.com/docs/references/nextjs/auth-object)), which is the current user's active organization slug. Or a fallback "your group" in case there `orgSlug` is falsy.
+
+feat: Generate metadata for OrganizationIdLayout
+
+In the `OrganizationIdLayout` component, metadata is dynamically generated for the page title based on the organization slug. The `startCase` function ensures that the title is in proper case.
+
+`app\(app)\(dashboard)\org\[orgId]\layout.tsx`
+```tsx
+import React from 'react';
+import { auth } from '@clerk/nextjs';
+
+import URLMatcher from './_components/URLMatcher';
+
+function startCase(input: string): string {
+  const lowerCaseInput = input.toLowerCase();
+  const words = lowerCaseInput.split(/\s+/);
+  const startCasedWords = words.map((word) => word.charAt(0).
+      toUpperCase() + word.slice(1)
+  );
+
+  return startCasedWords.join(' ');
+}
+
+export async function generateMetadata() {
+  const { orgSlug } = auth();
+
+  return {
+    title: startCase(orgSlug || 'your group'),
+  }
+}
+
+export default function OrganizationIdLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <>
+      <URLMatcher />
+      {children}
+    </>
+  )
+}
+```
