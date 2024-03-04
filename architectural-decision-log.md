@@ -9747,3 +9747,45 @@ export default async function BoardList() {
 }
 ```
 
+- Inside the `Link` add a void element `div` right before the paragraph, with the styles 'absolute inset-0 bg-black/30 group-hover:bg-black/40 transition'. Then give the `p` a 'relative font-semibold text-white' Finally the `Link` should have the className of 'group relative h-full w-full p-2 aspect-video bg-no-repeat bg-center bg-cover bg-sky-700 rounded-sm overflow-hidden'.
+
+Now when we hover on a board we have a darken effect, clicking on one will redirect to the specific board ID page.
+
+style: Add darken effect to board thumbnails
+
+In the `BoardList` component, each board thumbnail is now displayed with a dark overlay on hover. The background image (`imageThumbUrl`) remains visible, but the overlay enhances readability of the board title.
+
+```tsx
+// ...
+export default async function BoardList() {
+  // ...
+  return (
+    <div className='space-y-4'>
+      {/* User icon header */}
+      {/* Grid of boards */}
+      <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4'>
+        {boards.map((board) => (
+          <Link
+            key={board.id}
+            href={`/board/${board.id}`}
+            className='group relative h-full w-full p-2 aspect-video bg-no-repeat bg-center bg-cover bg-sky-700 rounded-sm overflow-hidden'
+            style={{ backgroundImage: `url(${board.imageThumbUrl})` }}
+          >
+            <div
+              className='absolute inset-0 bg-black/30 group-hover:bg-black/40 transition'
+            />
+            <p className="relative font-semibold text-white">
+              {board.title}
+            </p>
+          </Link>
+        ))}
+        <FormPopover side='right' sideOffset={10}>
+          <BoardCreationButton />
+        </FormPopover>
+      </div>
+
+    </div>
+  )
+}
+```
+
