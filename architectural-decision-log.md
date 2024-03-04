@@ -9789,3 +9789,82 @@ export default async function BoardList() {
 }
 ```
 
+### Handle loading state in `BoardList`
+
+feat: Create BoardList skeleton placeholder
+
+This commit adds a skeleton placeholder for the `BoardList` component. The placeholder emulates a grid of boards with approximately 8 individual board placeholders. Each board is represented by a `Skeleton` component.
+
+```tsx
+import { Skeleton } from '@/components/ui/skeleton';
+
+export default async function BoardList() {
+  // ...
+}
+
+BoardList.Skeleton = function BoardListSkeleton() {
+  return (
+    <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4'>
+      <Skeleton className='h-full w-full p-2 aspect-video' />
+      <Skeleton className='h-full w-full p-2 aspect-video' />
+      <Skeleton className='h-full w-full p-2 aspect-video' />
+      <Skeleton className='h-full w-full p-2 aspect-video' />
+      <Skeleton className='h-full w-full p-2 aspect-video' />
+      <Skeleton className='h-full w-full p-2 aspect-video' />
+      <Skeleton className='h-full w-full p-2 aspect-video' />
+      <Skeleton className='h-full w-full p-2 aspect-video' />
+    </div>
+  );
+}
+```
+
+#### Using React Suspense to display a fallback while content is loading
+
+Next we navigate to where the `BoardList` will be rendered (i.e., the org ID page).
+
+And here we will use `Suspense` from React.
+
+- [Suspense](https://react.dev/reference/react/Suspense) lets you display a fallback until its children have finished loading.
+- [Loading UI and Streaming | Next.js](https://nextjs.org/docs/app/building-your-application/routing/loading-ui-and-streaming)
+
+Wrap the `BoardList` in the org ID page with the `BoardList.Skeleton`.
+
+feat: Suspend BoardList in Org ID page
+
+In the `OrganizationIdPage`, the `BoardList` component is now wrapped in a `Suspense` fallback. When loading, it displays a skeleton placeholder to enhance user experience.
+
+`app\(app)\(dashboard)\org\[orgId]\page.tsx`
+```tsx
+import React, { Suspense } from 'react';
+
+import BoardList from '@/components/BoardList';
+import Info from '@/components/Info';
+import { Separator } from '@/components/ui/separator';
+
+const OrganizationIdPage = () => {
+
+  return (
+    <div className='flex flex-col w-full mb-20'>
+      <Info />
+      <Separator className='my-4' />
+      <div className='px-2 md:px-4'>
+        <Suspense fallback={<BoardList.Skeleton />}>
+          <BoardList />
+        </Suspense>
+      </div>
+    </div>
+  );
+};
+
+export default OrganizationIdPage
+```
+
+In this example, the `BoardList` component suspends while fetching the list of boards for the organization. Until it's ready to render, React switches the closest Suspense boundary above to show the fallback - the `BoardList.Skeleton` component. Then, when the data loads, React hides the `BoardList.Skeleton` fallback and renders the `BoardList` component with data.
+
+Now when we can test the loading of the `BoardList`,
+
+- Refresh an organization page
+- Switch between organizations using the `Sidebar`
+
+We should be able to see the placeholder preview of the content in these situations.
+
