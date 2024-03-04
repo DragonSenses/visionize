@@ -7,6 +7,7 @@ import { UserRound } from 'lucide-react';
 import { database } from '@/lib/database';
 import BoardCreationButton from '@/components/BoardCreationButton';
 import FormPopover from '@/components/form/FormPopover';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default async function BoardList() {
   const { orgId } = auth();
@@ -55,4 +56,29 @@ export default async function BoardList() {
 
     </div>
   )
+}
+
+/**
+ * Shows a placeholder preview of the content before it fully loads. Improves
+ * user experience by showing a layout & structure of the component content,
+ * but withoout the details. Reduces the perceived loading time and keeps the
+ * user engaged.
+ * 
+ * Uses React syntax to define a static property on the BoardList component 
+ * and assign the function component which renders the skeleton.
+ * @returns the skeleton of the BoardList component
+ */
+BoardList.Skeleton = function BoardListSkeleton() {
+  return (
+    <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4'>
+      <Skeleton className='h-full w-full p-2 aspect-video' />
+      <Skeleton className='h-full w-full p-2 aspect-video' />
+      <Skeleton className='h-full w-full p-2 aspect-video' />
+      <Skeleton className='h-full w-full p-2 aspect-video' />
+      <Skeleton className='h-full w-full p-2 aspect-video' />
+      <Skeleton className='h-full w-full p-2 aspect-video' />
+      <Skeleton className='h-full w-full p-2 aspect-video' />
+      <Skeleton className='h-full w-full p-2 aspect-video' />
+    </div>
+  );
 }
