@@ -10007,3 +10007,34 @@ export default function OrganizationIdLayout({
   )
 }
 ```
+
+Let's follow the execution: `generateMetadata()` returns an object with `title` property. Now back in the `RootLayout` we have the global metadata, where we defined the `template`:
+
+```tsx
+export const metadata: Metadata = {
+  title: {
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+}
+```
+
+When we return a `title` using `generateMetadata` in anywhere else besides the root layout, it passes in the new title and is interpolated in the variable `%s` while appending the `| ${siteConfigName}`. So the output would be: "Organization Name | Visionize".
+
+## Board Page
+
+Create the `BoardIdPage`.
+
+`app\(app)\(dashboard)\board\[boardId]\page.tsx`
+```tsx
+import React from 'react';
+
+export default function BoardIdPage() {
+  return (
+    <div>
+      BoardIdPage
+    </div>
+  )
+}
+```
