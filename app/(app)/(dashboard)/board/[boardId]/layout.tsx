@@ -1,5 +1,5 @@
 import React from 'react';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { auth } from '@clerk/nextjs';
 
 import { database } from '@/lib/database';
@@ -24,6 +24,9 @@ export default function BoardIdLayout({
     },
   });
 
+  if (!board) {
+    notFound();
+  }
 
   return (
     <div>
