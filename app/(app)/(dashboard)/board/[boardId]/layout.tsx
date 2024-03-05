@@ -29,7 +29,10 @@ export default function BoardIdLayout({
   }
 
   return (
-    <div>
+    <div
+      className='relative h-full bg-cover bg-center bg-no-repeat'
+      style={{ backgroundImage: `url(${board.imageFullUrl})` }}
+    >
       <main className='relative h-full pt-28'>
         {children}
       </main>
