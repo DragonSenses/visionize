@@ -10102,3 +10102,89 @@ export default function BoardIdLayout({
   )
 }
 ```
+
+#### Nextjs `notFound` can gracefully handle 404 errors 
+
+If the there is no `board`, we can use `notFound` from next/navigation to manually trigger a 404.
+
+- [notFound | Nextjs API Reference](https://nextjs.org/docs/app/api-reference/functions/not-found)
+- [notFound file](https://nextjs.org/docs/app/api-reference/file-conventions/not-found)
+
+The `notFound` function allows you to render the `not-found file` within a route segment as well as inject a `<meta name="robots" content="noindex" />` tag.
+
+Invoking the `notFound()` function throws a `NEXT_NOT_FOUND` error and terminates rendering of the route segment in which it was thrown. Specifying a `not-found file` allows you to gracefully handle such errors by rendering a Not Found UI within the segment.
+
+- Good to know: `notFound()` does not require you to use `return notFound()` due to using the TypeScript [never](https://www.typescriptlang.org/docs/handbook/2/functions.html#never) type.
+
+Let's invoke `notFound()` when there is no `board` found from the fetch.
+
+feat: Handle board not found error in layout
+
+This commit adds error handling to the BoardIdLayout component. If a board with the specified boardId is not found in the database, the `notFound()` function is invoked. Additionally, redirection to '/org-selection' occurs if orgId is missing.
+
+`app\(app)\(dashboard)\board\[boardId]\layout.tsx`
+```tsx
+import React from 'react';
+import { notFound, redirect } from 'next/navigation';
+import { auth } from '@clerk/nextjs';
+
+import { database } from '@/lib/database';
+
+export default function BoardIdLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: { boardId: string; }
+}) {
+  const { orgId } = auth();
+
+  if (!orgId) {
+    redirect('/org-selection');
+  }
+
+  const board = await database.board.findUnique({
+    where: { 
+      id: params.boardId,
+      orgId,
+    },
+  });
+
+  if (!board) {
+    notFound();
+  }
+
+  return (
+    <div>
+      <main className='relative h-full pt-28'>
+        {children}
+      </main>
+    </div>
+  )
+}
+```
+
+- Create and style the not found page.
+
+In `/app`, create a file named `not-found.tsx`.
+
+feat: Implement custom 404 page (not-found.tsx)
+
+`/app/not-found.tsx`
+```tsx
+import Link from 'next/link';
+
+export default function NotFound() {
+  return (
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h1 className="text-4xl font-bold mb-4">Not Found - 404!</h1>
+      <p className="text-gray-600">
+        Oops! The page you&apos;re looking for doesn&apos;t exist.
+      </p>
+      <Link className="mt-4 text-blue-500 hover:underline" href="/">
+        Return Home
+      </Link>
+    </div>
+  );
+}
+```
