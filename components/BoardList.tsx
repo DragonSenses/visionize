@@ -13,7 +13,7 @@ export default async function BoardList() {
   const { orgId } = auth();
 
   if (!orgId) {
-    return redirect('/select-org');
+    return redirect('/org-selection');
   }
 
   const boards = await database.board.findMany({
