@@ -9705,7 +9705,7 @@ export default async function BoardList() {
   const { orgId } = auth();
 
   if (!orgId) {
-    return redirect('/select-org');
+    return redirect('/org-selection');
   }
 
   const boards = await database.board.findMany({
@@ -10034,6 +10034,70 @@ export default function BoardIdPage() {
   return (
     <div>
       BoardIdPage
+    </div>
+  )
+}
+```
+
+### BoardIdLayout
+
+Create `BoardIdLayout` which accepts `children` 
+
+`app\(app)\(dashboard)\board\[boardId]\layout.tsx`
+```tsx
+import React from 'react';
+
+export default function BoardIdLayout({
+  children
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      {children}
+    </div>
+  )
+}
+```
+
+Now let's modify the layout a bit, wrap `children` in a `main` tag and move it so it is visible (not hidden behind the navbar). Then also add `params` prop. Get orgId, and fetch board in database.
+
+feat: Retrieve ID & fetch board in BoardIdLayout
+
+This commit introduces the BoardIdLayout component, which retrieves the organization ID (orgId) and fetches a board from the database based on the provided boardId. The component handles redirection to '/org-selection' if orgId is not available.
+
+```tsx
+import React from 'react';
+import { redirect } from 'next/navigation';
+import { auth } from '@clerk/nextjs';
+
+import { database } from '@/lib/database';
+
+export default function BoardIdLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: { boardId: string; }
+}) {
+  const { orgId } = auth();
+
+  if (!orgId) {
+    redirect('/org-selection');
+  }
+
+  const board = await database.board.findUnique({
+    where: { 
+      id: params.boardId,
+      orgId,
+    },
+  });
+
+  return (
+    <div>
+      <main className='relative h-full pt-28'>
+        {children}
+      </main>
     </div>
   )
 }
