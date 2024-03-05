@@ -1,13 +1,35 @@
 import React from 'react';
+import { redirect } from 'next/navigation';
+import { auth } from '@clerk/nextjs';
+
+import { database } from '@/lib/database';
 
 export default function BoardIdLayout({
-  children
+  children,
+  params,
 }: {
   children: React.ReactNode;
+  params: { boardId: string; }
 }) {
+  const { orgId } = auth();
+
+  if (!orgId) {
+    redirect('/org-selection');
+  }
+
+  const board = await database.board.findUnique({
+    where: { 
+      id: params.boardId,
+      orgId,
+    },
+  });
+
+
   return (
     <div>
-      {children}
+      <main className='relative h-full pt-28'>
+        {children}
+      </main>
     </div>
   )
 }
