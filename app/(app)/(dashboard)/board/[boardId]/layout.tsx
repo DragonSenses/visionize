@@ -4,7 +4,30 @@ import { auth } from '@clerk/nextjs';
 
 import { database } from '@/lib/database';
 
-export default function BoardIdLayout({
+export async function generateMetadata({
+  params
+}: {
+  params: { boardId: string; };
+}) {
+  const { orgId } = auth();
+
+  if (!orgId) {
+    return { title: 'Board' };
+  }
+
+  const board = await database.board.findUnique({
+    where: { 
+      id: params.boardId,
+      orgId,
+    },
+  });
+
+  return {
+    title: board?.title || 'My Board',
+  };
+}
+
+export default async function BoardIdLayout({
   children,
   params,
 }: {
