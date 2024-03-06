@@ -10188,3 +10188,29 @@ export default function NotFound() {
   );
 }
 ```
+
+#### BoardIdLayout output
+
+Finally use the full `board.imageFullUrl` as the backdrop for every specific Board page.
+
+feat: Set full background image for Board layout
+
+```tsx
+export default function BoardIdLayout(
+  // ...
+) {
+  // ...
+  return (
+    <div
+      className='relative h-full bg-cover bg-center bg-no-repeat'
+      style={{ backgroundImage: `url(${board.imageFullUrl})` }}
+    >
+      <main className='relative h-full pt-28'>
+        {children}
+      </main>
+    </div>
+  )
+}
+```
+
+Next, let's create dynamic metadata in BoardIdLayout
