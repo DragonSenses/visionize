@@ -34,9 +34,9 @@ export default function Info() {
           {organization?.name}
         </p>
         {/* Premium or Free info is dynamically rendered */}
-        <div className='flex items-center text-xs text-muted-foreground'>
+        <div className='flex items-center text-xs text-muted-foreground gap-1'>
           <CreditCard />
-          Free
+          <span>Free</span>
         </div>
       </div>
     </div>
