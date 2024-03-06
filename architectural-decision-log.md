@@ -10248,22 +10248,34 @@ export default async function BoardIdLayout({
 
 ### BoardNavbar component
 
-Create the component
+Create `BoardNavbar` that accepts a `data` prop which is a type of `Board`.
 
 `app\(app)\(dashboard)\board\[boardId]\_components\BoardNavbar.tsx`
 ```tsx
 import React from 'react';
+import { Board } from '@prisma/client';
 
-export default function BoardNavbar() {
+interface BoardNavbarProps {
+  data: Board;
+}
+
+export default async function BoardNavbar({
+  data
+}: BoardNavbarProps) {
+
   return (
     <div>BoardNavbar</div>
   )
 }
 ```
 
-Then import and render it inside the `BoardIdLayout`, right above the `main` tag
+Then import and render it inside the `BoardIdLayout`, right above the `main` tag. Also pass in the `board` to the `data` prop.
 
 feat: import and render BoardNavbar in BoardIdLayout
+
+refactor: Pass board data to BoardNavbar as prop
+
+In BoardIdLayout component, fetch board data and provide it as a prop to BoardNavbar. This change ensures that the necessary data is available for rendering the component.
 
 ```tsx
 import BoardNavbar from './_components/BoardNavbar';
@@ -10272,12 +10284,19 @@ export default async function BoardIdLayout(
   // ...
 ) {
   // ...
+  const board = await database.board.findUnique({
+    where: { 
+      id: params.boardId,
+      orgId,
+    },
+  });
+
   return (
     <div
       className='relative h-full bg-cover bg-center bg-no-repeat'
       style={{ backgroundImage: `url(${board.imageFullUrl})` }}
     >
-      <BoardNavbar />
+      <BoardNavbar data={board} />
       <main className='relative h-full pt-28'>
         {children}
       </main>
@@ -10303,7 +10322,7 @@ export default async function BoardIdLayout(
       className='relative h-full bg-cover bg-center bg-no-repeat'
       style={{ backgroundImage: `url(${board.imageFullUrl})` }}
     >
-      <BoardNavbar />
+      <BoardNavbar data={board} />
       <div className='absolute inset-0 bg-black/20' />
       <main className='relative h-full pt-28'>
         {children}
@@ -10312,3 +10331,4 @@ export default async function BoardIdLayout(
   )
 }
 ```
+
