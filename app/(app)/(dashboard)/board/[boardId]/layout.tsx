@@ -57,7 +57,7 @@ export default async function BoardIdLayout({
       className='relative h-full bg-cover bg-center bg-no-repeat'
       style={{ backgroundImage: `url(${board.imageFullUrl})` }}
     >
-      <BoardNavbar id={params.boardId} />
+      <BoardNavbar data={board} />
       <div className='absolute inset-0 bg-black/20' />
       <main className='relative h-full pt-28'>
         {children}

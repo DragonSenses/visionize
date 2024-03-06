@@ -1,14 +1,17 @@
 import React from 'react';
+import { Board } from '@prisma/client';
 
 interface BoardNavbarProps {
-  id: string;
+  data: Board;
 }
 
 export default async function BoardNavbar({
-  id
+  data
 }: BoardNavbarProps) {
 
   return (
-    <div>BoardNavbar</div>
+    <div>
+      BoardNavbar
+    </div>
   )
 }
