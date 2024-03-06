@@ -1,6 +1,13 @@
 import React from 'react';
 
-export default function BoardNavbar() {
+interface BoardNavbarProps {
+  id: string;
+}
+
+export default async function BoardNavbar({
+  id
+}: BoardNavbarProps) {
+
   return (
     <div>BoardNavbar</div>
   )
