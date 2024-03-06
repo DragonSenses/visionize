@@ -10073,7 +10073,7 @@ import { auth } from '@clerk/nextjs';
 
 import { database } from '@/lib/database';
 
-export default function BoardIdLayout({
+export default async function BoardIdLayout({
   children,
   params,
 }: {
@@ -10130,7 +10130,7 @@ import { auth } from '@clerk/nextjs';
 
 import { database } from '@/lib/database';
 
-export default function BoardIdLayout({
+export default async function BoardIdLayout({
   children,
   params,
 }: {
@@ -10196,7 +10196,7 @@ Finally use the full `board.imageFullUrl` as the backdrop for every specific Boa
 feat: Set full background image for Board layout
 
 ```tsx
-export default function BoardIdLayout(
+export default async function BoardIdLayout(
   // ...
 ) {
   // ...
@@ -10213,4 +10213,35 @@ export default function BoardIdLayout(
 }
 ```
 
-Next, let's create dynamic metadata in BoardIdLayout
+Create dynamic metadata for each individual board.
+
+feat: Implement metadata generation in each board
+
+```tsx
+import { database } from '@/lib/database';
+
+export async function generateMetadata({
+  params
+}: {
+  params: { boardId: string; };
+}) {
+  const { orgId } = auth();
+
+  if (!orgId) {
+    return { title: 'Board' };
+  }
+
+  const board = await database.board.findUnique({
+    where: { 
+      id: params.boardId,
+      orgId,
+    },
+  });
+
+  return {
+    title: board?.title || 'My Board',
+  };
+}
+
+export default async function BoardIdLayout({
+```
