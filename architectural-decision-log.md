@@ -10245,3 +10245,70 @@ export async function generateMetadata({
 
 export default async function BoardIdLayout({
 ```
+
+### BoardNavbar component
+
+Create the component
+
+`app\(app)\(dashboard)\board\[boardId]\_components\BoardNavbar.tsx`
+```tsx
+import React from 'react';
+
+export default function BoardNavbar() {
+  return (
+    <div>BoardNavbar</div>
+  )
+}
+```
+
+Then import and render it inside the `BoardIdLayout`, right above the `main` tag
+
+feat: import and render BoardNavbar in BoardIdLayout
+
+```tsx
+import BoardNavbar from './_components/BoardNavbar';
+// ...
+export default async function BoardIdLayout(
+  // ...
+) {
+  // ...
+  return (
+    <div
+      className='relative h-full bg-cover bg-center bg-no-repeat'
+      style={{ backgroundImage: `url(${board.imageFullUrl})` }}
+    >
+      <BoardNavbar />
+      <main className='relative h-full pt-28'>
+        {children}
+      </main>
+    </div>
+  )
+}
+```
+
+feat: Add dark overlay to improve contrast
+
+- Introduced an absolute overlay with a semi-transparent black background.
+- Enhances readability and visual contrast.
+
+```tsx
+import BoardNavbar from './_components/BoardNavbar';
+// ...
+export default async function BoardIdLayout(
+  // ...
+) {
+  // ...
+  return (
+    <div
+      className='relative h-full bg-cover bg-center bg-no-repeat'
+      style={{ backgroundImage: `url(${board.imageFullUrl})` }}
+    >
+      <BoardNavbar />
+      <div className='absolute inset-0 bg-black/20' />
+      <main className='relative h-full pt-28'>
+        {children}
+      </main>
+    </div>
+  )
+}
+```
