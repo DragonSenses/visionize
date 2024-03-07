@@ -33,9 +33,18 @@ export default function BoardTitleForm({
     })
   }
 
+  function onSubmit(formData: FormData) {
+    const title = formData.get('title') as string;
+    console.log(`Submitted: ${title}`);
+  }
+
   if (isEditing) {
     return (
-      <form ref={formRef} className='flex items-center gap-x-2'>
+      <form 
+        action={onSubmit} 
+        ref={formRef} 
+        className='flex items-center gap-x-2'
+      >
         <FormInput
           ref={inputRef}
           id='title'
