@@ -18,12 +18,19 @@ export default function BoardTitleForm({
 
   const [isEditing, setIsEditing] = useState(false);
   
-  function disabledEditing() {
+  function disableEditing() {
     setIsEditing(false);
   }
   
+  /**
+   * Enables editing mode and focus input.
+   */
   function enableEditing() {
     setIsEditing(true);
+    setTimeout(() => {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    })
   }
 
   if (isEditing) {
@@ -42,6 +49,7 @@ export default function BoardTitleForm({
 
   return (
     <Button
+      onClick={enableEditing}
       variant='transparent'
       className='h-auto w-auto p-1 px-2 font-bold text-lg'
     >
