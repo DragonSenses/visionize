@@ -10464,3 +10464,90 @@ export default function BoardTitleForm({
   );
 }
 ```
+
+##### Develop BoardTitleForm
+
+Next, we add a `isEditing` state to the `BoardTitleForm`. Add two functions that disable and enable the editing state. And a check that if `isEditing` is true, return a `form`.
+
+feat: Add isEditing state to BoardTitleForm
+
+This commit introduces the isEditing state to the BoardTitleForm component. The state is used to track whether the user is currently editing the board title. When editing is disabled, the form is displayed, allowing users to modify the title.
+
+The `disabledEditing` function sets the isEditing state to `false`, while the `enableEditing` function sets it to `true`.
+
+This change enhances the user experience by providing a dynamic editing feature for board titles.
+
+```tsx
+"use client";
+
+import React, { useState } from 'react';
+
+export default function BoardTitleForm({
+  data,
+}: BoardTitleFormProps) {
+  const [isEditing, setIsEditing] = useState(false);
+
+  
+  function disabledEditing() {
+    setIsEditing(false);
+  }
+  
+  function enableEditing() {
+    setIsEditing(true);
+  }
+
+  if (isEditing) {
+    return (
+      <form>
+      </form>
+    )
+  }
+
+  return (
+    // ...
+  );
+}
+```
+
+Inside the `form` render a `FormInput` component while passing props to `id, defaultValue, onBlur and className`.
+
+feat: Render FormInput component when editing
+
+```tsx
+export default function BoardTitleForm({
+  data,
+}: BoardTitleFormProps) {
+  const [isEditing, setIsEditing] = useState(false);
+
+  if (isEditing) {
+    return (
+      <form className='flex items-center gap-x-2'>
+        <FormInput 
+          id='title'
+          defaultValue={data.title}
+          onBlur={() => {}}
+          className=''
+        />
+      </form>
+    )
+  }
+  // ...
+```
+
+style: Enhance visual appearance of FormInput
+
+Refines the styling of the FormInput component within the form. The provided CSS classes ensure a transparent background, appropriate height, font weight, and focus behavior.
+
+```tsx
+  if (isEditing) {
+    return (
+      <form className='flex items-center gap-x-2'>
+        <FormInput 
+          id='title'
+          defaultValue={data.title}
+          onBlur={() => {}}
+          className='bg-transparent h-7 px-[7px] py-1 border-none text-lg font-bold focus-visible:outline-none focus-visible:ring-transparent'
+        />
+      </form>
+    )
+```
