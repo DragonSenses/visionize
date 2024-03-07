@@ -1,10 +1,20 @@
 "use client";
 
 import React from 'react';
+import { Board } from '@prisma/client';
 
+import { Button } from '@/components/ui/button';
 
-export default function BoardTitleForm() {
+interface BoardTitleFormProps {
+  data: Board;
+};
+
+export default function BoardTitleForm({
+  data,
+}: BoardTitleFormProps) {
   return (
-    <div>BoardTitleForm</div>
+    <Button>
+      {data.title}
+    </Button>
   )
 }
