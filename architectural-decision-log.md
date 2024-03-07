@@ -10385,3 +10385,82 @@ export default function BoardTitleForm({
 }
 ```
 
+feat: Use BoardTitleForm component in BoardNavbar
+
+```tsx
+import BoardTitleForm from './BoardTitleForm';
+
+interface BoardNavbarProps {
+  data: Board;
+}
+
+export default async function BoardNavbar({
+  data
+}: BoardNavbarProps) {
+
+  return (
+    <div>
+      <BoardTitleForm data={data} />
+    </div>
+  )
+}
+```
+
+feat: Enhance BoardTitleForm to accurately reflect functionality
+
+In the BoardTitleForm component, ensure that the button accurately represents its intended functionality. Styling adjustments have been made to align with the expected behavior.
+
+feat: Add transparent variant to Button component
+
+The new `transparent` variant includes a see-through background with white text. When hovered over, it subtly transitions to a semi-transparent white background, signaling user interactivity.
+
+`components\ui\button.tsx`
+```tsx
+const buttonVariants = cva(
+  // ...
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline:
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+        primary: "bg-sky-500 hover:bg-sky-600/90 text-primary-foreground",
+        transparent: "bg-transparent text-white hover:bg-white/20",
+      },
+      // ...
+    },
+    // ...
+  }
+)
+
+export interface ButtonProps
+  // ...
+}
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+```
+
+style: Add transparent button to signal user action
+
+In the BoardTitleForm component, add a transparent button to display the board title. The button's styling includes auto height, auto width, padding, bold font, and a larger text size. Additionally, it is set to the transparent variant, which provides a subtle white background on hover to indicate user interaction.
+
+```tsx
+export default function BoardTitleForm({
+  data,
+}: BoardTitleFormProps) {
+  return (
+    <Button
+      variant='transparent'
+      className='h-auto w-auto p-1 px-2 font-bold text-lg'
+    >
+      {data.title}
+    </Button>
+  );
+}
+```
