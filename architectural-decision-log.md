@@ -10332,3 +10332,56 @@ export default async function BoardIdLayout(
 }
 ```
 
+Back to `BoardNavbar`, let's add some styles that give it slightly dark overlay with white text.
+
+style: Enhance visual presentation of BoardNavbar
+
+In the BoardNavbar component, adjust styling for improved visual output. Now displays a fixed, transparent black background with white text for better contrast and readability.
+
+```tsx
+export default async function BoardNavbar({
+  data
+}: BoardNavbarProps) {
+
+  return (
+    <div className='flex items-center fixed h-14 w-full top-14 z-[30] bg-black/50 px-6 gap-x-4 text-white'>
+      BoardNavbar
+    </div>
+  )
+}
+```
+
+#### BoardTitleForm component
+
+The `BoardTitleForm` component will display the title of the board and also allow the user to update the title.
+
+feat: Create BoardTitleForm to render board title
+
+- Mark as client component
+- Accept data prop of type Board
+- Interpolate the board title inside a Button
+
+`app\(app)\(dashboard)\board\[boardId]\_components\BoardTitleForm.tsx`
+```tsx
+"use client";
+
+import React from 'react';
+import { Board } from '@prisma/client';
+
+import { Button } from '@/components/ui/button';
+
+interface BoardTitleFormProps {
+  data: Board;
+};
+
+export default function BoardTitleForm({
+  data,
+}: BoardTitleFormProps) {
+  return (
+    <Button>
+      {data.title}
+    </Button>
+  )
+}
+```
+
