@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Board } from '@prisma/client';
 
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,24 @@ interface BoardTitleFormProps {
 export default function BoardTitleForm({
   data,
 }: BoardTitleFormProps) {
+  const [isEditing, setIsEditing] = useState(false);
+
+  
+  function disabledEditing() {
+    setIsEditing(false);
+  }
+  
+  function enableEditing() {
+    setIsEditing(true);
+  }
+
+  if (isEditing) {
+    return (
+      <form>
+      </form>
+    )
+  }
+
   return (
     <Button
       variant='transparent'
