@@ -13,8 +13,11 @@ export default function BoardTitleForm({
   data,
 }: BoardTitleFormProps) {
   return (
-    <Button>
+    <Button
+      variant='transparent'
+      className='h-auto w-auto p-1 px-2 font-bold text-lg'
+    >
       {data.title}
     </Button>
-  )
+  );
 }
