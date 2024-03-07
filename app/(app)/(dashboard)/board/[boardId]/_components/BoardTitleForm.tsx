@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { ElementRef, useRef, useState } from 'react';
 import { Board } from '@prisma/client';
 
 import { Button } from '@/components/ui/button';
@@ -13,8 +13,10 @@ interface BoardTitleFormProps {
 export default function BoardTitleForm({
   data,
 }: BoardTitleFormProps) {
-  const [isEditing, setIsEditing] = useState(false);
+  const formRef = useRef<ElementRef<"form">>(null);
+  const inputRef = useRef<ElementRef<"input">>(null);
 
+  const [isEditing, setIsEditing] = useState(false);
   
   function disabledEditing() {
     setIsEditing(false);
@@ -26,8 +28,9 @@ export default function BoardTitleForm({
 
   if (isEditing) {
     return (
-      <form className='flex items-center gap-x-2'>
-        <FormInput 
+      <form ref={formRef} className='flex items-center gap-x-2'>
+        <FormInput
+          ref={inputRef}
           id='title'
           defaultValue={data.title}
           onBlur={() => {}}
