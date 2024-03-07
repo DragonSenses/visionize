@@ -10551,3 +10551,54 @@ Refines the styling of the FormInput component within the form. The provided CSS
       </form>
     )
 ```
+
+##### useRef to reference form and input DOM elements
+
+Create `formRef` and `inputRef`, and assign them to the `form` and `FormInput` elements respectively. This allows direct interaction with the form and input elements.
+
+feat: Add formRef and inputRef in BoardTitleForm
+
+```tsx
+import React, { ElementRef, useRef, useState } from 'react';
+
+export default function BoardTitleForm({
+  data,
+}: BoardTitleFormProps) {
+  const formRef = useRef<ElementRef<"form">>(null);
+  const inputRef = useRef<ElementRef<"input">>(null);
+  // ...
+
+  if (isEditing) {
+    return (
+      <form ref={formRef} className='flex items-center gap-x-2'>
+        <FormInput
+          ref={inputRef}
+          id='title'
+          defaultValue={data.title}
+          onBlur={() => {}}
+          className='bg-transparent h-7 px-[7px] py-1 border-none text-lg font-bold focus-visible:outline-none focus-visible:ring-transparent'
+        />
+      </form>
+    )
+  }
+```
+
+We use **refs** to **reference specific DOM elements** within the React component. Here's a breakdown:
+
+1. **`formRef`**:
+   - This ref is associated with the `<form>` element.
+   - By setting `ref={formRef}` on the `<form>` tag, you create a reference to the actual DOM node representing the form.
+   - This allows you to access and manipulate the form directly (e.g., programmatically triggering form submission or focusing on form elements).
+
+2. **`inputRef`**:
+   - This ref is associated with the `<FormInput>` component (assuming it's a custom component).
+   - By setting `ref={inputRef}` on the `<FormInput>` component, you create a reference to the underlying input element (e.g., an `<input>` or `<textarea>`).
+   - This allows you to interact with the input element directly (e.g., programmatically setting its value or focusing on it).
+
+3. **Use Cases**:
+   - **Form Validation**: You can use `formRef` to access form properties (e.g., `formRef.current.submit()`) or validate form data.
+   - **Input Manipulation**: With `inputRef`, you can focus on the input field (`inputRef.current.focus()`) or retrieve its current value (`inputRef.current.value`).
+   - **Custom Logic**: Refs are often used for custom logic, such as handling user interactions or integrating with third-party libraries.
+
+Remember that using refs should be done judiciously, as direct manipulation of the DOM can sometimes lead to less predictable behavior in React applications. However, in cases like form handling or integrating with external libraries, refs can be quite useful! 
+
