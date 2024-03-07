@@ -10665,3 +10665,65 @@ In summary, `enableEditing` prepares the form for user input by setting the `isE
    - If `isEditing` is `true` it renders a form with the `<FormInput>` component
    - Otherwise, it rendersa  transparent button displaying the `data.title`
 
+Now when we click on the `BoardTitleForm` on the page, it switches the component from a `Button` that displays the board title to an `input` type which enables editing mode.
+
+##### Add form submission in BoardTitleForm
+
+feat: Allow users to submit title edits in BoardNavbar
+
+This commit enables users to edit and submit board titles directly from the BoardNavbar component. When editing, users can modify the title and trigger the submission process.
+
+Create the `onSubmit` function with parameter `formData` and logs the title. Assign the `onSubmit` function to the `form`'s `action`.
+
+feat: Add form submission handling in board page
+
+This commit introduces the `onSubmit` function, which receives `formData` as a parameter and logs the title. The function is assigned to the `action` attribute of the form. When editing the board title, users can submit the form by pressing the Enter key, triggering the `onSubmit` logic.
+
+```tsx
+export default function BoardTitleForm({
+  data,
+}: BoardTitleFormProps) {
+  const formRef = useRef<ElementRef<"form">>(null);
+  const inputRef = useRef<ElementRef<"input">>(null);
+
+  const [isEditing, setIsEditing] = useState(false);
+  
+  function onSubmit(formData: FormData) {
+    const title = formData.get('title') as string;
+    console.log(`Submitted: ${title}`);
+  }
+
+  if (isEditing) {
+    return (
+      <form action={onSubmit} ref={formRef} className='flex items-center gap-x-2'>
+        <FormInput
+          ref={inputRef}
+          id='title'
+          defaultValue={data.title}
+          onBlur={() => {}}
+          className='bg-transparent h-7 px-[7px] py-1 border-none text-lg font-bold focus-visible:outline-none focus-visible:ring-transparent'
+        />
+      </form>
+    )
+  }
+  return (
+    <Button
+      onClick={enableEditing}
+      variant='transparent'
+      className='h-auto w-auto p-1 px-2 font-bold text-lg'
+    >
+      {data.title}
+    </Button>
+  );
+}
+```
+
+With this implemented the user can click on the `BoardTitleForm`. 
+
+- When clicked this enables editing mode which changes the element from a `Button` to a `form`
+- User can update the title of the board
+- After a title is finished, user can press the `Enter` key to submit the form.
+- The updated title is now displayed
+  
+TODO:
+- Remove or keep ring outline in input because of "focus-visible:ring-offset-2" can set to ring-offset-0
