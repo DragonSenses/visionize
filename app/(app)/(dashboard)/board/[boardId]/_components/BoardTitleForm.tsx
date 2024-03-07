@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Board } from '@prisma/client';
 
 import { Button } from '@/components/ui/button';
+import FormInput from '@/components/form/FormInput';
 
 interface BoardTitleFormProps {
   data: Board;
@@ -25,7 +26,13 @@ export default function BoardTitleForm({
 
   if (isEditing) {
     return (
-      <form>
+      <form className='flex items-center gap-x-2'>
+        <FormInput 
+          id='title'
+          defaultValue={data.title}
+          onBlur={() => {}}
+          className=''
+        />
       </form>
     )
   }
