@@ -10473,7 +10473,7 @@ feat: Add isEditing state to BoardTitleForm
 
 This commit introduces the isEditing state to the BoardTitleForm component. The state is used to track whether the user is currently editing the board title. When editing is disabled, the form is displayed, allowing users to modify the title.
 
-The `disabledEditing` function sets the isEditing state to `false`, while the `enableEditing` function sets it to `true`.
+The `disableEditing` function sets the isEditing state to `false`, while the `enableEditing` function sets it to `true`.
 
 This change enhances the user experience by providing a dynamic editing feature for board titles.
 
@@ -10488,7 +10488,7 @@ export default function BoardTitleForm({
   const [isEditing, setIsEditing] = useState(false);
 
   
-  function disabledEditing() {
+  function disableEditing() {
     setIsEditing(false);
   }
   
@@ -10601,4 +10601,67 @@ We use **refs** to **reference specific DOM elements** within the React componen
    - **Custom Logic**: Refs are often used for custom logic, such as handling user interactions or integrating with third-party libraries.
 
 Remember that using refs should be done judiciously, as direct manipulation of the DOM can sometimes lead to less predictable behavior in React applications. However, in cases like form handling or integrating with external libraries, refs can be quite useful! 
+
+With this in place we can work on the feature to enabled editing.
+
+##### Enable editing in BoardTitleForm
+
+Now we can use the `inputRef.current` to invoke `focus()` and `select()` inside the `enableEditing` function. Let's wrap this in a `setTimeout`. Then assign the function to the `onClick` of the `Button`.
+
+feat: Enable editing mode with focus & selection
+
+When invoked, the `enableEditing` function sets the `isEditing` state to `true`. Within a timeout callback:
+1. It focuses on the input field, ensuring the cursor is inside for editing (`inputRef.current?.focus()`).
+2. It selects the entire input value, making it easy for the user to modify the existing title (`inputRef.current?.select()`).
+
+The function is assigned to the `onClick` prop of the `Button` in the output.
+
+```tsx
+export default function BoardTitleForm({
+  data,
+}: BoardTitleFormProps) {
+  const formRef = useRef<ElementRef<"form">>(null);
+  const inputRef = useRef<ElementRef<"input">>(null);
+
+  const [isEditing, setIsEditing] = useState(false);
+  
+  /**
+   * Enables editing mode and focus input.
+   */
+  function enableEditing() {
+    setIsEditing(true);
+    setTimeout(() => {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    })
+  }
+
+  return (
+    <Button
+      onClick={enableEditing}
+      variant='transparent'
+      className='h-auto w-auto p-1 px-2 font-bold text-lg'
+    >
+      {data.title}
+    </Button>
+  );
+}
+```
+
+Let's break down what `enableEditing` does:
+
+1. When the user triggers an action (such as clicking the button or interacting with a specific UI element), the `enableEditing` function is called.
+
+2. Inside the `enableEditing` function:
+   - It sets the `isEditing` state to `true`, indicating that the form is now in edit mode.
+   - After setting `isEditing` to `true`, it schedules a **timeout** using `setTimeout`.
+   - Within the timeout callback:
+     - It focuses on the input field (`inputRef.current?.focus()`), ensuring that the cursor is placed inside the input for immediate editing.
+     - It also selects the entire input value (`inputRef.current?.select()`), making it convenient for the user to modify the existing title.
+
+In summary, `enableEditing` prepares the form for user input by setting the `isEditing` state to `true` and focusing on the input field. This allows users to edit the board title effectively.
+
+3.  On Render
+   - If `isEditing` is `true` it renders a form with the `<FormInput>` component
+   - Otherwise, it rendersa  transparent button displaying the `data.title`
 
