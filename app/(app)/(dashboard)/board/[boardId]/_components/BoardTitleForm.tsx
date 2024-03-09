@@ -38,6 +38,10 @@ export default function BoardTitleForm({
     console.log(`Submitted: ${title}`);
   }
 
+  function onBlur() {
+    formRef.current?.requestSubmit();
+  }
+
   if (isEditing) {
     return (
       <form 
@@ -49,7 +53,7 @@ export default function BoardTitleForm({
           ref={inputRef}
           id='title'
           defaultValue={data.title}
-          onBlur={() => {}}
+          onBlur={onBlur}
           className='bg-transparent h-7 px-[7px] py-1 border-none text-lg font-bold focus-visible:outline-none focus-visible:ring-transparent'
         />
       </form>
