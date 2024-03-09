@@ -10725,13 +10725,61 @@ With this implemented the user can click on the `BoardTitleForm`.
 - After a title is finished, user can press the `Enter` key to submit the form.
 - The updated title is now displayed
 
+##### BoardTitleForm feature: submit form on blur
+
+feat: Submit the form on blur in BoardTitleForm
+
+- Implement form submission when input loses focus
+
+```tsx
+export default function BoardTitleForm({
+  data,
+}: BoardTitleFormProps) {
+  const formRef = useRef<ElementRef<"form">>(null);
+  const inputRef = useRef<ElementRef<"input">>(null);
+
+  // ...
+  
+  function onSubmit(formData: FormData) {
+    const title = formData.get('title') as string;
+    console.log(`Submitted: ${title}`);
+  }
+
+  function onBlur() {
+    formRef.current?.requestSubmit();
+  }
+
+  if (isEditing) {
+    return (
+      <form 
+        action={onSubmit} 
+        ref={formRef} 
+        className='flex items-center gap-x-2'
+      >
+        <FormInput
+          ref={inputRef}
+          id='title'
+          defaultValue={data.title}
+          onBlur={onBlur}
+          className='bg-transparent h-7 px-[7px] py-1 border-none text-lg font-bold focus-visible:outline-none focus-visible:ring-transparent'
+        />
+      </form>
+    )
+  }
+
+  return (
+    <Button
+      onClick={enableEditing}
+      variant='transparent'
+      className='h-auto w-auto p-1 px-2 font-bold text-lg'
+    >
+      {data.title}
+    </Button>
+  );
+}
+```
+
 #### Modify `Input` component for a more fluid experience
-
-Inside `components\ui\input.tsx`, modify the following classNames
-  - focus-visible:ring-offset-2 can set to focus-visible:ring-offset-0
-  - rounded-md to rounded-sm
-
-style: Modify input styles for a more fluid experience
 
 style: Modify input for a smoother user experience
 
