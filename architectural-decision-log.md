@@ -10724,6 +10724,16 @@ With this implemented the user can click on the `BoardTitleForm`.
 - User can update the title of the board
 - After a title is finished, user can press the `Enter` key to submit the form.
 - The updated title is now displayed
-  
-TODO:
-- Remove or keep ring outline in input because of "focus-visible:ring-offset-2" can set to ring-offset-0
+
+#### Modify `Input` component for a more fluid experience
+
+Inside `components\ui\input.tsx`, modify the following classNames
+  - focus-visible:ring-offset-2 can set to focus-visible:ring-offset-0
+  - rounded-md to rounded-sm
+
+style: Modify input styles for a more fluid experience
+
+style: Modify input for a smoother user experience
+
+- Change focus-visible:ring-offset-2 to focus-visible:ring-offset-0
+- Update rounded-md to rounded-sm
