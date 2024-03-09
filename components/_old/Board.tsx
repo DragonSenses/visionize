@@ -1,7 +1,7 @@
 import React from 'react';
 
-import deleteBoard from '@/actions/deleteBoard';
-import updateBoard from '@/actions/updateBoard';
+import deleteBoard from '@/actions/_old/deleteBoard';
+import updateBoard from '@/actions/_old/updateBoard';
 import { Button } from '@/components/ui/button';
 import BoardFormButton from '@/components/_old/BoardFormButton';
 
