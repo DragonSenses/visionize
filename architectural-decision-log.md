@@ -10864,3 +10864,20 @@ export type InputType = z.infer<typeof UpdateBoard>;
 // Define the output data type (ActionState) with Board
 export type OutputType = ActionState<InputType, Board>;
 ```
+
+### UpdateBoard action
+
+- "use server"
+- import types
+- define `performAction` handler with input and output types defined
+
+`actions\updateBoard\index.ts`
+```ts
+"use server";
+
+import { InputType, OutputType } from "./updateBoardTypes";
+
+async function performAction (data: InputType): Promise<OutputType> {
+  // ...
+}
+```
