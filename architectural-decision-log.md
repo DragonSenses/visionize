@@ -10824,3 +10824,43 @@ export const UpdateBoard = z.object({
   id: z.string(),
 });
 ```
+
+### UpdateBoard types
+
+Similarly to `createBoardTypes.ts`, we do the following:
+
+- Imports:
+  - `zod`
+  - `Board` from prisma/client
+  - `ActionState` from createServerAction
+    - `ActionState` is used to encapsulate the state of various actions (e.g., fetching data, submitting forms, etc.). It provides a structured way to handle errors and manage data flow.
+    - It has the optional properties: `fieldErrors`, `error` and `data`
+  - `UpdateBoard` schema validation rules
+-  We use `ActionState` to represent the state of an API request, or in this case a server action where:
+  - `InputType` - the request payload
+  - `OutputType` - the response data
+
+feat: Add UpdateBoard action schema
+
+This commit introduces the UpdateBoard action schema, which defines the input and output types for server actions related to board updates. The schema is based on Zod validation and includes types for both input data and the resulting board state.
+
+`actions\updateBoard\updateBoardTypes.ts`
+```ts
+import { z } from 'zod';
+
+// Import Board, the expected output type, from Prisma client
+import { Board } from '@prisma/client';
+
+// Encapsulate the state of various actions (e.g., fetching data, submitting forms, etc.)
+// Provides a structured way to handlee errors and manage data flow
+import { ActionState } from '@/lib/createServerAction';
+
+// Import the UpdateBoard schema (validation rules)
+import { UpdateBoard } from './updateBoardSchema';
+
+// Define the input type based on the UpdateBoard schema
+export type InputType = z.infer<typeof UpdateBoard>;
+
+// Define the output data type (ActionState) with Board
+export type OutputType = ActionState<InputType, Board>;
+```
