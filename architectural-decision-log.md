@@ -10779,9 +10779,48 @@ export default function BoardTitleForm({
 }
 ```
 
+This improves the user experience by saving the title and submitting the form for the user when the input loses focus (e.g., if they click elsewhere after in editing mode).
+
 #### Modify `Input` component for a more fluid experience
 
 style: Modify input for a smoother user experience
 
 - Change focus-visible:ring-offset-2 to focus-visible:ring-offset-0
 - Update rounded-md to rounded-sm
+
+## UpdateBoard server action
+
+In `/actions` create a folder `/updateBoard` then create the files:
+
+- updateBoardSchema.ts
+- updateBoardTypes.ts
+- index.ts
+
+### UpdateBoard schema
+
+Let's define the schema:
+
+It will have to validate two properties:
+  - title
+  - id
+
+feat: Define UpdateBoard schema validation
+
+`actions\updateBoard\updateBoardSchema.ts`
+```ts
+import { z } from 'zod';
+
+/**
+ * Define the UpdateBoard object schema.
+ * 
+ */
+export const UpdateBoard = z.object({
+  title: z.string({
+    required_error: "Title is required", 
+    invalid_type_error: "Title is required", 
+  }).min(3, {
+    message: "Must be 3 or more characters long.", 
+  }),
+  id: z.string(),
+});
+```
