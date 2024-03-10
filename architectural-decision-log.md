@@ -10871,6 +10871,12 @@ export type OutputType = ActionState<InputType, Board>;
 - import types
 - define `performAction` handler with input and output types defined
 
+feat: Implement server communication in updateBoard
+
+- Add server-related functions
+- Define InputType and OutputType interfaces
+- Implement performAction function
+
 `actions\updateBoard\index.ts`
 ```ts
 "use server";
@@ -10880,4 +10886,45 @@ import { InputType, OutputType } from "./updateBoardTypes";
 async function performAction (data: InputType): Promise<OutputType> {
   // ...
 }
+```
+
+```ts
+"use server";
+
+import { createServerAction } from "@/lib/createServerAction";
+
+import { UpdateBoard } from "./updateBoardSchema";
+import { InputType, OutputType } from "./updateBoardTypes";
+
+async function performAction (data: InputType): Promise<OutputType> {
+
+  return { };
+}
+
+export const updateBoard = createServerAction(UpdateBoard, performAction);
+```
+
+```ts
+"use server";
+
+import { createServerAction } from "@/lib/createServerAction";
+
+import { UpdateBoard } from "./updateBoardSchema";
+import { InputType, OutputType } from "./updateBoardTypes";
+
+async function performAction (data: InputType): Promise<OutputType> {
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
+    return {
+      error: 'Unauthorized',
+    };
+  }
+
+  const { title, id } = data;
+
+  return { };
+}
+
+export const updateBoard = createServerAction(UpdateBoard, performAction);
 ```
