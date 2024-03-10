@@ -1,5 +1,7 @@
 "use server";
 
-async function performAction (data: any): Promise<any> {
+import { InputType, OutputType } from "./updateBoardTypes";
 
+async function performAction (data: InputType): Promise<OutputType> {
+  
 }
