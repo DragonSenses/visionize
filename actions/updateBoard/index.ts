@@ -1,5 +1,8 @@
 "use server";
 
+import { createServerAction } from "@/lib/createServerAction";
+
+import { UpdateBoard } from "./updateBoardSchema";
 import { InputType, OutputType } from "./updateBoardTypes";
 
 async function performAction (data: InputType): Promise<OutputType> {
@@ -14,7 +17,7 @@ async function performAction (data: InputType): Promise<OutputType> {
   const { title, id } = data;
 
   // Return the updated board
-  return {
-
-  };
+  return { };
 }
+
+export const updateBoard = createServerAction(UpdateBoard, performAction);
