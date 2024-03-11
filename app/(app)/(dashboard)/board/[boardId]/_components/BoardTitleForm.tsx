@@ -5,6 +5,9 @@ import { Board } from '@prisma/client';
 
 import { Button } from '@/components/ui/button';
 import FormInput from '@/components/form/FormInput';
+import { useServerAction } from '@/hooks/useServerAction';
+import { updateBoard } from '@/actions/updateBoard';
+import { toast } from 'sonner';
 
 interface BoardTitleFormProps {
   data: Board;
@@ -13,6 +16,13 @@ interface BoardTitleFormProps {
 export default function BoardTitleForm({
   data,
 }: BoardTitleFormProps) {
+  const { executeServerAction } = useServerAction(updateBoard, {
+    onSuccess: (data) => {
+      toast.success(`Board "${data.title} updated!`);
+      disableEditing();
+    }
+  });
+
   const formRef = useRef<ElementRef<"form">>(null);
   const inputRef = useRef<ElementRef<"input">>(null);
 
@@ -36,6 +46,10 @@ export default function BoardTitleForm({
   function onSubmit(formData: FormData) {
     const title = formData.get('title') as string;
     console.log(`Submitted: ${title}`);
+    executeServerAction({
+      id: data.id,
+      title,
+    });
   }
 
   function onBlur() {
