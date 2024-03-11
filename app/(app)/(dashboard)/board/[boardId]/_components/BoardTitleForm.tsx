@@ -16,18 +16,23 @@ interface BoardTitleFormProps {
 export default function BoardTitleForm({
   data,
 }: BoardTitleFormProps) {
-  const { executeServerAction } = useServerAction(updateBoard, {
-    onSuccess: (data) => {
-      toast.success(`Board "${data.title} updated!`);
-      disableEditing();
-    }
-  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [titleData, setTitleData] = useState(data.title);
 
   const formRef = useRef<ElementRef<"form">>(null);
   const inputRef = useRef<ElementRef<"input">>(null);
 
-  const [isEditing, setIsEditing] = useState(false);
-  
+  const { executeServerAction } = useServerAction(updateBoard, {
+    onSuccess: (data) => {
+      toast.success(`Board "${data.title} updated!`);
+      setTitleData(data.title);
+      disableEditing();
+    },
+    onError: (error) => {
+      toast.error(error);
+    }
+  });
+
   function disableEditing() {
     setIsEditing(false);
   }
@@ -66,7 +71,7 @@ export default function BoardTitleForm({
         <FormInput
           ref={inputRef}
           id='title'
-          defaultValue={data.title}
+          defaultValue={titleData}
           onBlur={onBlur}
           className='bg-transparent h-7 px-[7px] py-1 border-none text-lg font-bold focus-visible:outline-none focus-visible:ring-transparent'
         />
@@ -80,7 +85,7 @@ export default function BoardTitleForm({
       variant='transparent'
       className='h-auto w-auto p-1 px-2 font-bold text-lg'
     >
-      {data.title}
+      {titleData}
     </Button>
   );
 }
