@@ -11054,7 +11054,9 @@ For more details, refer to the [official React documentation on useOptimistic](h
 
 Let's save `data.title` in state so that we can have optimistic updates.
 
-First create the `titleData` state variable. In the `useServerAction` success callback function we can set the `titleData` with the newly updated `data.title` from the user. Inside the editing condition we replace the `FormInput` `default` prop to `titleData`. Likewise, in the output we render `titleData`.
+1. First, create the `titleData` state variable. 
+
+In the `useServerAction` success callback function we can set the `titleData` with the newly updated `data.title` from the user. Inside the editing condition we replace the `FormInput` `default` prop to `titleData`. Likewise, in the output we render `titleData`.
 
 refactor: Save title data property in state
 
@@ -11153,3 +11155,130 @@ export default function BoardTitleForm({
   );
 }
 ```
+
+1. Now integrate `useOptimistic` hook to optimistically update the UI
+
+- Define the update function for optimistic state
+- useOptimistic hook for the title
+- Display the optimistic title
+
+feat: Implement optimistic updates for board title
+
+To enhance user experience, this commit introduces optimistic updates for the board title in the `BoardTitleForm` component. The `titleData` state now reflects the expected outcome of the action (e.g., form submission) even before the actual server response. Upon success or error, the actual title is updated accordingly.
+
+Changes made:
+- Added `useOptimistic` hook to manage optimistic state.
+- Updated UI immediately with the optimistic title.
+- Executed the actual server action (e.g., `updateBoard`) afterward.
+
+```tsx
+"use client";
+
+import React, { ElementRef, useOptimistic, useRef, useState } from 'react';
+import { Board } from '@prisma/client';
+
+import { Button } from '@/components/ui/button';
+import FormInput from '@/components/form/FormInput';
+import { useServerAction } from '@/hooks/useServerAction';
+import { updateBoard } from '@/actions/updateBoard';
+import { toast } from 'sonner';
+
+interface BoardTitleFormProps {
+  data: Board;
+};
+
+export default function BoardTitleForm({
+  data,
+}: BoardTitleFormProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [titleData, setTitleData] = useState(data.title);
+
+  const formRef = useRef<ElementRef<"form">>(null);
+  const inputRef = useRef<ElementRef<"input">>(null);
+
+  // Define an update function for optimistic state
+  const updateOptimisticTitle = (currentState: string, optimisticValue: string) => {
+    return optimisticValue; // Simply update with the new title
+  };
+
+  // Use the useOptimistic hook
+  const [optimisticTitle, setOptimisticTitle] = useOptimistic(titleData, updateOptimisticTitle);
+
+  const { executeServerAction } = useServerAction(updateBoard, {
+    onSuccess: (data) => {
+      toast.success(`Board "${ data.title } updated!`);
+      setTitleData(data.title);
+      disableEditing();
+    },
+    onError: (error) => {
+      toast.error(error);
+    }
+  });
+
+  function disableEditing() {
+    setIsEditing(false);
+  }
+
+  function enableEditing() {
+    setIsEditing(true);
+    setTimeout(() => {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    })
+  }
+
+  function onSubmit(formData: FormData) {
+    const title = formData.get('title') as string;
+
+    // Show the optimistic title immediately
+    setOptimisticTitle(title);
+
+    executeServerAction({
+      id: data.id,
+      title,
+    });
+  }
+
+  function onBlur() {
+    formRef.current?.requestSubmit();
+  }
+
+  if (isEditing) {
+    return (
+      <form
+        action={onSubmit}
+        ref={formRef}
+        className='flex items-center gap-x-2'
+      >
+        <FormInput
+          ref={inputRef}
+          id='title'
+          defaultValue={titleData}
+          onBlur={onBlur}
+          className='bg-transparent h-7 px-[7px] py-1 border-none text-lg font-bold focus-visible:outline-none focus-visible:ring-transparent'
+        />
+      </form>
+    )
+  }
+
+  return (
+    <Button
+      onClick={enableEditing}
+      variant='transparent'
+      className='h-auto w-auto p-1 px-2 font-bold text-lg'
+    >
+      {optimisticTitle} {/* Display the optimistic title */}
+    </Button>
+  );
+}
+```
+
+Testing the optimistic UI:
+
+- Edit the board title, press Enter
+  - In pending status, the new board title displays optimistically
+  - A toast notification displays for the new board title
+  - Refresh the page, the updated title remains
+- Edit the board title, on blur (click away from the input)
+  - UI should display the new title
+
