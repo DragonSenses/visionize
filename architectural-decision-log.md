@@ -10941,3 +10941,42 @@ async function performAction (data: InputType): Promise<OutputType> {
 export const updateBoard = createServerAction(UpdateBoard, performAction);
 ```
 
+### Use UpdateBoard action in `BoardTitleForm`
+
+feat: updateBoard with useServerAction hook
+
+```ts
+import { useServerAction } from '@/hooks/useServerAction';
+import { updateBoard } from '@/actions/updateBoard';
+import { toast } from 'sonner';
+
+export default function BoardTitleForm({
+  data,
+}: BoardTitleFormProps) {
+
+  const { executeServerAction } = useServerAction(updateBoard, {
+    onSuccess: (data) => {
+      toast.success(`Board "${data.title} updated!`);
+      disableEditing();
+    }
+  });
+
+  const [isEditing, setIsEditing] = useState(false);
+  
+  function disableEditing() {
+    setIsEditing(false);
+  }
+  
+  function onSubmit(formData: FormData) {
+    const title = formData.get('title') as string;
+    console.log(`Submitted: ${title}`);
+    executeServerAction({
+      id: data.id,
+      title,
+    });
+  }
+
+  // ...
+}
+```
+
