@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ElementRef, useRef, useState } from 'react';
+import React, { ElementRef, useOptimistic, useRef, useState } from 'react';
 import { Board } from '@prisma/client';
 
 import { Button } from '@/components/ui/button';
@@ -22,9 +22,17 @@ export default function BoardTitleForm({
   const formRef = useRef<ElementRef<"form">>(null);
   const inputRef = useRef<ElementRef<"input">>(null);
 
+  // Define an update function for optimistic state
+  const updateOptimisticTitle = (currentState: string, optimisticValue: string) => {
+    return optimisticValue; // Simply update with the new title
+  };
+
+  // Use the useOptimistic hook
+  const [optimisticTitle, setOptimisticTitle] = useOptimistic(titleData, updateOptimisticTitle);
+
   const { executeServerAction } = useServerAction(updateBoard, {
     onSuccess: (data) => {
-      toast.success(`Board "${data.title} updated!`);
+      toast.success(`Board "${ data.title } updated!`);
       setTitleData(data.title);
       disableEditing();
     },
@@ -36,7 +44,7 @@ export default function BoardTitleForm({
   function disableEditing() {
     setIsEditing(false);
   }
-  
+
   /**
    * Enables editing mode and focus input.
    */
@@ -50,7 +58,10 @@ export default function BoardTitleForm({
 
   function onSubmit(formData: FormData) {
     const title = formData.get('title') as string;
-    console.log(`Submitted: ${title}`);
+
+    // Show the optimistic title immediately
+    setOptimisticTitle(title);
+
     executeServerAction({
       id: data.id,
       title,
@@ -63,9 +74,9 @@ export default function BoardTitleForm({
 
   if (isEditing) {
     return (
-      <form 
-        action={onSubmit} 
-        ref={formRef} 
+      <form
+        action={onSubmit}
+        ref={formRef}
         className='flex items-center gap-x-2'
       >
         <FormInput
@@ -85,7 +96,7 @@ export default function BoardTitleForm({
       variant='transparent'
       className='h-auto w-auto p-1 px-2 font-bold text-lg'
     >
-      {titleData}
+      {optimisticTitle} {/* Display the optimistic title */}
     </Button>
   );
 }
