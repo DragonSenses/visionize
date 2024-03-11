@@ -10980,3 +10980,76 @@ export default function BoardTitleForm({
 }
 ```
 
+## Optimistic State
+
+Let's delve into optimistic updates in React with TypeScript.
+
+**Optimistic updates** are a technique used to enhance user experience by making UI interactions feel more responsive. When an action (such as submitting a form or making an API request) is initiated, the UI is immediately updated with the expected outcome, even before the actual operation completes. This approach gives users the impression of speed and responsiveness.
+
+In the context of React applications, optimistic updates can be achieved using various strategies. One common approach is to **save a data property in state** while an asynchronous action (like a network request) is underway. Here's how it works:
+
+1. **Initial State**:
+   - You start with an initial state that represents the data you want to display.
+   - This state is typically fetched from an API or set based on user input.
+
+2. **Optimistic State**:
+   - When an action (e.g., form submission) triggers an async operation, you create an **optimistic state**.
+   - The optimistic state is a copy of the original state, but it can be different during the duration of the async action.
+   - You provide a function that takes the current state and an optimistic value (e.g., the user's input) and returns the optimistic state.
+   - This optimistic state is used to immediately present the user with the expected result of the action, even though the actual action takes time to complete.
+
+3. **Updating the State**:
+   - As the async action progresses (e.g., a network request), you update the optimistic state.
+   - Once the action is complete, the actual state is updated with the final result (which may or may not match the optimistic state).
+
+Here's an example of using the `useOptimistic` hook (available in React's Canary and experimental channels) to achieve optimistic updates:
+
+```tsx
+import { useOptimistic } from 'react';
+
+function MyComponent() {
+  const [data, setData] = useState<MyData>(initialData); // Initial data
+  const [message, setMessage] = useState<string>(''); // User input (e.g., form submission)
+
+  // Define an update function for optimistic state
+  const updateOptimisticState = (currentState: MyData, optimisticValue: string) => {
+    // Merge and return new state with optimistic value
+    // For example, update a message field in the data
+    return { ...currentState, message: optimisticValue };
+  };
+
+  // Use the useOptimistic hook
+  const [optimisticData, addOptimistic] = useOptimistic(data, updateOptimisticState);
+
+  // Handle form submission
+  const handleSubmit = async () => {
+    // Show the optimistic message immediately
+    addOptimistic(message);
+
+    // Perform the actual async action (e.g., API request)
+    try {
+      const response = await api.post('/submit', { message });
+      // Update the actual data with the response
+      setData(response.data);
+    } catch (error) {
+      // Handle errors (e.g., show an error message)
+    }
+  };
+
+  return (
+    <div>
+      <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
+      <button onClick={handleSubmit}>Submit</button>
+      <p>Optimistic Message: {optimisticData.message}</p>
+    </div>
+  );
+}
+```
+
+Remember that optimistic updates involve trade-offs. While they improve perceived performance, they may lead to inconsistencies if the actual action fails or returns different results. Therefore, use them judiciously based on your application's requirements.
+
+For more details, refer to the [official React documentation on useOptimistic](https://react.dev/reference/react/useOptimistic).
+
+### Optimisitic state: save title data property in state
+
+Let's save `data.title` in state so that we can have optimistic updates.
