@@ -10871,12 +10871,6 @@ export type OutputType = ActionState<InputType, Board>;
 - import types
 - define `performAction` handler with input and output types defined
 
-feat: Implement server communication in updateBoard
-
-- Add server-related functions
-- Define InputType and OutputType interfaces
-- Implement performAction function
-
 `actions\updateBoard\index.ts`
 ```ts
 "use server";
@@ -10888,43 +10882,62 @@ async function performAction (data: InputType): Promise<OutputType> {
 }
 ```
 
+feat: Implement update board as server action
+
 ```ts
 "use server";
+import { auth } from "@clerk/nextjs";
+import { revalidatePath } from "next/cache";
 
 import { createServerAction } from "@/lib/createServerAction";
+import { database } from "@/lib/database";
 
 import { UpdateBoard } from "./updateBoardSchema";
 import { InputType, OutputType } from "./updateBoardTypes";
 
+// Define an asynchronous function to perform the action
 async function performAction (data: InputType): Promise<OutputType> {
-
-  return { };
-}
-
-export const updateBoard = createServerAction(UpdateBoard, performAction);
-```
-
-```ts
-"use server";
-
-import { createServerAction } from "@/lib/createServerAction";
-
-import { UpdateBoard } from "./updateBoardSchema";
-import { InputType, OutputType } from "./updateBoardTypes";
-
-async function performAction (data: InputType): Promise<OutputType> {
+  // Extract user and organization IDs from authentication
   const { userId, orgId } = auth();
-
+// Check if user or organization IDs are missing
   if (!userId || !orgId) {
     return {
       error: 'Unauthorized',
     };
   }
 
+  // Extract data properties
   const { title, id } = data;
 
-  return { };
+  let board;
+
+  try {
+    // Update the board title in the database
+    board = await database.board.update({
+      where: {
+        id,
+        orgId,
+      },
+      data: {
+        title,
+      },
+    });
+  } catch (error) {
+    return {
+      error: 'Failed to update board.'
+    }
+  }
+
+  // Revalidate the path for caching purposes
+  revalidatePath(`/board/${id}`);
+
+  // Return the updated board
+  return {
+    data: board
+  };
 }
 
+// Create a server action using the defined function
 export const updateBoard = createServerAction(UpdateBoard, performAction);
 ```
+
