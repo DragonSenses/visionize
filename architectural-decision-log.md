@@ -11473,3 +11473,77 @@ export type InputType = z.infer<typeof DeleteBoard>;
 // Define the output data type (ActionState) with Board
 export type OutputType = ActionState<InputType, Board>;
 ```
+
+#### DeleteBoard server action handler
+
+`deleteBoard` is a **handler**. It is a server-side action responsible for handling the deletion of a board. Let's break down its functionality:
+
+1. **Authentication**:
+    - The handler first extracts the `userId` and `orgId` using the `auth()` function.
+    - If either of these values is missing (i.e., the user is not authenticated), it returns an error response with the message "Unauthorized."
+
+2. **Board Deletion**:
+    - Assuming the user is authorized, the handler proceeds to delete a board.
+    - It uses the `database.board.delete` method to delete the board based on the provided `id` and `orgId`.
+    - If the deletion fails (due to an exception), it returns an error response with the message "Failed to delete board."
+
+3. **Cache Revalidation and Redirection**:
+    - After successful deletion, the handler sets a `path` variable (likely related to the organization) and revalidates the cache for that path.
+    - Finally, it redirects the user to the specified path.
+
+In summary, `deleteBoard` handles the entire process of deleting a board, including authentication, database operations, and cache management.
+
+feat: Create deleteBoard server action handler
+
+deleteBoard is a server-side action responsible for the deletion of the board. The handler covers:
+
+1. Authentication
+2. Board deletion in the database
+3. Cache revalidation and redirection to a path after deletion
+
+`actions\deleteBoard\index.ts`
+```tsx
+"use server";
+import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+
+import { createServerAction } from "@/lib/createServerAction";
+import { database } from "@/lib/database";
+
+import { DeleteBoard } from "./deleteBoardSchema";
+import { InputType, OutputType } from "./deleteBoardTypes";
+
+async function performAction (data: InputType): Promise<OutputType> {
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
+    return {
+      error: 'Unauthorized',
+    };
+  }
+
+  const { id } = data;
+
+  let board;
+
+  try {
+    board = await database.board.delete({
+      where: {
+        id,
+        orgId,
+      },
+    });
+  } catch (error) {
+    return {
+      error: 'Failed to delete board.'
+    }
+  }
+
+  const path = `/organization/${orgId}`;
+  revalidatePath(path);
+  redirect(path);
+}
+
+export const deleteBoard = createServerAction(DeleteBoard, performAction);
+```
