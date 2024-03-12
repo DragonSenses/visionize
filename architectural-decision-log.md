@@ -11395,3 +11395,60 @@ export default function BoardOptions({ id }: BoardOptionsProps) {
   );
 }
 ```
+
+## Delete Board
+
+feat: Add delete button to list of BoardOptions
+
+```tsx
+export default function BoardOptions({ id }: BoardOptionsProps) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+          {/* ... */}
+      </PopoverTrigger>
+      <PopoverContent>
+          {/* ... */}
+        <PopoverClose asChild>
+          {/* ... */}
+        </PopoverClose>
+        {/* Board Options contain each action */}
+        <Button
+          variant='ghost'
+          onClick={() => {}}
+          className='justify-start h-auto w-full p-2 px-5 rounded-none font-normal text-sm'
+        >
+          Delete this board
+        </Button>
+      </PopoverContent>
+    </Popover>
+  );
+}
+```
+
+Next create server action to delete our board.
+
+### DeleteBoard server action
+
+Let's go through the process again to create the type-safe server action.
+
+1. Schema
+2. Types
+3. Server Action handler
+
+#### DeleteBoard schema
+
+We just need to validate the ID of the board to delete it.
+
+```ts
+import { z } from 'zod';
+
+/**
+ * Define the DeleteBoard object schema.
+ * 
+ */
+export const DeleteBoard = z.object({
+  id: z.string(),
+});
+```
+
