@@ -21,19 +21,20 @@ export default function BoardOptions({ id }: BoardOptionsProps) {
       <PopoverTrigger asChild>
         <Button
           variant='transparent'
+          className='h-auto w-auto p-2'
         >
-          <MoreHorizontal />
+          <MoreHorizontal className='h-4 w-4' />
         </Button>
       </PopoverTrigger>
       <PopoverContent
         align='start'
         side='bottom'
+        className='px-0 pt-3 pb-3'
       >
-        <div>
+        <div className='pb-4 text-sm text-center text-neutral-600 font-medium'>
           BoardOptions
         </div>
       </PopoverContent>
     </Popover>
-
-  )
+  );
 }
