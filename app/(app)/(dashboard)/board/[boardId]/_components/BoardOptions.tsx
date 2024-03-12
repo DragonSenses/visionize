@@ -42,6 +42,14 @@ export default function BoardOptions({ id }: BoardOptionsProps) {
             <X className='h-4 w-4' />
           </Button>
         </PopoverClose>
+        {/* Board Options contain each action */}
+        <Button
+          variant='ghost'
+          onClick={() => {}}
+          className='justify-start h-auto w-full p-2 px-5 rounded-none font-normal text-sm'
+        >
+          Delete this board
+        </Button>
       </PopoverContent>
     </Popover>
   );
