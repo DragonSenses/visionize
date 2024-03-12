@@ -11282,3 +11282,55 @@ Testing the optimistic UI:
 - Edit the board title, on blur (click away from the input)
   - UI should display the new title
 
+## BoardOptions
+
+Next action we want to implement is the ability to delete a board. We will do this with a `BoardOptions` component which will be rendered in the `BoardNavbar`.
+
+We can pass in the board ID to this component as a prop.
+
+`app\(app)\(dashboard)\board\[boardId]\_components\BoardOptions.tsx`
+```tsx
+"use client";
+
+import React from 'react'
+
+interface BoardOptionsProps {
+  id: string;
+};
+
+export default function BoardOptions({ id }: BoardOptionsProps) {
+  return (
+    <div>BoardOptions</div>
+  )
+}
+```
+
+feat: Use BoardOptions component in BoardNavbar
+
+`app\(app)\(dashboard)\board\[boardId]\_components\BoardNavbar.tsx`
+```tsx
+import React from 'react';
+import { Board } from '@prisma/client';
+import BoardTitleForm from './BoardTitleForm';
+import BoardOptions from './BoardOptions';
+
+interface BoardNavbarProps {
+  data: Board;
+}
+
+export default async function BoardNavbar({
+  data
+}: BoardNavbarProps) {
+
+  return (
+    <div className='flex items-center fixed h-14 w-full top-14 z-[30] bg-black/50 px-6 gap-x-4 text-white'>
+      <BoardTitleForm data={data} />
+      <div className='ml-auto'>
+        <BoardOptions
+          id={data.id}
+        />
+      </div>
+    </div>
+  )
+}
+```
