@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { Board } from '@prisma/client';
 
 // Encapsulate the state of various actions (e.g., fetching data, submitting forms, etc.)
-// Provides a structured way to handlee errors and manage data flow
+// Provides a structured way to handle errors and manage data flow
 import { ActionState } from '@/lib/createServerAction';
 
 // Import the UpdateBoard schema (validation rules)
