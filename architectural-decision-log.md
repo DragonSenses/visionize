@@ -11547,3 +11547,55 @@ async function performAction (data: InputType): Promise<OutputType> {
 
 export const deleteBoard = createServerAction(DeleteBoard, performAction);
 ```
+
+### Add delete functionality to BoardOptions
+
+Instantiate the deleteBoard with `useServerAction` hook. 
+
+  - Destructure `{ executeServerAction, isLoading }` from `useServerAction`. 
+  - Pass in `deleteBoard` as the first argument and an object with the `onError` callback function as the second argument to `useServerAction`.
+  - Create `onDelete` handler that invokes `executeServerAction({ id })`
+  - Assign `onDelete` to the `onClick` prop of the `Button`
+  - Assign `isLoading` to the `disabled` prop of the `Button`
+
+```tsx
+import { toast } from 'sonner';
+
+import { deleteBoard } from '@/actions/deleteBoard';
+import { useServerAction } from '@/hooks/useServerAction';
+
+export default function BoardOptions({ id }: BoardOptionsProps) {
+
+  const { 
+    executeServerAction, 
+    isLoading,
+  } = useServerAction(deleteBoard, {
+    onError: (error) => {
+      toast.error(error);
+    }
+  });
+
+  function onDelete() {
+    executeServerAction({ id });
+  }
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        {/* ... */}
+      </PopoverTrigger>
+      <PopoverContent>
+        {/* ... */}
+        <Button
+          disabled={isLoading}
+          onClick={onDelete}
+          variant='ghost'
+          className='justify-start h-auto w-full p-2 px-5 rounded-none font-normal text-sm'
+        >
+          Delete this board
+        </Button>
+      </PopoverContent>
+    </Popover>
+  );
+}
+```
