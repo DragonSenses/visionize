@@ -11610,6 +11610,7 @@ It will have the fields:
   - id
   - title
   - order (an integer that will define the order where it will be positioned, as the order can change during drag-and-drop)
+  - createdAt, updatedAt
 
 Also add a one-to-many relation with a Board. There will be many lists to one board.
 
@@ -11621,17 +11622,9 @@ Also add a one-to-many relation with a Board. There will be many lists to one bo
 Also define an index in the database for `boardId` within the `List` model
 - [@@index | Prisma](https://www.prisma.io/docs/orm/reference/prisma-schema-reference#index)
 
+feat: Add List model to prisma schema
+
 ```prisma
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
-}
-
 model Board {
   id            String @id @default(uuid())
   orgId         String
@@ -11664,3 +11657,68 @@ Notes:
 - Will not add `onUpdate: Cascade` in the `List` model in the `@relation` because when the `Board` title updates it should not affect the `List`
 
 
+### Card model
+
+Let's also add the `Card` model.
+
+fields:
+  - id, title, order
+  - description (an optional String)
+  - createdAt, updatedAt
+  
+relation: one-to-many with List
+
+feat: Add Card model to prisma schema
+
+```prisma
+model List {
+  id    String @id @default(uuid())
+  title String
+  order Int
+
+  boardId String
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  cards Card[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([boardId])
+}
+
+model Card {
+  id          String  @id @default(uuid())
+  title       String
+  order       Int
+  description String? @db.Text
+
+  listId String
+  list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([listId])
+}
+```
+
+#### Push to the database
+
+0. We may need to clear the database, since the Board model now has a relation with List
+
+```sh
+npx prisma migrate reset
+```
+
+1. Push
+
+```sh
+npx prisma db push
+```
+
+2. Generate
+
+```sh
+npx prisma generate
+```
