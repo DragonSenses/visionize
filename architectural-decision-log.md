@@ -11599,3 +11599,68 @@ export default function BoardOptions({ id }: BoardOptionsProps) {
   );
 }
 ```
+
+## List
+
+### List model
+
+Navigate back to `schema.prisma` and create a `List`.
+
+It will have the fields:
+  - id
+  - title
+  - order (an integer that will define the order where it will be positioned, as the order can change during drag-and-drop)
+
+Also add a one-to-many relation with a Board. There will be many lists to one board.
+
+- [Relation mode - ORM Prisma schema](https://www.prisma.io/docs/orm/prisma-schema/data-model/relations/relation-mode)
+
+- [Referential actions](https://www.prisma.io/docs/orm/prisma-schema/data-model/relations/referential-actions)
+  - When `onDelete: Cascade` is added to `board` field on the `List` model means that deleting the `Board` record will also delete all related `List` records
+
+Also define an index in the database for `boardId` within the `List` model
+- [@@index | Prisma](https://www.prisma.io/docs/orm/reference/prisma-schema-reference#index)
+
+```prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Board {
+  id            String @id @default(uuid())
+  orgId         String
+  title         String
+  imageId       String
+  imageThumbUrl String @db.Text
+  imageFullUrl  String @db.Text
+  imageUserName String @db.Text
+  imageLinkHTML String @db.Text
+  lists         List[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model List {
+  id    String @id @default(uuid())
+  title String
+  order Int
+
+  boardId String
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  @@index([boardId])
+}
+```
+
+Notes: 
+- `order` field will be used to fetch the lists by which affects the placement within the board
+- Will not add `onUpdate: Cascade` in the `List` model in the `@relation` because when the `Board` title updates it should not affect the `List`
+
+
