@@ -11831,3 +11831,52 @@ export default async function BoardIdPage({
   )
 }
 ```
+
+#### ListContainer component
+
+Create a `ListContainer` component in `_components` folder.
+
+- It will have a prop interface for `boardId` a string, and `data` a `List` array.
+
+`app\(app)\(dashboard)\board\[boardId]\_components\ListContainer.tsx`
+```tsx
+import React from 'react';
+
+import { List } from '@prisma/client';
+
+interface ListContainerProps {
+  boardId: string;
+  data: List[];
+}
+
+export default function ListContainer({
+  boardId,
+  data,
+}: ListContainerProps) {
+  return (
+    <div>ListContainer</div>
+  )
+}
+```
+
+Then pass the props to ListContainer within BoardIdPage.
+
+feat: Use ListContainer component in BoardIdPage
+
+```tsx
+import ListContainer from './_components/ListContainer';
+
+export default async function BoardIdPage({
+  params
+}: BoardIdPageProps) {
+  // ...
+  return (
+    <div className='h-full p-4 overflow-x-auto'>
+      <ListContainer 
+        boardId={params.boardId}
+        data={lists}
+      />
+    </div>
+  )
+}
+```
