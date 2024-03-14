@@ -11780,3 +11780,54 @@ export default async function BoardIdPage({
   )
 }
 ```
+
+then we fetch the lists in the board from the database.
+ 
+- Fetch, in ascending order, the lists by the individual board ID
+- Also check if the related board that list is created in also has matching `orgId` of the current user
+- Include cards in ascending order
+
+feat: Fetch lists for individual board pages
+
+```tsx
+import { database } from '@/lib/database';
+
+export default async function BoardIdPage({
+  params
+}: BoardIdPageProps) {
+  const { orgId } = auth();
+
+  if (!orgId) {
+    return redirect('/org-selection');
+  }
+
+  // Retrieve lists for the individual board ID in ascending order.
+  // Additionally, verify that the related board associated with each list
+  // has a matching orgId for the current user.
+  // Include cards within each list, also sorted in ascending order.
+  const lists = await database.list.findMany({
+    where: {
+      boardId: params.boardId,
+      board: {
+        orgId,
+      },
+    },
+    include: {
+      cards: {
+        orderBy: {
+          order: 'asc',
+        },
+      },
+    },
+    orderBy: {
+      order: 'asc',
+    }
+  });
+
+  return (
+    <div>
+      BoardIdPage
+    </div>
+  )
+}
+```
