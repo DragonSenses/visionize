@@ -11722,3 +11722,28 @@ npx prisma db push
 ```sh
 npx prisma generate
 ```
+
+### Modify individual board page
+
+Create prop interface for individual board page that takes in params and props.
+
+```tsx
+import React from 'react';
+
+interface BoardIdPageProps {
+  params: {
+    boardId: string;
+  };
+};
+export default async function BoardIdPage({
+  params
+}: BoardIdPageProps) {
+
+
+  return (
+    <div>
+      BoardIdPage
+    </div>
+  )
+}
+```
