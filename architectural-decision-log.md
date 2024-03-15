@@ -11838,6 +11838,8 @@ Create a `ListContainer` component in `_components` folder.
 
 - It will have a prop interface for `boardId` a string, and `data` a `List` array.
 
+feat: Define prop types for ListContainer
+
 `app\(app)\(dashboard)\board\[boardId]\_components\ListContainer.tsx`
 ```tsx
 import React from 'react';
@@ -11879,4 +11881,76 @@ export default async function BoardIdPage({
     </div>
   )
 }
+```
+
+### Types for List
+
+When organizing your **Next.js** project, structuring the **types** folder is essential for maintainability and readability. Let's explore some best practices:
+
+1. **One File for All Types**:
+   - **Advantages**:
+     - **Simplicity**: Having a single file (e.g., `types.ts`) with all your types and interfaces keeps things straightforward.
+     - **Easy Access**: Developers can quickly find and reference types from a central location.
+   - **Disadvantages**:
+     - **Clutter**: As your project grows, this file might become unwieldy, especially if you have many types.
+     - **Potential Conflicts**: If multiple developers work on the same file, conflicts may arise during merges.
+   - **Example**:
+     - Create a `types.ts` file at the root of your project and define all your types and interfaces there².
+
+2. **One File per Type or Group of Related Types**:
+   - **Advantages**:
+     - **Modularity**: Each type has its own file, making it easier to manage and locate specific definitions.
+     - **Scalability**: As your project expands, you can add new type files without affecting existing ones.
+   - **Disadvantages**:
+     - **Initial Complexity**: Setting up separate files requires more upfront organization.
+   - **Example**:
+     - Create individual files for different types or groups of related types (e.g., `user.ts`, `product.ts`, etc.) within the `types/` folder⁴.
+
+3. **Hybrid Approach**:
+   - Combine both methods:
+     - Use a central `types.ts` file for common types shared across the entire project.
+     - Create separate files for specific types or modules (e.g., `user.ts`, `product.ts`) when needed.
+   - This approach strikes a balance between simplicity and modularity.
+
+Remember that there's no one-size-fits-all solution. Choose an approach that aligns with your project's size, complexity, and team preferences. Consistency and clear documentation are key to maintaining a well-organized codebase.
+
+We will go with the **Hybrid Approach**.
+
+In `/types` create a file named `types.ts`, a central file that contains reusable common types shared across the entire project.
+
+In `ListContainer` we define the type for the `data` in the interface. 
+
+```tsx
+interface ListContainerProps {
+  boardId: string;
+  data: List[];
+}
+```
+
+`List[]` is not the accurate type for the data, when we fetched the `lists` in BoardIdPage, hover over it in VSCode:
+
+```tsx
+  const lists = await database.list.findMany({
+```
+
+we see that `lists` is a specific type:
+
+- A List with cards
+
+We also need to define the `Card` type
+- Card with List
+
+feat: Add reusable types for List and Card
+
+`types\types.ts`
+```ts
+import { Card, List } from '@prisma/client';
+
+export type ListWithCards = List & {
+  cards: Card[]
+};
+
+export type CardWithList = Card & {
+  list: List
+};
 ```
