@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { List } from '@prisma/client';
+import { ListWithCards } from '@/types/types';
 
 interface ListContainerProps {
   boardId: string;
-  data: List[];
+  data: ListWithCards[];
 }
 
 export default function ListContainer({

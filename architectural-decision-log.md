@@ -11954,3 +11954,16 @@ export type CardWithList = Card & {
   list: List
 };
 ```
+
+Now use the `ListWithCards` type for `ListContainer`:
+
+refactor: Use ListWithCards type in ListContainer
+
+```tsx
+import { ListWithCards } from '@/types/types';
+
+interface ListContainerProps {
+  boardId: string;
+  data: ListWithCards[];
+}
+```
