@@ -11834,13 +11834,13 @@ export default async function BoardIdPage({
 
 #### ListContainer component
 
-Create a `ListContainer` component in `_components` folder.
+Create a `ListContainer` component in `/components/list` folder.
 
 - It will have a prop interface for `boardId` a string, and `data` a `List` array.
 
 feat: Define prop types for ListContainer
 
-`app\(app)\(dashboard)\board\[boardId]\_components\ListContainer.tsx`
+`components\list\ListContainer.tsx`
 ```tsx
 import React from 'react';
 
@@ -11866,7 +11866,7 @@ Then pass the props to ListContainer within BoardIdPage.
 feat: Use ListContainer component in BoardIdPage
 
 ```tsx
-import ListContainer from './_components/ListContainer';
+import ListContainer from '@/components/list/ListContainer';
 
 export default async function BoardIdPage({
   params
@@ -11882,6 +11882,12 @@ export default async function BoardIdPage({
   )
 }
 ```
+
+refactor: Centralize ListContainer in components/list
+
+- Enhance modularity and reusability by consolidating all List components in a single folder.
+- Ensure consistent naming conventions, styling, and functionality by grouping related components.
+- Simplify maintenance, improve scalability, and facilitate testing and debugging.
 
 ### Types for List
 

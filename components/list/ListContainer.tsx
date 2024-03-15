@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { ListWithCards } from '@/types/types';
+import ListForm from '@/components/list/ListForm';
 
 interface ListContainerProps {
   boardId: string;
@@ -12,6 +13,9 @@ export default function ListContainer({
   data,
 }: ListContainerProps) {
   return (
-    <div>ListContainer</div>
+    <ol>
+      <ListForm />
+      <div>ListContainer</div>
+    </ol>
   )
 }
