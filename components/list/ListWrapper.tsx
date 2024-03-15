@@ -1,7 +1,15 @@
 import React from 'react';
 
-export default function ListWrapper() {
+interface ListWrapperProps {
+  children: React.ReactNode;
+};
+
+export default function ListWrapper({
+  children
+}: ListWrapperProps) {
   return (
-    <div>ListWrapper</div>
+    <li>
+      {children}
+    </li>
   )
 }
