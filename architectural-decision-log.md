@@ -11967,3 +11967,36 @@ interface ListContainerProps {
   data: ListWithCards[];
 }
 ```
+
+### ListForm
+
+Create `ListForm` component inside `/components/list`.
+
+```tsx
+import React from 'react';
+
+export default function ListForm() {
+  return (
+    <div>ListForm</div>
+  )
+}
+```
+
+In `ListContainer`, render a `<ol>` that contains a `ListForm` and a `div`.
+
+```tsx
+import ListForm from '@/components/list/ListForm';
+
+export default function ListContainer({
+  boardId,
+  data,
+}: ListContainerProps) {
+  return (
+    <ol>
+      <ListForm />
+      <div>ListContainer</div>
+    </ol>
+  )
+}
+```
+
