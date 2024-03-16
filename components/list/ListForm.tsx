@@ -4,6 +4,7 @@ import React, { ElementRef, useRef, useState } from 'react';
 import { Plus } from 'lucide-react';
 
 import ListWrapper from './ListWrapper';
+import { useEventListener, useOnClickOutside } from 'usehooks-ts';
 
 export default function ListForm() {
   const [isEditing, setIsEditing] = useState(false);
@@ -35,6 +36,9 @@ export default function ListForm() {
       disableEditing();
     }
   }
+
+  useEventListener('keydown', handleEscapeKey);
+  useOnClickOutside(formRef, disableEditing);
 
   return (
     <ListWrapper>
