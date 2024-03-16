@@ -12425,3 +12425,33 @@ export default function ListForm() {
   }
 ```
 
+## CreateList server action
+
+Make `createList` folder inside `/actions` and add the following:
+
+1. Schema
+2. Types
+3. Server Action handler
+
+### createList schema
+
+We expect the user to input a `title` and we also expect a `boardId` (which we extract from the params and store in the hidden input). We can change the minimum to 1 character as we should allow the user to make lists with one character names.
+
+`actions\createList\createListSchema.ts`
+```ts
+import { z } from 'zod';
+
+/**
+ * Define the CreateList object schema.
+ * 
+ */
+export const CreateList = z.object({
+  title: z.string({
+    required_error: "Title is required", 
+    invalid_type_error: "Title is required", 
+  }).min(1, {
+    message: "Must be 1 or more characters long.", 
+  }),
+  boardId: z.string(),
+});
+```
