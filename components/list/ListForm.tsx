@@ -26,6 +26,16 @@ export default function ListForm() {
     })
   }
 
+  /**
+   * When user clicks "Escape" key, it disables editing mode.
+   * @param event the key press event
+   */
+  function handleEscapeKey(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      disableEditing();
+    }
+  }
+
   return (
     <ListWrapper>
       <button
