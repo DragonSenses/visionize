@@ -12327,3 +12327,48 @@ Test:
 - Editing mode returns a FormInput where user can update the list title
 - User can press Escape key to exit editing mode
 - User can click outside the form to exit editing mode
+
+##### Storing board ID in ListForm editing mode
+
+There are two approaches to storing the board ID.
+
+1. Fetch the board ID in the submit handler
+2. Extract board ID in params and store it inside an `input` element
+   - The benefit of this approach allows us to work purely with `FormData`
+
+Let's store the `boardId` in a hidden `input` element during editing mode.
+
+feat: Store boardId in hidden input on list edit
+
+```tsx
+import { useParams } from 'next/navigation';
+
+export default function ListForm() {
+  const params = useParams();
+
+  /* Editing mode */
+  if (isEditing) {
+    return (
+      <ListWrapper>
+        <form
+          ref={formRef}
+          className='w-full p-3 space-y-4 rounded-md bg-white shadow-md'
+        >
+          <FormInput 
+            ref={inputRef}
+            id='title'
+            placeholder='Edit list title...'
+            className='px-2 py-1 h-7 font-medium text-sm border-transparent focus:border-input hover:border-input transition'
+          />
+          {/* Hidden input that stores Board ID */}
+          <input 
+            hidden
+            name='boardId'
+            value={params.boardId}
+          />
+
+        </form>
+      </ListWrapper>
+    )
+  }
+```
