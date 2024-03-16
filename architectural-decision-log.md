@@ -12058,3 +12058,60 @@ export default function ListForm() {
   )
 }
 ```
+
+##### Styling the List components
+
+feat: Add styles for list components
+
+style: Enhance visual appearance of ListForm
+
+```tsx
+export default function ListForm() {
+  return (
+    <ListWrapper>
+      <button
+        className='flex items-center w-full rounded-md p-3 font-medium text-sm bg-white/80 hover:bg-white/50 transition'
+      >
+        <Plus className='h-4 w-4 mr-2'/>
+        Add list
+      </button>
+    </ListWrapper>
+  )
+}
+```
+
+style: Prevent shrink and text selection on li
+
+The styles added ensures that the list item won't shrink, has a fixed width, and prevents text selection.
+
+```tsx
+export default function ListWrapper({
+  children
+}: ListWrapperProps) {
+  return (
+    <li className='shrink-0 h-full w-72 select-none'>
+      {children}
+    </li>
+  )
+}
+```
+
+For the `ListContainer`, we can have a `div` at the end which represents the empty space at the end of the x-axis. When scrolling through the list that contains items, we will have a generic container element `div` that prevents itself from shrinking when there's limited space (`flex-shrink-0`) and has a fixed width of 1 (0.25rem or 4px in TailwindCSS).
+
+This provides extra padding at the bottom when the [overflow-x](https://tailwindcss.com/docs/overflow) activates, when the normal behavior will have it flushed at the end of the screen.
+
+style: Add extra padding for x-axis overflow
+
+```tsx
+export default function ListContainer({
+  boardId,
+  data,
+}: ListContainerProps) {
+  return (
+    <ol>
+      <ListForm />
+      <div className='flex-shrink-0 w-1' />
+    </ol>
+  )
+}
+```
