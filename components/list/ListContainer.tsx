@@ -15,7 +15,7 @@ export default function ListContainer({
   return (
     <ol>
       <ListForm />
-      <div>ListContainer</div>
+      <div className='flex-shrink-0 w-1' />
     </ol>
   )
 }
