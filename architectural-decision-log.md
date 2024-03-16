@@ -12372,3 +12372,56 @@ export default function ListForm() {
     )
   }
 ```
+
+##### Submit and Exit buttons in editing mode
+
+Next let's render a `FormSubmitButton` and a `Button` with an `X` icon to disabled editing.
+
+feat: Add submit and exit buttons during editing
+
+```tsx
+import { Plus, X } from 'lucide-react';
+
+import FormSubmitButton from '@/components/form/FormSubmitButton';
+import { Button } from '@/components/ui/button';
+
+export default function ListForm() {
+
+  if (isEditing) {
+    return (
+      <ListWrapper>
+        <form
+          ref={formRef}
+          className='w-full p-3 space-y-4 rounded-md bg-white shadow-md'
+        >
+          <FormInput 
+            ref={inputRef}
+            id='title'
+            placeholder='Edit list title...'
+            className='px-2 py-1 h-7 font-medium text-sm border-transparent focus:border-input hover:border-input transition'
+          />
+          {/* Hidden input that stores Board ID */}
+          <input 
+            hidden
+            name='boardId'
+            value={params.boardId}
+          />
+          {/* Submit and Exit buttons */}
+          <div className='flex items-center gap-x-1'>
+            <FormSubmitButton>
+              Add list
+            </FormSubmitButton>
+            <Button
+              onClick={disableEditing}
+              size='sm'
+              variant='ghost'
+            >
+              <X className='h-5 w-5' />
+            </Button>
+          </div>
+        </form>
+      </ListWrapper>
+    )
+  }
+```
+
