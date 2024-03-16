@@ -58,6 +58,7 @@ export default function ListForm() {
             ref={inputRef}
             id='title'
             placeholder='Edit list title...'
+            className='px-2 py-1 h-7 font-medium text-sm border-transparent focus:border-input hover:border-input transition'
           />
         </form>
       </ListWrapper>
