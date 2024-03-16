@@ -12180,3 +12180,42 @@ feat: Allow user to disable editing with Escape key
     }
   }
 ```
+
+feat: Handle escape key events and outside click
+docs: Add comments to event and click handlers
+
+Now we need to add the event listener to listen for the key event on the entire document (window level). When the user presses a key, the `handleEscapeKey` function is called, allowing us to respond to the "Escape" key press globally.
+
+- [useEventListener hook](https://usehooks-ts.com/react-hook/use-event-listener)
+
+```tsx
+  /**
+   * When user clicks "Escape" key, it disables editing mode.
+   * @param event the key press event
+   */
+  function handleEscapeKey(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      disableEditing();
+    }
+  }
+
+  // Custom hook that attaches event listeners to DOM elements, the window, or media query lists.
+  // Listen for the 'keydown' event on the entire document (window level)
+  useEventListener('keydown', handleEscapeKey);
+```
+
+Next also disabled editing when the user clicks outside the form.
+
+- [useOnClickOutside hook](https://usehooks-ts.com/react-hook/use-on-click-outside)
+
+```tsx
+  const formRef = useRef<ElementRef<"form">>(null);
+
+  function disableEditing() {
+    setIsEditing(false);
+  }
+
+  // Custom hook that handles clicks outside a specified element.
+  // Disable editing when user clicks outside the form
+  useOnClickOutside(formRef, disableEditing);
+```

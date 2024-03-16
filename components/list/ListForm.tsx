@@ -37,7 +37,12 @@ export default function ListForm() {
     }
   }
 
+  // Custom hook that attaches event listeners to DOM elements, the window, or media query lists.
+  // Listen for the 'keydown' event on the entire document (window level)
   useEventListener('keydown', handleEscapeKey);
+
+  // Custom hook that handles clicks outside a specified element.
+  // Disable editing when user clicks outside the form
   useOnClickOutside(formRef, disableEditing);
 
   return (
