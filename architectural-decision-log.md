@@ -12166,3 +12166,17 @@ export default function ListForm() {
   )
 }
 ```
+
+feat: Allow user to disable editing with Escape key
+
+```tsx
+  /**
+   * When user clicks "Escape" key, it disables editing mode.
+   * @param event the key press event
+   */
+  function handleEscapeKey(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      disableEditing();
+    }
+  }
+```
