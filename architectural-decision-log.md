@@ -11979,6 +11979,8 @@ interface ListContainerProps {
 Create `ListForm` component inside `/components/list`.
 
 ```tsx
+"use client";
+
 import React from 'react';
 
 export default function ListForm() {
@@ -12006,3 +12008,53 @@ export default function ListContainer({
 }
 ```
 
+#### ListWrapper
+
+Let's also create a reusable component `ListWrapper` in `components/list`.
+
+It will have the prop for `children` and render it inside a `li` element.
+
+feat: Define prop types for ListWrapper
+
+`components\list\ListWrapper.tsx`
+```tsx
+import React from 'react';
+
+interface ListWrapperProps {
+  children: React.ReactNode;
+};
+
+export default function ListWrapper({
+  children
+}: ListWrapperProps) {
+  return (
+    <li>
+      {children}
+    </li>
+  )
+}
+```
+
+Now back to the `ListForm`, it should return a `ListWrapper` that contains a `button` element with a `Plus` icon and "Add list" text as children.
+
+feat: Render a ListWrapper, button and plus icon
+
+```tsx
+"use client";
+
+import React from 'react';
+import { Plus } from 'lucide-react';
+
+import ListWrapper from './ListWrapper';
+
+export default function ListForm() {
+  return (
+    <ListWrapper>
+      <button>
+        <Plus />
+        Add list
+      </button>
+    </ListWrapper>
+  )
+}
+```
