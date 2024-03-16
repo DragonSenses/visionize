@@ -12204,7 +12204,7 @@ Now we need to add the event listener to listen for the key event on the entire 
   useEventListener('keydown', handleEscapeKey);
 ```
 
-Next also disabled editing when the user clicks outside the form.
+Next also disable editing when the user clicks outside the form.
 
 - [useOnClickOutside hook](https://usehooks-ts.com/react-hook/use-on-click-outside)
 
@@ -12219,3 +12219,111 @@ Next also disabled editing when the user clicks outside the form.
   // Disable editing when user clicks outside the form
   useOnClickOutside(formRef, disableEditing);
 ```
+
+#### ListForm editing mode
+
+When `isEditing` is true, the `ListForm` component returns a different JSX element which contains a `form` wrapped by `ListWrapper`. Inside is the `FormInput` component, which has the `id` prop set to 'title'.
+
+feat: Render FormInput for ListForm in editing mode
+
+```tsx
+"use client";
+
+import React, { ElementRef, useRef, useState } from 'react';
+import { Plus } from 'lucide-react';
+import { useEventListener, useOnClickOutside } from 'usehooks-ts';
+
+import ListWrapper from './ListWrapper';
+import FormInput from '@/components/form/FormInput';
+
+export default function ListForm() {
+  const [isEditing, setIsEditing] = useState(false);
+
+  const formRef = useRef<ElementRef<"form">>(null);
+  const inputRef = useRef<ElementRef<"input">>(null);
+
+  function disableEditing() {
+    setIsEditing(false);
+  }
+
+  /**
+   * Enables editing mode and focus input.
+   */
+  function enableEditing() {
+    setIsEditing(true);
+    setTimeout(() => {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    })
+  }
+
+  /**
+   * When user clicks "Escape" key, it disables editing mode.
+   * @param event the key press event
+   */
+  function handleEscapeKey(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      disableEditing();
+    }
+  }
+
+  // Custom hook that attaches event listeners to DOM elements, the window, or media query lists.
+  // Listen for the 'keydown' event on the entire document (window level)
+  useEventListener('keydown', handleEscapeKey);
+
+  // Custom hook that handles clicks outside a specified element.
+  // Disable editing when user clicks outside the form
+  useOnClickOutside(formRef, disableEditing);
+
+  /* Editing mode */
+  if (isEditing) {
+    return (
+      <ListWrapper>
+        <form
+          ref={formRef}
+          className='w-full p-3 space-y-4 rounded-md bg-white shadow-md'
+        >
+          <FormInput 
+            ref={inputRef}
+            id='title'
+            placeholder='Edit list title...'
+            className='px-2 py-1 h-7 font-medium text-sm border-transparent focus:border-input hover:border-input transition'
+          />
+        </form>
+      </ListWrapper>
+    )
+  }
+
+  return (
+    <ListWrapper>
+      <button
+        onClick={enableEditing}
+        className='flex items-center w-full rounded-md p-3 font-medium text-sm bg-white/80 hover:bg-white/50 transition'
+      >
+        <Plus className='h-4 w-4 mr-2' />
+        Add list
+      </button>
+    </ListWrapper>
+  )
+}
+```
+
+style: Make transition seamless for FormInput
+
+This commit ensures a seamless transition for ListForm's editing form, enhancing the user experience. When the user clicks on the ListForm button, it enables editing mode and renders a FormInput. The FormInput component maintains consistent spacing, font weight, and border behavior. The input field's border will exhibit different behaviors based on its normal state, hover state, focus state, and transitions.
+
+```tsx
+          <FormInput 
+            ref={inputRef}
+            id='title'
+            placeholder='Edit list title...'
+            className='px-2 py-1 h-7 font-medium text-sm border-transparent focus:border-input hover:border-input transition'
+          />
+```
+
+Test:
+
+- User clicks on ListForm button to enter editing mode
+- Editing mode returns a FormInput where user can update the list title
+- User can press Escape key to exit editing mode
+- User can click outside the form to exit editing mode
