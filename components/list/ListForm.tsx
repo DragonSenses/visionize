@@ -2,9 +2,10 @@
 
 import React, { ElementRef, useRef, useState } from 'react';
 import { Plus } from 'lucide-react';
+import { useEventListener, useOnClickOutside } from 'usehooks-ts';
 
 import ListWrapper from './ListWrapper';
-import { useEventListener, useOnClickOutside } from 'usehooks-ts';
+import FormInput from '@/components/form/FormInput';
 
 export default function ListForm() {
   const [isEditing, setIsEditing] = useState(false);
@@ -45,9 +46,28 @@ export default function ListForm() {
   // Disable editing when user clicks outside the form
   useOnClickOutside(formRef, disableEditing);
 
+  /* Editing mode */
+  if (isEditing) {
+    return (
+      <ListWrapper>
+        <form
+          ref={formRef}
+          className='w-full p-3 space-y-4 rounded-md bg-white shadow-md'
+        >
+          <FormInput 
+            ref={inputRef}
+            id='title'
+            placeholder='Edit list title...'
+          />
+        </form>
+      </ListWrapper>
+    )
+  }
+
   return (
     <ListWrapper>
       <button
+        onClick={enableEditing}
         className='flex items-center w-full rounded-md p-3 font-medium text-sm bg-white/80 hover:bg-white/50 transition'
       >
         <Plus className='h-4 w-4 mr-2' />
