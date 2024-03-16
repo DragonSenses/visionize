@@ -6717,7 +6717,7 @@ interface FormSubmitProps {
   children: React.ReactNode;
   className?: string;
   disabled?: boolean;
-  size: 'default' | 'sm' | 'lg' | 'icon';
+  size?: 'default' | 'sm' | 'lg' | 'icon';
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' 
     | 'link' | 'primary';
 };
@@ -6726,7 +6726,7 @@ export default function FormSubmitButton({
   children,
   className,
   disabled,
-  size,
+  size = 'default',
   variant = 'primary',
 }: FormSubmitProps) {
 ```
