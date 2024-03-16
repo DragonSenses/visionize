@@ -2,11 +2,13 @@
 
 import React, { ElementRef, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Plus } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { useEventListener, useOnClickOutside } from 'usehooks-ts';
 
 import ListWrapper from './ListWrapper';
 import FormInput from '@/components/form/FormInput';
+import FormSubmitButton from '@/components/form/FormSubmitButton';
+import { Button } from '@/components/ui/button';
 
 export default function ListForm() {
   const params = useParams();
@@ -69,7 +71,19 @@ export default function ListForm() {
             name='boardId'
             value={params.boardId}
           />
-
+          {/* Submit and Exit buttons */}
+          <div className='flex items-center gap-x-1'>
+            <FormSubmitButton>
+              Add list
+            </FormSubmitButton>
+            <Button
+              onClick={disableEditing}
+              size='sm'
+              variant='ghost'
+            >
+              <X className='h-5 w-5' />
+            </Button>
+          </div>
         </form>
       </ListWrapper>
     )
