@@ -12482,3 +12482,83 @@ export type InputType = z.infer<typeof CreateList>;
 // Define the output data type (ActionState) with Board
 export type OutputType = ActionState<InputType, Board>;
 ```
+
+### createList server action
+
+To create a list we will authenticate, then extract title and boardId data, then open up a try..catch block. Inside the try block we want to fetch the board where we want to create the list, fetch the most recent list created in the database and calculate the order number. Create the list in the database with the new order assigned. Revalidate the board id page, and return the data of newly created list.
+
+feat: Implement createList action with order sequencing
+
+```tsx
+"use server";
+import { auth } from "@clerk/nextjs";
+import { revalidatePath } from "next/cache";
+
+import { createServerAction } from "@/lib/createServerAction";
+import { database } from "@/lib/database";
+
+import { CreateList } from "./createListSchema";
+import { InputType, OutputType } from "./createListTypes";
+
+async function performAction(data: InputType): Promise<OutputType> {
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
+    return {
+      error: "Unauthorized",
+    };
+  }
+
+  const { title, boardId } = data;
+
+  let list;
+
+  try {
+    // Fetch the board
+    const board = await database.board.findUnique({
+      where: {
+        id: boardId,
+        orgId,
+      },
+    });
+
+    if (!board) {
+      return {
+        error: "Board not found",
+      };
+    }
+
+    // Fetch the most recent list in the board to properly assign the newest order to the list
+    const mostRecentList = await database.list.findFirst({
+      where: { boardId: boardId },
+      orderBy: { order: "desc" },
+      select: { order: true },
+    });
+
+    // Get the next order depending on whether a mostRecentList is present or not
+    const nextOrder = mostRecentList ? mostRecentList.order + 1 : 1;
+
+    // Create the list in the database
+    list = await database.list.create({
+      data: {
+        title,
+        boardId,
+        order: nextOrder,
+      },
+    });
+  } catch (error) {
+    return {
+      error: "Failed to create list.",
+    };
+  }
+
+  revalidatePath(`/board/${boardId}`);
+
+  // Return the list
+  return {
+    data: list,
+  };
+}
+
+export const createList = createServerAction(CreateList, performAction);
+```
