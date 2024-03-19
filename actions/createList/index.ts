@@ -8,40 +8,63 @@ import { database } from "@/lib/database";
 import { CreateList } from "./createListSchema";
 import { InputType, OutputType } from "./createListTypes";
 
-async function performAction (data: InputType): Promise<OutputType> {
+async function performAction(data: InputType): Promise<OutputType> {
   const { userId, orgId } = auth();
 
   if (!userId || !orgId) {
     return {
-      error: 'Unauthorized',
+      error: "Unauthorized",
     };
   }
 
-  const { title, id } = data;
+  const { title, boardId } = data;
 
-  let board;
+  let list;
 
   try {
-    board = await database.board.update({
+    // Fetch the board
+    const board = await database.board.findUnique({
       where: {
-        id,
+        id: boardId,
         orgId,
       },
+    });
+
+    if (!board) {
+      return {
+        error: "Board not found",
+      };
+    }
+
+    // Fetch the most recent list in the board to properly assign the newest order to the list
+    const mostRecentList = await database.list.findFirst({
+      where: { boardId: boardId },
+      orderBy: { order: "desc" },
+      select: { order: true },
+    });
+
+    // Get the next order depending on whether a mostRecentList is present or not
+    const nextOrder = mostRecentList ? mostRecentList.order + 1 : 1;
+
+    // Create the list in the database
+    list = await database.list.create({
       data: {
         title,
+        boardId,
+        order: nextOrder,
       },
     });
   } catch (error) {
     return {
-      error: 'Failed to update board.'
-    }
+      error: "Failed to create list.",
+    };
   }
 
-  revalidatePath(`/board/${id}`);
+  revalidatePath(`/board/${boardId}`);
 
-  // Return the updated board
+  // Return the list
   return {
-    data: board
+    data: list,
   };
 }
 
