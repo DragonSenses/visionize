@@ -12562,3 +12562,56 @@ async function performAction(data: InputType): Promise<OutputType> {
 
 export const createList = createServerAction(CreateList, performAction);
 ```
+
+#### Issue: modify output type to match the data we expect
+
+When we return the `{ data: list }`, we get an error when we hover over it in VSCode.
+
+```sh
+Type '{ id: string; title: string; order: number; boardId: string; createdAt: Date; updatedAt: Date; }' is missing the following properties from type '{ id: string; orgId: string; title: string; imageId: string; imageThumbUrl: string; imageFullUrl: string; imageUserName: string; imageLinkHTML: string; createdAt: Date; updatedAt: Date; }': orgId, imageId, imageThumbUrl, imageFullUrl, and 2 more.ts(2740)
+createServerAction.ts(13, 3): The expected type comes from property 'data' which is declared here on type 'OutputType'
+
+(property) data?: {
+    id: string;
+    orgId: string;
+    title: string;
+    imageId: string;
+    imageThumbUrl: string;
+    imageFullUrl: string;
+    imageUserName: string;
+    imageLinkHTML: string;
+    createdAt: Date;
+    updatedAt: Date;
+} | undefined
+```
+
+We just need to update the types in `createListTypes` to use `List` instead of `Board`.
+
+fix: createList to return correct data type
+
+Changed the output data type of the createList action from Board to List to match the expected data structure.
+
+`actions\createList\createListTypes.ts`
+```ts
+import { z } from 'zod';
+
+// Import List, the expected output type, from Prisma client
+import { List } from '@prisma/client';
+
+// Encapsulate the state of various actions (e.g., fetching data, submitting forms, etc.)
+// Provides a structured way to handle errors and manage data flow
+import { ActionState } from '@/lib/createServerAction';
+
+// Import the CreateList schema (validation rules)
+import { CreateList } from './createListSchema';
+
+// Define the input type based on the CreateList schema
+export type InputType = z.infer<typeof CreateList>;
+
+// Define the output data type (ActionState) with List
+export type OutputType = ActionState<InputType, List>;
+```
+
+Ensure createList returns List type as per schema
+
+This update modifies the createList function to correctly return an instance of the List type, aligning with the defined schema and resolving type inconsistencies.
