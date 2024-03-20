@@ -12615,3 +12615,54 @@ export type OutputType = ActionState<InputType, List>;
 Ensure createList returns List type as per schema
 
 This update modifies the createList function to correctly return an instance of the List type, aligning with the defined schema and resolving type inconsistencies.
+
+### Implement createList server action
+
+Let's import what we need and implement the createList server action in `ListForm`.
+
+feat: Add createList server action to ListForm
+
+Implemented a new server action, createList, in the ListForm component to handle list creation with success toast notification.
+
+`components\list\ListForm.tsx`
+```tsx
+import { toast } from 'sonner';
+import { createList } from '@/actions/createList';
+import { useServerAction } from '@/hooks/useServerAction';
+
+export default function ListForm() {
+
+  const { executeServerAction, fieldErrors } = useServerAction(createList, {
+    onSuccess: (data) => {
+      toast.success(`List "${data.title}" created`);
+      disableEditing();
+    }
+  });
+
+}
+```
+
+Let's also add router to refresh the page in order to refresh all of the server components in `onSuccess` callback.
+
+feat: Integrate useRouter for state refresh in ListForm
+
+Enhanced the ListForm component with useRouter hook to enable state refresh after successful list creation, ensuring up-to-date server component data.
+
+```ts
+import { useParams, useRouter } from 'next/navigation';
+
+export default function ListForm() {
+
+  const router = useRouter();
+
+  const { executeServerAction, fieldErrors } = useServerAction(createList, {
+    onSuccess: (data) => {
+      toast.success(`List "${data.title}" created`);
+      disableEditing();
+      // Refresh the router to refetch all the server components
+      router.refresh();
+    }
+  });
+
+}
+```
