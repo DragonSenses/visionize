@@ -4,10 +4,13 @@ import React, { ElementRef, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Plus, X } from 'lucide-react';
 import { useEventListener, useOnClickOutside } from 'usehooks-ts';
+import { toast } from 'sonner';
 
 import ListWrapper from './ListWrapper';
 import FormInput from '@/components/form/FormInput';
 import FormSubmitButton from '@/components/form/FormSubmitButton';
+import { createList } from '@/actions/createList';
+import { useServerAction } from '@/hooks/useServerAction';
 import { Button } from '@/components/ui/button';
 
 export default function ListForm() {
@@ -32,6 +35,14 @@ export default function ListForm() {
       inputRef.current?.select();
     })
   }
+
+  const { executeServerAction, fieldErrors } = useServerAction(createList, {
+    onSuccess: (data) => {
+      toast.success(`List "${data.title}" created`);
+      disableEditing();
+    }
+  });
+
 
   /**
    * When user clicks "Escape" key, it disables editing mode.
