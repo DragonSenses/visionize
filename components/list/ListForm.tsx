@@ -68,11 +68,26 @@ export default function ListForm() {
   // Disable editing when user clicks outside the form
   useOnClickOutside(formRef, disableEditing);
 
+  function onSubmit(formData: FormData) {
+    // Extract title of the list from FormInput
+    const title = formData.get('title') as string;
+
+    // Extract boardId found in the hidden input
+    const boardId = formData.get('boardId') as string;
+
+    // Create the list with the given form data
+    executeServerAction({
+      title,
+      boardId,
+    });
+  }
+
   /* Editing mode */
   if (isEditing) {
     return (
       <ListWrapper>
         <form
+          action={onSubmit}
           ref={formRef}
           className='w-full p-3 space-y-4 rounded-md bg-white shadow-md'
         >
