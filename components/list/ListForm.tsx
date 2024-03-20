@@ -43,7 +43,11 @@ export default function ListForm() {
       disableEditing();
       // Refresh the router to refetch all the server components
       router.refresh();
-    }
+    },
+    onError: (error) => {
+      toast.error(error);
+      console.log(error);
+    },
   });
 
   /**
