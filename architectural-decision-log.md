@@ -12666,3 +12666,74 @@ export default function ListForm() {
 
 }
 ```
+
+### Develop the ListForm component
+
+Let's also add the error handling for the callback function
+
+Feat: Implement error handling for list creation
+
+Added robust error handling to the ListForm component to display toast notifications and log errors during list creation failures.
+
+```tsx
+  const { executeServerAction, fieldErrors } = useServerAction(createList, {
+    onSuccess: (data) => {
+      toast.success(`List "${data.title}" created`);
+      disableEditing();
+      // Refresh the router to refetch all the server components
+      router.refresh();
+    },
+    onError: (error) => {
+      toast.error(error);
+      console.log(error);
+    },
+  });
+```
+
+Now implement the submit handler, create the list with form data, and assign the submit function to the `action` prop of the form.
+
+- The `action` prop is used in plain HTML to specify the URL where the form data is sent when submitted
+
+feat: Implement onSubmit handler for list creation
+
+Implemented an onSubmit handler in the ListForm component to process form data and trigger list creation with server action integration. 
+
+```tsx
+  function onSubmit(formData: FormData) {
+    // Extract title of the list from FormInput
+    const title = formData.get('title') as string;
+
+    // Extract boardId found in the hidden input
+    const boardId = formData.get('boardId') as string;
+
+    // Create the list with the given form data
+    executeServerAction({
+      title,
+      boardId,
+    });
+  }
+
+  /* Editing mode */
+  if (isEditing) {
+    return (
+      <ListWrapper>
+        <form
+          action={onSubmit}
+          ref={formRef}
+          className='w-full p-3 space-y-4 rounded-md bg-white shadow-md'
+        >
+```
+
+feat: Integrate field error display in ListForm's FormInput
+
+Enhanced the FormInput component within ListForm to display validation errors, improving user feedback on form submission.
+
+```tsx
+<FormInput 
+  ref={inputRef}
+  errors={fieldErrors}
+  id='title'
+  placeholder='Edit list title...'
+  className='px-2 py-1 h-7 font-medium text-sm border-transparent focus:border-input hover:border-input transition'
+/>
+```
