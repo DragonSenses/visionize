@@ -1,7 +1,7 @@
 "use client";
 
 import React, { ElementRef, useRef, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Plus, X } from 'lucide-react';
 import { useEventListener, useOnClickOutside } from 'usehooks-ts';
 import { toast } from 'sonner';
@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 
 export default function ListForm() {
   const params = useParams();
+  const router = useRouter();
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -40,9 +41,10 @@ export default function ListForm() {
     onSuccess: (data) => {
       toast.success(`List "${data.title}" created`);
       disableEditing();
+      // Refresh the router to refetch all the server components
+      router.refresh();
     }
   });
-
 
   /**
    * When user clicks "Escape" key, it disables editing mode.
