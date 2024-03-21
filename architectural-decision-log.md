@@ -12790,3 +12790,93 @@ export default function ListContainer({
   )
 }
 ```
+
+### Display list data
+
+Instead of a `div` let's map out a `ListItem` component, which accepts the props `{ key, index, data }`.
+
+feat: Integrate ListItem for dynamic list rendering
+
+```tsx
+import ListItem from '@/components/list/ListItem';
+
+export default function ListContainer({
+  boardId,
+  data,
+}: ListContainerProps) {
+  const [orderedListData, setOrderedListData] = useState(data);
+
+  return (
+    <ol>
+      {
+        orderedListData.map((list, index) => {
+          return (
+            <ListItem
+              key={list.id}
+              index={index}
+              data={list}
+            />
+          )
+        })
+      }
+      <ListForm />
+      <div className='flex-shrink-0 w-1' />
+    </ol>
+  )
+}
+```
+
+style: Apply flex layout and horizontal spacing to list elements
+
+```tsx
+export default function ListContainer({
+  boardId,
+  data,
+}: ListContainerProps) {
+  const [orderedListData, setOrderedListData] = useState(data);
+
+  return (
+    <ol className='flex h-full gap-x-3'>
+      {
+        orderedListData.map((list, index) => {
+          return (
+            <ListItem
+              key={list.id}
+              index={index}
+              data={list}
+            />
+          )
+        })
+      }
+      <ListForm />
+      <div className='flex-shrink-0 w-1' />
+    </ol>
+  )
+}
+```
+
+Let's create the `ListItem` with the prop interface that contains `data` and `index`.
+
+feat: Define prop types for ListItem component
+
+```tsx
+"use client";
+
+import React from 'react';
+
+import { ListWithCards } from '@/types/types';
+
+interface ListItemProps{
+  data: ListWithCards;
+  index: number;
+}
+
+export default function ListItem({
+  data,
+  index,
+}: ListItemProps) {
+  return (
+    <div>ListItem</div>
+  )
+}
+```
