@@ -15,8 +15,8 @@ export default function ListItem({
   index,
 }: ListItemProps) {
   return (
-    <li>
-      <div>
+    <li className='h-full w-72 shrink-0 select-none'>
+      <div className='w-full rounded-md bg-[#f1f2f4] shadow-md pb-2'>
         <ListHeader />
       </div>
     </li>
