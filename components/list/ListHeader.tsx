@@ -1,7 +1,17 @@
+"use client";
+
 import React from 'react'
 
-export default function ListHeader() {
+import { List } from '@prisma/client';
+
+interface ListHeaderProps {
+  data: List;
+}
+
+export default function ListHeader({
+  data,
+}: ListHeaderProps) {
   return (
-    <div>ListHeader</div>
+    <div>{data.title}</div>
   )
 }
