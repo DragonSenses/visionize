@@ -18,7 +18,7 @@ export default function ListContainer({
   const [orderedListData, setOrderedListData] = useState(data);
 
   return (
-    <ol>
+    <ol className='flex h-full gap-x-3'>
       {
         orderedListData.map((list, index) => {
           return (
