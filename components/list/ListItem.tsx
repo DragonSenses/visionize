@@ -3,6 +3,7 @@
 import React from 'react';
 
 import { ListWithCards } from '@/types/types';
+import ListHeader from '@/components/list/ListHeader';
 
 interface ListItemProps{
   data: ListWithCards;
@@ -14,6 +15,10 @@ export default function ListItem({
   index,
 }: ListItemProps) {
   return (
-    <div>ListItem</div>
+    <li>
+      <div>
+        <ListHeader />
+      </div>
+    </li>
   )
 }
