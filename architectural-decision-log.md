@@ -12737,3 +12737,56 @@ Enhanced the FormInput component within ListForm to display validation errors, i
   className='px-2 py-1 h-7 font-medium text-sm border-transparent focus:border-input hover:border-input transition'
 />
 ```
+
+## Develop the ListContainer
+
+With the functionality to create the list in place, we now should develop a way to display the lists. 
+
+We fetch the list data from the database in individual board ID page. There we render a `ListContainer`.
+
+Let's create a state variable `orderedListData` to have a local optimistic mutation for the order of the list. Optimistic updates improves the user experience, especially for the drag-and-drop feature of our lists.
+
+Implement ListContainer with ordered list display
+
+Next, map out the `orderListData` to a `div` that contains the list information.
+
+feat: Add ordered list display to ListContainer
+
+```tsx
+"use client";
+
+import React, { useState } from 'react';
+
+import { ListWithCards } from '@/types/types';
+import ListForm from '@/components/list/ListForm';
+
+interface ListContainerProps {
+  boardId: string;
+  data: ListWithCards[];
+}
+
+export default function ListContainer({
+  boardId,
+  data,
+}: ListContainerProps) {
+  const [orderedListData, setOrderedListData] = useState(data);
+
+  return (
+    <ol>
+      {
+        orderedListData.map((list, index) => {
+          return (
+            <div
+              key={list.id}
+            >
+              {list.id}
+            </div>
+          )
+        })
+      }
+      <ListForm />
+      <div className='flex-shrink-0 w-1' />
+    </ol>
+  )
+}
+```
