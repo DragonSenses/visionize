@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 
 import { ListWithCards } from '@/types/types';
 import ListForm from '@/components/list/ListForm';
+import ListItem from '@/components/list/ListItem';
 
 interface ListContainerProps {
   boardId: string;
@@ -21,11 +22,11 @@ export default function ListContainer({
       {
         orderedListData.map((list, index) => {
           return (
-            <div
+            <ListItem
               key={list.id}
-            >
-              {list.id}
-            </div>
+              index={index}
+              data={list}
+            />
           )
         })
       }
