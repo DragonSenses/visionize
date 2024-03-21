@@ -12855,10 +12855,13 @@ export default function ListContainer({
 }
 ```
 
-Let's create the `ListItem` with the prop interface that contains `data` and `index`.
+#### ListItem
+
+Let's create the `ListItem` component with the prop interface that contains `data` and `index`.
 
 feat: Define prop types for ListItem component
 
+`components\list\ListItem.tsx`
 ```tsx
 "use client";
 
@@ -12877,6 +12880,90 @@ export default function ListItem({
 }: ListItemProps) {
   return (
     <div>ListItem</div>
+  )
+}
+```
+
+##### ListHeader
+
+Before working on the output of `ListItem`, let's create a quick `ListHeader` component.
+
+feat: Define prop types for ListHeader component
+
+`components\list\ListHeader.tsx`
+```tsx
+"use client";
+
+import React from 'react'
+
+import { List } from '@prisma/client';
+
+interface ListHeaderProps {
+  data: List;
+}
+
+export default function ListHeader({
+  data,
+}: ListHeaderProps) {
+  return (
+    <div>{data.title}</div>
+  )
+}
+```
+
+style: Enhance ListHeader layout & style
+
+- Refine layout with padding, font adjustments, and flexbox alignment.
+
+Enhanced the ListHeader component's visual appeal and user experience with refined padding, font adjustments for improved readability, and flexbox alignment for a cleaner layout.
+
+```tsx
+export default function ListHeader({
+  data,
+}: ListHeaderProps) {
+  return (
+    <div className='flex pt-2 px-2 text-sm font-semibold justify-between items-start gap-x-2'>
+      <div className='h-7 w-full px-2.5 py-1 text-sm font-medium border-transparent'>
+        {data.title}
+      </div>
+    </div>
+  )
+}
+```
+
+For `ListItem`, render a `li` > `div` > `ListHeader`.
+
+feat: Add ListHeader rendering within li element
+
+style: Enhance visual appearance of ListItem
+
+- Increase width for better content fit
+- Adjust padding for improved spacing
+- Enhance background color for higher contrast
+
+```tsx
+"use client";
+
+import React from 'react';
+
+import { ListWithCards } from '@/types/types';
+import ListHeader from '@/components/list/ListHeader';
+
+interface ListItemProps{
+  data: ListWithCards;
+  index: number;
+}
+
+export default function ListItem({
+  data,
+  index,
+}: ListItemProps) {
+  return (
+    <li className='h-full w-72 shrink-0 select-none'>
+      <div className='w-full rounded-md bg-[#f1f2f4] shadow-md pb-2'>
+        <ListHeader />
+      </div>
+    </li>
   )
 }
 ```
