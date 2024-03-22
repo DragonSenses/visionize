@@ -18,6 +18,19 @@ export default function ListHeader({
   const formRef = useRef<ElementRef<'form'>>(null);
   const inputRef = useRef<ElementRef<'input'>>(null);
 
+  function disableEditing() {
+    setIsEditing(false);
+  }
+
+  // Enables editing mode and focus input
+  function enableEditing() {
+    setIsEditing(true);
+    setTimeout(() => {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    });
+  }
+
   return (
     <div className='flex pt-2 px-2 text-sm font-semibold justify-between items-start gap-x-2'>
       <div className='h-7 w-full px-2.5 py-1 text-sm font-medium border-transparent'>
