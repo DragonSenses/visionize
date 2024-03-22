@@ -13027,5 +13027,89 @@ export default function ListHeader({
     </div>
   )
 }
+```
 
+###### Editing mode for ListHeader
+
+Next create the `enableEditing` and `disableEditing` functions.
+
+feat: Implement interactive title editing
+
+- Introduce `enableEditing` to activate edit mode and focus on the input field.
+- Add `disableEditing` to exit edit mode and preserve changes.
+- Enhance user interaction by streamlining title editing within the list item.
+
+```tsx
+"use client";
+
+import React, { ElementRef, useRef, useState } from 'react';
+
+import { List } from '@prisma/client';
+
+interface ListHeaderProps {
+  data: List;
+}
+
+export default function ListHeader({
+  data,
+}: ListHeaderProps) {
+
+  const [title, setTitle] = useState(data.title);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const formRef = useRef<ElementRef<'form'>>(null);
+  const inputRef = useRef<ElementRef<'input'>>(null);
+
+  function disableEditing() {
+    setIsEditing(false);
+  }
+
+  // Enables editing mode and focus input
+  function enableEditing() {
+    setIsEditing(true);
+    setTimeout(() => {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    });
+  }
+
+  return (
+    <div className='flex pt-2 px-2 text-sm font-semibold justify-between items-start gap-x-2'>
+      <div className='h-7 w-full px-2.5 py-1 text-sm font-medium border-transparent'>
+        {data.title}
+      </div>
+    </div>
+  )
+}
+```
+
+Now in the output of `ListHeader` let's try to implement editing mode. It should conditionally render a form in editing mode, otherwise a div with the list title if `isEditing` is false.
+
+feat(ListHeader): Enhance UX with clickable title and edit mode toggle
+
+- Introduce conditional rendering to switch between a form for editing and a static view of the list title.
+- Implement an `onClick` event on the title div that triggers `enableEditing`, allowing users to enter edit mode directly by clicking on the title.
+- The update enhances the user experience by making the title interaction more intuitive and the transition to edit mode seamless.
+
+```tsx
+export default function ListHeader({
+  data,
+}: ListHeaderProps) {
+  const [title, setTitle] = useState(data.title);
+
+  return (
+    <div className='flex pt-2 px-2 text-sm font-semibold justify-between items-start gap-x-2'>
+      {isEditing ? (
+        <p>Form</p>
+      ) : (
+        <div 
+          onClick={enableEditing}
+          className='h-7 w-full px-2.5 py-1 text-sm font-medium border-transparent'
+        >
+          {title}
+        </div>
+      )}
+    </div>
+  )
+}
 ```
