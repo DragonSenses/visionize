@@ -12942,18 +12942,6 @@ style: Enhance visual appearance of ListItem
 - Enhance background color for higher contrast
 
 ```tsx
-"use client";
-
-import React from 'react';
-
-import { ListWithCards } from '@/types/types';
-import ListHeader from '@/components/list/ListHeader';
-
-interface ListItemProps{
-  data: ListWithCards;
-  index: number;
-}
-
 export default function ListItem({
   data,
   index,
@@ -12966,4 +12954,78 @@ export default function ListItem({
     </li>
   )
 }
+```
+
+feat(ListItem): Integrate ListHeader with list data
+
+- Pass `data` prop to ListHeader for dynamic content rendering.
+- Ensure ListHeader receives necessary information for display.
+
+```tsx
+"use client";
+
+import React from 'react';
+
+import { ListWithCards } from '@/types/types';
+import ListHeader from '@/components/list/ListHeader';
+
+interface ListItemProps {
+  data: ListWithCards;
+  index: number;
+}
+
+export default function ListItem({
+  data,
+  index,
+}: ListItemProps) {
+  return (
+    <li className='h-full w-72 shrink-0 select-none'>
+      <div className='w-full rounded-md bg-[#f1f2f4] shadow-md pb-2'>
+        <ListHeader data={data} />
+      </div>
+    </li>
+  )
+}
+```
+
+Next, in `ListHeader` let's create a state for `title`.
+
+It will also have `isEditing` state along with the `formRef` and `inputRef`.
+
+feat: Implement title editing & refs in ListHeader
+
+- Initialize state for title and editing mode.
+- Create form and input refs for managing focus.
+
+`components\list\ListHeader.tsx`
+```tsx
+"use client";
+
+import React, { ElementRef, useRef, useState } from 'react';
+
+import { List } from '@prisma/client';
+
+interface ListHeaderProps {
+  data: List;
+}
+
+export default function ListHeader({
+  data,
+}: ListHeaderProps) {
+
+  const [title, setTitle] = useState(data.title);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const formRef = useRef<ElementRef<'form'>>(null);
+  const inputRef = useRef<ElementRef<'input'>>(null);
+
+  return (
+    <div className='flex pt-2 px-2 text-sm font-semibold justify-between items-start gap-x-2'>
+      <div className='h-7 w-full px-2.5 py-1 text-sm font-medium border-transparent'>
+        {data.title}
+      </div>
+    </div>
+  )
+}
+
 ```
