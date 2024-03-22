@@ -5,6 +5,8 @@ import React, { ElementRef, useRef, useState } from 'react';
 import { List } from '@prisma/client';
 import { useEventListener } from 'usehooks-ts';
 
+import FormInput from '@/components/form/FormInput';
+
 interface ListHeaderProps {
   data: List;
 }
@@ -49,7 +51,17 @@ export default function ListHeader({
   return (
     <div className='flex pt-2 px-2 text-sm font-semibold justify-between items-start gap-x-2'>
       {isEditing ? (
-        <p>Form</p>
+        <form className='flex-1 px-[2px]'>
+          <input hidden id='id' name='id' value={data.id} />
+          <input hidden id='boardId' name='boardId' value={data.boardId} />
+          <FormInput
+            id='title'
+            defaultValue={title}
+            placeholder='Enter list title...'
+            onBlur={() => {}}
+            ref={inputRef}
+          />
+        </form>
       ) : (
         <div
           onClick={enableEditing}
