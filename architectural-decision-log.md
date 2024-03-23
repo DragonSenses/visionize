@@ -13300,3 +13300,101 @@ export type InputType = z.infer<typeof UpdateList>;
 // Define the output data type (ActionState) with List
 export type OutputType = ActionState<InputType, List>;
 ```
+
+### UpdateList server action
+
+feat: Implement UpdateList handler for secure list updates
+
+- Add server-side action handler to process list updates with authorization checks.
+- Utilize 'auth' for user and organization ID verification to ensure secure transactions.
+- Integrate 'revalidatePath' to refresh list paths post-update for immediate UI consistency.
+
+docs: Enhance updateList with descriptive comments
+
+- Added comprehensive comments to the updateList handler for better maintainability.
+- Described the functionality of server-side authentication and cache revalidation.
+- Clarified the purpose and usage of each imported module and function.
+
+```tsx
+// Enforce server-side execution context for security and performance
+"use server";
+
+import { auth } from "@clerk/nextjs"; // Authentication module
+import { revalidatePath } from "next/cache"; // Cache revalidation module
+
+import { createServerAction } from "@/lib/createServerAction"; // Server action creator
+import { database } from "@/lib/database"; // Database interface
+
+import { UpdateList } from "./updateListSchema"; // Input validation schema
+import { InputType, OutputType } from "./updateListTypes"; // Type definitions
+
+/**
+ * Defines the server action to update a list.
+ * @param data an object that contains the data needed to update the list
+ * @returns the updated list
+ */
+async function performAction (data: InputType): Promise<OutputType> {
+  // Authenticate the user and get their organization ID
+  const { userId, orgId } = auth();
+
+  // If authentication fails, return an error
+  if (!userId || !orgId) {
+    return {
+      error: 'Unauthorized',
+    };
+  }
+
+  // Destructure the necessary data from the input
+  const { 
+    title, 
+    id,
+    boardId,
+  } = data;
+
+  // Declare a variable to store the updated list
+  let list;
+
+  try {
+    // Attempt to update the list in the database
+    list = await database.list.update({
+      where: {
+        id,
+        boardId,
+        board: {
+          // Organization ID for additional security check
+          orgId, 
+        },
+      },
+      data: {
+        title,
+      },
+    });
+  } catch (error) {
+    // If the update fails, return an error
+    return {
+      error: 'Failed to update list.'
+    }
+  }
+
+  // Revalidate the cache for the updated board path 
+  // to ensure immediate UI consistency post-update
+  revalidatePath(`/board/${boardId}`);
+
+  // Return the updated list
+  return {
+    data: list
+  };
+}
+
+// Export the server action for external use
+export const updateList = createServerAction(UpdateList, performAction);
+```
+
+A recap for "use server" directive, which marks the `async performAction` as a [server action](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations).
+
+```tsx
+// The "use server" directive ensures that this file runs in a server-side context only,
+// enhancing security by preventing exposure of sensitive logic to the client side,
+// and improving performance by leveraging server resources for execution.
+"use server";
+```
