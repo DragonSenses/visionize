@@ -89,7 +89,11 @@ export default function ListHeader({
   return (
     <div className='flex pt-2 px-2 text-sm font-semibold justify-between items-start gap-x-2'>
       {isEditing ? (
-        <form className='flex-1 px-[2px]'>
+        <form 
+          ref={formRef}
+          action={onSubmit}
+          className='flex-1 px-[2px]'
+        >
           <input hidden id='id' name='id' value={data.id} />
           <input hidden id='boardId' name='boardId' value={data.boardId} />
           <FormInput
