@@ -13192,3 +13192,44 @@ export default function ListHeader({
   )
 }
 ```
+
+Issue: View and editing mode isn't consistent
+
+We have two modes (i.e., a particular functioning condition or arrangement), a display and edit mode.
+
+When we switch between modes `form` and `div` to render input or title, we want the styles and content to match. We also want the text and focus to remain consistent.
+
+feat: Standardize ListHeader edit/display styles for better UX
+
+- Ensure consistent styling between edit and display modes in ListHeader.
+- Improve user experience by making the transition between states seamless.
+
+`components\list\ListHeader.tsx`
+```tsx
+  return (
+    <div className='flex pt-2 px-2 text-sm font-semibold justify-between items-start gap-x-2'>
+      {isEditing ? (
+        <form className='flex-1 px-[2px]'>
+          <input hidden id='id' name='id' value={data.id} />
+          <input hidden id='boardId' name='boardId' value={data.boardId} />
+          <FormInput
+            id='title'
+            defaultValue={title}
+            placeholder='Enter list title...'
+            onBlur={() => {}}
+            ref={inputRef}
+            className='h-7 px-[7px] py-1 text-sm font-medium border-transparent hover:border-input focus:border-input transition truncate bg-transparent focus:bg-white'
+          />
+        </form>
+      ) : (
+        <div
+          onClick={enableEditing}
+          className='h-7 w-full px-2.5 py-1 text-sm font-medium border-transparent'
+        >
+          {title}
+        </div>
+      )}
+    </div>
+  )
+```
+
