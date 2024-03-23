@@ -104,6 +104,8 @@ export default function ListHeader({
             ref={inputRef}
             className='h-7 px-[7px] py-1 text-sm font-medium border-transparent hover:border-input focus:border-input transition truncate bg-transparent focus:bg-white'
           />
+          {/* Purely functional hidden submit button */}
+          <button type='submit' hidden />
         </form>
       ) : (
         <div
