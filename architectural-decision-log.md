@@ -13398,3 +13398,35 @@ A recap for "use server" directive, which marks the `async performAction` as a [
 // and improving performance by leveraging server resources for execution.
 "use server";
 ```
+
+### Use updateList server action
+
+Navigate back to `ListHeader` and let's create the server actiton to update list.
+
+feat: Integrate updateList Action in ListHeader
+
+- Leveraged `updateList` action within `ListHeader` for list renaming functionality.
+- Implemented success and error toasts for immediate user feedback on list update status.
+
+`components\list\ListHeader.tsx`
+```tsx
+import { toast } from 'sonner';
+import { updateList } from '@/actions/updateList';
+import { useServerAction } from '@/hooks/useServerAction';
+
+export default function ListHeader({
+  data,
+}: ListHeaderProps) {
+  // ...
+  
+  const { executeServerAction } = useServerAction(updateList, {
+    onSuccess(data) {
+      toast.success(`Renamed to "${data.title}"`);
+      setTitle(data.title);
+      disableEditing();
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
+```
