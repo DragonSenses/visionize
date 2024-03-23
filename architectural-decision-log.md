@@ -13113,3 +13113,82 @@ export default function ListHeader({
   )
 }
 ```
+
+feat: Add 'Escape' key functionality to exit edit mode
+
+- Implement an escape key event handler within ListHeader to enhance keyboard accessibility.
+- The `handleEscapeKey` function listens for the 'Escape' key press, allowing users to quickly exit the editing mode without mouse interaction.
+- This feature contributes to a more intuitive and efficient user experience by streamlining the editing process.
+
+```tsx
+import { useEventListener } from 'usehooks-ts';
+
+export default function ListHeader({
+  data,
+}: ListHeaderProps) {
+
+  const [isEditing, setIsEditing] = useState(false);
+
+  function disableEditing() {
+    setIsEditing(false);
+  }
+
+  /**
+   * When user clicks "Escape" key, it disables editing mode.
+   * @param event the key press event
+   */
+  function handleEscapeKey(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      disableEditing();
+    }
+  }
+
+  // Custom hook that attaches event listeners to DOM elements, the window, or media query lists.
+  // Listen for the 'keydown' event on the entire document (window level)
+  useEventListener('keydown', handleEscapeKey);
+```
+
+Next, instead of rendering a `<p>Form</p>` we want to render a `form` element with two hidden inputs that store the `id` and `boardId`. It also contains the `FormInput` with the proper props passed into it.
+
+feat: Introduce form rendering for title editing
+
+- Enable a form with `FormInput` component to appear in `ListHeader` when in edit mode.
+- Include hidden fields to maintain list `id` and `boardId` for potential submission handling.
+- Offer an interactive, user-friendly interface for editing list titles directly within the header.
+
+```tsx
+import FormInput from '@/components/form/FormInput';
+
+export default function ListHeader({
+  data,
+}: ListHeaderProps) {
+  const [isEditing, setIsEditing] = useState(false);
+
+  const formRef = useRef<ElementRef<'form'>>(null);
+
+  return (
+    <div className='flex pt-2 px-2 text-sm font-semibold justify-between items-start gap-x-2'>
+      {isEditing ? (
+        <form className='flex-1 px-[2px]'>
+          <input hidden id='id' name='id' value={data.id} />
+          <input hidden id='boardId' name='boardId' value={data.boardId} />
+          <FormInput
+            id='title'
+            defaultValue={title}
+            placeholder='Enter list title...'
+            onBlur={() => {}}
+            ref={inputRef}
+          />
+        </form>
+      ) : (
+        <div
+          onClick={enableEditing}
+          className='h-7 w-full px-2.5 py-1 text-sm font-medium border-transparent'
+        >
+          {title}
+        </div>
+      )}
+    </div>
+  )
+}
+```
