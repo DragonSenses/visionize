@@ -13233,3 +13233,42 @@ feat: Standardize ListHeader edit/display styles for better UX
   )
 ```
 
+## UpdateList server action
+
+Make `updateList` folder inside `/actions` and add the following:
+
+1. Schema
+2. Types
+3. Server Action handler
+
+### UpdateList schema
+
+For the zod schema validation we ask: what data do we expect? 
+
+- title
+- id
+- boardId
+
+feat: Implement validation for UpdateList schema with Zod
+
+- Introduce Zod schema validation to ensure data integrity for UpdateList.
+- Enforce minimum length requirement for 'title' to enhance data quality.
+
+```tsx
+import { z } from 'zod';
+
+/**
+ * Define the UpdateList object schema.
+ * 
+ */
+export const UpdateList = z.object({
+  title: z.string({
+    required_error: "Title is required", 
+    invalid_type_error: "Title is required", 
+  }).min(3, {
+    message: "Must be 3 or more characters long.", 
+  }),
+  id: z.string(),
+  boardId: z.string(),
+});
+```
