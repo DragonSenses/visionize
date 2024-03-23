@@ -48,6 +48,26 @@ export default function ListHeader({
     },
   });
 
+  function onSubmit(formData: FormData) {
+    // Extract title of the list from FormInput
+    const title = formData.get('title') as string;
+
+    // Extract list id and boardId found in the hidden inputs
+    const id = formData.get('id') as string;
+    const boardId = formData.get('boardId') as string;
+
+    if (title === data.title) {
+      return disableEditing();
+    }
+
+    // Update the list with the given form data
+    executeServerAction({
+      title,
+      id,
+      boardId,
+    });
+  }
+
   /**
    * When user clicks "Escape" key, it disables editing mode.
    * @param event the key press event
