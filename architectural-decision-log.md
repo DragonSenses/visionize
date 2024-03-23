@@ -13399,9 +13399,11 @@ A recap for "use server" directive, which marks the `async performAction` as a [
 "use server";
 ```
 
-### Use updateList server action
+## ListHeader continued
 
-Navigate back to `ListHeader` and let's create the server actiton to update list.
+Navigate back to `ListHeader` and let's create the server action to update list.
+
+### Use updateList server action
 
 feat: Integrate updateList Action in ListHeader
 
@@ -13429,4 +13431,79 @@ export default function ListHeader({
       toast.error(error);
     },
   });
+```
+
+### ListHeader submit handler
+
+Let's implement list title editing in `ListHeader`.
+
+feat: Implement submit handler for title editing
+
+- Developed a submit handler in `ListHeader.tsx` for list title updates.
+- Utilized `updateList` server action for changes, with feedback via toasts.
+
+```tsx
+  function onSubmit(formData: FormData) {
+    // Extract title of the list from FormInput
+    const title = formData.get('title') as string;
+
+    // Extract list id and boardId found in the hidden inputs
+    const id = formData.get('id') as string;
+    const boardId = formData.get('boardId') as string;
+
+    if (title === data.title) {
+      return disableEditing();
+    }
+
+    // Update the list with the given form data
+    executeServerAction({
+      title,
+      id,
+      boardId,
+    });
+  }
+```
+
+### ListHeader onBlur function
+
+feat: Implement onBlur submission for ListHeader editing
+
+- Added `onBlur` event handler to `ListHeader` form input for automatic submission.
+- Ensures list title changes are submitted when input loses focus, streamlining the update process.
+
+```tsx
+  function onBlur() {
+    formRef.current?.requestSubmit();
+  }
+
+export default function ListHeader({
+  data,
+}: ListHeaderProps) {
+// ...
+  return (
+    <div className='flex pt-2 px-2 text-sm font-semibold justify-between items-start gap-x-2'>
+      {isEditing ? (
+        <form className='flex-1 px-[2px]'>
+          <input hidden id='id' name='id' value={data.id} />
+          <input hidden id='boardId' name='boardId' value={data.boardId} />
+          <FormInput
+            id='title'
+            defaultValue={title}
+            placeholder='Enter list title...'
+            onBlur={onBlur}
+            ref={inputRef}
+            className='h-7 px-[7px] py-1 text-sm font-medium border-transparent hover:border-input focus:border-input transition truncate bg-transparent focus:bg-white'
+          />
+        </form>
+      ) : (
+        <div
+          onClick={enableEditing}
+          className='h-7 w-full px-2.5 py-1 text-sm font-medium border-transparent'
+        >
+          {title}
+        </div>
+      )}
+    </div>
+  )
+}
 ```
