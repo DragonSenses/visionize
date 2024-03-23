@@ -68,6 +68,10 @@ export default function ListHeader({
     });
   }
 
+  function onBlur() {
+    formRef.current?.requestSubmit();
+  }
+
   /**
    * When user clicks "Escape" key, it disables editing mode.
    * @param event the key press event
@@ -92,7 +96,7 @@ export default function ListHeader({
             id='title'
             defaultValue={title}
             placeholder='Enter list title...'
-            onBlur={() => {}}
+            onBlur={onBlur}
             ref={inputRef}
             className='h-7 px-[7px] py-1 text-sm font-medium border-transparent hover:border-input focus:border-input transition truncate bg-transparent focus:bg-white'
           />
