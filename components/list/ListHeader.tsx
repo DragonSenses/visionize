@@ -6,6 +6,9 @@ import { List } from '@prisma/client';
 import { useEventListener } from 'usehooks-ts';
 
 import FormInput from '@/components/form/FormInput';
+import { toast } from 'sonner';
+import { updateList } from '@/actions/updateList';
+import { useServerAction } from '@/hooks/useServerAction';
 
 interface ListHeaderProps {
   data: List;
@@ -33,6 +36,17 @@ export default function ListHeader({
       inputRef.current?.select();
     });
   }
+
+  const { executeServerAction } = useServerAction(updateList, {
+    onSuccess(data) {
+      toast.success(`Renamed to "${data.title}"`);
+      setTitle(data.title);
+      disableEditing();
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
 
   /**
    * When user clicks "Escape" key, it disables editing mode.
