@@ -1,4 +1,5 @@
 "use server";
+
 import { auth } from "@clerk/nextjs";
 import { revalidatePath } from "next/cache";
 
@@ -17,7 +18,11 @@ async function performAction (data: InputType): Promise<OutputType> {
     };
   }
 
-  const { title, id } = data;
+  const { 
+    title, 
+    id,
+    boardId,
+  } = data;
 
   let list;
 
@@ -25,7 +30,10 @@ async function performAction (data: InputType): Promise<OutputType> {
     list = await database.list.update({
       where: {
         id,
-        orgId,
+        boardId,
+        board: {
+          orgId,
+        },
       },
       data: {
         title,
@@ -37,7 +45,7 @@ async function performAction (data: InputType): Promise<OutputType> {
     }
   }
 
-  revalidatePath(`/list/${id}`);
+  revalidatePath(`/board/${boardId}`);
 
   // Return the updated list
   return {
