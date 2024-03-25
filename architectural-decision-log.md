@@ -13507,3 +13507,85 @@ export default function ListHeader({
   )
 }
 ```
+
+### Bind ref and onSubmit to form element in ListHeader's edit mode
+
+feat: Bind ref and onSubmit to form in edit mode
+
+- Bound `formRef` to the form element to facilitate programmatic actions in edit mode.
+- Attached `onSubmit` handler to the form to process list title updates on submission.
+
+```tsx
+export default function ListHeader({
+  data,
+}: ListHeaderProps) {
+// ...
+
+  return (
+    <div className='flex pt-2 px-2 text-sm font-semibold justify-between items-start gap-x-2'>
+      {isEditing ? (
+
+        <form 
+          ref={formRef}
+          action={onSubmit}
+          className='flex-1 px-[2px]'
+        >
+```
+
+#### ListHeader hidden submit button
+
+The hidden submit button in the form (`<button type='submit' hidden />`) serves a specific purpose in the context of a web application where form submission is intended to be triggered by an event other than the user clicking a submit button. Here's a breakdown of its role:
+
+- **Programmatic Submission**: The hidden button allows the form to be submitted programmatically. In your code, the `onBlur` event handler on the `FormInput` component calls `formRef.current?.requestSubmit();` when the input field loses focus. This method simulates a submit button click, which is why the hidden submit button is necessary.
+  
+- **Non-Interactive**: Since the button is hidden, it doesn't provide any visual interface or interaction point for the user. It's purely functional and not meant to be interacted with directly.
+
+- **Fallback Mechanism**: In some cases, especially with complex forms or dynamic content, having a submit button (even if hidden) ensures that the form can be submitted in various scenarios, such as pressing the Enter key while focusing on a field.
+
+In summary, the hidden submit button is a non-interactive, functional element that enables the form to be submitted through JavaScript without requiring a visible button that the user must click. It's a common technique used to improve user experience by allowing forms to be submitted as a result of custom logic or user actions other than the traditional button click.
+
+feat: Add hidden submit button for streamlined form submission
+
+- Implemented a hidden submit button in `ListHeader` to enhance form submission UX.
+- Facilitates automatic form submission on input field's blur event, improving user interaction.
+
+```tsx
+export default function ListHeader({
+  data,
+}: ListHeaderProps) {
+// ...
+
+  return (
+    <div className='flex pt-2 px-2 text-sm font-semibold justify-between items-start gap-x-2'>
+      {isEditing ? (
+        <form 
+          ref={formRef}
+          action={onSubmit}
+          className='flex-1 px-[2px]'
+        >
+          <input hidden id='id' name='id' value={data.id} />
+          <input hidden id='boardId' name='boardId' value={data.boardId} />
+          <FormInput
+            id='title'
+            defaultValue={title}
+            placeholder='Enter list title...'
+            onBlur={onBlur}
+            ref={inputRef}
+            className='h-7 px-[7px] py-1 text-sm font-medium border-transparent hover:border-input focus:border-input transition truncate bg-transparent focus:bg-white'
+          />
+          {/* Hidden submit button */}
+          <button type='submit' hidden />
+        </form>
+      ) : (
+        <div
+          onClick={enableEditing}
+          className='h-7 w-full px-2.5 py-1 text-sm font-medium border-transparent'
+        >
+          {title}
+        </div>
+      )}
+    </div>
+  )
+}
+```
+
