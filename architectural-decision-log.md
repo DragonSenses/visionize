@@ -13633,5 +13633,119 @@ export default function ListOptions({
 }
 ```
 
-feat: Add ListOptions in ListHeader for interactivity
+feat(ListHeader): Integrate ListOptions for enhanced list management
 
+Embed the ListOptions component within ListHeader to provide users with interactive capabilities such as adding cards, deleting lists, and copying list data. This update enriches the user interface by facilitating direct list manipulation from the ListHeader component.
+
+```tsx
+import ListOptions from '@/components/list/ListOptions';
+
+export default function ListHeader({
+  data,
+}: ListHeaderProps) {
+
+  return (
+    <div className='flex pt-2 px-2 text-sm font-semibold justify-between items-start gap-x-2'>
+      { /* ListHeader display... */ }
+      <ListOptions
+        data={data}
+        handleAddCardToList={() => {}}
+      />
+    </div>
+  )
+}
+```
+
+### ListOptions output
+
+feat: Add Popover for interactive list management
+
+feat(ListOptions): Implement Popover for interactive list management options
+
+Incorporate a Popover component into ListOptions to provide a dynamic and user-friendly interface for list interactions. This enhancement allows users to perform actions such as adding cards and managing lists within a neatly contained overlay, improving the overall user experience.
+
+```tsx
+"use client";
+
+import React from 'react';
+import { List } from '@prisma/client';
+import { MoreHorizontal, X } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import {
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+interface ListOptionsProps {
+  data: List;
+  handleAddCardToList: () => void;
+};
+
+export default function ListOptions({
+  data,
+  handleAddCardToList,
+}: ListOptionsProps) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        {/* Open button */}
+        <Button>
+          <MoreHorizontal />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <div>
+          List actions
+        </div>
+        {/* Close button */}
+        <PopoverClose asChild>
+          <Button>
+            <X />
+          </Button>
+        </PopoverClose>
+        {/* List Actions */}
+      </PopoverContent>
+    </Popover>
+  )
+}
+```
+
+style(ListOptions): Enhance UI with refined Popover styling
+
+Elevate the visual design of the ListOptions component by applying a more sophisticated styling to the Popover. This update includes ghost buttons for a cleaner look, precise alignment for better structure, and subtle color adjustments for improved readability.
+
+```tsx
+export default function ListOptions({
+  data,
+  handleAddCardToList,
+}: ListOptionsProps) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        {/* Open button */}
+        <Button variant='ghost' className='h-auto w-auto p-2'>
+          <MoreHorizontal className='h-4 w-4'/>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent align='start' side='bottom' className='px-0 pt-3 pb-3'>
+        <div className='pb-4 text-center text-sm font-medium text-neutral-600'>
+          List actions
+        </div>
+        {/* Close button */}
+        <PopoverClose asChild>
+          <Button 
+            variant='ghost'
+            className='absolute top-2 right-2 h-auto w-auto p-2 text-neutral-600'
+          >
+            <X className='h-4 w-4'/>
+          </Button>
+        </PopoverClose>
+        {/* List Actions */}
+      </PopoverContent>
+    </Popover>
+  )
+}
+```
