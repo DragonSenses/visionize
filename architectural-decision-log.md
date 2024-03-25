@@ -13749,3 +13749,128 @@ export default function ListOptions({
   )
 }
 ```
+
+### ListOptions actions
+
+Let's first add the button which adds the card to the List.
+
+#### Add card to list
+
+feat: Add button for user-initiated list updates
+
+Introduce a new button within the ListOptions component that allows users to add cards to their lists directly. This feature streamlines the process of updating list content, making it more intuitive and accessible from the user interface.
+
+```tsx
+export default function ListOptions({
+  data,
+  handleAddCardToList,
+}: ListOptionsProps) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        {/* ... */}
+      </PopoverTrigger>
+      <PopoverContent align='start' side='bottom' className='px-0 pt-3 pb-3'>
+        {/* ... */}
+
+        {/* List Actions */}
+        <Button
+          onClick={handleAddCardToList}
+          variant='ghost'
+          className='justify-start w-full h-auto p-2 px-5 rounded-none font-normal text-sm'
+        >
+          Add card +
+        </Button>
+
+      </PopoverContent>
+    </Popover>
+  )
+}
+```
+
+#### User can copy or delete list
+
+Then we want to add the actions that allows the user to copy or delete the list. 
+
+There are a few approaches to this.
+
+- Add a button and activate the `useServerAction` hook and call an `executeServerAction` on click
+- Use server actions with `form` element
+
+We will go with the latter.
+
+WIP:
+
+```tsx
+"use client";
+
+import React from 'react';
+import { List } from '@prisma/client';
+import { MoreHorizontal, X } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import {
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+interface ListOptionsProps {
+  data: List;
+  handleAddCardToList: () => void;
+};
+
+export default function ListOptions({
+  data,
+  handleAddCardToList,
+}: ListOptionsProps) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        {/* Open button */}
+        <Button variant='ghost' className='h-auto w-auto p-2'>
+          <MoreHorizontal className='h-4 w-4'/>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent align='start' side='bottom' className='px-0 pt-3 pb-3'>
+        <div className='pb-4 text-center text-sm font-medium text-neutral-600'>
+          List actions
+        </div>
+        {/* Close button */}
+        <PopoverClose asChild>
+          <Button 
+            variant='ghost'
+            className='absolute top-2 right-2 h-auto w-auto p-2 text-neutral-600'
+          >
+            <X className='h-4 w-4'/>
+          </Button>
+        </PopoverClose>
+        {/* List Actions */}
+        <Button
+          onClick={handleAddCardToList}
+          variant='ghost'
+          className='justify-start w-full h-auto p-2 px-5 rounded-none font-normal text-sm'
+        >
+          Add card +
+        </Button>
+        <form>
+          <input hidden id='id' name='id' value={data.id} />
+          <input hidden id='boardId' name='boardId' value={data.boardId} />
+        </form>
+        <FormSubmitButton>
+          Copy list
+        </FormSubmitButton>
+        <Separator />
+        <form>
+          <input hidden id='id' name='id' value={data.id} />
+          <input hidden id='boardId' name='boardId' value={data.boardId} />
+        </form>
+        <FormSubmitButton>
+          Delete list
+        </FormSubmitButton>
+      </PopoverContent>
+    </Popover>
+  )
+}
+```
