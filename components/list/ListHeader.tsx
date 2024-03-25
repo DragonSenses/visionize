@@ -9,6 +9,7 @@ import FormInput from '@/components/form/FormInput';
 import { toast } from 'sonner';
 import { updateList } from '@/actions/updateList';
 import { useServerAction } from '@/hooks/useServerAction';
+import ListOptions from '@/components/list/ListOptions';
 
 interface ListHeaderProps {
   data: List;
@@ -115,6 +116,10 @@ export default function ListHeader({
           {title}
         </div>
       )}
+      <ListOptions
+        data={data}
+        handleAddCardToList={() => {}}
+      />
     </div>
   )
 }
