@@ -25,18 +25,21 @@ export default function ListOptions({
     <Popover>
       <PopoverTrigger asChild>
         {/* Open button */}
-        <Button>
-          <MoreHorizontal />
+        <Button variant='ghost' className='h-auto w-auto p-2'>
+          <MoreHorizontal className='h-4 w-4'/>
         </Button>
       </PopoverTrigger>
-      <PopoverContent>
-        <div>
+      <PopoverContent align='start' side='bottom' className='px-0 pt-3 pb-3'>
+        <div className='pb-4 text-center text-sm font-medium text-neutral-600'>
           List actions
         </div>
         {/* Close button */}
         <PopoverClose asChild>
-          <Button>
-            <X />
+          <Button 
+            variant='ghost'
+            className='absolute top-2 right-2 h-auto w-auto p-2 text-neutral-600'
+          >
+            <X className='h-4 w-4'/>
           </Button>
         </PopoverClose>
         {/* List Actions */}
