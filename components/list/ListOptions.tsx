@@ -43,6 +43,14 @@ export default function ListOptions({
           </Button>
         </PopoverClose>
         {/* List Actions */}
+        <Button
+          onClick={handleAddCardToList}
+          variant='ghost'
+          className='justify-start w-full h-auto p-2 px-5 rounded-none font-normal text-sm'
+        >
+          Add card +
+        </Button>
+        
       </PopoverContent>
     </Popover>
   )
