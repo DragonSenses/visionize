@@ -13589,3 +13589,49 @@ export default function ListHeader({
 }
 ```
 
+### ListHeader tests
+
+Create a List then update the title with these actions:
+
+1. Change the list title, press Enter
+2. Change the list title, click away and activate the on blur
+3. Change the list title, press "Esc" key
+
+Each should trigger the toast notification and submit button to activate the server action to update list title.
+
+## ListOptions
+
+We want to add a component that can provide a list of options within the `ListHeader`. The `ListOptions` component will open a Popover and allows the user to perform multiple actions or options. Options include adding a card to the list, delete the list, or copy the list.
+
+feat: Add ListOptions for list interactions
+
+Introduce the ListOptions component, enabling users to interact with lists. This component provides functionalities such as adding a card to a list, deleting a list, and copying a list.
+
+Create a `ListOptions` component with the prop interface that accepts `data` a `List` and `handleAddCardToList` a function that returns `void`.
+
+feat: Define prop types for ListOptions
+
+`components\list\ListOptions.tsx`
+```tsx
+"use client";
+
+import React from 'react';
+import { List } from '@prisma/client';
+
+interface ListOptionsProps {
+  data: List;
+  handleAddCardToList: () => void;
+};
+
+export default function ListOptions({
+  data,
+  handleAddCardToList,
+}: ListOptionsProps) {
+  return (
+    <div>ListOptions</div>
+  )
+}
+```
+
+feat: Add ListOptions in ListHeader for interactivity
+
