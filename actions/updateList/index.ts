@@ -1,8 +1,6 @@
 // Enforce server-side execution context for security and performance
 "use server";
 
-"use server";
-
 import { auth } from "@clerk/nextjs"; // Authentication module
 import { revalidatePath } from "next/cache"; // Cache revalidation module
 
