@@ -13799,7 +13799,11 @@ There are a few approaches to this.
 
 We will go with the latter.
 
-WIP:
+Render two `form` elements which contains a two hidden `input` elements and a `FormSubmitButton`. The hidden input elements will extract the `id` and `boardId` respectively.
+
+feat(ListOptions): Integrate form-based list management actions
+
+Enhance the ListOptions component with form-driven 'Copy list' and 'Delete list' actions. These server-supported operations empower users to manage their lists more effectively, directly from the UI, with seamless server interaction.
 
 ```tsx
 "use client";
@@ -13815,6 +13819,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Separator } from '@/components/ui/separator';
+import FormSubmitButton from '@/components/form/FormSubmitButton';
 
 interface ListOptionsProps {
   data: List;
@@ -13830,7 +13836,7 @@ export default function ListOptions({
       <PopoverTrigger asChild>
         {/* Open button */}
         <Button variant='ghost' className='h-auto w-auto p-2'>
-          <MoreHorizontal className='h-4 w-4'/>
+          <MoreHorizontal className='h-4 w-4' />
         </Button>
       </PopoverTrigger>
       <PopoverContent align='start' side='bottom' className='px-0 pt-3 pb-3'>
@@ -13839,11 +13845,11 @@ export default function ListOptions({
         </div>
         {/* Close button */}
         <PopoverClose asChild>
-          <Button 
+          <Button
             variant='ghost'
             className='absolute top-2 right-2 h-auto w-auto p-2 text-neutral-600'
           >
-            <X className='h-4 w-4'/>
+            <X className='h-4 w-4' />
           </Button>
         </PopoverClose>
         {/* List Actions */}
@@ -13857,18 +13863,60 @@ export default function ListOptions({
         <form>
           <input hidden id='id' name='id' value={data.id} />
           <input hidden id='boardId' name='boardId' value={data.boardId} />
+          <FormSubmitButton>
+            Copy list
+          </FormSubmitButton>
         </form>
-        <FormSubmitButton>
-          Copy list
-        </FormSubmitButton>
         <Separator />
         <form>
           <input hidden id='id' name='id' value={data.id} />
           <input hidden id='boardId' name='boardId' value={data.boardId} />
+          <FormSubmitButton>
+            Delete list
+          </FormSubmitButton>
         </form>
-        <FormSubmitButton>
-          Delete list
-        </FormSubmitButton>
+      </PopoverContent>
+    </Popover>
+  )
+}
+```
+
+```tsx
+export default function ListOptions({
+  data,
+  handleAddCardToList,
+}: ListOptionsProps) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        {/* ... */}
+      </PopoverTrigger>
+      <PopoverContent align='start' side='bottom' className='px-0 pt-3 pb-3'>
+        {/* ... */}
+
+        {/* List Actions */}
+        <Button
+          onClick={handleAddCardToList}
+          variant='ghost'
+          className='justify-start w-full h-auto p-2 px-5 rounded-none font-normal text-sm'
+        >
+          Add card +
+        </Button>
+        <form>
+          <input hidden id='id' name='id' value={data.id} />
+          <input hidden id='boardId' name='boardId' value={data.boardId} />
+          <FormSubmitButton>
+            Copy list
+          </FormSubmitButton>
+        </form>
+        <Separator />
+        <form>
+          <input hidden id='id' name='id' value={data.id} />
+          <input hidden id='boardId' name='boardId' value={data.boardId} />
+          <FormSubmitButton>
+            Delete list
+          </FormSubmitButton>
+        </form>
       </PopoverContent>
     </Popover>
   )
