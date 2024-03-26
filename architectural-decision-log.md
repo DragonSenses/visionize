@@ -13881,44 +13881,11 @@ export default function ListOptions({
 }
 ```
 
-```tsx
-export default function ListOptions({
-  data,
-  handleAddCardToList,
-}: ListOptionsProps) {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        {/* ... */}
-      </PopoverTrigger>
-      <PopoverContent align='start' side='bottom' className='px-0 pt-3 pb-3'>
-        {/* ... */}
+## CopyList server action
 
-        {/* List Actions */}
-        <Button
-          onClick={handleAddCardToList}
-          variant='ghost'
-          className='justify-start w-full h-auto p-2 px-5 rounded-none font-normal text-sm'
-        >
-          Add card +
-        </Button>
-        <form>
-          <input hidden id='id' name='id' value={data.id} />
-          <input hidden id='boardId' name='boardId' value={data.boardId} />
-          <FormSubmitButton>
-            Copy list
-          </FormSubmitButton>
-        </form>
-        <Separator />
-        <form>
-          <input hidden id='id' name='id' value={data.id} />
-          <input hidden id='boardId' name='boardId' value={data.boardId} />
-          <FormSubmitButton>
-            Delete list
-          </FormSubmitButton>
-        </form>
-      </PopoverContent>
-    </Popover>
-  )
-}
-```
+Make `copyList` folder inside `/actions` and add the following:
+
+1. Schema
+2. Types
+3. Server Action handler
+
