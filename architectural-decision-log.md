@@ -13889,3 +13889,25 @@ Make `copyList` folder inside `/actions` and add the following:
 2. Types
 3. Server Action handler
 
+## DeleteList server action
+
+Make `deleteList` folder inside `/actions` and add the following:
+
+1. Schema
+2. Types
+3. Server Action handler
+
+### DeleteList schema
+
+```tsx
+import { z } from 'zod';
+
+/**
+ * Define the DeleteList object schema.
+ * 
+ */
+export const DeleteList = z.object({
+  id: z.string(),
+  boardId: z.string(),
+});
+```
