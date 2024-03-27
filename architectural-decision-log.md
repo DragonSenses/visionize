@@ -13900,6 +13900,7 @@ feat: Add CopyList schema validation
 - Introduce Zod schema validation to ensure data integrity for CopyList
 - Schema enforces that both `id` and `boardId` are of type string
 
+`actions\copyList\copyListSchema.ts`
 ```tsx
 import { z } from 'zod';
 
@@ -13911,6 +13912,35 @@ export const CopyList = z.object({
   id: z.string(),
   boardId: z.string(),
 });
+```
+
+### CopyList types
+
+feat: Establish type definitions for CopyList
+
+- Set up type definitions for CopyList server action
+- Introduce Zod-based type inference for input validation, ensuring reliable data handling.
+- Define ActionState types to streamline error management and data flow in server interactions.
+
+`actions\copyList\copyListTypes.ts`
+```tsx
+import { z } from 'zod';
+
+// Import List, the expected output type, from Prisma client
+import { List } from '@prisma/client';
+
+// Encapsulate the state of various actions (e.g., fetching data, submitting forms, etc.)
+// Provides a structured way to handle errors and manage data flow
+import { ActionState } from '@/lib/createServerAction';
+
+// Import the CopyList schema (validation rules)
+import { CopyList } from './copyListSchema';
+
+// Define the input type based on the CopyList schema
+export type InputType = z.infer<typeof CopyList>;
+
+// Define the output data type (ActionState) with List
+export type OutputType = ActionState<InputType, List>;
 ```
 
 ## DeleteList server action
@@ -13932,6 +13962,7 @@ feat: Implement validation for DeleteList schema with Zod
 - Introduce Zod schema validation to ensure data integrity for DeleteList
 - Schema enforces that both `id` and `boardId` are of type string
 
+`actions\deleteList\deleteListSchema.ts`
 ```tsx
 import { z } from 'zod';
 
@@ -13953,6 +13984,7 @@ feat: Establish type definitions for DeleteList
 - Introduce Zod-based type inference for input validation, ensuring reliable data handling.
 - Define ActionState types to streamline error management and data flow in server interactions.
 
+`actions\deleteList\deleteListTypes.ts`
 ```tsx
 import { z } from 'zod';
 
