@@ -32,15 +32,26 @@ async function performAction (data: InputType): Promise<OutputType> {
   let list;
 
   try {
-    list = await database.list.copy({
+    // Find the list to copy
+    const foundList = await database.list.findUnique({
       where: {
         id,
         boardId,
         board: {
-          orgId, 
+          orgId,
         },
       },
+      include: {
+        cards: true,
+      },
     });
+
+    if (!foundList) {
+      return { error: 'List not found.' };
+    }
+
+
+
   } catch (error) {
     return {
       error: 'Failed to copy list.'
