@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { ElementRef, useRef } from 'react';
 import { List } from '@prisma/client';
 import { MoreHorizontal, X } from 'lucide-react';
 
@@ -26,11 +26,14 @@ export default function ListOptions({
   data,
   handleAddCardToList,
 }: ListOptionsProps) {
+  const closeRef = useRef<ElementRef<'button'>>(null);
+
 
   /* Delete server action */
   const { executeServerAction: executeDeleteServerAction } = useServerAction(deleteList, {
     onSuccess(data) {
       toast.success(`List "${ data.title }" deleted.`);
+      closeRef.current?.click();
     },
     onError(error) {
       toast.error(error);
@@ -58,7 +61,7 @@ export default function ListOptions({
           List actions
         </div>
         {/* Close button */}
-        <PopoverClose asChild>
+        <PopoverClose ref={closeRef} asChild>
           <Button
             variant='ghost'
             className='absolute top-2 right-2 h-auto w-auto p-2 text-neutral-600'
