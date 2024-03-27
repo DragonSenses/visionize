@@ -14130,3 +14130,52 @@ export default function ListOptions({
     </Popover>
   )
 ```
+
+### Closing a Popover on action/user interaction.
+
+We want to close the Popover when user calls an action such as `deleteList`. Create a `closeRef`, in the `onSuccess` callback of the server action add `closeRef.current?.click()`. Then assign the `closeRef` to the `PopoverClose` component `ref` prop.
+
+feat(ListOptions): Automatically close Popover after server action
+
+```tsx
+import React, { ElementRef, useRef } from 'react';
+
+export default function ListOptions({
+  data,
+  handleAddCardToList,
+}: ListOptionsProps) {
+  const closeRef = useRef<ElementRef<'button'>>(null);
+
+  const { executeServerAction: executeDeleteServerAction } = useServerAction(deleteList, {
+    onSuccess(data) {
+      toast.success(`List "${ data.title }" deleted.`);
+      
+      closeRef.current?.click();
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
+
+    return (
+    <Popover>
+      <PopoverTrigger asChild>
+        {/* Open button */}
+        <Button variant='ghost' className='h-auto w-auto p-2'>
+          <MoreHorizontal className='h-4 w-4' />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent align='start' side='bottom' className='px-0 pt-3 pb-3'>
+        <div className='pb-4 text-center text-sm font-medium text-neutral-600'>
+          List actions
+        </div>
+        {/* Close button */}
+        <PopoverClose ref={closeRef} asChild>
+          <Button
+            variant='ghost'
+            className='absolute top-2 right-2 h-auto w-auto p-2 text-neutral-600'
+          >
+            <X className='h-4 w-4' />
+          </Button>
+        </PopoverClose>
+```
