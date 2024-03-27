@@ -60,6 +60,26 @@ async function performAction (data: InputType): Promise<OutputType> {
     // Get the next order depending on whether a mostRecentList is present or not
     const nextOrder = mostRecentList ? mostRecentList.order + 1 : 1;
 
+    // Create a new copy of the list in the database
+    list = await database.list.create({
+      data: {
+        boardId: foundList.boardId,
+        title: `${foundList.title} - Copy`,
+        order: nextOrder,
+        cards: {
+          createMany: {
+            data: foundList.cards.map((card) => ({
+              title: card.title,
+              description: card.description,
+              order: card.order
+            })),
+          },
+        },
+      },
+      include: {
+        cards: true,
+      },
+    });
 
   } catch (error) {
     return {
