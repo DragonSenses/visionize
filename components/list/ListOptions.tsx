@@ -13,6 +13,9 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from '@/components/ui/separator';
 import FormSubmitButton from '@/components/form/FormSubmitButton';
+import { toast } from 'sonner';
+import { deleteList } from '@/actions/deleteList';
+import { useServerAction } from '@/hooks/useServerAction';
 
 interface ListOptionsProps {
   data: List;
@@ -23,6 +26,17 @@ export default function ListOptions({
   data,
   handleAddCardToList,
 }: ListOptionsProps) {
+  
+  /* Delete server action */
+  const { executeServerAction: executeDeleteServerAction } = useServerAction(deleteList, {
+    onSuccess(data) {
+      toast.success(`List "${ data.title }" deleted.`);
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
+
   return (
     <Popover>
       <PopoverTrigger asChild>
