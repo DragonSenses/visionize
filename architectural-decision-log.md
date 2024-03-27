@@ -13888,6 +13888,30 @@ Make `copyList` folder inside `/actions` and add the following:
 1. Schema
 2. Types
 3. Server Action handler
+   
+### CopyList schema
+
+The `CopyList` object schema specifies the expected structure of data for deleting a list.
+
+Let's define it using the zod library:
+
+feat: Add CopyList schema validation
+
+- Introduce Zod schema validation to ensure data integrity for CopyList
+- Schema enforces that both `id` and `boardId` are of type string
+
+```tsx
+import { z } from 'zod';
+
+/**
+ * Define the CopyList object schema.
+ * 
+ */
+export const CopyList = z.object({
+  id: z.string(),
+  boardId: z.string(),
+});
+```
 
 ## DeleteList server action
 
