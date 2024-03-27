@@ -14178,6 +14178,24 @@ async function performAction(data: InputType): Promise<OutputType> {
 export const copyList = createServerAction(CopyList, performAction);
 ```
 
+### Use copyList in ListOptions
+
+feat(ListOptions): Implement list copy server action
+
+Create the server action to copy a list, which implements success and error callbacks to display appropriate toasts.
+
+```tsx
+  const { executeServerAction: executeCopyServerAction } = useServerAction(copyList, {
+    onSuccess(data) {
+      toast.success(`List "${ data.title }" copied.`);
+      closeRef.current?.click();
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
+```
+
 ## DeleteList
 
 Make `deleteList` folder inside `/actions` and add the following:
@@ -14327,7 +14345,7 @@ export const deleteList = createServerAction(DeleteList, performAction);
 
 feat(ListOptions): Implement list delete server action
 
-Create the server action to delete a list, which Implements success and error callbacks to display appropriate toasts.
+Create the server action to delete a list, which implements success and error callbacks to display appropriate toasts.
 
 ```tsx
 import { toast } from 'sonner';
