@@ -13973,3 +13973,140 @@ export type InputType = z.infer<typeof DeleteList>;
 export type OutputType = ActionState<InputType, List>;
 ```
 
+### DeleteList server action
+
+feat: Implement deleteList server action
+
+This commit introduces a server-side action handler, 'deleteList', that securely process list deletions. Key features include:
+
+- **Authorization Checks**: The handler incorporates stringent authorization checks to validate user and organization IDs before proceeding with list deletions.
+- **User Verification**: Utilizes the 'auth' module from '@clerk/nextjs' to authenticate user sessions and ensure that only authorized users can delete lists.
+- **Database Interaction**: Employs Prisma ORM for database operations, enabling type-safe transactions and streamlined list deletion processes.
+- **UI Consistency**: Integrates 'revalidatePath' from 'next/cache' to update list paths dynamically, maintaining immediate consistency across the user interface post-deletion.
+
+```tsx
+"use server";
+
+import { auth } from "@clerk/nextjs"; 
+import { revalidatePath } from "next/cache"; 
+
+import { createServerAction } from "@/lib/createServerAction"; 
+import { database } from "@/lib/database"; 
+
+import { DeleteList } from "./deleteListSchema"; 
+import { InputType, OutputType } from "./deleteListTypes"; 
+
+async function performAction (data: InputType): Promise<OutputType> {
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
+    return {
+      error: 'Unauthorized',
+    };
+  }
+
+  const { 
+    id,
+    boardId,
+  } = data;
+
+  let list;
+
+  try {
+    list = await database.list.delete({
+      where: {
+        id,
+        boardId,
+        board: {
+          orgId, 
+        },
+      },
+    });
+  } catch (error) {
+    return {
+      error: 'Failed to delete list.'
+    }
+  }
+
+  revalidatePath(`/board/${boardId}`);
+
+  return {
+    data: list
+  };
+}
+
+export const deleteList = createServerAction(DeleteList, performAction);
+```
+
+
+`actions\deleteList\index.ts`
+```tsx
+// Enforce server-side execution context for security and performance
+"use server";
+
+import { auth } from "@clerk/nextjs"; // Authentication module
+import { revalidatePath } from "next/cache"; // Cache revalidation module
+
+import { createServerAction } from "@/lib/createServerAction"; // Server action creator
+import { database } from "@/lib/database"; // Database interface
+
+import { DeleteList } from "./deleteListSchema"; // Input validation schema
+import { InputType, OutputType } from "./deleteListTypes"; // Type definitions
+
+/**
+ * Defines the server action to delete a list.
+ * @param data an object that contains the data needed to delete the list
+ * @returns the deleted list
+ */
+async function performAction (data: InputType): Promise<OutputType> {
+  // Authenticate the user and get their organization ID
+  const { userId, orgId } = auth();
+
+  // If authentication fails, return an error
+  if (!userId || !orgId) {
+    return {
+      error: 'Unauthorized',
+    };
+  }
+
+  // Destructure the necessary data from the input
+  const { 
+    id,
+    boardId,
+  } = data;
+
+  // Declare a variable to store the deleted list
+  let list;
+
+  // Attempt to delete the list in the database using Prisma ORM
+  try {
+    list = await database.list.delete({
+      where: {
+        id,
+        boardId,
+        board: {
+          // Organization ID for additional security check
+          orgId, 
+        },
+      },
+    });
+  } catch (error) {
+    // If the delete fails, return an error
+    return {
+      error: 'Failed to delete list.'
+    }
+  }
+
+  // Revalidate the cache for the deleted board path 
+  // to ensure immediate UI consistency post-delete
+  revalidatePath(`/board/${boardId}`);
+
+  // Return the deleted list
+  return {
+    data: list
+  };
+}
+
+// Export the server action for external use
+export const deleteList = createServerAction(DeleteList, performAction);
+```
