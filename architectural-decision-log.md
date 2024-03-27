@@ -14055,3 +14055,78 @@ async function performAction (data: InputType): Promise<OutputType> {
 // Export the server action for external use
 export const deleteList = createServerAction(DeleteList, performAction);
 ```
+
+### Use deleteList in ListOptions
+
+feat(ListOptions): Implement list delete server action
+
+Create the server action to delete a list, which Implements success and error callbacks to display appropriate toasts.
+
+```tsx
+import { toast } from 'sonner';
+import { deleteList } from '@/actions/deleteList';
+import { useServerAction } from '@/hooks/useServerAction';
+
+export default function ListOptions({
+  data,
+  handleAddCardToList,
+}: ListOptionsProps) {
+
+  /* Delete server action */
+  const { executeServerAction: executeDeleteServerAction } = useServerAction(deleteList, {
+    onSuccess(data) {
+      toast.success(`List "${ data.title }" deleted.`);
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
+```
+
+Now create the delete handler and assign it as the `action` prop to the form element that corresponds to the list deletion.
+
+feat: Create onDelete handler and assign to form
+
+```tsx
+export default function ListOptions({
+  data,
+  handleAddCardToList,
+}: ListOptionsProps) {
+
+  /* Delete server action */
+  const { executeServerAction: executeDeleteServerAction } = useServerAction(deleteList, {
+    onSuccess(data) {
+      toast.success(`List "${ data.title }" deleted.`);
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
+
+  function onDelete(formData: FormData) {
+    // Extract list id and boardId found in the hidden inputs
+    const id = formData.get('id') as string;
+    const boardId = formData.get('boardId') as string;
+
+    executeDeleteServerAction({ id, boardId });
+  }
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        {/* Open button... */}
+      </PopoverTrigger>
+      <PopoverContent align='start' side='bottom' className='px-0 pt-3 pb-3'>
+        {/* ... */}
+        <Separator />
+        <form action={onDelete}>
+          <input hidden id='id' name='id' value={data.id} />
+          <input hidden id='boardId' name='boardId' value={data.boardId} />
+          <FormSubmitButton>
+            Delete list
+          </FormSubmitButton>
+        </form>
+      </PopoverContent>
+    </Popover>
+  )
+```
