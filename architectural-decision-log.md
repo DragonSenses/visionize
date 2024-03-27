@@ -13881,7 +13881,7 @@ export default function ListOptions({
 }
 ```
 
-## CopyList server action
+## CopyList
 
 Make `copyList` folder inside `/actions` and add the following:
 
@@ -13943,7 +13943,143 @@ export type InputType = z.infer<typeof CopyList>;
 export type OutputType = ActionState<InputType, List>;
 ```
 
-## DeleteList server action
+### CopyList server action
+
+feat: Create copyList server action handler
+
+```tsx
+"use server";
+
+import { auth } from "@clerk/nextjs";
+import { revalidatePath } from "next/cache";
+
+import { createServerAction } from "@/lib/createServerAction";
+import { database } from "@/lib/database";
+
+import { CopyList } from "./copyListSchema";
+import { InputType, OutputType } from "./copyListTypes";
+
+/**
+ * Defines a server action to copy a list.
+ *
+ * @param {InputType} data - An object containing the data needed to copy the list.
+ * @returns {Promise<OutputType>} - The copied list or an error message.
+ */
+async function performAction (data: InputType): Promise<OutputType> {
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
+    return {
+      error: 'Unauthorized',
+    };
+  }
+
+  const { 
+    id,
+    boardId,
+  } = data;
+
+  let list;
+
+  try {
+    list = await database.list.copy({
+      where: {
+        id,
+        boardId,
+        board: {
+          orgId, 
+        },
+      },
+    });
+  } catch (error) {
+    return {
+      error: 'Failed to copy list.'
+    }
+  }
+
+  revalidatePath(`/board/${boardId}`);
+
+  return {
+    data: list
+  };
+}
+
+export const copyList = createServerAction(CopyList, performAction);
+```
+
+```tsx
+// Enforce server-side execution context for security and performance
+"use server";
+
+import { auth } from "@clerk/nextjs"; // Authentication module
+import { revalidatePath } from "next/cache"; // Cache revalidation module
+
+import { createServerAction } from "@/lib/createServerAction"; // Server action creator
+import { database } from "@/lib/database"; // Database interface
+
+import { CopyList } from "./copyListSchema"; // Input validation schema
+import { InputType, OutputType } from "./copyListTypes"; // Type definitions
+
+/**
+ * Defines a server action to copy a list.
+ *
+ * @param {InputType} data - An object containing the data needed to copy the list.
+ * @returns {Promise<OutputType>} - The copied list or an error message.
+ */
+async function performAction (data: InputType): Promise<OutputType> {
+  // Authenticate the user and get their organization ID
+  const { userId, orgId } = auth();
+
+  // If authentication fails, return an error
+  if (!userId || !orgId) {
+    return {
+      error: 'Unauthorized',
+    };
+  }
+
+  // Destructure the necessary data from the input
+  const { 
+    id,
+    boardId,
+  } = data;
+
+  // Declare a variable to store the copied list
+  let list;
+
+  // Attempt to copy the list in the database using Prisma ORM
+  try {
+    list = await database.list.copy({
+      where: {
+        id,
+        boardId,
+        board: {
+          // Organization ID for additional security check
+          orgId, 
+        },
+      },
+    });
+  } catch (error) {
+    // If the copy fails, return an error
+    return {
+      error: 'Failed to copy list.'
+    }
+  }
+
+  // Revalidate the cache for the copied board path 
+  // to ensure immediate UI consistency post-copy
+  revalidatePath(`/board/${boardId}`);
+
+  // Return the copied list
+  return {
+    data: list
+  };
+}
+
+// Export the server action for external use
+export const copyList = createServerAction(CopyList, performAction);
+```
+
+## DeleteList
 
 Make `deleteList` folder inside `/actions` and add the following:
 
