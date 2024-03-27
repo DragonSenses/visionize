@@ -50,6 +50,15 @@ async function performAction (data: InputType): Promise<OutputType> {
       return { error: 'List not found.' };
     }
 
+    // Fetch the most recent list in the board to properly assign the newest order to the list
+    const mostRecentList = await database.list.findFirst({
+      where: { boardId: boardId },
+      orderBy: { order: "desc" },
+      select: { order: true },
+    });
+
+    // Get the next order depending on whether a mostRecentList is present or not
+    const nextOrder = mostRecentList ? mostRecentList.order + 1 : 1;
 
 
   } catch (error) {
