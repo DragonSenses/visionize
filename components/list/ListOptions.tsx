@@ -3,6 +3,7 @@
 import React, { ElementRef, useRef } from 'react';
 import { List } from '@prisma/client';
 import { MoreHorizontal, X } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -13,9 +14,9 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from '@/components/ui/separator';
 import FormSubmitButton from '@/components/form/FormSubmitButton';
-import { toast } from 'sonner';
-import { deleteList } from '@/actions/deleteList';
 import { useServerAction } from '@/hooks/useServerAction';
+import { deleteList } from '@/actions/deleteList';
+import { copyList } from '@/actions/copyList';
 
 interface ListOptionsProps {
   data: List;
@@ -33,6 +34,16 @@ export default function ListOptions({
   const { executeServerAction: executeDeleteServerAction } = useServerAction(deleteList, {
     onSuccess(data) {
       toast.success(`List "${ data.title }" deleted.`);
+      closeRef.current?.click();
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
+
+  const { executeServerAction: executeCopyServerAction } = useServerAction(copyList, {
+    onSuccess(data) {
+      toast.success(`List "${ data.title }" copied.`);
       closeRef.current?.click();
     },
     onError(error) {
