@@ -13981,21 +13981,7 @@ async function performAction (data: InputType): Promise<OutputType> {
 
   let list;
 
-  try {
-    list = await database.list.copy({
-      where: {
-        id,
-        boardId,
-        board: {
-          orgId, 
-        },
-      },
-    });
-  } catch (error) {
-    return {
-      error: 'Failed to copy list.'
-    }
-  }
+  // try..catch block to fetch and copy list
 
   revalidatePath(`/board/${boardId}`);
 
@@ -14006,6 +13992,49 @@ async function performAction (data: InputType): Promise<OutputType> {
 
 export const copyList = createServerAction(CopyList, performAction);
 ```
+
+Let's work on the try block. Let's first fetch the list.
+
+feat: Fetch the list to copy
+
+```tsx
+  try {
+    // Find the list to copy
+    const foundList = await database.list.findUnique({
+      where: {
+        id,
+        boardId,
+        board: {
+          orgId,
+        },
+      },
+      include: {
+        cards: true,
+      },
+    });
+
+    if (!foundList) {
+      return { error: 'List not found.' };
+    }
+```
+
+Next find the latest list order in the board to calculate the `nextOrder`.
+
+feat: Calculate order of most recent list in board
+
+```tsx
+    // Fetch the most recent list in the board to properly assign the newest order to the list
+    const mostRecentList = await database.list.findFirst({
+      where: { boardId: boardId },
+      orderBy: { order: "desc" },
+      select: { order: true },
+    });
+
+    // Get the next order depending on whether a mostRecentList is present or not
+    const nextOrder = mostRecentList ? mostRecentList.order + 1 : 1;
+```
+
+Create a new copy of the list in the database, including a copy of all the cards.
 
 ```tsx
 // Enforce server-side execution context for security and performance
