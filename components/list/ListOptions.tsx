@@ -26,7 +26,7 @@ export default function ListOptions({
   data,
   handleAddCardToList,
 }: ListOptionsProps) {
-  
+
   /* Delete server action */
   const { executeServerAction: executeDeleteServerAction } = useServerAction(deleteList, {
     onSuccess(data) {
@@ -36,6 +36,14 @@ export default function ListOptions({
       toast.error(error);
     },
   });
+
+  function onDelete(formData: FormData) {
+    // Extract list id and boardId found in the hidden inputs
+    const id = formData.get('id') as string;
+    const boardId = formData.get('boardId') as string;
+
+    executeDeleteServerAction({ id, boardId });
+  }
 
   return (
     <Popover>
@@ -74,7 +82,7 @@ export default function ListOptions({
           </FormSubmitButton>
         </form>
         <Separator />
-        <form>
+        <form action={onDelete}>
           <input hidden id='id' name='id' value={data.id} />
           <input hidden id='boardId' name='boardId' value={data.boardId} />
           <FormSubmitButton>
