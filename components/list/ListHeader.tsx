@@ -13,10 +13,12 @@ import ListOptions from '@/components/list/ListOptions';
 
 interface ListHeaderProps {
   data: List;
+  handleAddCardToList: () => void;
 }
 
 export default function ListHeader({
   data,
+  handleAddCardToList,
 }: ListHeaderProps) {
 
   const [title, setTitle] = useState(data.title);
