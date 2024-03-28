@@ -14536,3 +14536,70 @@ export default function ListOptions({
           </Button>
         </PopoverClose>
 ```
+
+### ListItem setup
+
+Let's setup `ListItem` component with `isEditing` state and an input ref named `textAreaRef`. Define the `enableEditing` and `disableEditing` functions. Then pass the `enableEditing` to the `handleAddCardToList` prop of `ListHeader`.
+
+feat: Add textAreaRef and isEditing state to ListItem
+
+This commit enhances the `ListItem` component by introducing the following features:
+
+1. **textAreaRef**: A reference to a `<textarea>` element, allowing better control over focus and interaction.
+2. **isEditing state**: A boolean state that tracks whether the component is in an editing mode.
+3. **disableEditing**: A function to disable editing mode.
+4. **enableEditing**: A function to enable editing mode and focus on the text area.
+
+Additionally, the `enableEditing` function is now passed as a prop to the `ListHeader` component, enabling the ability to trigger editing behavior.
+
+Changes made:
+- Added `textAreaRef` and `isEditing` state
+- Improved focus handling with `setTimeout`
+- Added `enableEditing` and `disableEditing` functions
+- Passed `enableEditing` prop to `ListHeader`
+
+```tsx
+"use client";
+
+import React, { ElementRef, useRef, useState } from 'react';
+
+import { ListWithCards } from '@/types/types';
+import ListHeader from '@/components/list/ListHeader';
+
+interface ListItemProps {
+  data: ListWithCards;
+  index: number;
+}
+
+export default function ListItem({
+  data,
+  index,
+}: ListItemProps) {
+  const textAreaRef = useRef<ElementRef<"textarea">>(null);
+  const [isEditing, setIsEditing] = useState(false);
+
+  function disableEditing() {
+    setIsEditing(false);
+  }
+
+  function enableEditing() {
+    setIsEditing(true);
+    setTimeout(() => {
+      textAreaRef.current?.focus();
+    });
+  }
+
+  return (
+    <li className='h-full w-72 shrink-0 select-none'>
+      <div className='w-full rounded-md bg-[#f1f2f4] shadow-md pb-2'>
+        <ListHeader 
+          data={data} 
+          handleAddCardToList={enableEditing}
+        />
+      </div>
+    </li>
+  )
+}
+```
+
+Why are we defining the state and ref in `ListItem`? Recall that we have a method in `ListOptions` which is used to add a new card. 
