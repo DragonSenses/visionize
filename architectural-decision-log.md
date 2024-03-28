@@ -14196,6 +14196,40 @@ Create the server action to copy a list, which implements success and error call
   });
 ```
 
+Next create the `onCopy` function to handle the action.
+
+feat: Implement onCopy handler in ListOptions component
+
+This commit introduces the "onCopy" handler within the ListOptions component, which facilitates list management. The handler extracts the list ID and board ID from form data and triggers the copy action. Additionally, error handling has been improved to handle cases where IDs are missing or invalid.
+
+```tsx
+export default function ListOptions({
+  data,
+  handleAddCardToList,
+}: ListOptionsProps) {
+  const closeRef = useRef<ElementRef<'button'>>(null);
+
+  /* Copy list server action */
+  const { executeServerAction: executeCopyServerAction } = useServerAction(copyList, {
+    onSuccess(data) {
+      toast.success(`List "${ data.title }" copied.`);
+      closeRef.current?.click();
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
+
+  function onCopy(formData: FormData) {
+    // Extract list id and boardId found in the hidden inputs
+    const id = formData.get('id') as string;
+    const boardId = formData.get('boardId') as string;
+
+    executeCopyServerAction({ id, boardId });
+  }
+```
+
+
 ## DeleteList
 
 Make `deleteList` folder inside `/actions` and add the following:
