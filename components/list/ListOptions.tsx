@@ -29,11 +29,10 @@ export default function ListOptions({
 }: ListOptionsProps) {
   const closeRef = useRef<ElementRef<'button'>>(null);
 
-
-  /* Delete server action */
-  const { executeServerAction: executeDeleteServerAction } = useServerAction(deleteList, {
+  /* Copy list server action */
+  const { executeServerAction: executeCopyServerAction } = useServerAction(copyList, {
     onSuccess(data) {
-      toast.success(`List "${ data.title }" deleted.`);
+      toast.success(`List "${ data.title }" copied.`);
       closeRef.current?.click();
     },
     onError(error) {
@@ -41,9 +40,18 @@ export default function ListOptions({
     },
   });
 
-  const { executeServerAction: executeCopyServerAction } = useServerAction(copyList, {
+  function onCopy(formData: FormData) {
+    // Extract list id and boardId found in the hidden inputs
+    const id = formData.get('id') as string;
+    const boardId = formData.get('boardId') as string;
+
+    executeCopyServerAction({ id, boardId });
+  }
+
+  /* Delete list server action */
+  const { executeServerAction: executeDeleteServerAction } = useServerAction(deleteList, {
     onSuccess(data) {
-      toast.success(`List "${ data.title }" copied.`);
+      toast.success(`List "${ data.title }" deleted.`);
       closeRef.current?.click();
     },
     onError(error) {
