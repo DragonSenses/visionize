@@ -96,7 +96,7 @@ export default function ListOptions({
         >
           Add card +
         </Button>
-        <form>
+        <form action={onCopy}>
           <input hidden id='id' name='id' value={data.id} />
           <input hidden id='boardId' name='boardId' value={data.boardId} />
           <FormSubmitButton>
