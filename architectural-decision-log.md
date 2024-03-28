@@ -14229,6 +14229,44 @@ export default function ListOptions({
   }
 ```
 
+feat: Assign onCopy action to corresponding form
+
+This commit updates the `ListOptions` component to assign the "onCopy" action to the corresponding form. The form includes hidden input fields for the list ID and board ID, which are extracted from the provided data. Additionally, a `FormSubmitButton` triggers the copy list action.
+
+Changes made:
+- Assigned "onCopy" action to the form
+
+```tsx
+export default function ListOptions({
+  data,
+  handleAddCardToList,
+}: ListOptionsProps) {
+  // ...
+  return (
+    <Popover>
+      <PopoverContent align='start' side='bottom' className='px-0 pt-3 pb-3'>
+
+        <form action={onCopy}>
+          <input hidden id='id' name='id' value={data.id} />
+          <input hidden id='boardId' name='boardId' value={data.boardId} />
+          <FormSubmitButton>
+            Copy list
+          </FormSubmitButton>
+        </form>
+
+      </PopoverContent>
+    </Popover>
+  )
+}
+```
+
+### copyList simple tests
+
+1. Create a list
+2. Click the `ListOptions` component to copy the list
+3. Click the "Copy list" action
+   
+This should trigger a toast notification that list was created, then creates a new list with a title 'Original list - Copy'.
 
 ## DeleteList
 
