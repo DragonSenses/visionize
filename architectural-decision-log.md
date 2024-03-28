@@ -14558,6 +14558,7 @@ Changes made:
 - Added `enableEditing` and `disableEditing` functions
 - Passed `enableEditing` prop to `ListHeader`
 
+`components\list\ListItem.tsx`
 ```tsx
 "use client";
 
@@ -14602,4 +14603,38 @@ export default function ListItem({
 }
 ```
 
-Why are we defining the state and ref in `ListItem`? Recall that we have a method in `ListOptions` which is used to add a new card. 
+Why are we defining the state and ref in `ListItem`? Recall that we have a method in `ListOptions` which is used to add a new card.
+
+#### Pass editing state across List components
+
+feat: Propagate handleAddCardToList action in ListHeader
+
+This enhancement enables communication between the `ListItem` and `ListOptions` components by passing the `handleAddCardToList` action. The action facilitates the editing state management.
+
+Changes made:
+- Passed `handleAddCardToList` prop from `ListHeader`
+
+```tsx
+interface ListHeaderProps {
+  data: List;
+  handleAddCardToList: () => void;
+}
+
+export default function ListHeader({
+  data,
+  handleAddCardToList,
+}: ListHeaderProps) {
+  // ...
+
+    return (
+    <div className='flex pt-2 px-2 text-sm font-semibold justify-between items-start gap-x-2'>
+      {/* ... */}
+      <ListOptions
+        data={data}
+        handleAddCardToList={handleAddCardToList}
+      />
+    </div>
+  )
+}
+
+```
