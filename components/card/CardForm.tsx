@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { forwardRef } from 'react';
 
 interface CardFormProps {
   listId: string;
@@ -9,13 +9,15 @@ interface CardFormProps {
   enableEditing: () => void;
 }
 
-export default function CardForm({
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   listId,
   isEditing,
   disableEditing,
   enableEditing,
-}: CardFormProps) {
+}, ref) => {
   return (
     <div>CardForm</div>
   )
-}
+});
+
+export default CardForm;
