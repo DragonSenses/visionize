@@ -14670,4 +14670,44 @@ export default function CardForm({
 }
 ```
 
-Now use `CardForm` inside `ListItem`.
+Now import and use `CardForm` in `ListItem`, render it below the `ListHeader`.
+
+feat: Render CardForm in ListItem component
+
+```tsx
+export default function ListItem({
+  data,
+  index,
+}: ListItemProps) {
+  const textAreaRef = useRef<ElementRef<"textarea">>(null);
+  const [isEditing, setIsEditing] = useState(false);
+
+  function disableEditing() {
+    setIsEditing(false);
+  }
+
+  function enableEditing() {
+    setIsEditing(true);
+    setTimeout(() => {
+      textAreaRef.current?.focus();
+    });
+  }
+
+  return (
+    <li className='h-full w-72 shrink-0 select-none'>
+      <div className='w-full rounded-md bg-[#f1f2f4] shadow-md pb-2'>
+        <ListHeader 
+          data={data} 
+          handleAddCardToList={enableEditing}
+        />
+        <CardForm 
+          listId={data.id}
+          isEditing={isEditing}
+          enableEditing={enableEditing}
+          disableEditing={disableEditing}
+        />
+      </div>
+    </li>
+  )
+}
+```
