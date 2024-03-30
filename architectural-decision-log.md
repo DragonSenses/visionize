@@ -14711,3 +14711,70 @@ export default function ListItem({
   )
 }
 ```
+
+### Configure CardForm with forwardRef
+
+- [forwardRef](https://react.dev/reference/react/forwardRef)
+
+Let's first add an additional prop to the `CardForm` which accepts the `textAreaRef`.
+
+feat(ListItem): Forward textAreaRef to CardForm
+
+```tsx
+export default function ListItem({
+  data,
+  index,
+}: ListItemProps) {
+  const textAreaRef = useRef<ElementRef<"textarea">>(null);
+
+  return (
+    <li className='h-full w-72 shrink-0 select-none'>
+      <div className='w-full rounded-md bg-[#f1f2f4] shadow-md pb-2'>
+        { /* ListHeader... */ }
+
+        <CardForm
+          ref={textAreaRef}
+          listId={data.id}
+          isEditing={isEditing}
+          enableEditing={enableEditing}
+          disableEditing={disableEditing}
+        />
+
+      </div>
+    </li>
+  )
+}
+```
+
+Next we need to configure `CardForm` with `forwardRef` to let the component expose a DOM node to a parent component with a ref.
+
+feat: Enable CardForm to receive and forward a ref
+
+```tsx
+"use client";
+
+import React, { forwardRef } from 'react';
+
+interface CardFormProps {
+  listId: string;
+  isEditing: boolean;
+  disableEditing: () => void;
+  enableEditing: () => void;
+}
+
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  listId,
+  isEditing,
+  disableEditing,
+  enableEditing,
+}, ref) => {
+  return (
+    <div>CardForm</div>
+  )
+});
+
+CardForm.displayName="CardForm";
+
+export default CardForm;
+```
+
