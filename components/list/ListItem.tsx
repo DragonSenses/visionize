@@ -36,7 +36,8 @@ export default function ListItem({
           data={data} 
           handleAddCardToList={enableEditing}
         />
-        <CardForm 
+        <CardForm
+          ref={textAreaRef}
           listId={data.id}
           isEditing={isEditing}
           enableEditing={enableEditing}
