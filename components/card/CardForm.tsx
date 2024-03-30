@@ -1,6 +1,9 @@
 "use client";
 
 import React, { forwardRef } from 'react';
+import { Plus } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
 
 interface CardFormProps {
   listId: string;
@@ -16,7 +19,12 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   enableEditing,
 }, ref) => {
   return (
-    <div>CardForm</div>
+    <div>
+      <Button onClick={enableEditing}>
+        <Plus />
+        Add card
+      </Button>
+    </div>
   )
 });
 
