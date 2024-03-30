@@ -14537,7 +14537,7 @@ export default function ListOptions({
         </PopoverClose>
 ```
 
-### ListItem setup
+## ListItem setup
 
 Let's setup `ListItem` component with `isEditing` state and an input ref named `textAreaRef`. Define the `enableEditing` and `disableEditing` functions. Then pass the `enableEditing` to the `handleAddCardToList` prop of `ListHeader`.
 
@@ -14636,5 +14636,38 @@ export default function ListHeader({
     </div>
   )
 }
-
 ```
+
+## CardForm component
+
+With the List components setup, we can now work on the first card component.
+
+Create `components\card\CardForm.tsx` component.
+
+feat: Define prop types for CardForm component
+
+```tsx
+"use client";
+
+import React from 'react';
+
+interface CardFormProps {
+  listId: string;
+  isEditing: boolean;
+  disableEditing: () => void;
+  enableEditing: () => void;
+}
+
+export default function CardForm({
+  listId,
+  isEditing,
+  disableEditing,
+  enableEditing,
+}: CardFormProps) {
+  return (
+    <div>CardForm</div>
+  )
+}
+```
+
+Now use `CardForm` inside `ListItem`.
