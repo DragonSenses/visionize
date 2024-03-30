@@ -14778,3 +14778,57 @@ CardForm.displayName="CardForm";
 export default CardForm;
 ```
 
+#### Add `displayName` when forwarding a ref
+
+Notice that a problem occurs if we don't specify the `displayName`
+
+```sh
+Component definition is missing display name eslintreact/display-name
+```
+
+- For more details, you can refer to the [official React documentation on `displayName`](https://reactjs.org/docs/react-component.html#displayname).
+
+The error message "**Component definition is missing display name**" typically occurs in React when you define a component (usually a functional component) without specifying a `displayName`. Let's break it down:
+
+1. **What Causes the Error?**
+   - When you create a functional component using an **arrow function**, it doesn't automatically get a `displayName`.
+   - The `displayName` is used by tools like React DevTools to provide meaningful names for components during debugging.
+   - If a component lacks a `displayName`, it may appear as `<Unknown />` in the DevTools.
+
+2. **How to Fix It?**
+   - To resolve this error, you can assign a `displayName` to your component. There are a few ways to do this:
+     - **Named Function Expression**:
+       ```tsx
+       export default function MyComponent() {
+         // Component implementation...
+       }
+       ```
+       In this case, the function name (`MyComponent`) becomes the `displayName`.
+     - **Assign Manually**:
+       ```tsx
+       const MyComponent = () => {
+         // Component implementation...
+       };
+       MyComponent.displayName = 'MyComponent';
+       export default MyComponent;
+       ```
+       Here, we explicitly set the `displayName` property.
+     - **Higher-Order Components (HOCs)**:
+       If you're using an HOC, ensure that the wrapped component has a `displayName`.
+
+3. **Why Does `displayName` Matter?**
+   - The `displayName` is mainly used by developer tools for debugging purposes.
+   - It helps identify components in the component tree during development.
+   - Without a `displayName`, components may appear as generic placeholders (e.g., `<Unknown />`).
+
+4. **Example Usage**:
+   Suppose you have a `LoadingSpinner` component. You can set its `displayName` like this:
+   ```tsx
+   export default function LoadingSpinner() {
+     // Component implementation...
+   }
+   LoadingSpinner.displayName = 'LoadingSpinner';
+   ```
+
+Remember that while `displayName` is not strictly required for your application to function correctly, it's good practice to provide meaningful names for better debugging and maintainability. 
+
