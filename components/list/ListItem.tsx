@@ -4,6 +4,7 @@ import React, { ElementRef, useRef, useState } from 'react';
 
 import { ListWithCards } from '@/types/types';
 import ListHeader from '@/components/list/ListHeader';
+import CardForm from '@/components/card/CardForm';
 
 interface ListItemProps {
   data: ListWithCards;
@@ -34,6 +35,12 @@ export default function ListItem({
         <ListHeader 
           data={data} 
           handleAddCardToList={enableEditing}
+        />
+        <CardForm 
+          listId={data.id}
+          isEditing={isEditing}
+          enableEditing={enableEditing}
+          disableEditing={disableEditing}
         />
       </div>
     </li>
