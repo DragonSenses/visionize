@@ -15008,3 +15008,44 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
 
 export default FormTextArea;
 ```
+
+### FormTextArea output
+
+- [Textarea | shadcn/ui](https://ui.shadcn.com/docs/components/textarea)
+
+```sh
+npx shadcn-ui@latest add textarea
+```
+
+Create a nested `div`, then render a `Label` component on the conditionally using `label`.
+
+feat: Conditionally render Label in FormTextArea
+
+```tsx
+import { Label } from '@/components/ui/label';
+
+const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
+  function FormTextArea(
+    {
+      // ...props
+    }: FormTextAreaProps,
+    ref: Ref<HTMLTextAreaElement>
+  ) {
+    return (
+      <div className='w-full space-y-2'>
+        <div className='w-full space-y-1'>
+          {label ? (
+            <Label
+              htmlFor={id}
+              className='text-xs text-neutral-700 font-semibold'
+            >
+              {label}
+            </Label>
+          ): null}
+        </div>
+      </div>
+    );
+  }
+);
+```
+
