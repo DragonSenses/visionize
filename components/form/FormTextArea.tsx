@@ -3,6 +3,7 @@
 import React, { KeyboardEventHandler, Ref, forwardRef } from 'react';
 
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 interface FormTextAreaProps {
   id: string;
@@ -50,6 +51,19 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
               {label}
             </Label>
           ): null}
+          <Textarea 
+            ref={ref}
+            id={id}
+            name={id}
+            placeholder={placeholder}
+            required={required}
+            disabled={disabled}
+            onBlur={onBlur}
+            onClick={onClick}
+            onChange={onChange}
+            onKeyDown={onKeyDown}
+            
+          />
         </div>
       </div>
     );
