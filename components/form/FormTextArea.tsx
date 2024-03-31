@@ -1,6 +1,6 @@
 "use client";
 
-import React, { KeyboardEventHandler } from 'react';
+import React, { KeyboardEventHandler, Ref, forwardRef } from 'react';
 
 interface FormTextAreaProps {
   id: string;
@@ -14,12 +14,43 @@ interface FormTextAreaProps {
   className?: string;
   onBlur?: () => void;
   onClick?: () => void;
-  onChange?: () => void;
+  onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement> | undefined;
 }
 
-export default function FormTextArea() {
-  return (
-    <div>FormTextArea</div>
-  )
-}
+const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
+  function FormTextArea(
+    {
+      id,
+      label,
+      value,
+      defaultValue,
+      placeholder,
+      required,
+      disabled,
+      errors,
+      className,
+      onBlur,
+      onClick,
+      onChange,
+      onKeyDown,
+    }: FormTextAreaProps,
+    ref: Ref<HTMLTextAreaElement>
+  ) {
+    return (
+      <div>
+        {/* Render FormTextArea component */}
+        <textarea
+          id={id}
+          ref={ref} // Attach the ref to the textarea
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+        // Add other necessary props
+        />
+      </div>
+    );
+  }
+);
+
+export default FormTextArea;
