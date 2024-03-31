@@ -14832,3 +14832,82 @@ The error message "**Component definition is missing display name**" typically o
 
 Remember that while `displayName` is not strictly required for your application to function correctly, it's good practice to provide meaningful names for better debugging and maintainability. 
 
+Another solution is to rewrite `CardForm` to a function declaration. Here's how to do that while being able to receieve and forward a ref:
+
+```tsx
+import React, { forwardRef, Ref } from 'react';
+
+interface CardFormProps {
+  listId: string;
+  isEditing: boolean;
+  disableEditing: () => void;
+  enableEditing: () => void;
+}
+
+function CardForm({
+  listId,
+  isEditing,
+  disableEditing,
+  enableEditing,
+}: CardFormProps, ref: Ref<HTMLDivElement>) {
+  // Your CardForm component implementation...
+  // Use the ref as needed (e.g., attach it to a DOM element)
+  return (
+    <div ref={ref}>CardForm</div>
+  );
+}
+
+export default forwardRef(CardForm);
+```
+
+### CardForm output
+
+feat(CardForm): Implement "Add Card" button
+
+```tsx
+import React, { forwardRef } from 'react';
+import { Plus } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  listId,
+  isEditing,
+  disableEditing,
+  enableEditing,
+}, ref) => {
+  return (
+    <div>
+      <Button onClick={enableEditing}>
+        <Plus />
+        Add card
+      </Button>
+    </div>
+  )
+});
+```
+
+style: Make subtle, compact button for adding new cards
+
+The styles create a compact, subtle button with appropriate spacing and visual cues for adding a new card.
+
+```tsx
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+// ...
+}, ref) => {
+  return (
+    <div className='pt-2 px-2'>
+      <Button 
+        onClick={enableEditing}
+        size='sm'
+        variant='ghost'
+        className='justify-start h-auto px-2 py-1.5 w-full text-sm text-muted-foreground'
+      >
+        <Plus className='h-4 w-4 mr-2'/>
+        Add card
+      </Button>
+    </div>
+  )
+});
+```
+
