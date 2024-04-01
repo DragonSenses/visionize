@@ -15206,3 +15206,56 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
   }
 );
 ```
+
+#### Disable textarea input with useFormStatus
+
+Let's import `useFormStatus` from `react-dom` and use the `pending` status to disable the `Textarea`.
+
+feat: Specify textarea behavior on form submission
+
+This commit enhances the behavior of the textarea input with the `useFormStatus` hook. The `disabled` attribute is set to `true` when the form is in a pending state.
+
+By disabling the input during form submission, we prevent users from making further changes until the operation completes. This behavior enhances the overall user experience.
+
+```tsx
+import { useFormStatus } from 'react-dom';
+
+const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
+  function FormTextArea(
+    {
+      // ...props
+    }: FormTextAreaProps,
+    ref: Ref<HTMLTextAreaElement>
+  ) {
+    const { pending } = useFormStatus();
+
+    return (
+      <div className='w-full space-y-2'>
+        <div className='w-full space-y-1'>
+          { /* Label... */ }
+          <Textarea 
+            ref={ref}
+            id={id}
+            name={id}
+            value={value}
+            defaultValue={defaultValue}
+            placeholder={placeholder}
+            required={required}
+            disabled={pending || disabled}
+            onBlur={onBlur}
+            onClick={onClick}
+            onChange={onChange}
+            onKeyDown={onKeyDown}
+            aria-describedby={`${id}-error`}
+            className={cn(
+              'resize-none shadow-sm ring-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0',
+              className
+            )}
+          />
+        </div>
+          { /* Form Errors... */ }
+      </div>
+    );
+  }
+);
+```
