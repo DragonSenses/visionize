@@ -3,6 +3,7 @@
 import React, { KeyboardEventHandler, Ref, forwardRef } from 'react';
 
 import { cn } from '@/lib/utils';
+import FormErrors from '@/components/form/FormErrors';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -72,6 +73,10 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
             )}
           />
         </div>
+        <FormErrors 
+          id={id}
+          errors={errors}
+        />
       </div>
     );
   }
