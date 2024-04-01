@@ -66,6 +66,10 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
             onChange={onChange}
             onKeyDown={onKeyDown}
             aria-describedby={`${id}-error`}
+            className={cn(
+              'resize-none shadow-sm ring-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0',
+              className
+            )}
           />
         </div>
       </div>
