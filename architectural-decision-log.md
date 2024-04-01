@@ -15173,3 +15173,36 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
 );
 ```
 
+#### Display errors in FormTextArea
+
+feat: Add FormErrors to display validation errors
+
+Add the `FormErrors` component to handle validation errors for the `FormTextArea` component. The `FormErrors` component receives the `id` and `errors` as props, allowing it to display relevant error messages associated with the textarea input field. 
+
+By integrating `FormErrors`, we enhance the user experience by providing clear feedback when form validation fails.
+
+```tsx
+import FormErrors from '@/components/form/FormErrors';
+
+const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
+  function FormTextArea(
+    {
+      // ...props
+    }: FormTextAreaProps,
+    ref: Ref<HTMLTextAreaElement>
+  ) {
+    return (
+      <div className='w-full space-y-2'>
+        <div className='w-full space-y-1'>
+          { /* Label... */ }
+          { /* Textarea... */ }
+        </div>
+        <FormErrors 
+          id={id}
+          errors={errors}
+        />
+      </div>
+    );
+  }
+);
+```
