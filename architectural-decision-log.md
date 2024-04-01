@@ -15133,3 +15133,43 @@ Added the following props to the Textarea component:
 - value: To control the input value programmatically.
 - defaultValue: To set the initial value when the component mounts.
 - aria-describedby: To associate the input with an error message (if any).
+
+feat: Enable customizable styles for the Textarea
+
+Introduce `cn` utility function to enable customizable styles for the Textarea component. This enhancement promotes flexibility and maintainability in styling.
+
+style: Apply consistent base styles to Textarea
+
+Applied base styles to the `Textarea` component to achieve consistency across browsers and enhance usability. The following changes were made:
+
+- Disable resizing of the textarea element (`resize-none`)
+- Remove focus rings (`ring-0` and `focus-visible:ring-0`)
+- Add a subtle shadow (`shadow-sm`)
+
+```tsx
+import { cn } from '@/lib/utils';
+
+const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
+  function FormTextArea(
+    {
+      // ...props
+    }: FormTextAreaProps,
+    ref: Ref<HTMLTextAreaElement>
+  ) {
+    return (
+      <div className='w-full space-y-2'>
+        <div className='w-full space-y-1'>
+          { /* Label... */ }
+          <Textarea 
+            className={cn(
+              'resize-none shadow-sm ring-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0',
+              className
+            )}
+          />
+        </div>
+      </div>
+    );
+  }
+);
+```
+
