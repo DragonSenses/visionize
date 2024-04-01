@@ -1,6 +1,7 @@
 "use client";
 
 import React, { KeyboardEventHandler, Ref, forwardRef } from 'react';
+import { useFormStatus } from 'react-dom';
 
 import { cn } from '@/lib/utils';
 import FormErrors from '@/components/form/FormErrors';
@@ -42,6 +43,8 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
     }: FormTextAreaProps,
     ref: Ref<HTMLTextAreaElement>
   ) {
+    const { pending } = useFormStatus();
+
     return (
       <div className='w-full space-y-2'>
         <div className='w-full space-y-1'>
@@ -61,7 +64,7 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
             defaultValue={defaultValue}
             placeholder={placeholder}
             required={required}
-            disabled={disabled}
+            disabled={pending || disabled}
             onBlur={onBlur}
             onClick={onClick}
             onChange={onChange}
