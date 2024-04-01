@@ -15108,6 +15108,8 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
             ref={ref}
             id={id}
             name={id}
+            value={value}
+            defaultValue={defaultValue}
             placeholder={placeholder}
             required={required}
             disabled={disabled}
@@ -15115,7 +15117,7 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
             onClick={onClick}
             onChange={onChange}
             onKeyDown={onKeyDown}
-            
+            aria-describedby={`${id}-error`}
           />
         </div>
       </div>
@@ -15123,3 +15125,11 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
   }
 );
 ```
+
+feat: Add more props to Textarea component
+
+Added the following props to the Textarea component:
+
+- value: To control the input value programmatically.
+- defaultValue: To set the initial value when the component mounts.
+- aria-describedby: To associate the input with an error message (if any).
