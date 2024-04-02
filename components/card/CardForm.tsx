@@ -4,6 +4,7 @@ import React, { forwardRef } from 'react';
 import { Plus } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import FormTextArea from '@/components/form/FormTextArea';
 
 interface CardFormProps {
   listId: string;
@@ -18,6 +19,15 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   disableEditing,
   enableEditing,
 }, ref) => {
+
+  if (isEditing) {
+    return (
+      <form>
+        <FormTextArea />
+      </form>
+    )
+  }
+
   return (
     <div className='pt-2 px-2'>
       <Button 
