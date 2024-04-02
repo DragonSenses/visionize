@@ -15259,3 +15259,51 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
   }
 );
 ```
+
+### CardForm edit mode
+
+Back in `CardForm`, when in editing mode render the `FormTextArea`.
+
+feat(CardForm): Render FormTextArea in editing mode
+
+`components\card\CardForm.tsx`
+```tsx
+import FormTextArea from '@/components/form/FormTextArea';
+
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  listId,
+  isEditing,
+  disableEditing,
+  enableEditing,
+}, ref) => {
+
+  if (isEditing) {
+    return (
+      <form>
+        <FormTextArea />
+      </form>
+    )
+  }
+
+  return (
+    { /* ... */ }
+  )
+});
+```
+
+style(CardForm): Add padding and spacing to form
+
+```tsx
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  // ...
+}, ref) => {
+
+  if (isEditing) {
+    return (
+      <form className='px-1 py-0.5 m-1 space-y-4'>
+        <FormTextArea />
+      </form>
+    )
+  }
+```
+
