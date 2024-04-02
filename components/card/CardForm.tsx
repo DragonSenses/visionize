@@ -38,6 +38,12 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
           onKeyDown={() => {}}
           ref={ref}
         />
+        <input 
+          hidden
+          id='listId'
+          name='listId'
+          value={listId}
+        />
       </form>
     )
   }
