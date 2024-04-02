@@ -15421,3 +15421,53 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
     )
   }
 ```
+
+## createCard server action
+
+Make `createCard` folder inside `/actions` and add the following:
+
+1. Schema
+2. Types
+3. Server Action handler
+
+
+feat: Implement Zod schema validation for CreateCard
+
+- Introduce Zod schema validation to ensure data integrity for CreateCard
+- Enforce minimum length requirement for 'title' field to enhance data quality
+
+`actions\createCard\createCardSchema.ts`
+```ts
+import { z } from 'zod';
+
+/**
+ * Define the CreateCard object schema.
+ * 
+ */
+export const CreateCard = z.object({
+  title: z.string({
+    required_error: "Title is required", 
+    invalid_type_error: "Title is required", 
+  }).min(1, {
+    message: "Must be 1 or more characters long.", 
+  }),
+  boardId: z.string(),
+  listId: z.string(),
+});
+```
+
+
+Create the types we expect to have for the createCard server action.
+
+feat: Define types for createCard server action
+
+`actions\createCard\createCardTypes.ts`
+```ts
+
+```
+
+
+`actions\createCard\index.ts`
+```ts
+
+```
