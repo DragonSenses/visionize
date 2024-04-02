@@ -15374,3 +15374,50 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
     )
   }
 ```
+
+feat: Add submit and exit buttons to CardForm
+
+- Added an "Add Card" button to submit the input form with the card title
+- Included an "Exit" button with an "X" icon to exit editing mode and toggle `CardForm` to display mode
+
+feat: Add submit & toggle buttons in edit mode
+
+- Add a submit button within `CardForm` for form submission
+- Add a toggle button to exit editing mode in `CardForm`
+
+```tsx
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  listId,
+  isEditing,
+  disableEditing,
+  enableEditing,
+}, ref) => {
+
+  if (isEditing) {
+    return (
+      <form className='px-1 py-0.5 m-1 space-y-4'>
+        <FormTextArea 
+          id='title'
+          value='title'
+          defaultValue='title'
+          placeholder="Enter a title for this card..."
+          ref={ref}
+        />
+        <input 
+          hidden
+          id='listId'
+          name='listId'
+          value={listId}
+        />
+        <div className='flex items-center gap-x-1'>
+          <FormSubmitButton>
+            Add card
+          </FormSubmitButton>
+          <Button onClick={disableEditing} size='sm' variant='ghost'>
+            <X className='h-5 w-5' />
+          </Button>
+        </div>
+      </form>
+    )
+  }
+```
