@@ -23,7 +23,21 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   if (isEditing) {
     return (
       <form className='px-1 py-0.5 m-1 space-y-4'>
-        <FormTextArea />
+        <FormTextArea 
+          id='title'
+          label='title'
+          value='title'
+          defaultValue='title'
+          placeholder="Enter a title for this card..."
+          required={false}
+          errors={}
+          className={}
+          onBlur={() => {}}
+          onClick={() => {}}
+          onChange={() => {}}
+          onKeyDown={() => {}}
+          ref={ref}
+        />
       </form>
     )
   }
