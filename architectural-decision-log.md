@@ -15307,3 +15307,70 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   }
 ```
 
+feat: Add inputs in CardForm edit mode
+
+- Introduce the `FormTextArea` component within `CardForm` to facilitate editing
+- Include a hidden input element to store the `listId` for internal reference
+
+feat(CardForm): Pass props to FormTextArea
+
+```tsx
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  // ...
+}, ref) => {
+
+  if (isEditing) {
+    return (
+      <form className='px-1 py-0.5 m-1 space-y-4'>
+        <FormTextArea 
+          id='title'
+          label='title'
+          value='title'
+          defaultValue='title'
+          placeholder="Enter a title for this card..."
+          required={false}
+          errors={}
+          className={}
+          onBlur={() => {}}
+          onClick={() => {}}
+          onChange={() => {}}
+          onKeyDown={() => {}}
+          ref={ref}
+        />
+      </form>
+    )
+  }
+
+}
+```
+
+feat: Add hidden input for listId in CardForm
+
+```tsx
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  listId,
+  isEditing,
+  disableEditing,
+  enableEditing,
+}, ref) => {
+
+  if (isEditing) {
+    return (
+      <form className='px-1 py-0.5 m-1 space-y-4'>
+        <FormTextArea 
+          id='title'
+          value='title'
+          defaultValue='title'
+          placeholder="Enter a title for this card..."
+          ref={ref}
+        />
+        <input 
+          hidden
+          id='listId'
+          name='listId'
+          value={listId}
+        />
+      </form>
+    )
+  }
+```
