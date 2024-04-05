@@ -9,7 +9,27 @@ import { CreateCard } from "./createCardSchema";
 import { InputType, OutputType } from "./createCardTypes";
 
 async function performAction(data: InputType): Promise<OutputType> {
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
+    return {
+      error: "Unauthorized",
+    };
+  }
+
+  const { title, boardId, listId, } = data;
+
   let card;
+
+  try {
+
+  } catch (error) {
+    return {
+      error: "Failed to create card.",
+    };
+  }
+
+  revalidatePath(`/board/${boardId}`);
 
   // Return the card
   return {
