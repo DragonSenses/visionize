@@ -15569,3 +15569,44 @@ async function performAction(data: InputType): Promise<OutputType> {
 
 export const createCard = createServerAction(CreateCard, performAction);
 ```
+
+### Use createCard in CardForm
+
+Back in `CardForm.tsx`, let's quickly fix some compiler errors.
+
+fix: Add placeholder values to FormTextArea props
+
+- Set valid error information for the 'errors' prop
+- Provide appropriate CSS class names for the 'className' prop
+
+```tsx
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  listId,
+  isEditing,
+  disableEditing,
+  enableEditing,
+}, ref) => {
+
+
+  if (isEditing) {
+    return (
+      <form className='px-1 py-0.5 m-1 space-y-4'>
+        <FormTextArea 
+          id='title'
+          label='title'
+          value='title'
+          defaultValue='title'
+          placeholder="Enter a title for this card..."
+          required={false}
+          errors={{}}
+          className={''}
+          onBlur={() => {}}
+          onClick={() => {}}
+          onChange={() => {}}
+          onKeyDown={() => {}}
+          ref={ref}
+        />
+```
+
+we should import `useAction` from hooks and `createCard` from actions.
+
