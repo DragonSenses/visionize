@@ -3,9 +3,12 @@
 import React, { forwardRef } from 'react';
 import { Plus, X } from 'lucide-react';
 
+import { createCard } from '@/actions/createCard';
+import { useServerAction } from '@/hooks/useServerAction';
 import { Button } from '@/components/ui/button';
 import FormTextArea from '@/components/form/FormTextArea';
-import FormSubmitButton from '../form/FormSubmitButton';
+import FormSubmitButton from '@/components/form/FormSubmitButton';
+
 
 interface CardFormProps {
   listId: string;
@@ -21,6 +24,7 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   enableEditing,
 }, ref) => {
 
+  const { executeServerAction: executeCreateCard } = useServerAction(createCard);
 
   if (isEditing) {
     return (
