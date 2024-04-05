@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import FormTextArea from '@/components/form/FormTextArea';
 import FormSubmitButton from '@/components/form/FormSubmitButton';
 
-
 interface CardFormProps {
   listId: string;
   isEditing: boolean;
@@ -26,10 +25,20 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
 
   const { executeServerAction: executeCreateCard } = useServerAction(createCard);
 
+  /**
+   * When user clicks "Escape" key, it disables editing mode.
+   * @param event the key press event
+   */
+  function handleEscapeKey(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      disableEditing();
+    }
+  }
+
   if (isEditing) {
     return (
       <form className='px-1 py-0.5 m-1 space-y-4'>
-        <FormTextArea 
+        <FormTextArea
           id='title'
           label='title'
           value='title'
@@ -38,13 +47,13 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
           required={false}
           errors={{}}
           className={''}
-          onBlur={() => {}}
-          onClick={() => {}}
-          onChange={() => {}}
-          onKeyDown={() => {}}
+          onBlur={() => { }}
+          onClick={() => { }}
+          onChange={() => { }}
+          onKeyDown={() => { }}
           ref={ref}
         />
-        <input 
+        <input
           hidden
           id='listId'
           name='listId'
@@ -64,19 +73,19 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
 
   return (
     <div className='pt-2 px-2'>
-      <Button 
+      <Button
         onClick={enableEditing}
         size='sm'
         variant='ghost'
         className='justify-start h-auto px-2 py-1.5 w-full text-sm text-muted-foreground'
       >
-        <Plus className='h-4 w-4 mr-2'/>
+        <Plus className='h-4 w-4 mr-2' />
         Add card
       </Button>
     </div>
   )
 });
 
-CardForm.displayName="CardForm";
+CardForm.displayName = "CardForm";
 
 export default CardForm;
