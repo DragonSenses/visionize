@@ -22,6 +22,40 @@ async function performAction(data: InputType): Promise<OutputType> {
   let card;
 
   try {
+    // Fetch list to create the card in
+    const list = await database.list.findUnique({
+      where: {
+        id: listId,
+        board: {
+          orgId,
+        }
+      },
+    });
+
+    if (!list) {
+      return {
+        error: "List not found",
+      };
+    }
+
+    // Fetch the most recent card in the list to properly assign the newest order to the card
+    const mostRecentCard = await database.card.findFirst({
+      where: { listId: listId },
+      orderBy: { order: "desc" },
+      select: { order: true },
+    });
+
+    // Get the next order depending on whether a mostRecentCard is present or not
+    const nextOrder = mostRecentCard ? mostRecentCard.order + 1 : 1;
+
+    // Create the card in the database
+    card = await database.card.create({
+      data: {
+        title,
+        listId,
+        order: nextOrder,
+      },
+    });
 
   } catch (error) {
     return {
