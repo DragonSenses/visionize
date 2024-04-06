@@ -58,6 +58,14 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
     }
   }
 
+  function onSubmit(formData: FormData) {
+    const title = formData.get('title') as string;
+    const listId = formData.get('listId') as string;
+    const boardId = formData.get('boardId') as string;
+
+    executeCreateCard({ title, listId, boardId });
+  }
+
   if (isEditing) {
     return (
       <form className='px-1 py-0.5 m-1 space-y-4'>
