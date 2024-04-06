@@ -15628,7 +15628,7 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
 
 Let's enhance the user experience by allowing the user to exit edit mode within CardForm when they either press the escape key or outside click.
 
-#### Improve user experience in CardForm
+## Improve user experience in CardForm
 
 feat: Enhance UX with Escape key & outside click handling
 
@@ -15686,6 +15686,61 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   // Listen for the 'keydown' event on the entire document (window level)
   useEventListener('keydown', handleEscapeKey);
 ```
+
+#### KeyboardEvent general vs KeyboardEvent React type
+
+Note that there is a type issue for `KeyboardEvent` from react and the general Keyboard event.
+
+If you import `KeyboardEvent` from React you will not be able to pass it down to the `useEventListener` hook. Instead, do not import it and use the general `KeyboardEvent`.
+
+The error message states that the argument of type `(event: KeyboardEvent<Element>) => void` (referring to your `handleEscapeKey` function) is not assignable to a parameter of type `(event: KeyboardEvent) => void`.
+
+fix: Correct event type for Escape key handler
+
+```tsx
+// Remove the following import:
+// import { KeyboardEvent } from 'react';
+
+// ...
+
+  function handleEscapeKey(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      disableEditing();
+    }
+  }
+
+  useOnClickOutside(formRef, disableEditing);
+
+  // (event: KeyboardEvent) => void
+  useEventListener('keydown', handleEscapeKey);
+```
+
+Here is an indepth comparison:
+
+The **`KeyboardEvent`** type in React is specifically tailored for handling keyboard events within React components. It extends the more general **`KeyboardEvent`** type available in standard JavaScript and the DOM.
+
+Here are the key differences:
+
+1. **Scope**:
+    - **React's `KeyboardEvent`**: It is specific to React components and is used within event handlers for keyboard-related interactions within React applications.
+    - **General `KeyboardEvent`**: It is a standard DOM event type available globally in JavaScript and can be used outside of React, such as in vanilla JavaScript or other frameworks.
+
+2. **Event Target**:
+    - **React's `KeyboardEvent`**: It is associated with a specific React component (e.g., a text input, textarea, or custom component) where the event occurred.
+    - **General `KeyboardEvent`**: It can be associated with any DOM element (e.g., window, document, or specific HTML elements).
+
+3. **Properties and Methods**:
+    - **React's `KeyboardEvent`**: It includes additional properties and methods specific to React components, such as `target`, `currentTarget`, and React-specific event handling methods.
+    - **General `KeyboardEvent`**: It provides standard properties like `key`, `keyCode`, `shiftKey`, `ctrlKey`, etc., which are common across all DOM elements.
+
+4. **Usage**:
+    - **React's `KeyboardEvent`**: You'll encounter it mainly when working with React components, handling keyboard events within JSX (e.g., in event handlers like `onKeyDown`).
+    - **General `KeyboardEvent`**: You'll use it in broader contexts, such as vanilla JavaScript event listeners or when interacting directly with the DOM.
+
+In summary, while both types represent keyboard events, the React-specific `KeyboardEvent` is designed for use within React components, while the general `KeyboardEvent` is more versatile and applicable across different contexts.
+
+### Override default behavior of textarea for the escape key
+
 Add escape key handler for textarea in CardForm
 
 feat: Override textarea default behavior for Enter key
