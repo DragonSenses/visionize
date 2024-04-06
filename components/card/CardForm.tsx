@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ElementRef, forwardRef, useRef } from 'react';
+import React, { ElementRef, KeyboardEvent, KeyboardEventHandler, forwardRef, useRef } from 'react';
 import { Plus, X } from 'lucide-react';
 import { useEventListener, useOnClickOutside } from 'usehooks-ts';
 
@@ -44,6 +44,19 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   // Custom hook that attaches event listeners to DOM elements, the window, or media query lists.
   // Listen for the 'keydown' event on the entire document (window level)
   useEventListener('keydown', handleEscapeKey);
+
+  /**
+   * Handles the "Enter" key press inside the TextArea.
+   * Overrides the default behavior (new line) to submit the form,
+   * unless the user is also holding the "Shift" key.
+   * @param event The keyboard event
+   */
+  const onTextAreaKeyDown: KeyboardEventHandler<HTMLTextAreaElement> = (event: KeyboardEvent) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      formRef.current?.requestSubmit();
+    }
+  }
 
   if (isEditing) {
     return (
