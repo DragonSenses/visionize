@@ -15686,4 +15686,32 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   // Listen for the 'keydown' event on the entire document (window level)
   useEventListener('keydown', handleEscapeKey);
 ```
+Add escape key handler for textarea in CardForm
 
+feat: Override textarea default behavior for Enter key
+
+```tsx
+import React, { ElementRef, KeyboardEvent, KeyboardEventHandler, forwardRef, useRef } from 'react';
+
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  listId,
+  isEditing,
+  disableEditing,
+  enableEditing,
+}, ref) => {
+
+  const formRef = useRef<ElementRef<"form">>(null);
+
+  /**
+   * Handles the "Enter" key press inside the TextArea.
+   * Overrides the default behavior (new line) to submit the form,
+   * unless the user is also holding the "Shift" key.
+   * @param event The keyboard event
+   */
+  const onTextAreaKeyDown: KeyboardEventHandler<HTMLTextAreaElement> = (event: KeyboardEvent) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      formRef.current?.requestSubmit();
+    }
+  }
+```
