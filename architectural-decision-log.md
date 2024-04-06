@@ -15628,6 +15628,8 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
 
 Let's enhance the user experience by allowing the user to exit edit mode within CardForm when they either press the escape key or outside click.
 
+#### Improve user experience in CardForm
+
 feat: Enhance UX with Escape key & outside click handling
 
 feat: Add 'Escape' key functionality to exit edit mode
@@ -15654,3 +15656,34 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   // Disable editing when user clicks outside the form
   useOnClickOutside(formRef, disableEditing);
 ```
+
+Let's wire up the event listener for the key. Import and use the `useEventListener` hook and pass in `'keydown'` and the key handler.
+
+feat: Add keydown event handling for Escape key
+
+```tsx
+import { useEventListener, useOnClickOutside } from 'usehooks-ts';
+
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  listId,
+  isEditing,
+  disableEditing,
+  enableEditing,
+}, ref) => {
+  const formRef = useRef<ElementRef<"form">>(null);
+
+  const { executeServerAction: executeCreateCard } = useServerAction(createCard);
+
+  function handleEscapeKey(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      disableEditing();
+    }
+  }
+
+  useOnClickOutside(formRef, disableEditing);
+
+  // Custom hook that attaches event listeners to DOM elements, the window, or media query lists.
+  // Listen for the 'keydown' event on the entire document (window level)
+  useEventListener('keydown', handleEscapeKey);
+```
+
