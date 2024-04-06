@@ -15626,9 +15626,31 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   const { executeServerAction: executeCreateCard } = useServerAction(createCard);
 ```
 
+Let's enhance the user experience by allowing the user to exit edit mode within CardForm when they either press the escape key or outside click.
+
+feat: Enhance UX with Escape key & outside click handling
+
 feat: Add 'Escape' key functionality to exit edit mode
 
 - Implement an escape key event handler within CardForm to enhance keyboard accessibility
 - The `handleEscapeKey` function listens for the 'Escape' key press, allowing users to quickly exit editing mode without mouse interaction
 - This feature contributes to a more intuitive and efficient user experience by streamlining the editing process
 
+feat: Add formRef and disable editing on outside click
+
+```tsx
+import React, { ElementRef, forwardRef, useRef } from 'react';
+import { useOnClickOutside } from 'usehooks-ts';
+
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  listId,
+  isEditing,
+  disableEditing,
+  enableEditing,
+}, ref) => {
+  const formRef = useRef<ElementRef<"form">>(null);
+
+  // Custom hook that handles clicks outside a specified element.
+  // Disable editing when user clicks outside the form
+  useOnClickOutside(formRef, disableEditing);
+```
