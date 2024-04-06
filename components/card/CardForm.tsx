@@ -1,7 +1,8 @@
 "use client";
 
-import React, { forwardRef } from 'react';
+import React, { ElementRef, forwardRef, useRef } from 'react';
 import { Plus, X } from 'lucide-react';
+import { useOnClickOutside } from 'usehooks-ts';
 
 import { createCard } from '@/actions/createCard';
 import { useServerAction } from '@/hooks/useServerAction';
@@ -22,6 +23,7 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   disableEditing,
   enableEditing,
 }, ref) => {
+  const formRef = useRef<ElementRef<"form">>(null);
 
   const { executeServerAction: executeCreateCard } = useServerAction(createCard);
 
@@ -34,6 +36,10 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
       disableEditing();
     }
   }
+
+  // Custom hook that handles clicks outside a specified element.
+  // Disable editing when user clicks outside the form
+  useOnClickOutside(formRef, disableEditing);
 
   if (isEditing) {
     return (
