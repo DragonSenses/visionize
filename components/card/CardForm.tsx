@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ElementRef, KeyboardEvent, KeyboardEventHandler, forwardRef, useRef } from 'react';
+import React, { ElementRef, KeyboardEventHandler, forwardRef, useRef } from 'react';
 import { Plus, X } from 'lucide-react';
 import { useEventListener, useOnClickOutside } from 'usehooks-ts';
 
@@ -28,8 +28,8 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   const { executeServerAction: executeCreateCard } = useServerAction(createCard);
 
   /**
-   * When user clicks "Escape" key, it disables editing mode.
-   * @param event the key press event
+   * When the user presses the "Escape" key, it disables editing mode.
+   * @param event The keyboard event
    */
   function handleEscapeKey(event: KeyboardEvent) {
     if (event.key === "Escape") {
