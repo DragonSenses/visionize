@@ -15608,5 +15608,27 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
         />
 ```
 
-we should import `useAction` from hooks and `createCard` from actions.
+Next import `useAction` from hooks and `createCard` from actions.
+
+feat: Implement createCard action in CardForm
+
+```ts
+import { createCard } from '@/actions/createCard';
+import { useServerAction } from '@/hooks/useServerAction';
+
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  listId,
+  isEditing,
+  disableEditing,
+  enableEditing,
+}, ref) => {
+
+  const { executeServerAction: executeCreateCard } = useServerAction(createCard);
+```
+
+feat: Add 'Escape' key functionality to exit edit mode
+
+- Implement an escape key event handler within CardForm to enhance keyboard accessibility
+- The `handleEscapeKey` function listens for the 'Escape' key press, allowing users to quickly exit editing mode without mouse interaction
+- This feature contributes to a more intuitive and efficient user experience by streamlining the editing process
 
