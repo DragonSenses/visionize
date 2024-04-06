@@ -2,7 +2,7 @@
 
 import React, { ElementRef, forwardRef, useRef } from 'react';
 import { Plus, X } from 'lucide-react';
-import { useOnClickOutside } from 'usehooks-ts';
+import { useEventListener, useOnClickOutside } from 'usehooks-ts';
 
 import { createCard } from '@/actions/createCard';
 import { useServerAction } from '@/hooks/useServerAction';
@@ -40,6 +40,10 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   // Custom hook that handles clicks outside a specified element.
   // Disable editing when user clicks outside the form
   useOnClickOutside(formRef, disableEditing);
+
+  // Custom hook that attaches event listeners to DOM elements, the window, or media query lists.
+  // Listen for the 'keydown' event on the entire document (window level)
+  useEventListener('keydown', handleEscapeKey);
 
   if (isEditing) {
     return (
