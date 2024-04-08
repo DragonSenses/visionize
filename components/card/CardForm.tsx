@@ -68,7 +68,11 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
 
   if (isEditing) {
     return (
-      <form className='px-1 py-0.5 m-1 space-y-4'>
+      <form 
+        action={onSubmit}
+        ref={formRef}
+        className='px-1 py-0.5 m-1 space-y-4'
+      >
         <FormTextArea
           id='title'
           label='title'
