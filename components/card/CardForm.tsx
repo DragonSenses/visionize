@@ -25,7 +25,7 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
 }, ref) => {
   const formRef = useRef<ElementRef<"form">>(null);
 
-  const { executeServerAction: executeCreateCard } = useServerAction(createCard);
+  const { executeServerAction: executeCreateCard, fieldErrors } = useServerAction(createCard);
 
   /**
    * When the user presses the "Escape" key, it disables editing mode.
@@ -80,7 +80,7 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
           defaultValue='title'
           placeholder="Enter a title for this card..."
           required={false}
-          errors={{}}
+          errors={fieldErrors}
           className={''}
           onBlur={() => { }}
           onClick={() => { }}
