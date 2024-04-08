@@ -15630,6 +15630,8 @@ Let's enhance the user experience by allowing the user to exit edit mode within 
 
 ## Improve user experience in CardForm
 
+Recap: the `CardForm` component provides a form for creating new cards within a list. It includes functionality for handling user input, such as pressing the 'Escape' key to exit editing mode, and submitting the form when the 'Enter' key is pressed (unless the 'Shift' key is also held down).
+
 feat: Enhance UX with Escape key & outside click handling
 
 feat: Add 'Escape' key functionality to exit edit mode
@@ -15768,5 +15770,23 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
       event.preventDefault();
       formRef.current?.requestSubmit();
     }
+  }
+```
+
+### Implement CardForm submission logic
+
+The `onSubmit` function extracts relevant form data (such as `title`, `listId`, and `boardId`) and executes the `createCard` server action.
+
+The CardForm component relies on this function to enable card creation functionality within the application.
+
+feat(CardForm): Add form submission handler for creating cards
+
+```tsx
+  function onSubmit(formData: FormData) {
+    const title = formData.get('title') as string;
+    const listId = formData.get('listId') as string;
+    const boardId = formData.get('boardId') as string;
+
+    executeCreateCard({ title, listId, boardId });
   }
 ```
