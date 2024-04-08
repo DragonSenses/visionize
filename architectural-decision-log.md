@@ -15626,7 +15626,29 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   const { executeServerAction: executeCreateCard } = useServerAction(createCard);
 ```
 
-Let's enhance the user experience by allowing the user to exit edit mode within CardForm when they either press the escape key or outside click.
+Let's also destructure `fieldErrors` and pass it to `errors` prop of `FormTextArea`.
+
+feat(CardForm): Add error handling to FormTextArea
+
+```tsx
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  listId,
+  isEditing,
+  disableEditing,
+  enableEditing,
+}, ref) => {
+  const { executeServerAction: executeCreateCard, fieldErrors } = useServerAction(createCard);
+
+  if (isEditing) {
+    return (
+      <form>
+        <FormTextArea
+          // ...props
+          errors={fieldErrors}
+        />
+```
+
+Next enhance the user experience by allowing the user to exit edit mode within CardForm when they either press the escape key or outside click.
 
 ## Improve user experience in CardForm
 
@@ -15773,6 +15795,29 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   }
 ```
 
+Now assign this handler to the `FormTextArea` component.
+
+feat: Assign onKeyDown prop to FormTextArea
+
+```tsx
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  // ...
+}, ref) => {
+
+  if (isEditing) {
+    return (
+      <form 
+        action={onSubmit}
+        ref={formRef}
+        className='px-1 py-0.5 m-1 space-y-4'
+      >
+        <FormTextArea
+          // ...props
+          onKeyDown={onTextAreaKeyDown}
+          ref={ref}
+        />
+```
+
 ### Implement CardForm submission logic
 
 The `onSubmit` function extracts relevant form data (such as `title`, `listId`, and `boardId`) and executes the `createCard` server action.
@@ -15791,7 +15836,7 @@ feat(CardForm): Add form submission handler for creating cards
   }
 ```
 
-#### Side note: ASsign the props or Wire up the props?
+#### Side note: Assign the props or Wire up the props?
 
 Both **"Assign the props to form"** and **"Wire up the props to form"** are valid phrasings, but they convey slightly different meanings:
 
