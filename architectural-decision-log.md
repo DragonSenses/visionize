@@ -15787,7 +15787,7 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
    * unless the user is also holding the "Shift" key.
    * @param event The keyboard event
    */
-  const onTextAreaKeyDown: KeyboardEventHandler<HTMLTextAreaElement> = (event: KeyboardEvent) => {
+  const onTextAreaKeyDown: KeyboardEventHandler<HTMLTextAreaElement> = (event) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       formRef.current?.requestSubmit();
