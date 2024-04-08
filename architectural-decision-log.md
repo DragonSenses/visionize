@@ -15903,3 +15903,29 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
         className='px-1 py-0.5 m-1 space-y-4'
       >
 ```
+
+### CardForm success and error callbacks
+
+Import toast from sonner, then add the `onSuccess` and `onError` callback functions.
+
+feat: Implement toast notifications in CardForm for success and error callbacks
+
+```tsx
+import { toast } from 'sonner';
+
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  // ...props
+}, ref) => {
+  const formRef = useRef<ElementRef<"form">>(null);
+
+  const { executeServerAction: executeCreateCard, fieldErrors } = useServerAction(createCard, {
+    onSuccess: (data) => {
+      toast.success(`Card "${data.title} created.`);
+      formRef.current?.reset(); // Clear the form after success
+    },
+    onError: (error) => {
+      toast.error(error);
+    },
+  });
+```
+
