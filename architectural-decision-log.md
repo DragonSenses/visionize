@@ -6063,6 +6063,32 @@ refactor: rename cachedFn to executeServerAction
 
 This commit renames the variable cachedFn to executeServerAction in the useServerAction hook to better reflect the proper name and context it will be used in. The new name indicates that the variable is a function that executes a server action with a given input, rather than a generic cached function. This improves the readability and clarity of the code and the hook usage.
 
+### Summary: useServerAction hook
+
+`useServerAction` is a custom hook for handling server actions with callbacks. Let's break down its key components:
+
+1. **`useServerAction` Hook**:
+   - This hook encapsulates the logic for executing a server action with callbacks.
+   - It takes an `action` (a function that represents the server action) and optional `options` (callbacks for different scenarios) as parameters.
+   - The hook returns an object containing relevant state variables (`data`, `error`, `fieldErrors`, and `isLoading`) and the `executeServerAction` function.
+
+2. **State Variables**:
+   - `data`: Represents the output data from the server action (if successful).
+   - `error`: Holds any error message returned by the server action.
+   - `fieldErrors`: Stores field-specific errors (if any).
+   - `isLoading`: Indicates whether the server action is currently being executed.
+
+3. **`executeServerAction` Function**:
+   - This function handles the execution of the server action.
+   - It sets the loading state, calls the provided `action`, and processes the output.
+   - If successful, it updates the state variables (`data`, `error`, and `fieldErrors`).
+   - It also invokes the provided callbacks (`onError`, `onSuccess`, and `onComplete`).
+
+4. **Callback Options**:
+   - `onError`: Invoked when an error occurs during the server action.
+   - `onSuccess`: Called when the server action completes successfully.
+   - `onComplete`: Executed regardless of success or failure.
+
 ## BoardForm: use createBoard using createServerAction abstraction
 
 Navigate back to `BoardForm.tsx`, as a reminder:
