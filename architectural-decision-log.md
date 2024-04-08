@@ -15790,3 +15790,45 @@ feat(CardForm): Add form submission handler for creating cards
     executeCreateCard({ title, listId, boardId });
   }
 ```
+
+#### Side note: ASsign the props or Wire up the props?
+
+Both **"Assign the props to form"** and **"Wire up the props to form"** are valid phrasings, but they convey slightly different meanings:
+
+1. **Assign the props to form**:
+   - This phrasing suggests that you are directly setting the props (such as `listId`, `isEditing`, etc.) on the form component.
+   - It emphasizes the act of providing the necessary data to the form.
+
+2. **Wire up the props to form**:
+   - This phrasing implies a more dynamic process. It suggests that you are connecting or linking the props to the form's behavior.
+   - It emphasizes the interaction between the props and the form's functionality.
+
+Choose the one that best aligns with the context and your intention in your code. Both convey the idea of passing props to the form, but the second option adds a layer of dynamic behavior. 
+
+#### Connect the ref and submit behavior to CardForm component in edit mode
+
+Next let's wire up the formRef and submit handler for the form when in edit mode.
+
+feat: Set up formRef and submit handler for form
+
+```tsx
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  listId,
+  isEditing,
+  disableEditing,
+  enableEditing,
+}, ref) => {
+  const formRef = useRef<ElementRef<"form">>(null);
+
+    function onSubmit(formData: FormData) {
+      // ...
+    }
+
+  if (isEditing) {
+    return (
+      <form 
+        action={onSubmit}
+        ref={formRef}
+        className='px-1 py-0.5 m-1 space-y-4'
+      >
+```
