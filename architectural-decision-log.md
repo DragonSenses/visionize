@@ -16016,3 +16016,85 @@ test: Verify card creation process
 
 These steps ensure that the card creation process functions as expected and that the card data is correctly stored in the database.
 
+## Card display
+
+docs: Document the process for displaying cards
+
+Now to render the cards in the database.
+
+Let's analyze the order in which the cards will be rendered. 
+
+- In `boardIdPage` we fetch the `lists` which `includes` the `cards`
+- Pass that `lists` data down to `ListContainer` component
+
+`app\(app)\(dashboard)\board\[boardId]\page.tsx`
+```tsx
+export default async function BoardIdPage({
+  params
+}: BoardIdPageProps) {
+  // ...
+
+  const lists = await database.list.findMany({
+    where: {
+      boardId: params.boardId,
+      board: {
+        orgId,
+      },
+    },
+    include: {
+      cards: {
+        orderBy: {
+          order: 'asc',
+        },
+      },
+    },
+    orderBy: {
+      order: 'asc',
+    }
+  });
+
+    return (
+    <div className='h-full p-4 overflow-x-auto'>
+      <ListContainer 
+        boardId={params.boardId}
+        data={lists}
+      />
+    </div>
+  )
+}
+```
+
+- Now in `ListContainer`, we have access to the `data` which consists the `ListOfCards`
+
+`components\list\ListContainer.tsx`
+```tsx
+interface ListContainerProps {
+  boardId: string;
+  data: ListWithCards[];
+}
+
+export default function ListContainer({
+  boardId,
+  data,
+}: ListContainerProps) {
+  const [orderedListData, setOrderedListData] = useState(data);
+
+  return (
+    <ol className='flex h-full gap-x-3'>
+      {
+        orderedListData.map((list, index) => {
+          return (
+            <ListItem
+              key={list.id}
+              index={index}
+              data={list}
+            />
+          )
+        })
+      }
+      <ListForm />
+      <div className='flex-shrink-0 w-1' />
+    </ol>
+  )
+}
+```
