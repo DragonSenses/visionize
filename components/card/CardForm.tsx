@@ -4,6 +4,7 @@ import React, { ElementRef, KeyboardEventHandler, forwardRef, useRef } from 'rea
 import { Plus, X } from 'lucide-react';
 import { useEventListener, useOnClickOutside } from 'usehooks-ts';
 import { toast } from 'sonner';
+import { useParams } from 'next/navigation';
 
 import { createCard } from '@/actions/createCard';
 import { useServerAction } from '@/hooks/useServerAction';
@@ -24,6 +25,8 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   disableEditing,
   enableEditing,
 }, ref) => {
+  const params = useParams();
+
   const formRef = useRef<ElementRef<"form">>(null);
 
   const { executeServerAction: executeCreateCard, fieldErrors } = useServerAction(createCard, {
@@ -70,7 +73,7 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
   function onSubmit(formData: FormData) {
     const title = formData.get('title') as string;
     const listId = formData.get('listId') as string;
-    const boardId = formData.get('boardId') as string;
+    const boardId = params.boardId as string;
 
     executeCreateCard({ title, listId, boardId });
   }
