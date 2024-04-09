@@ -3,6 +3,7 @@
 import React, { ElementRef, KeyboardEventHandler, forwardRef, useRef } from 'react';
 import { Plus, X } from 'lucide-react';
 import { useEventListener, useOnClickOutside } from 'usehooks-ts';
+import { toast } from 'sonner';
 
 import { createCard } from '@/actions/createCard';
 import { useServerAction } from '@/hooks/useServerAction';
@@ -25,7 +26,15 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
 }, ref) => {
   const formRef = useRef<ElementRef<"form">>(null);
 
-  const { executeServerAction: executeCreateCard, fieldErrors } = useServerAction(createCard);
+  const { executeServerAction: executeCreateCard, fieldErrors } = useServerAction(createCard, {
+    onSuccess: (data) => {
+      toast.success(`Card "${data.title} created.`);
+      formRef.current?.reset(); // Clear the form after success
+    },
+    onError: (error) => {
+      toast.error(error);
+    },
+  });
 
   /**
    * When the user presses the "Escape" key, it disables editing mode.
