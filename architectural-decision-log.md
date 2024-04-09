@@ -16203,3 +16203,44 @@ export default function ListItem({
   )
 }
 ```
+
+### CardItem component
+
+Create a `CardItem.tsx` in `components/cards`.
+
+Then refactor `li` element with `CardItem` within `ListItem`. 
+
+refactor: Optimize ListItem by utilizing CardItem for card rendering
+
+refactor(ListItem): Use CardItem for card rendering
+
+In the `ListItem` component, we've replaced the individual `<li>` elements with the `CardItem` component to improve code organization and readability. This change ensures consistent rendering of cards within the list.
+
+```tsx
+import CardItem from '@/components/card/CardItem';
+
+export default function ListItem({
+  data,
+  index,
+}: ListItemProps) {
+
+  return (
+    <li className='h-full w-72 shrink-0 select-none'>
+      <div className='w-full rounded-md bg-[#f1f2f4] shadow-md pb-2'>
+        { /* List Header... */}
+
+        <ol
+          className={cn(
+            'flex flex-col gap-y-2 mx-1 px-1 py-0.5',
+            data.cards.length > 0 ? 'mt-2' : 'mt-0'
+          )}
+        >
+          {data.cards.map((card, index) => (
+            <CardItem
+              key={card.id}
+              data={card}
+              index={index}
+            />
+          ))}
+        </ol>
+```
