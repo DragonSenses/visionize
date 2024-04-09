@@ -15850,6 +15850,15 @@ The `onSubmit` function extracts relevant form data (such as `title`, `listId`, 
 
 The CardForm component relies on this function to enable card creation functionality within the application.
 
+We need the following data to be able to submit the form:
+- `title` which is taken from the user input
+- `listId` which is taken from the hidden input element
+- `boardId` can be taken in two ways
+  1. Create a hidden input that stores the `boardId`
+  2. Get `boardId` directly from params.
+
+First let's try to get `boardId` as `formData`
+
 feat(CardForm): Add form submission handler for creating cards
 
 ```tsx
@@ -15860,7 +15869,65 @@ feat(CardForm): Add form submission handler for creating cards
 
     executeCreateCard({ title, listId, boardId });
   }
+
+    if (isEditing) {
+    return (
+      <form>
+        <FormTextArea
+          // ...props
+        />
+        <input
+          hidden
+          id='listId'
+          name='listId'
+          value={listId}
+        />
+        <input
+          hidden
+          id='boardId'
+          name='boardId'
+          value={params.boardId}
+        />
+        { /* ... */ }
+      </form>
+    )
+  }
 ```
+
+Or get `boardId` directly from `useParams` hook.
+
+refactor: Improve submit handler for CardForm
+
+In this refactored version, import useParams from next/navigation and use it to retrieve the boardId parameter. This ensures consistency and improves code readability.
+
+feat(CardForm): Retrieve boardId from params
+
+In this enhancement, we utilize the `useParams` hook from `next/navigation` to obtain the `boardId` parameter. This ensures consistency and simplifies the retrieval process within the `CardForm` component.
+
+```tsx
+import { useParams } from 'next/navigation';
+
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  listId,
+  isEditing,
+  disableEditing,
+  enableEditing,
+}, ref) => {
+  const params = useParams();
+
+  function onSubmit(formData: FormData) {
+    const title = formData.get('title') as string;
+    const listId = formData.get('listId') as string;
+    const boardId = params.boardId as string;
+
+    executeCreateCard({ title, listId, boardId });
+  }
+
+}
+```
+
+
+
 
 #### Side note: Assign the props or Wire up the props?
 
@@ -15908,7 +15975,9 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
 
 Import toast from sonner, then add the `onSuccess` and `onError` callback functions.
 
-feat: Implement toast notifications in CardForm for success and error callbacks
+Implement toast notifications in CardForm for success and error callbacks
+
+feat: Add success & error handling in CardForm
 
 ```tsx
 import { toast } from 'sonner';
