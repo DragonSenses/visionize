@@ -16098,3 +16098,108 @@ export default function ListContainer({
   )
 }
 ```
+
+- But we pass the `data` prop again to the `ListItem` component
+
+`components\list\ListItem.tsx`
+```tsx
+"use client";
+
+import React, { ElementRef, useRef, useState } from 'react';
+
+import { ListWithCards } from '@/types/types';
+import ListHeader from '@/components/list/ListHeader';
+import CardForm from '@/components/card/CardForm';
+
+interface ListItemProps {
+  data: ListWithCards;
+  index: number;
+}
+
+export default function ListItem({
+  data,
+  index,
+}: ListItemProps) {
+  const textAreaRef = useRef<ElementRef<"textarea">>(null);
+  const [isEditing, setIsEditing] = useState(false);
+
+  function disableEditing() {
+    setIsEditing(false);
+  }
+
+  function enableEditing() {
+    setIsEditing(true);
+    setTimeout(() => {
+      textAreaRef.current?.focus();
+    });
+  }
+
+  return (
+    <li className='h-full w-72 shrink-0 select-none'>
+      <div className='w-full rounded-md bg-[#f1f2f4] shadow-md pb-2'>
+        <ListHeader 
+          data={data} 
+          handleAddCardToList={enableEditing}
+        />
+        <CardForm
+          ref={textAreaRef}
+          listId={data.id}
+          isEditing={isEditing}
+          enableEditing={enableEditing}
+          disableEditing={disableEditing}
+        />
+      </div>
+    </li>
+  )
+}
+```
+
+Here we should render a `ol` element above the `CardForm`. Then map out the cards from the `data` prop in a `li` element for now. We want to add conditionally styles to the `ol` if the `data` contains at least 1 card, the conditional styles will add a top margin.
+
+feat(ListItem): Render cards using an ordered list
+
+In the `ListItem` component, we've introduced an ordered list (`ol`) to display the cards from the `data.cards` prop. The list dynamically adjusts its styling based on whether there are any cards present.
+
+```tsx
+import { cn } from '@/lib/utils';
+
+export default function ListItem({
+  data,
+  index,
+}: ListItemProps) {
+
+  return (
+    <li className='h-full w-72 shrink-0 select-none'>
+      <div className='w-full rounded-md bg-[#f1f2f4] shadow-md pb-2'>
+        <ListHeader 
+          data={data} 
+          handleAddCardToList={enableEditing}
+        />
+
+        <ol
+          className={cn(
+            'flex flex-col gap-y-2 mx-1 px-1 py-0.5',
+            data.cards.length > 0 ? 'mt-2' : 'mt-0'
+          )}
+        >
+          {data.cards.map((card, index) => (
+            <li
+              key={card.id} 
+            >
+              {card.title}
+            </li>
+          ))}
+        </ol>
+
+        <CardForm
+          ref={textAreaRef}
+          listId={data.id}
+          isEditing={isEditing}
+          enableEditing={enableEditing}
+          disableEditing={disableEditing}
+        />
+      </div>
+    </li>
+  )
+}
+```
