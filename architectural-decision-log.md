@@ -15926,9 +15926,6 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
 }
 ```
 
-
-
-
 #### Side note: Assign the props or Wire up the props?
 
 Both **"Assign the props to form"** and **"Wire up the props to form"** are valid phrasings, but they convey slightly different meanings:
@@ -15997,4 +15994,25 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
     },
   });
 ```
+
+### Test CardForm
+
+Let's run a quick test to create a card.
+
+test: Verify card creation process
+
+1. Navigate to a board page and create a list.
+2. Click on the `CardForm` to enable editing mode.
+3. The `CardForm` converts to a `TextFormArea` where we can submit the title of the card.
+4. Add a title to the card and submit it using either of the following methods:
+   - Press the Enter key.
+   - Click the "Add card" button.
+5. Observe that a toast notification appears, indicating that the card has been successfully created.
+6. Open your terminal and run the following command to launch Prisma Studio:
+   ```sh
+   npx prisma studio
+   ```
+7. Verify that the newly created card is visible in the database.
+
+These steps ensure that the card creation process functions as expected and that the card data is correctly stored in the database.
 
