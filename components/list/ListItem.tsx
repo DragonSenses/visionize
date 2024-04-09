@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { ListWithCards } from '@/types/types';
 import ListHeader from '@/components/list/ListHeader';
 import CardForm from '@/components/card/CardForm';
+import CardItem from '@/components/card/CardItem';
 
 interface ListItemProps {
   data: ListWithCards;
@@ -44,11 +45,11 @@ export default function ListItem({
           )}
         >
           {data.cards.map((card, index) => (
-            <li
-              key={card.id} 
-            >
-              {card.title}
-            </li>
+            <CardItem
+              key={card.id}
+              data={card}
+              index={index}
+            />
           ))}
         </ol>
         <CardForm
