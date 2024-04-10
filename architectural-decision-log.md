@@ -16244,3 +16244,30 @@ export default function ListItem({
           ))}
         </ol>
 ```
+
+Let's develop the client component `CardItem`.
+
+It will have the props `data` and `index`.
+
+feat: Define prop interface for CardItem
+
+```tsx
+"use client";
+
+import { Card } from '@prisma/client';
+import React from 'react';
+
+interface CardItemProps {
+  data: Card,
+  index: number;
+}
+
+export default function CardItem({
+  data,
+  index,
+}: CardItemProps) {
+  return (
+    <div>CardItem</div>
+  )
+}
+```
