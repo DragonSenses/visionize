@@ -16271,3 +16271,44 @@ export default function CardItem({
   )
 }
 ```
+
+#### CardItem output
+
+Let's create a `div` that represents our cards. We want the styles to match the `ListItem`. Also render the card title within.
+
+feat: Improve visual appearance of CardItem
+
+Improvements:
+- Increased font size for better readability
+- Added a subtle shadow effect for depth
+- Rounded the corners of the container
+- Introduced a hover effect that displays a black border
+
+These enhancements ensures a more visually appealing and interactive user experience.
+
+style: Add dynamic styling to CardItem component
+
+Applies the following styles:
+- Padding: 2 units on the y-axis and 3 units on the x-axis
+- Background color: White
+- Font size: Small (text-sm)
+- Box shadow: A subtle shadow effect
+- Rounded corners: A rounded border
+- Border: 2-pixel width (initially transparent, but turns black on hover)
+
+The CardItem component now follows the same styling as the parent component ListItem and displays the card title from the `data` prop within the styled container.
+
+```tsx
+export default function CardItem({
+  data,
+  index,
+}: CardItemProps) {
+  return (
+    <div 
+      className='py-2 px-3 bg-white text-sm shadow-sm rounded-md truncate border-2 border-transparent hover:border-black'
+    >
+      {data.title}
+    </div>
+  )
+}
+```
