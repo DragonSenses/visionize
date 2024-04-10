@@ -16382,3 +16382,23 @@ The `role="button"` attribute in the `<div>` element serves a **semantic purpose
 
 In summary, `role="button"` enhances accessibility but doesn't directly affect styling or event handling. 
 
+feat: Assign button role to CardItem component
+
+In this commit, the CardItem component is given a semantic role of "button" using the `role="button"` attribute. This enhances accessibility and indicates that the component behaves like a button, even though it's implemented as a `<div>`.
+
+```tsx
+export default function CardItem({
+  data,
+  index,
+}: CardItemProps) {
+  return (
+    <div 
+      role="button"
+      className='py-2 px-3 bg-white text-sm shadow-sm rounded-md truncate border-2 border-transparent hover:border-black'
+    >
+      {data.title}
+    </div>
+  )
+}
+```
+
