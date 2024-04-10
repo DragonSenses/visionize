@@ -16312,3 +16312,73 @@ export default function CardItem({
   )
 }
 ```
+
+##### CardItem design choice (button vs. div)
+
+---
+
+docs: Discuss the design choice for CardItem
+
+Initiates a discussion regarding whether to use a button or a div for the CardItem component. The decision will impact the component's behavior and styling.
+
+---
+
+The behavior we want is to convert `CardItem` into a clickable and draggable element. We can do this in two ways:
+
+1. Assign the `role` attribute in `div` to a "button"
+   
+   ```tsx
+   export default function CardItem({
+     data,
+     index,
+   }: CardItemProps) {
+     return (
+       <div 
+         role="button"
+         className='py-2 px-3 bg-white text-sm shadow-sm rounded-md truncate border-2 border-transparent hover:border-black'
+       >
+         {data.title}
+       </div>
+     )
+   }
+   ```
+
+2. Render an actual button
+
+   ```tsx
+   export default function CardItem({
+     data,
+     index,
+   }: CardItemProps) {
+     return (
+       <button 
+         className='py-2 px-3 bg-white text-sm shadow-sm rounded-md truncate border-2 border-transparent hover:border-black'
+       >
+         {data.title}
+       </button>
+     )
+   }
+   ```
+
+###### div that behaves like a button, using role attribute
+
+Let's go into detail what the `role` attribute indicates.
+
+The `role="button"` attribute in the `<div>` element serves a **semantic purpose** rather than directly influencing its style or event handling. Let me explain:
+
+1. **Semantic Purpose**:
+   - By adding `role="button"`, you're indicating to **accessibility software** (such as screen readers) that this `<div>` element behaves like a button.
+   - It helps assistive technologies understand the purpose of the element, even though it's not a native `<button>` element.
+   - Essentially, it conveys that the `<div>` should be treated as a button for users with disabilities.
+
+2. **Styling and Event Handling**:
+   - The `role="button"` attribute itself does not directly impact the styling or event handling of the `<div>`.
+   - Event handling (such as click events) can still be added using JavaScript or React event listeners, just like any other element.
+
+3. **Alternative Approach**:
+   - While using `role="button"` is valid, consider using an actual `<button>` element if your intention is to create a functional button.
+   - Native buttons have built-in keyboard accessibility and handle click events by default.
+   - If you need custom styling, you can apply CSS classes to the `<button>` element as well.
+
+In summary, `role="button"` enhances accessibility but doesn't directly affect styling or event handling. 
+
