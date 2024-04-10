@@ -16402,3 +16402,61 @@ export default function CardItem({
 }
 ```
 
+## Drag and Drop functionality
+
+To implement drag and drop functionality, will use the package @hello-pangea/dnd.
+
+- [hello-pangea/dnd | GitHub reference](https://github.com/hello-pangea/dnd)
+- [hello-pangea/dnd | npm reference](https://www.npmjs.com/package/@hello-pangea/dnd)
+
+feat: Install @hello-pangea/dnd (v16.6.0)
+
+In this commit, the following package is added to the project's dependencies:
+- `@hello-pangea/dnd` (version 16.6.0)
+
+This package provides a beautiful and accessible drag-and-drop experience for lists in React.
+
+```sh
+npm i @hello-pangea/dnd
+```
+
+Now to implement it we navigate to `ListContainer`.
+
+Now wrap it with `DragDropContext` followed by `Droppable`.
+
+feat: Integrate drag-and-drop functionality into ListContainer
+
+In this commit, the ListContainer component is wrapped with the DragDropContext and Droppable components from the @hello-pangea/dnd package. This enables beautiful and accessible drag-and-drop interactions for lists within the application.
+
+```tsx
+import { DragDropContext, Droppable } from '@hello-pangea/dnd';
+
+export default function ListContainer({
+  boardId,
+  data,
+}: ListContainerProps) {
+  const [orderedListData, setOrderedListData] = useState(data);
+
+  return (
+    <DragDropContext>
+      <Droppable>
+      <ol className='flex h-full gap-x-3'>
+        {
+          orderedListData.map((list, index) => {
+            return (
+              <ListItem
+                key={list.id}
+                index={index}
+                data={list}
+              />
+            )
+          })
+        }
+        <ListForm />
+        <div className='flex-shrink-0 w-1' />
+      </ol>
+      </Droppable>
+    </DragDropContext>
+  )
+}
+```
