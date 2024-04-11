@@ -16420,13 +16420,131 @@ This package provides a beautiful and accessible drag-and-drop experience for li
 npm i @hello-pangea/dnd
 ```
 
-### Implement Drag-and-drop functionality to ListContainer
+### Sample drag-and-drop code
 
-Now to implement it we navigate to `ListContainer`. We can see some sample code on howw to incorporate dnd functionality to our lists.
+We can see some sample code on howw to incorporate dnd functionality to our lists.
 
 - [dnd examples | Github reference](https://github.com/hello-pangea/dnd/blob/main/docs/about/examples.md)
 
-Now wrap `ListContainer` with `DragDropContext` followed by `Droppable`.
+Let's take a look at an example code 
+
+-[Sample for horizontal list @hell-pangea/dnd](https://codesandbox.io/p/sandbox/mmrp44okvj?file=%2Findex.js)
+
+`index.js`
+```js
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+
+// fake data generator
+const getItems = count =>
+  Array.from({ length: count }, (v, k) => k).map(k => ({
+    id: `item-${k}`,
+    content: `item ${k}`,
+  }));
+
+// a little function to help us with reordering the result
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
+
+const grid = 8;
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+  // some basic styles to make the items look a bit nicer
+  userSelect: 'none',
+  padding: grid * 2,
+  margin: `0 ${grid}px 0 0`,
+
+  // change background colour if dragging
+  background: isDragging ? 'lightgreen' : 'grey',
+
+  // styles we need to apply on draggables
+  ...draggableStyle,
+});
+
+const getListStyle = isDraggingOver => ({
+  background: isDraggingOver ? 'lightblue' : 'lightgrey',
+  display: 'flex',
+  padding: grid,
+  overflow: 'auto',
+});
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      items: getItems(6),
+    };
+    this.onDragEnd = this.onDragEnd.bind(this);
+  }
+
+  onDragEnd(result) {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    const items = reorder(
+      this.state.items,
+      result.source.index,
+      result.destination.index
+    );
+
+    this.setState({
+      items,
+    });
+  }
+
+  // Normally you would want to split things out into separate components.
+  // But in this example everything is just done in one place for simplicity
+  render() {
+    return (
+      <DragDropContext onDragEnd={this.onDragEnd}>
+        <Droppable droppableId="droppable" direction="horizontal">
+          {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              style={getListStyle(snapshot.isDraggingOver)}
+              {...provided.droppableProps}
+            >
+              {this.state.items.map((item, index) => (
+                <Draggable key={item.id} draggableId={item.id} index={index}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      style={getItemStyle(
+                        snapshot.isDragging,
+                        provided.draggableProps.style
+                      )}
+                    >
+                      {item.content}
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+    );
+  }
+}
+
+// Put the thing into the DOM!
+ReactDOM.render(<App />, document.getElementById('root'));
+```
+
+### Implement drag-and-drop functionality to ListContainer
+
+To implement Drag-and-drop functionality to `ListContainer`, wrap it with `DragDropContext` followed by `Droppable`.
 
 feat: Integrate drag-and-drop functionality into ListContainer
 
@@ -16563,4 +16681,3 @@ export default function ListContainer({
   )
 }
 ```
-
