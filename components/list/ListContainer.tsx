@@ -20,23 +20,31 @@ export default function ListContainer({
   const [orderedListData, setOrderedListData] = useState(data);
 
   return (
-    <DragDropContext>
-      <Droppable>
-      <ol className='flex h-full gap-x-3'>
-        {
-          orderedListData.map((list, index) => {
-            return (
-              <ListItem
-                key={list.id}
-                index={index}
-                data={list}
-              />
-            )
-          })
-        }
-        <ListForm />
-        <div className='flex-shrink-0 w-1' />
-      </ol>
+    <DragDropContext
+      onDragEnd={() => { }}
+    >
+      <Droppable
+        direction='horizontal'
+        droppableId='lists'
+        type='list'
+      >
+        {(provided, snapshot) => (
+          <ol className='flex h-full gap-x-3'>
+            {
+              orderedListData.map((list, index) => {
+                return (
+                  <ListItem
+                    key={list.id}
+                    index={index}
+                    data={list}
+                  />
+                )
+              })
+            }
+            <ListForm />
+            <div className='flex-shrink-0 w-1' />
+          </ol>
+        )}
       </Droppable>
     </DragDropContext>
   )
