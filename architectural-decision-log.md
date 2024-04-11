@@ -16460,3 +16460,53 @@ export default function ListContainer({
   )
 }
 ```
+
+Let's pass the necessary props to `DragDropContextt` and `Droppable` components. Also wrap the `ol` by a `Droppable` container with `provided`.
+
+feat: Add DragDropContext and Droppable props to ListContainer
+
+This commit adds the necessary props for using the DragDropContext and Droppable components from the '@hello-pangea/dnd' library. The `onDragEnd` callback is also included.
+
+The `ListContainer` component now accepts the following props:
+- `boardId: string`: The ID of the board.
+- `data: ListWithCards[]`: An array of list data with associated cards.
+
+Additionally, the component renders a list of ordered data, each wrapped in a `Droppable` container. The `ListItem` component is used to display individual list items, and a `ListForm` component is included for adding new items.
+
+```tsx
+export default function ListContainer({
+  boardId,
+  data,
+}: ListContainerProps) {
+
+  return (
+    <DragDropContext
+      onDragEnd={() => { }}
+    >
+      <Droppable
+        direction='horizontal'
+        droppableId='lists'
+        type='list'
+      >
+        {(provided, snapshot) => (
+          <ol className='flex h-full gap-x-3'>
+            {
+              orderedListData.map((list, index) => {
+                return (
+                  <ListItem
+                    key={list.id}
+                    index={index}
+                    data={list}
+                  />
+                )
+              })
+            }
+            <ListForm />
+            <div className='flex-shrink-0 w-1' />
+          </ol>
+        )}
+      </Droppable>
+    </DragDropContext>
+  )
+}
+```
