@@ -16681,3 +16681,65 @@ export default function ListContainer({
   )
 }
 ```
+
+### Implement drag-and-drop behavior to ListItem
+
+- import `Draggable` and `Droppable` from `@hello-pangea/dnd`
+- Wrap the `ListItem` with `Draggable` component
+  - Pass the `draggableId` and `index` props to `Droppable`
+
+feat: Add draggable behavior to ListItem
+
+```tsx
+import { Draggable, Droppable } from '@hello-pangea/dnd';
+
+interface ListItemProps {
+  data: ListWithCards;
+  index: number;
+}
+
+export default function ListItem({
+  data,
+  index,
+}: ListItemProps) {
+  // ...
+
+  return (
+    <Draggable
+      draggableId={data.id}
+      index={index}
+    >
+      <li className='h-full w-72 shrink-0 select-none'>
+        <div className='w-full rounded-md bg-[#f1f2f4] shadow-md pb-2'>
+          <ListHeader
+            data={data}
+            handleAddCardToList={enableEditing}
+          />
+          <ol
+            className={cn(
+              'flex flex-col gap-y-2 mx-1 px-1 py-0.5',
+              data.cards.length > 0 ? 'mt-2' : 'mt-0'
+            )}
+          >
+            {data.cards.map((card, index) => (
+              <CardItem
+                key={card.id}
+                data={card}
+                index={index}
+              />
+            ))}
+          </ol>
+          <CardForm
+            ref={textAreaRef}
+            listId={data.id}
+            isEditing={isEditing}
+            enableEditing={enableEditing}
+            disableEditing={disableEditing}
+          />
+        </div>
+      </li>
+    </Draggable>
+  )
+}
+```
+
