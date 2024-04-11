@@ -16743,3 +16743,90 @@ export default function ListItem({
 }
 ```
 
+Then to implement draggable behavior, we have to add `provided` and the props to the `li` and `div` element. So now when user grabs on the `div` they will activate the drag-and-drop.
+
+feat: Implement draggable behavior in ListItem
+
+```tsx
+  return (
+    <Draggable
+      draggableId={data.id}
+      index={index}
+    >
+      {(provided) => (
+        <li
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          className='h-full w-72 shrink-0 select-none'
+        >
+          <div 
+            {...provided.dragHandleProps}
+            className='w-full rounded-md bg-[#f1f2f4] shadow-md pb-2'
+          >
+            <ListHeader
+              data={data}
+              handleAddCardToList={enableEditing}
+            />
+            <ol
+              className={cn(
+                'flex flex-col gap-y-2 mx-1 px-1 py-0.5',
+                data.cards.length > 0 ? 'mt-2' : 'mt-0'
+              )}
+            >
+              {data.cards.map((card, index) => (
+                <CardItem
+                  key={card.id}
+                  data={card}
+                  index={index}
+                />
+              ))}
+            </ol>
+            <CardForm
+              ref={textAreaRef}
+              listId={data.id}
+              isEditing={isEditing}
+              enableEditing={enableEditing}
+              disableEditing={disableEditing}
+            />
+          </div>
+        </li>
+      )}
+    </Draggable>
+  )
+```
+
+Let's take a closer look at the code snippet around `Draggable`
+
+```tsx
+return (
+  <Draggable
+    draggableId={data.id} // Unique ID for the draggable item
+    index={index} // Position index of the item in the list
+  >
+    {(provided) => (
+      <li
+        ref={provided.innerRef} // Reference to the DOM element for the draggable item
+        {...provided.draggableProps} // Props for handling drag behavior
+        className='h-full w-72 shrink-0 select-none'
+      >
+        <div 
+          {...provided.dragHandleProps} // Props for the drag handle (e.g., a grabber icon)
+          className='w-full rounded-md bg-[#f1f2f4] shadow-md pb-2'
+        >
+          {/* Your content goes here */}
+        </div>
+      </li>
+    )}
+  </Draggable>
+);
+```
+
+- `Draggable`: Wraps the entire draggable item and provides necessary functionality for dragging.
+  - `draggableId`: A unique identifier for the draggable item.
+  - `index`: The position of the item in the list.
+- `provided.innerRef`: A reference to the DOM element that should be moved when dragging.
+- `provided.draggableProps`: Props for handling drag behavior (e.g., setting the position).
+- `provided.dragHandleProps`: Props for the drag handle (e.g., a grabber icon) to initiate dragging.
+- `className`: Styling classes for the draggable item.
+- Inside the `div`, you can add your custom content (e.g., list items, forms, etc.).
+
