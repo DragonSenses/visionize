@@ -43,7 +43,7 @@ export default function ListItem({
           {...provided.draggableProps}
           className='h-full w-72 shrink-0 select-none'
         >
-          <div 
+          <div
             {...provided.dragHandleProps}
             className='w-full rounded-md bg-[#f1f2f4] shadow-md pb-2'
           >
@@ -51,20 +51,22 @@ export default function ListItem({
               data={data}
               handleAddCardToList={enableEditing}
             />
-            <ol
-              className={cn(
-                'flex flex-col gap-y-2 mx-1 px-1 py-0.5',
-                data.cards.length > 0 ? 'mt-2' : 'mt-0'
-              )}
-            >
-              {data.cards.map((card, index) => (
-                <CardItem
-                  key={card.id}
-                  data={card}
-                  index={index}
-                />
-              ))}
-            </ol>
+            <Droppable>
+              <ol
+                className={cn(
+                  'flex flex-col gap-y-2 mx-1 px-1 py-0.5',
+                  data.cards.length > 0 ? 'mt-2' : 'mt-0'
+                )}
+              >
+                {data.cards.map((card, index) => (
+                  <CardItem
+                    key={card.id}
+                    data={card}
+                    index={index}
+                  />
+                ))}
+              </ol>
+            </Droppable>
             <CardForm
               ref={textAreaRef}
               listId={data.id}
