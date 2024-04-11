@@ -16420,9 +16420,13 @@ This package provides a beautiful and accessible drag-and-drop experience for li
 npm i @hello-pangea/dnd
 ```
 
-Now to implement it we navigate to `ListContainer`.
+### Implement Drag-and-drop functionality to ListContainer
 
-Now wrap it with `DragDropContext` followed by `Droppable`.
+Now to implement it we navigate to `ListContainer`. We can see some sample code on howw to incorporate dnd functionality to our lists.
+
+- [dnd examples | Github reference](https://github.com/hello-pangea/dnd/blob/main/docs/about/examples.md)
+
+Now wrap `ListContainer` with `DragDropContext` followed by `Droppable`.
 
 feat: Integrate drag-and-drop functionality into ListContainer
 
@@ -16510,3 +16514,53 @@ export default function ListContainer({
   )
 }
 ```
+
+feat: Add props to ol and render provider placeholder
+
+- Pass necessary props to the `<ol>` element within the `<Droppable>` component.
+- Render the `<Provider>` placeholder using the `provided.placeholder` prop.
+
+```tsx
+export default function ListContainer({
+  boardId,
+  data,
+}: ListContainerProps) {
+  const [orderedListData, setOrderedListData] = useState(data);
+
+  return (
+    <DragDropContext
+      onDragEnd={() => { }}
+    >
+      <Droppable
+        direction='horizontal'
+        droppableId='lists'
+        type='list'
+      >
+        {(provided, snapshot) => (
+          <ol
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            className='flex h-full gap-x-3'
+          >
+            {
+              orderedListData.map((list, index) => {
+                return (
+                  <ListItem
+                    key={list.id}
+                    index={index}
+                    data={list}
+                  />
+                )
+              })
+            }
+            {provided.placeholder}
+            <ListForm />
+            <div className='flex-shrink-0 w-1' />
+          </ol>
+        )}
+      </Droppable>
+    </DragDropContext>
+  )
+}
+```
+
