@@ -29,7 +29,11 @@ export default function ListContainer({
         type='list'
       >
         {(provided, snapshot) => (
-          <ol className='flex h-full gap-x-3'>
+          <ol
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            className='flex h-full gap-x-3'
+          >
             {
               orderedListData.map((list, index) => {
                 return (
@@ -41,6 +45,7 @@ export default function ListContainer({
                 )
               })
             }
+            {provided.placeholder}
             <ListForm />
             <div className='flex-shrink-0 w-1' />
           </ol>
