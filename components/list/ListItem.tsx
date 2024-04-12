@@ -57,6 +57,8 @@ export default function ListItem({
             >
               {(provided) => (
                 <ol
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
                   className={cn(
                     'flex flex-col gap-y-2 mx-1 px-1 py-0.5',
                     data.cards.length > 0 ? 'mt-2' : 'mt-0'
@@ -69,6 +71,7 @@ export default function ListItem({
                       index={index}
                     />
                   ))}
+                  {provided.placeholder}
                 </ol>
               )}
             </Droppable>
