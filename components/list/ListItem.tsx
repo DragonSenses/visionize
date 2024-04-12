@@ -51,21 +51,26 @@ export default function ListItem({
               data={data}
               handleAddCardToList={enableEditing}
             />
-            <Droppable>
-              <ol
-                className={cn(
-                  'flex flex-col gap-y-2 mx-1 px-1 py-0.5',
-                  data.cards.length > 0 ? 'mt-2' : 'mt-0'
-                )}
-              >
-                {data.cards.map((card, index) => (
-                  <CardItem
-                    key={card.id}
-                    data={card}
-                    index={index}
-                  />
-                ))}
-              </ol>
+            <Droppable
+              droppableId={data.id}
+              type='card'
+            >
+              {(provided) => (
+                <ol
+                  className={cn(
+                    'flex flex-col gap-y-2 mx-1 px-1 py-0.5',
+                    data.cards.length > 0 ? 'mt-2' : 'mt-0'
+                  )}
+                >
+                  {data.cards.map((card, index) => (
+                    <CardItem
+                      key={card.id}
+                      data={card}
+                      index={index}
+                    />
+                  ))}
+                </ol>
+              )}
             </Droppable>
             <CardForm
               ref={textAreaRef}
