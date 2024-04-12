@@ -17053,3 +17053,44 @@ export default function CardItem({
   )
 }
 ```
+
+Now add the `provided` properties to the `div` to enable drag functionality.
+
+feat: Enable card dragging within lists
+
+```tsx
+export default function CardItem({
+  data,
+  index,
+}: CardItemProps) {
+  return (
+    <Draggable
+      draggableId={data.id}
+      index={index}
+    >
+      {(provided) => (
+        <div
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+          role="button"
+          className='py-2 px-3 bg-white text-sm shadow-sm rounded-md truncate border-2 border-transparent hover:border-black'
+        >
+          {data.title}
+        </div>
+      )}
+    </Draggable>
+  )
+}
+```
+
+Now cards can be draggable vertically within a list.
+
+We can test if this change has affected these behaviors:
+
+- Edit a card
+- Add a card
+- Submit a card
+- Click on ListOptions
+
+
