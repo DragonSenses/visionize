@@ -21,6 +21,9 @@ export default function CardItem({
     >
       {(provided) => (
         <div
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
           role="button"
           className='py-2 px-3 bg-white text-sm shadow-sm rounded-md truncate border-2 border-transparent hover:border-black'
         >
