@@ -16912,3 +16912,63 @@ Changes:
   )}
 </Droppable>
 ```
+
+Now we can manage the drag-and-drop behavior through the `provided` object. 
+
+Add the following to `ol`:
+- `provided.innerRef`
+- `provided.droppableProps`
+
+Then also render the `provided.placeholder` right before the end of `ol`
+  
+```tsx
+<Droppable
+  droppableId={data.id}
+  type='card'
+>
+  {(provided) => (
+    <ol
+      ref={provided.innerRef}
+      {...provided.droppableProps}
+      className={cn(
+        'flex flex-col gap-y-2 mx-1 px-1 py-0.5',
+        data.cards.length > 0 ? 'mt-2' : 'mt-0'
+      )}
+    >
+      {data.cards.map((card, index) => (
+        <CardItem
+          key={card.id}
+          data={card}
+          index={index}
+        />
+      ))}
+      {provided.placeholder}
+    </ol>
+  )}
+</Droppable>
+```
+
+docs(ListItem): Add details on droppable behavior
+
+Let's break down the `Droppable` component and the purpose of the `provided` props in the context of the provided code snippet:
+
+1. **`Droppable` Component**:
+   - The `<Droppable>` component is part of a drag-and-drop library (such as `@hello-pangea/dnd`).
+   - It defines an area where draggable items (in this case, cards) can be dropped.
+   - The `droppableId` prop specifies a unique identifier for this droppable area.
+
+2. **`provided` Object**:
+   - The `provided` object is automatically passed by the drag-and-drop library to the function provided as a child of `<Droppable>`.
+   - It contains various properties and functions that help manage the drag-and-drop behavior.
+
+3. **Properties within `provided`**:
+   - `innerRef`: A reference to the DOM element that represents the droppable area. In this case, it refers to the `<ol>` element.
+   - `droppableProps`: An object containing additional props that should be spread onto the droppable element (in this case, the `<ol>`).
+   - `placeholder`: A placeholder element that appears when a draggable item is being moved within the droppable area. It helps maintain the layout during drag-and-drop operations.
+
+4. **Usage in the Code**:
+   - `ref={provided.innerRef}`: This attaches the `innerRef` to the `<ol>` element, allowing the drag-and-drop library to manage its position and interactions.
+   - `{...provided.droppableProps}`: This spreads any additional props (such as event listeners) onto the `<ol>` element.
+   - `{provided.placeholder}`: This renders the placeholder element within the `<ol>` during drag-and-drop operations.
+
+Overall, the `provided` object ensures smooth integration with the drag-and-drop system, allowing you to customize the behavior of the droppable area. It's a crucial part of creating interactive and responsive UIs for reordering items. 
