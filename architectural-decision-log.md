@@ -16913,6 +16913,8 @@ Changes:
 </Droppable>
 ```
 
+feat: Add droppable functionality to ListItem
+
 Now we can manage the drag-and-drop behavior through the `provided` object. 
 
 Add the following to `ol`:
@@ -16972,3 +16974,23 @@ Let's break down the `Droppable` component and the purpose of the `provided` pro
    - `{provided.placeholder}`: This renders the placeholder element within the `<ol>` during drag-and-drop operations.
 
 Overall, the `provided` object ensures smooth integration with the drag-and-drop system, allowing you to customize the behavior of the droppable area. It's a crucial part of creating interactive and responsive UIs for reordering items. 
+
+### Drag-and-drop testing
+
+At this point, the drag and drop functionality of the UI is somewhat working. 
+
+We can:
+- Drag a List to a different spot (change its order)
+
+However, due to the absence of an implemented `onDragEnd` function in `ListContainer`, no visual changes occur in the UI after completing the drag operation.
+
+- Another problem is that individual cards cannot be dragged independently; instead, the entire list moves when dragging.
+
+Let's also add a few more tests such as
+- Add a new card
+- Add a new list
+- Do server actions create a resource in the database?
+- Does edit mode work in various components?
+- Does dragging hinder previous operations?
+  
+
