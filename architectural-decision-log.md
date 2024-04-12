@@ -16830,3 +16830,85 @@ return (
 - `className`: Styling classes for the draggable item.
 - Inside the `div`, you can add your custom content (e.g., list items, forms, etc.).
 
+#### Droppable component
+
+Next right below `ListHeader`, wrap the `ol` with a `Droppable` component.
+
+```tsx
+  return (
+    <Draggable
+      draggableId={data.id}
+      index={index}
+    >
+      {(provided) => (
+        <li
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          className='h-full w-72 shrink-0 select-none'
+        >
+          <div
+            {...provided.dragHandleProps}
+            className='w-full rounded-md bg-[#f1f2f4] shadow-md pb-2'
+          >
+            <ListHeader
+              data={data}
+              handleAddCardToList={enableEditing}
+            />
+            <Droppable>
+              <ol
+                className={cn(
+                  'flex flex-col gap-y-2 mx-1 px-1 py-0.5',
+                  data.cards.length > 0 ? 'mt-2' : 'mt-0'
+                )}
+              >
+                {data.cards.map((card, index) => (
+                  <CardItem
+                    key={card.id}
+                    data={card}
+                    index={index}
+                  />
+                ))}
+              </ol>
+            </Droppable>
+            {/* CardForm */}
+          </div>
+        </li>
+      )}
+    </Draggable>
+  )
+}
+```
+
+Now zone in on `Droppable`and wrap `ol` with `provided`.
+
+feat: Wrap ordered list with Droppable component
+
+Added a `Droppable` component around the existing ordered list (ol) in the ListItem component. The provided callback function renders each card item within the list.
+
+Changes:
+- Wrapped the `<ol>` element with `<Droppable>` component.
+- Used the provided callback function to map over the `data.cards` array and render each `CardItem`.
+
+```tsx
+<Droppable
+  droppableId={data.id}
+  type='card'
+>
+  {(provided) => (
+    <ol
+      className={cn(
+        'flex flex-col gap-y-2 mx-1 px-1 py-0.5',
+        data.cards.length > 0 ? 'mt-2' : 'mt-0'
+      )}
+    >
+      {data.cards.map((card, index) => (
+        <CardItem
+          key={card.id}
+          data={card}
+          index={index}
+        />
+      ))}
+    </ol>
+  )}
+</Droppable>
+```
