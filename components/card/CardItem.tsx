@@ -15,13 +15,18 @@ export default function CardItem({
   index,
 }: CardItemProps) {
   return (
-    <Draggable>
-      <div
-        role="button"
-        className='py-2 px-3 bg-white text-sm shadow-sm rounded-md truncate border-2 border-transparent hover:border-black'
-      >
-        {data.title}
-      </div>
+    <Draggable
+      draggableId={data.id}
+      index={index}
+    >
+      {(provided) => (
+        <div
+          role="button"
+          className='py-2 px-3 bg-white text-sm shadow-sm rounded-md truncate border-2 border-transparent hover:border-black'
+        >
+          {data.title}
+        </div>
+      )}
     </Draggable>
   )
 }
