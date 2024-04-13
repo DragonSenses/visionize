@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 
 import { ListWithCards } from '@/types/types';
@@ -39,6 +39,10 @@ export default function ListContainer({
   data,
 }: ListContainerProps) {
   const [orderedListData, setOrderedListData] = useState(data);
+
+  useEffect(() => {
+    setOrderedListData(data);
+  }, [data]);
 
   return (
     <DragDropContext
