@@ -34,6 +34,15 @@ function reorder<Type>(list: Type[], startIndex: number, endIndex: number): Type
   return result;
 }
 
+/**
+ * Handle drag completion for lists and cards
+ * @param result contains info on destination, source, and type of card or list
+ */
+function onDragEnd(result: any) {
+
+
+}
+
 export default function ListContainer({
   boardId,
   data,
@@ -46,7 +55,7 @@ export default function ListContainer({
 
   return (
     <DragDropContext
-      onDragEnd={() => { }}
+      onDragEnd={onDragEnd}
     >
       <Droppable
         direction='horizontal'
