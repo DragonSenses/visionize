@@ -13,11 +13,24 @@ interface ListContainerProps {
   data: ListWithCards[];
 }
 
-function reorder<Type>(list: Type[], startIndex: number, endIndex: number) {
+/**
+ * Reorders elements in an array by moving an element from one position to another.
+ * @param list An array of elements.
+ * @param startIndex The index of the element to be moved.
+ * @param endIndex The target index where the element should be placed.
+ * @returns A new array with the reordered elements.
+ */
+function reorder<Type>(list: Type[], startIndex: number, endIndex: number): Type[] {
+  // Create a shallow copy of the input array
   const result = Array.from(list);
+
+  // Remove the element at startIndex
   const [removed] = result.splice(startIndex, 1);
+
+  // Insert the removed element back into the array at endIndex
   result.splice(endIndex, 0, removed);
 
+  // Return the modified array
   return result;
 }
 
