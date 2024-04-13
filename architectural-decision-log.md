@@ -17167,3 +17167,27 @@ export default function ListContainer({
 ```
 
 Now the `orderedListData` updates on every render.
+
+### Implement onDragEnd
+
+Now to implement the `onDragEnd`, create a function with the same name and assign it to the `DragDropContext`.
+
+```tsx
+/**
+ * Handle drag completion for lists and cards
+ * @param result contains info on destination, source, and type of card or list
+ */
+function onDragEnd(result: any) {
+  // TODO
+}
+
+export default function ListContainer({
+  boardId,
+  data,
+}: ListContainerProps) {
+  // ...
+  return (
+    <DragDropContext
+      onDragEnd={onDragEnd}
+    >
+```
