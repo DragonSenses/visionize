@@ -17112,7 +17112,7 @@ export default function ListContainer({
     >
 ```
 
-Let's define a function that reorders the elements in an array.
+Let's define a function that reorders the elements in an array. This function will reorder based on indexes.
 
 feat: Add reorder function for list reordering
 
@@ -17141,3 +17141,29 @@ function reorder<Type>(list: Type[], startIndex: number, endIndex: number): Type
 }
 ```
 
+Next let's use the `orderedListData` state and call the setter function inside a `useEffect`. We will pass in `data`.
+
+feat: Initialize orderedListData in ListContainer
+
+This commit adds the import statement for `useEffect` and initializes the `orderedListData` state variable in the `ListContainer` component. The `useEffect` hook is used to update `orderedListData` whenever the `data` prop changes.
+
+Details:
+- Imported `useEffect` from React.
+- Created a state variable `orderedListData` using `useState`.
+- The `useEffect` hook updates `orderedListData` with the latest `data` prop value.
+
+```tsx
+import React, { useEffect, useState } from 'react';
+
+export default function ListContainer({
+  boardId,
+  data,
+}: ListContainerProps) {
+  const [orderedListData, setOrderedListData] = useState(data);
+
+  useEffect(() => {
+    setOrderedListData(data);
+  }, [data]);
+```
+
+Now the `orderedListData` updates on every render.
