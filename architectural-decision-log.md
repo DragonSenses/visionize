@@ -17093,4 +17093,51 @@ We can test if this change has affected these behaviors:
 - Submit a card
 - Click on ListOptions
 
+## Handle drag completion
+
+To change the actual order of cards and lists we need to implement the `onDragEnd`.
+
+In `ListContainer`, we have the `DragContext`.
+
+```tsx
+export default function ListContainer({
+  boardId,
+  data,
+}: ListContainerProps) {
+  const [orderedListData, setOrderedListData] = useState(data);
+
+  return (
+    <DragDropContext
+      onDragEnd={() => { }}
+    >
+```
+
+Let's define a function that reorders the elements in an array.
+
+feat: Add reorder function for list reordering
+
+This commit adds the `reorder` function to the `ListContainer` component. The function allows elements within an array to be moved from one position to another. It is used for reordering lists of cards on a board.
+
+```tsx
+/**
+ * Reorders elements in an array by moving an element from one position to another.
+ * @param list An array of elements.
+ * @param startIndex The index of the element to be moved.
+ * @param endIndex The target index where the element should be placed.
+ * @returns A new array with the reordered elements.
+ */
+function reorder<Type>(list: Type[], startIndex: number, endIndex: number): Type[] {
+  // Create a shallow copy of the input array
+  const result = Array.from(list);
+
+  // Remove the element at startIndex
+  const [removed] = result.splice(startIndex, 1);
+
+  // Insert the removed element back into the array at endIndex
+  result.splice(endIndex, 0, removed);
+
+  // Return the modified array
+  return result;
+}
+```
 
