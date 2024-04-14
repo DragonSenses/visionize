@@ -39,7 +39,12 @@ function reorder<Type>(list: Type[], startIndex: number, endIndex: number): Type
  * @param result contains info on destination, source, and type of card or list
  */
 function onDragEnd(result: any) {
+  const { destination, source } = result;
 
+  // Case 1) No destination to drag to
+  if (!destination) {
+    return;
+  }
 
 }
 
