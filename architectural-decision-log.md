@@ -17173,18 +17173,24 @@ Now the `orderedListData` updates on every render.
 Now to implement the `onDragEnd`, create a function with the same name and assign it to the `DragDropContext`.
 
 ```tsx
-/**
- * Handle drag completion for lists and cards
- * @param result contains info on destination, source, and type of card or list
- */
-function onDragEnd(result: any) {
-  // TODO
-}
-
 export default function ListContainer({
   boardId,
   data,
 }: ListContainerProps) {
+  const [orderedListData, setOrderedListData] = useState(data);
+
+  useEffect(() => {
+    setOrderedListData(data);
+  }, [data]);
+
+  /**
+   * Handle drag completion for lists and cards
+   * @param result contains info on destination, source, and type of card or list
+   */
+  function onDragEnd(result: any) {
+    // TODO
+  }
+
   // ...
   return (
     <DragDropContext

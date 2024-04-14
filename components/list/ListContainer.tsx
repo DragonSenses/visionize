@@ -34,27 +34,7 @@ function reorder<Type>(list: Type[], startIndex: number, endIndex: number): Type
   return result;
 }
 
-/**
- * Handle drag completion for lists and cards
- * @param result contains info on destination, source, and type of card or list
- */
-function onDragEnd(result: any) {
-  const { destination, source } = result;
 
-  // Case 1: No destination to drag to
-  if (!destination) {
-    return;
-  }
-
-  // Case 2: If dropped into the same position
-  if (
-    destination.droppableId === source.droppableId &&
-    destination.index === source.index
-  ) {
-    return;
-  }
-
-}
 
 export default function ListContainer({
   boardId,
@@ -65,6 +45,29 @@ export default function ListContainer({
   useEffect(() => {
     setOrderedListData(data);
   }, [data]);
+
+
+  /**
+   * Handle drag completion for lists and cards
+   * @param result contains info on destination, source, and type of card or list
+   */
+  function onDragEnd(result: any) {
+    const { destination, source } = result;
+
+    // Case 1: No destination to drag to
+    if (!destination) {
+      return;
+    }
+
+    // Case 2: If dropped into the same position
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+  }
 
   return (
     <DragDropContext
