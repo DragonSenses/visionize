@@ -17206,9 +17206,10 @@ Let's analyze the logic by considering different cases. When a user drags a card
    - If there's no valid destination (e.g., dragging outside the droppable area), we handle this case appropriately.
 2. **Dropped into the Same Position**:
    - If the item is dropped back into the same position within the same droppable area, we avoid unnecessary reordering.
-3. **Reordering Within the Same List**:
-   - When the drag occurs within the same list, we reorder the list data based on the drag result.
+3. **User moves a list**
 
+4. **Reordering Within the Same List**:
+   - When the drag occurs within the same list, we reorder the list data based on the drag result.
 
 feat: Handle no destination case in onDragEnd
 
@@ -17271,3 +17272,37 @@ or in `ListItem`
 
 Therefore we can destructure `type` from `result`, then use that to determine the functionality.
 
+feat: Implement drag-and-drop for reordering lists
+
+Handle the case when user drags-and-drops a list.
+
+In this case:
+- We're specifically dealing with lists (as opposed to individual cards).
+- When a list is dragged and dropped, we perform the following steps:
+  1. Reorder the list data based on the drag result using the `reorder` function.
+  2. Update the `orderedListData` state with the newly reordered list.
+
+feat: Handle list reordering in onDragEnd
+
+```tsx
+  function onDragEnd(result: any) {
+    const { destination, source, type } = result;
+
+    // Case 3: User drag-and-drops a list
+    if (type === 'list') {
+      // Reorder the list data based on the drag result
+      const items = reorder(
+        orderedListData,
+        source.index,
+        destination.index,
+      ).map((item, index) => ({ ...item, order: index }));
+
+      // Update state with newly ordered list
+      setOrderedListData(items);
+
+      // TODO: Execute Server Action to update backend
+    }
+  }
+```
+
+We can test this by moving an original list to a different position. The lists will reorder themselves and the state is updated. If we refresh however, the original list position resets because the server action has not been implemented yet.
