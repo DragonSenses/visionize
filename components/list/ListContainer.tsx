@@ -41,8 +41,16 @@ function reorder<Type>(list: Type[], startIndex: number, endIndex: number): Type
 function onDragEnd(result: any) {
   const { destination, source } = result;
 
-  // Case 1) No destination to drag to
+  // Case 1: No destination to drag to
   if (!destination) {
+    return;
+  }
+
+  // Case 2: If dropped into the same position
+  if (
+    destination.droppableId === source.droppableId &&
+    destination.index === source.index
+  ) {
     return;
   }
 
