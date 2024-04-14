@@ -17306,3 +17306,49 @@ feat: Handle list reordering in onDragEnd
 ```
 
 We can test this by moving an original list to a different position. The lists will reorder themselves and the state is updated. If we refresh however, the original list position resets because the server action has not been implemented yet.
+
+### Reorder cards
+
+Now consider the next case where user drag-and-drops a card. Let's reorder the data in the case that the card is moving within the same list.
+
+feat: Implement card reordering in onDragEnd
+
+```tsx
+  function onDragEnd(result: any) {
+    const { destination, source, type } = result;
+
+    // Case 4: User drag-and-drops a card
+    if (type === 'card') {
+      let newOrderedListData = [...orderedListData];
+
+      const sourceList = newOrderedListData
+        .find(list => list.id === source.droppableId);
+
+      const destList = newOrderedListData
+        .find(list => list.id === destination.droppableId);
+
+      if (!sourceList || !destList) {
+        return;
+      }
+
+      // Move card within the same list
+      if (source.droppableId === destination.droppableId) {
+        const reorderedCards = reorder(
+          sourceList.cards,
+          source.index,
+          destination.index,
+        );
+
+        reorderedCards.forEach((card, index) => {
+          card.order = index;
+        });
+
+        sourceList.cards = reorderedCards;
+
+        setOrderedListData(newOrderedListData);
+
+        // TODO: Execute Server Action
+      }
+    }
+  }
+```
