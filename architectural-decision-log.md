@@ -17191,3 +17191,21 @@ export default function ListContainer({
       onDragEnd={onDragEnd}
     >
 ```
+
+feat: Handle no destination case in onDragEnd
+
+```tsx
+/**
+ * Handle drag completion for lists and cards
+ * @param result contains info on destination, source, and type of card or list
+ */
+function onDragEnd(result: any) {
+  const { destination, source } = result;
+
+  // Case 1) No destination to drag to
+  if (!destination) {
+    return;
+  }
+
+}
+```
