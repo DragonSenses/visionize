@@ -17221,3 +17221,47 @@ function onDragEnd(result: any) {
 
 }
 ```
+
+feat: Handle no change in position during drag-and-drop
+
+```tsx
+function onDragEnd(result: any) {
+  const { destination, source } = result;
+
+  // Case 2: If dropped into the same position
+  if (
+    destination.droppableId === source.droppableId &&
+    destination.index === source.index
+  ) {
+    return;
+  }
+}
+```
+
+Next case we want to handle is type specific. Recall that we gave `Droppable` a `type` set to `list` or `card`.
+
+`components\list\ListContainer.tsx`
+```tsx
+  return (
+    <DragDropContext
+      onDragEnd={onDragEnd}
+    >
+      <Droppable
+        direction='horizontal'
+        droppableId='lists'
+        type='list'
+      >
+```
+
+or in `ListItem`
+
+`components\list\ListItem.tsx`
+```tsx
+  <Droppable
+    droppableId={data.id}
+    type='card'
+  >
+```
+
+Therefore we can destructure `type` from `result`, then use that to determine the functionality.
+
