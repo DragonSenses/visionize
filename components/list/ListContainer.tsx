@@ -81,6 +81,36 @@ export default function ListContainer({
 
       // TODO: Execute Server Action to update backend
     }
+
+    // Case 4: User drag-and-drops a card
+    if (type === 'card') {
+      let newOrderedListData = [...orderedListData];
+
+      const sourceList = newOrderedListData
+        .find(list => list.id === source.droppableId);
+
+      const destList = newOrderedListData
+        .find(list => list.id === destination.droppableId);
+
+      // Move card in the same list
+      if (source.droppableId === destination.droppableId) {
+        const reorderedCards = reorder(
+          sourceList.cards,
+          source.index,
+          destination.index,
+        );
+
+        reorderedCards.forEach((card, index) => {
+          card.order = index;
+        });
+
+        sourceList.cards = reorderedCards;
+
+        setOrderedListData(newOrderedListData);
+
+        // TODO: Execute Server Action
+      }
+    }
   }
 
   return (
