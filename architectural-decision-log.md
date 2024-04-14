@@ -17192,6 +17192,18 @@ export default function ListContainer({
     >
 ```
 
+### Drag completion logic
+
+Let's analyze the logic by considering different cases. When a user drags a card or list, the behavior depends on the destination, source, and type of data (whether it's a card or a list). Here's a breakdown of the scenarios:
+
+1. **No Destination to Drag To**:
+   - If there's no valid destination (e.g., dragging outside the droppable area), we handle this case appropriately.
+2. **Dropped into the Same Position**:
+   - If the item is dropped back into the same position within the same droppable area, we avoid unnecessary reordering.
+3. **Reordering Within the Same List**:
+   - When the drag occurs within the same list, we reorder the list data based on the drag result.
+
+
 feat: Handle no destination case in onDragEnd
 
 ```tsx
@@ -17202,7 +17214,7 @@ feat: Handle no destination case in onDragEnd
 function onDragEnd(result: any) {
   const { destination, source } = result;
 
-  // Case 1) No destination to drag to
+  // Case 1: No destination to drag to
   if (!destination) {
     return;
   }
