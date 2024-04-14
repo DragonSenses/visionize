@@ -52,7 +52,7 @@ export default function ListContainer({
    * @param result contains info on destination, source, and type of card or list
    */
   function onDragEnd(result: any) {
-    const { destination, source } = result;
+    const { destination, source, type } = result;
 
     // Case 1: No destination to drag to
     if (!destination) {
@@ -67,6 +67,20 @@ export default function ListContainer({
       return;
     }
 
+    // Case 3: User drag-and-drops a list
+    if (type === 'list') {
+      // Reorder the list data based on the drag result
+      const items = reorder(
+        orderedListData,
+        source.index,
+        destination.index,
+      ).map((item, index) => ({ ...item, order: index }));
+
+      // Update state with newly ordered list
+      setOrderedListData(items);
+
+      // TODO: Execute Server Action to update backend
+    }
   }
 
   return (
