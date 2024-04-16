@@ -92,6 +92,22 @@ export default function ListContainer({
       const destList = newOrderedListData
         .find(list => list.id === destination.droppableId);
 
+      // If either sourceList or destList are not found
+      if (!sourceList || !destList) {
+        return;
+      }
+
+      // If the list is empty, then initialize an empty array of cards
+      // Check if cards exist in sourceList
+      if (!sourceList.cards) {
+        sourceList.cards = [];
+      }
+
+      // Check if cards exists in destList
+      if(!destList.cards) {
+        destList.cards = [];
+      }
+
       // Move card in the same list
       if (source.droppableId === destination.droppableId) {
         const reorderedCards = reorder(
