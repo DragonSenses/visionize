@@ -17368,6 +17368,12 @@ feat: Implement card reordering in onDragEnd
   }
 ```
 
+#### Manage card movement within and across lists
+
+feat: Manage card movement within and across lists
+
+Next thing we need to do is handle two cases for when we move cards within the same list or across different lists.
+
 - Handle the case for when user moves card within the same list
 
 docs: Comment card movement within the same list
@@ -17422,6 +17428,8 @@ Add comments for handling card movement to a different list
 - Update state to optimistically update the UI.
 - TODO: Execute server action.
 
+feat: Implement card movement across lists
+
 ```tsx
     // Case 4: User drag-and-drops a card
     if (type === 'card') {
@@ -17456,24 +17464,29 @@ Add comments for handling card movement to a different list
         // Handle the case for when user moves card to a different list
 
         // Remove card from the source list
-
+        const [movedCard] = sourceList.cards.splice(source.index, 1);
 
         // Assign the new listId to the moved card
-
+        movedCard.listId = destination.droppableId;
 
         // Add card to the destination list
-
+        destList.cards.splice(destination.index, 0, movedCard);
 
         // Update the order for each card in the source list
-
+        sourceList.cards.forEach((card, index) => {
+          card.order = index;
+        })
 
         // Update the order for each card in the destination list
+        destList.cards.forEach((card, index) => {
+          card.order = index;
+        });
 
         // Update list data state to optimistically update the UI
+        setOrderedListData(newOrderedListData);
 
         // TODO: Execute Server Action
       }
-
     }
   }
 ```
