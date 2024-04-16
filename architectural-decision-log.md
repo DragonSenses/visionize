@@ -17408,3 +17408,72 @@ Add comments for handling card movement within the same list.
 We've successfully enabled local card movement within a list, ensuring that card positions no longer reset. To make this order change permanent and prevent loss upon refresh, we'll need to execute the server action.
 
 - Handle the case for when user moves card to a different list
+
+feat: Add card movement to different list logic
+
+docs: Comment on card movement across lists
+
+Add comments for handling card movement to a different list
+
+- Remove card from the source list.
+- Assign the new listId to the moved card.
+- Add the card to the destination list.
+- Update the order for each card in both lists.
+- Update state to optimistically update the UI.
+- TODO: Execute server action.
+
+```tsx
+    // Case 4: User drag-and-drops a card
+    if (type === 'card') {
+      let newOrderedListData = [...orderedListData];
+
+      const sourceList = newOrderedListData
+        .find(list => list.id === source.droppableId);
+
+      const destList = newOrderedListData
+        .find(list => list.id === destination.droppableId);
+
+      // If either sourceList or destList are not found
+      if (!sourceList || !destList) {
+        return;
+      }
+
+      // If the list is empty, then initialize an empty array of cards
+      // Check if cards exist in sourceList
+      if (!sourceList.cards) {
+        sourceList.cards = [];
+      }
+
+      // Check if cards exists in destList
+      if(!destList.cards) {
+        destList.cards = [];
+      }
+      
+      // Handle the case for when user moves card within the same list
+      // ...
+
+      } else {
+        // Handle the case for when user moves card to a different list
+
+        // Remove card from the source list
+
+
+        // Assign the new listId to the moved card
+
+
+        // Add card to the destination list
+
+
+        // Update the order for each card in the source list
+
+
+        // Update the order for each card in the destination list
+
+        // Update list data state to optimistically update the UI
+
+        // TODO: Execute Server Action
+      }
+
+    }
+  }
+```
