@@ -130,9 +130,28 @@ export default function ListContainer({
         setOrderedListData(newOrderedListData);
 
         // TODO: Execute Server Action
+      } else {
+        // Handle the case for when user moves card to a different list
+
+        // Remove card from the source list
+
+
+        // Assign the new listId to the moved card
+
+
+        // Add card to the destination list
+
+
+        // Update the order for each card in the source list
+
+
+        // Update the order for each card in the destination list
+
+        // Update list data state to optimistically update the UI
+
+        // TODO: Execute Server Action
       }
 
-      // Handle the case for when user moves card to a different list
     }
   }
 
