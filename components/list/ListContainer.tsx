@@ -134,24 +134,29 @@ export default function ListContainer({
         // Handle the case for when user moves card to a different list
 
         // Remove card from the source list
-
+        const [movedCard] = sourceList.cards.splice(source.index, 1);
 
         // Assign the new listId to the moved card
-
+        movedCard.listId = destination.droppableId;
 
         // Add card to the destination list
-
+        destList.cards.splice(destination.index, 0, movedCard);
 
         // Update the order for each card in the source list
-
+        sourceList.cards.forEach((card, index) => {
+          card.order = index;
+        })
 
         // Update the order for each card in the destination list
+        destList.cards.forEach((card, index) => {
+          card.order = index;
+        });
 
         // Update list data state to optimistically update the UI
+        setOrderedListData(newOrderedListData);
 
         // TODO: Execute Server Action
       }
-
     }
   }
 
