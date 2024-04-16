@@ -17311,6 +17311,13 @@ We can test this by moving an original list to a different position. The lists w
 
 Now consider the next case where user drag-and-drops a card. Let's reorder the data in the case that the card is moving within the same list.
 
+feat: Add edge case checks for onDragEnd
+
+feat: Enhance card dragging logic within onDragEnd
+
+- Check if source and destination lists exists
+- Initialize empty card arrays for source and destination lists if needed.
+
 feat: Implement card reordering in onDragEnd
 
 ```tsx
@@ -17361,9 +17368,43 @@ feat: Implement card reordering in onDragEnd
   }
 ```
 
-feat: Add edge case checks for onDragEnd
+- Handle the case for when user moves card within the same list
 
-feat: Enhance card dragging logic within onDragEnd
+docs: Comment card movement within the same list
 
-- Check if source and destination lists exists
-- Initialize empty card arrays for source and destination lists if needed.
+Add comments for handling card movement within the same list.
+
+- Reorder cards based on drag-and-drop.
+- Update card order.
+- Update state to reflect UI changes.
+- TODO: Execute server action.
+
+```tsx
+      // Handle the case for when user moves card within the same list
+      // Move card in the same list
+      if (source.droppableId === destination.droppableId) {
+        // Reorder the cards
+        const reorderedCards = reorder(
+          sourceList.cards,
+          source.index,
+          destination.index,
+        );
+
+        // Change the order of each card
+        reorderedCards.forEach((card, index) => {
+          card.order = index;
+        });
+
+        // Assign newly ordered cards to the sourceList
+        sourceList.cards = reorderedCards;
+
+        // Update list data state to optimistically update the UI
+        setOrderedListData(newOrderedListData);
+
+        // TODO: Execute Server Action
+      }
+```
+
+We've successfully enabled local card movement within a list, ensuring that card positions no longer reset. To make this order change permanent and prevent loss upon refresh, we'll need to execute the server action.
+
+- Handle the case for when user moves card to a different list
