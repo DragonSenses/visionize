@@ -107,25 +107,32 @@ export default function ListContainer({
       if(!destList.cards) {
         destList.cards = [];
       }
-
+      
+      // Handle the case for when user moves card within the same list
       // Move card in the same list
       if (source.droppableId === destination.droppableId) {
+        // Reorder the cards
         const reorderedCards = reorder(
           sourceList.cards,
           source.index,
           destination.index,
         );
 
+        // Change the order of each card
         reorderedCards.forEach((card, index) => {
           card.order = index;
         });
 
+        // Assign newly ordered cards to the sourceList
         sourceList.cards = reorderedCards;
 
+        // Update list data state to optimistically update the UI
         setOrderedListData(newOrderedListData);
 
         // TODO: Execute Server Action
       }
+
+      // Handle the case for when user moves card to a different list
     }
   }
 
