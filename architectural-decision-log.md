@@ -17331,6 +17331,14 @@ feat: Implement card reordering in onDragEnd
         return;
       }
 
+      if (!sourceList.cards) {
+        sourceList.cards = [];
+      }
+
+      if(!destList.cards) {
+        destList.cards = [];
+      }
+
       // Move card within the same list
       if (source.droppableId === destination.droppableId) {
         const reorderedCards = reorder(
@@ -17352,3 +17360,10 @@ feat: Implement card reordering in onDragEnd
     }
   }
 ```
+
+feat: Add edge case checks for onDragEnd
+
+feat: Enhance card dragging logic within onDragEnd
+
+- Check if source and destination lists exists
+- Initialize empty card arrays for source and destination lists if needed.
