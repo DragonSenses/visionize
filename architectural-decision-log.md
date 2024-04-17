@@ -2,7 +2,13 @@
 
 ***My aim in writing this document was to share the positive impact it made on me with you.***
 
-Visionize description: A Next.js 14 Kanban productivity app designed for task management. Built with a focus on server actions, [FormData Web API](https://developer.mozilla.org/en-US/docs/Web/API/FormData) and createing loading & error states with [useFormStatus](https://react.dev/reference/react-dom/hooks/useFormStatus) and [useFormState](https://react.dev/reference/react-dom/hooks/useFormState).
+**Visionize** is a Next.js 14 Kanban productivity app designed for task management. Built with a focus on server actions, utilizes the [FormData Web API](https://developer.mozilla.org/en-US/docs/Web/API/FormData), and implements loading and error states using React hooks such as [useFormStatus](https://react.dev/reference/react-dom/hooks/useFormStatus) and [useFormState](https://react.dev/reference/react-dom/hooks/useFormState).
+
+This is simply the documentation for the process of building the project. This is like my `journey.md` files that come with my previous projects, but this time I will also explain the rationale behind certain choices and design decisions made while making this project.
+
+This file is an *informal* document, named "Architectural Decision Record" because I'm fond of the name and it gives it that extra level of sophistication.
+
+Let's demystify some jargon:
 
 - An architecture decision log (**ADL**) is the collection of all ADRs created and maintained for a particular project (or organization).
 
@@ -10,11 +16,7 @@ Visionize description: A Next.js 14 Kanban productivity app designed for task ma
 
 - An architecture decision (**AD**) is a software design choice that addresses a significant requirement.
 
-This file isn't the formal document mentioned above, but it's similiar. I'm also really fond of the name "Architectural Decision Record", which gives it that extra level of sophistication.
-
-This is simply the documentation for the process of building the project. This is like my `journey.md` files that come with my previous projects, but this time I will also explain the rationale behind certain choices and design decisions made while making this project.
-
-I've really start to recognize the full worth of (appreciate) documentation, especially ones like ADR that facilitate the [onboarding process](https://en.wikipedia.org/wiki/Onboarding). 
+I've really start to appreciate and recognize the full worth of documentation, especially ones like ADR that facilitate the [onboarding process](https://en.wikipedia.org/wiki/Onboarding). 
 
 Here are some links if you are interested in learning more about ADR:
 
@@ -77,15 +79,15 @@ Front-End
 
 Database
 - MySQL
-- PlanetScale
+- PlanetScale (TODO: Pending removal)
 - Prisma (ORM)
 
 Payment and Billing
 - Stripe
 
 Authentication
-- Clerk*
-- *For now Clerk is fine to develop quickly, but may switch to [Passportjs](https://www.passportjs.org/docs/)
+- Clerk
+  - For now Clerk is fine to develop quickly, but may switch to [Passportjs](https://www.passportjs.org/docs/)
 - [Passportjs | Better Documentation](https://github.com/jwalton/passport-api-docs)
 
 HTTP Client
