@@ -8,7 +8,7 @@ import { List } from '@prisma/client';
 import { ActionState } from '@/lib/createServerAction';
 
 // Import the UpdateListOrder schema (validation rules)
-import { UpdateListOrder } from './updateListOrderOrderSchema';
+import { UpdateListOrder } from './updateListOrderSchema';
 
 // Define the input type based on the schema
 export type InputType = z.infer<typeof UpdateListOrder>;
