@@ -17560,3 +17560,40 @@ export type InputType = z.infer<typeof UpdateListOrder>;
 // Define the output data type (ActionState)
 export type OutputType = ActionState<InputType, List[]>;
 ```
+
+### updateListOrder action
+
+Now create an `index.ts` inside `/actions/updateListOrder`. This server action handler updates a list order based on the input data. 
+
+Start with the imports and typed `async` function `performAction`. Then export `updateListOrder` server action after passing it into `createServerAction`.
+
+The `createServerAction` function sets up a validation schema (`UpdateListOrder`) and an action handler (`performAction`) for processing input data.
+
+**Function Definitions**:
+ - `performAction`: An asynchronous function that takes an input of type `InputType` and returns a promise of type `OutputType`.
+ - `updateListOrder`: A constant exported from this module, which is assigned the result of calling `createServerAction` with the `UpdateListOrder` schema and the `performAction` function.
+
+feat: Add imports & function definitions
+
+`actions\updateListOrder\index.ts`
+```ts
+"use server";
+import { auth } from "@clerk/nextjs";
+import { revalidatePath } from "next/cache";
+
+import { createServerAction } from "@/lib/createServerAction";
+import { database } from "@/lib/database";
+
+import { UpdateListOrder } from "./updateListOrderSchema";
+import { InputType, OutputType } from "./updateListOrderTypes";
+
+async function performAction (data: InputType): Promise<OutputType> {
+
+  // Return the updated list
+  return {
+    data: list
+  };
+}
+
+export const updateListOrder = createServerAction(UpdateListOrder, performAction);
+```
