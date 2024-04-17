@@ -19,8 +19,25 @@ async function performAction (data: InputType): Promise<OutputType> {
     };
   }
 
+  // Destructure the necessary data from the input
+  const { 
+    boardId,
+    items,
+  } = data;
+
+  let lists;
+
+  try {
+    // Update the list order in the database
+    // Execute a series of updates
+  } catch (error) {
+    return {
+      error: 'Failed to update list order.'
+    }
+  }
+
   return {
-    data: list
+    data: lists
   };
 }
 
