@@ -9,8 +9,16 @@ import { UpdateListOrder } from "./updateListOrderSchema";
 import { InputType, OutputType } from "./updateListOrderTypes";
 
 async function performAction (data: InputType): Promise<OutputType> {
+  // Authenticate the user and get their organization ID
+  const { userId, orgId } = auth();
 
-  // Return the updated list
+  // If authentication fails, return an error
+  if (!userId || !orgId) {
+    return {
+      error: 'Unauthorized',
+    };
+  }
+
   return {
     data: list
   };
