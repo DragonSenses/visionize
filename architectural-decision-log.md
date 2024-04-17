@@ -17492,3 +17492,25 @@ feat: Implement card movement across lists
     }
   }
 ```
+
+## updateListOrder server action
+
+Make `updateListOrder` folder inside `/actions` and add the following files:
+
+1. Schema
+2. Types
+3. Server Action handler
+
+### updateListOrder schema
+
+Create the `UpdateListOrder` object schema.
+
+1. It has two properties:
+   - `boardId`: A **string**.
+   - `items`: An **array** of objects, each with the following properties:
+     - `id`: A **string**.
+     - `title`: A **string**.
+     - `order`: A **number**.
+     - `createdAt`: A **date**.
+     - `updatedAt`: A **date**.
+
