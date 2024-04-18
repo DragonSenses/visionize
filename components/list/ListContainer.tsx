@@ -2,9 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
+import { toast } from 'sonner';
 
 import { ListWithCards } from '@/types/types';
 
+import { updateListOrder } from '@/actions/updateListOrder';
+import { useServerAction } from '@/hooks/useServerAction';
 import ListForm from '@/components/list/ListForm';
 import ListItem from '@/components/list/ListItem';
 
@@ -34,13 +37,20 @@ function reorder<Type>(list: Type[], startIndex: number, endIndex: number): Type
   return result;
 }
 
-
-
 export default function ListContainer({
   boardId,
   data,
 }: ListContainerProps) {
   const [orderedListData, setOrderedListData] = useState(data);
+
+  const { executeServerAction: executeUpdateListOrder } = useServerAction(updateListOrder , {
+    onSuccess: () => {
+      toast.success("List reordered");
+    },
+    onError: (error) => {
+      toast.error(error);
+    },
+  });
 
   useEffect(() => {
     setOrderedListData(data);
