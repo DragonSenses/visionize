@@ -17737,3 +17737,55 @@ Let's delve into the details of the `$transaction` API in **Prisma Client**.
 4. **Safety and Guarantees**:
    - Transactions provide safety guarantees, such as atomicity (all or none of the operations succeed), consistency (valid states before and after), isolation (concurrent effects as if sequential), and durability (persistent writes).
    - Developers can rely on transactions to handle concurrency issues and certain hardware/software faults.
+
+#### Use transactions to update the list order
+
+Back to our server action `updateListOrder`, inside the handler named `index.ts`. 
+
+Create an array of transactions to reorder each list in the database. To achieve this, we iterate over the items and update the order for each individual list. Once the transaction array is constructed, we execute it.
+
+feat: Update list order using transaction array
+
+In the `performAction` function, a transaction array is constructed to update the list order. If any error occurs during the update, an appropriate error message is returned.
+
+```tsx
+async function performAction (data: InputType): Promise<OutputType> {
+  // Authenticate the user...
+
+  // Destructure the necessary data from the input
+  const { 
+    boardId,
+    items,
+  } = data;
+
+  let lists;
+
+  try {
+
+    // Construct a transaction array for updating list order
+    const transaction = items.map((list) => database.list.update({
+        where: {
+          id: list.id,
+          board: {
+            orgId,
+          },
+        },
+        data: {
+          order: list.order,
+        },
+      })
+    );
+
+    // Execute the transaction
+    lists = await database.$transaction(transaction);
+  } catch (error) {
+    return {
+      error: 'Failed to update list order.'
+    }
+  }
+
+  return {
+    data: lists
+  };
+}
+```
