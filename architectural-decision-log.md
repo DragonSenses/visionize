@@ -17658,3 +17658,11 @@ async function performAction (data: InputType): Promise<OutputType> {
   };
 }
 ```
+
+#### transactions in Prisma Client
+
+In order to update the list we need to learn a bit about transactions in Prisma Client.
+
+-[Transactions overview | Prisma](https://www.prisma.io/docs/orm/prisma-client/queries/transactions#transactions-overview)
+-[Transactions API | Prisma Client](https://www.prisma.io/docs/orm/prisma-client/queries/transactions#the-transaction-api)
+
