@@ -17884,3 +17884,39 @@ async function performAction (data: InputType): Promise<OutputType> {
 
 export const updateListOrder = createServerAction(UpdateListOrder, performAction);
 ```
+
+### Use updateListOrder server action
+
+Navigate back to `ListContainer` and setup our server action.
+
+Import:
+- `toast` from sonner
+- `useServerAction` hook
+- `updateListOrder` action
+
+Extract `executeServerAction` and rename to `executeUpdateListOrder` from `useServerAction` hook. Also pass in the success and error callbacks.
+
+feat: Instantiate updateListOrder server action
+
+In the `ListContainer` component, the `updateListOrder` server action is instantiated using `useServerAction`. Success and error handlers are defined to display appropriate toasts.
+
+```tsx
+import { useServerAction } from '@/hooks/useServerAction';
+import { updateListOrder } from '@/actions/updateListOrder';
+import { toast } from 'sonner';
+
+export default function ListContainer({
+  boardId,
+  data,
+}: ListContainerProps) {
+  const [orderedListData, setOrderedListData] = useState(data);
+
+  const { executeServerAction: executeUpdateListOrder } = useServerAction(updateListOrder , {
+    onSuccess: () => {
+      toast.success("List reordered");
+    },
+    onError: (error) => {
+      toast.error(error);
+    },
+  });
+```
