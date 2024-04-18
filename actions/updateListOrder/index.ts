@@ -1,4 +1,5 @@
 "use server";
+
 import { auth } from "@clerk/nextjs";
 import { revalidatePath } from "next/cache";
 
@@ -51,6 +52,11 @@ async function performAction (data: InputType): Promise<OutputType> {
     }
   }
 
+  // Revalidate the cache for the updated board path 
+  // to ensure immediate UI consistency post-update
+  revalidatePath(`/board/${boardId}`);
+
+  // Return the updated list data
   return {
     data: lists
   };
