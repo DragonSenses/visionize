@@ -17664,7 +17664,6 @@ async function performAction (data: InputType): Promise<OutputType> {
 In order to update the list we need to learn a bit about transactions in Prisma Client.
 
 -[Transactions overview | Prisma](https://www.prisma.io/docs/orm/prisma-client/queries/transactions#transactions-overview)
--[Transactions API | Prisma Client](https://www.prisma.io/docs/orm/prisma-client/queries/transactions#the-transaction-api)
 
 **Transactions** in the context of **Prisma** refer to a sequence of read/write operations that are guaranteed to either succeed or fail as a whole. These transactions provide safety guarantees and adhere to the **ACID** properties:
 
@@ -17679,3 +17678,62 @@ Prisma Client provides several ways to handle transactions:
 2. **Batch / Bulk Transactions**: Process one or more operations in bulk using `updateMany`, `deleteMany`, and `createMany`.
 3. **$transaction API**: Execute a series of Prisma Client queries sequentially inside a transaction using `$transaction<R>(queries: PrismaPromise<R>[]): Promise<R[]>`.
 4. **Interactive Transactions**: Execute a function containing Prisma Client queries, non-Prisma code, and other control flow within a transaction using `$transaction<R>(fn: (prisma: PrismaClient) => R, options?: object): R`
+
+#### transactions API in Prisma Client
+
+-[Transactions API | Prisma Client](https://www.prisma.io/docs/orm/prisma-client/queries/transactions#the-transaction-api)
+
+The `$transaction` API can be used in two ways:
+
+- [Sequential operations](https://www.prisma.io/docs/orm/prisma-client/queries/transactions#sequential-prisma-client-operations): Pass an array of Prisma Client queries to be executed sequentially inside of a transaction.
+
+`$transaction<R>(queries: PrismaPromise<R>[]): Promise<R[]>`
+
+- [Interactive transactions](https://www.prisma.io/docs/orm/prisma-client/queries/transactions#interactive-transactions): Pass a function that can contain user code including Prisma Client queries, non-Prisma code and other control flow to be executed in a transaction.
+
+`$transaction<R>(fn: (prisma: PrismaClient) => R): R`
+
+Let's delve into the details of the `$transaction` API in **Prisma Client**.
+
+1. **Overview**:
+   - A **database transaction** refers to a sequence of read/write operations that are guaranteed to either succeed or fail as a whole.
+   - Prisma Client provides several ways to handle transactions, ensuring safety and adherence to the **ACID** properties (Atomicity, Consistency, Isolation, Durability).
+
+2. **Available Techniques**:
+   - Prisma Client supports six different ways of handling transactions for various scenarios:
+     - **Dependent Writes**: Use nested writes to process multiple operations on related records within the same transaction.
+     - **Independent Writes**: Execute batch operations (e.g., `updateMany`, `deleteMany`, `createMany`) for multiple records.
+     - **Read, Modify, Write**: Perform idempotent operations within a transaction.
+     - **Optimistic Concurrency Control**: Handle concurrent updates by checking for changes before committing.
+     - **Interactive Transactions**: Execute a function containing Prisma Client queries, non-Prisma code, and other control flow within a transaction.
+     - **Sequential Operations**: Use the `$transaction<R>(queries: PrismaPromise<R>[]): Promise<R[]>` API to execute an array of Prisma Client queries sequentially inside a transaction.
+
+3. **$transaction API**:
+   - **Sequential Operations**:
+     - Pass an array of Prisma Client queries to be executed sequentially inside a transaction.
+     - Example:
+       ```typescript
+       const result = await prisma.$transaction([
+         prisma.user.create({ data: { name: 'Luna' } }),
+         prisma.post.create({ data: { title: 'Hello, World!' } }),
+       ]);
+       ```
+     - If any query within the array fails, the entire transaction is rolled back.
+     - Note that this method is not compatible with setting isolation levels.
+
+   - **Interactive Transactions**:
+     - Pass a function that can contain user code, including Prisma Client queries and other control flow, to be executed in a transaction.
+     - Example:
+       ```typescript
+       const result = await prisma.$transaction(async (prisma) => {
+         // User-defined code here
+         const user = await prisma.user.findUnique({ where: { id: 1 } });
+         // More operations...
+         return user;
+       });
+       ```
+     - This method allows flexibility and custom logic within the transaction.
+
+4. **Safety and Guarantees**:
+   - Transactions provide safety guarantees, such as atomicity (all or none of the operations succeed), consistency (valid states before and after), isolation (concurrent effects as if sequential), and durability (persistent writes).
+   - Developers can rely on transactions to handle concurrency issues and certain hardware/software faults.
