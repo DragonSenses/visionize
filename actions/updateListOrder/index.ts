@@ -28,8 +28,23 @@ async function performAction (data: InputType): Promise<OutputType> {
   let lists;
 
   try {
-    // Update the list order in the database
-    // Execute a series of updates
+
+    // Construct a transaction array for updating list order
+    const transaction = items.map((list) => database.list.update({
+        where: {
+          id: list.id,
+          board: {
+            orgId,
+          },
+        },
+        data: {
+          order: list.order,
+        },
+      })
+    );
+
+    // Execute the transaction
+    lists = await database.$transaction(transaction);
   } catch (error) {
     return {
       error: 'Failed to update list order.'
