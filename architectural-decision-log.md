@@ -17666,3 +17666,16 @@ In order to update the list we need to learn a bit about transactions in Prisma 
 -[Transactions overview | Prisma](https://www.prisma.io/docs/orm/prisma-client/queries/transactions#transactions-overview)
 -[Transactions API | Prisma Client](https://www.prisma.io/docs/orm/prisma-client/queries/transactions#the-transaction-api)
 
+**Transactions** in the context of **Prisma** refer to a sequence of read/write operations that are guaranteed to either succeed or fail as a whole. These transactions provide safety guarantees and adhere to the **ACID** properties:
+
+1. **Atomic**: Ensures that either all or none of the operations within the transaction succeed. The transaction is either committed successfully or aborted and rolled back.
+2. **Consistent**: Ensures that the states of the database before and after the transaction are valid, maintaining any existing invariants about the data.
+3. **Isolated**: Ensures that concurrently running transactions have the same effect as if they were running sequentially.
+4. **Durability**: Ensures that after the transaction succeeds, any writes are stored persistently.
+
+Prisma Client provides several ways to handle transactions:
+
+1. **Nested Writes**: Use the Prisma Client API to process multiple operations on related records within the same transaction.
+2. **Batch / Bulk Transactions**: Process one or more operations in bulk using `updateMany`, `deleteMany`, and `createMany`.
+3. **$transaction API**: Execute a series of Prisma Client queries sequentially inside a transaction using `$transaction<R>(queries: PrismaPromise<R>[]): Promise<R[]>`.
+4. **Interactive Transactions**: Execute a function containing Prisma Client queries, non-Prisma code, and other control flow within a transaction using `$transaction<R>(fn: (prisma: PrismaClient) => R, options?: object): R`
