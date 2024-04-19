@@ -89,7 +89,7 @@ export default function ListContainer({
       // Update state with newly ordered list
       setOrderedListData(items);
 
-      // TODO: Execute Server Action to update backend
+      executeUpdateListOrder({ items, boardId });
     }
 
     // Case 4: User drag-and-drops a card
