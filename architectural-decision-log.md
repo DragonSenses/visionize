@@ -17967,3 +17967,29 @@ export default function ListContainer({
       executeUpdateListOrder({ items, boardId });
     }
 ```
+
+## updateCardOrder server action
+
+Make `updateCardOrder` folder inside `/actions` and add the following files:
+
+1. Schema
+2. Types
+3. Server Action handler
+
+### updateCardOrder schema
+
+Create the `UpdateCardOrder` object schema.
+
+1. It has two properties:
+   - `listId`: A **string**.
+   - `items`: An **array** of objects, each with the following properties:
+     - `id`: A **string**.
+     - `title`: A **string**.
+     - `order`: A **number**.
+     - `createdAt`: A **date**.
+     - `updatedAt`: A **date**.
+
+feat: Add UpdateCardOrder Zod schema
+
+- Introduce Zod schema validation to ensure data integrity for UpdateCardOrder
+
