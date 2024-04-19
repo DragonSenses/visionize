@@ -17920,3 +17920,50 @@ export default function ListContainer({
     },
   });
 ```
+
+Now let's use the newly created server action to implement the update list order functionality.
+
+feat: Invoke executeUpdateListOrder in onDragEnd
+
+In the `ListContainer` component, the `executeUpdateListOrder()` function is called within the `onDragEnd` handler. This ensures that list reordering is reflected in the server action. This will update the list order in the database.
+
+```tsx
+export default function ListContainer({
+  boardId,
+  data,
+}: ListContainerProps) {
+  const [orderedListData, setOrderedListData] = useState(data);
+
+  const { executeServerAction: executeUpdateListOrder } = useServerAction(updateListOrder , {
+    onSuccess: () => {
+      toast.success("List reordered");
+    },
+    onError: (error) => {
+      toast.error(error);
+    },
+  });
+
+  useEffect(() => {
+    setOrderedListData(data);
+  }, [data]);
+
+  function onDragEnd(result: any) {
+    const { destination, source, type } = result;
+
+    // ...
+
+    // Case 3: User drag-and-drops a list
+    if (type === 'list') {
+      // Reorder the list data based on the drag result
+      const items = reorder(
+        orderedListData,
+        source.index,
+        destination.index,
+      ).map((item, index) => ({ ...item, order: index }));
+
+      // Update state with newly ordered list
+      setOrderedListData(items);
+
+      executeUpdateListOrder({ items, boardId });
+    }
+```
