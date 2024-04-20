@@ -18234,3 +18234,27 @@ style: Apply consistent code formatting (Prettier)
 
 In the `updateCardOrder` server action, ensure that the code adheres to consistent formatting, indentation, and style guidelines by utilizing Prettier. This enhances code readability and maintainability.
 
+In the database query, we only need to verify whether the `list` belongs to the specified `board`. Additionally, we only use the `orgId`. Therefore, the current `listId` is not in use and can be removed from both the index handler and the schema.
+
+refactor: Remove listId from updateCardOrder input
+
+refactor: Omit listId from updateCardOrder schema
+
+```ts
+import { z } from 'zod';
+
+export const UpdateCardOrder = z.object({
+  boardId: z.string(),
+  items: z.array(
+    z.object({
+      id: z.string(),
+      listId: z.string(),
+      title: z.string(),
+      order: z.number(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    }),
+  ),
+});
+```
+

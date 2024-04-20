@@ -21,7 +21,7 @@ async function performAction(data: InputType): Promise<OutputType> {
   }
 
   // Destructure the necessary data from the input
-  const { boardId, listId, items } = data;
+  const { boardId, items } = data;
 
   let cards;
 
