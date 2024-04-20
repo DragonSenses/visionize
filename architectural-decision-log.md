@@ -18068,3 +18068,84 @@ async function performAction (data: InputType): Promise<OutputType> {
 export const updateCardOrder = createServerAction(UpdateCardOrder, performAction);
 ```
 
+Next add user authentication to be able to perform the server action.
+
+feat: Add user authentication to updateCardOrder
+
+```ts
+async function performAction (data: InputType): Promise<OutputType> {
+  // Authenticate the user and get their organization ID
+  const { userId, orgId } = auth();
+
+  // If authentication fails, return an error
+  if (!userId || !orgId) {
+    return {
+      error: 'Unauthorized',
+    };
+  }
+  
+  return {
+    // ...
+  };
+}
+```
+
+feat: Implement initial version of updateCardOrder
+
+Next let's implement the functionality to update the card order in the database.
+
+```ts
+async function performAction (data: InputType): Promise<OutputType> {
+  // Authenticate the user and get their organization ID
+  const { userId, orgId } = auth();
+
+  // If authentication fails, return an error
+  if (!userId || !orgId) {
+    return {
+      error: 'Unauthorized',
+    };
+  }
+  
+ // Destructure the necessary data from the input
+  const { 
+    listId,
+    items,
+  } = data;
+
+  let updatedCards;
+
+  // TODO:
+  try {
+
+    // Construct a transaction array for updating list order
+    const transaction = items.map((list) => database.list.update({
+        where: {
+          id: list.id,
+          board: {
+            orgId,
+          },
+        },
+        data: {
+          order: list.order,
+        },
+      })
+    );
+
+    // Execute the transaction
+    lists = await database.$transaction(transaction);
+  } catch (error) {
+    return {
+      error: 'Failed to update list order.'
+    }
+  }
+
+  // Revalidate the cache for the updated board path 
+  // to ensure immediate UI consistency post-update
+  revalidatePath(`/board/${boardId}`);
+
+  
+  return {
+    data: updatedCards
+  };
+}
+```
