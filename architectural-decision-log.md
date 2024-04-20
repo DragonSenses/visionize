@@ -18150,11 +18150,28 @@ async function performAction (data: InputType): Promise<OutputType> {
 }
 ```
 
-feat: Implement initial version of updateCardOrder
+Finally, we can open up a `try..catch` block to update the card order in the database using prisma transactions.
 
-Next let's implement the functionality to update the card order in the database.
+feat: Interact with database to update card order
+
+In the `updateCardOrder` server action, a try-catch block has been added to interact with the database for updating the card order. Prisma transactions are used to ensure data consistency during the update process. It also handles potential errors during the execution of database interaction.
+
+feat: Implement updateCardOrder server action
+
+Added functionality for authentication, database transactions, and cache revalidations to update card order data.
 
 ```ts
+"use server";
+
+import { auth } from "@clerk/nextjs";
+import { revalidatePath } from "next/cache";
+
+import { createServerAction } from "@/lib/createServerAction";
+import { database } from "@/lib/database";
+
+import { UpdateCardOrder } from "./updateCardOrderSchema";
+import { InputType, OutputType } from "./updateCardOrderTypes";
+
 async function performAction (data: InputType): Promise<OutputType> {
   // Authenticate the user and get their organization ID
   const { userId, orgId } = auth();
@@ -18165,37 +18182,39 @@ async function performAction (data: InputType): Promise<OutputType> {
       error: 'Unauthorized',
     };
   }
-  
- // Destructure the necessary data from the input
+
+  // Destructure the necessary data from the input
   const { 
-    listId,
-    items,
+    boardId,
+    listId, 
+    items, 
   } = data;
 
-  let updatedCards;
+  let cards;
 
-  // TODO:
   try {
-
-    // Construct a transaction array for updating list order
-    const transaction = items.map((list) => database.list.update({
-        where: {
-          id: list.id,
+    // Construct a transaction array for updating card order
+    const transaction = items.map((card) => database.card.update({
+      where: {
+        id: card.id,
+        list: {
           board: {
             orgId,
           },
         },
-        data: {
-          order: list.order,
-        },
-      })
-    );
+      },
+      data: {
+        order: card.order,
+        listId: card.listId,
+      },
+    }));
 
     // Execute the transaction
-    lists = await database.$transaction(transaction);
+    cards = await database.$transaction(transaction);
+
   } catch (error) {
     return {
-      error: 'Failed to update list order.'
+      error: 'Failed to update card order.'
     }
   }
 
@@ -18204,8 +18223,11 @@ async function performAction (data: InputType): Promise<OutputType> {
   revalidatePath(`/board/${boardId}`);
 
   return {
-    data: updatedCards
+    data: cards
   };
 }
+
+export const updateCardOrder = createServerAction(UpdateCardOrder, performAction);
 ```
+
 
