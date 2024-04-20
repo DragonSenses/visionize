@@ -18113,6 +18113,43 @@ async function performAction (data: InputType): Promise<OutputType> {
 }
 ```
 
+Next we can extract the variables we need from the data. We can also invoke `revalidatePath` to revalidate the cache for the updated board path, this ensures UI consistency after the update.
+
+
+feat: Purge cached data in updateCardOrder
+
+Introduce functionality to clear cached data related to the board path within the updateCardOrder logic. This ensures immediate UI consistency after updates.
+
+feat: Add variable extraction & cache revalidation
+
+```ts
+"use server";
+
+import { revalidatePath } from "next/cache";
+
+import { UpdateCardOrder } from "./updateCardOrderSchema";
+import { InputType, OutputType } from "./updateCardOrderTypes";
+
+async function performAction (data: InputType): Promise<OutputType> {
+  // Authenticate the user...
+
+  // Destructure the necessary data from the input
+  const { 
+    boardId,
+    listId, 
+    items, 
+  } = data;
+
+  // Revalidate the cache for the updated board path 
+  // to ensure immediate UI consistency post-update
+  revalidatePath(`/board/${boardId}`);
+
+  return {
+    // ...
+  };
+}
+```
+
 feat: Implement initial version of updateCardOrder
 
 Next let's implement the functionality to update the card order in the database.
@@ -18166,9 +18203,9 @@ async function performAction (data: InputType): Promise<OutputType> {
   // to ensure immediate UI consistency post-update
   revalidatePath(`/board/${boardId}`);
 
-  
   return {
     data: updatedCards
   };
 }
 ```
+
