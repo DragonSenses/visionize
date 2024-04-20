@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 
 import { ListWithCards } from '@/types/types';
 
+import { updateCardOrder } from '@/actions/updateCardOrder';
 import { updateListOrder } from '@/actions/updateListOrder';
 import { useServerAction } from '@/hooks/useServerAction';
 import ListForm from '@/components/list/ListForm';
@@ -52,10 +53,18 @@ export default function ListContainer({
     },
   });
 
+  const { executeServerAction: executeUpdateCardOrder } = useServerAction(updateCardOrder , {
+    onSuccess: () => {
+      toast.success("Card reordered");
+    },
+    onError: (error) => {
+      toast.error(error);
+    },
+  });
+
   useEffect(() => {
     setOrderedListData(data);
   }, [data]);
-
 
   /**
    * Handle drag completion for lists and cards
