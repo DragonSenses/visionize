@@ -18003,6 +18003,29 @@ export const UpdateCardOrder = z.object({
 });
 ```
 
+We also need an extra requirement `boardId` in order to revalidate the path later in the server action index handler.
+
+feat: Add boardId to UpdateCardOrder schema
+
+```ts
+import { z } from 'zod';
+
+export const UpdateCardOrder = z.object({
+  boardId: z.string(),
+  listId: z.string(),
+  items: z.array(
+    z.object({
+      id: z.string(),
+      listId: z.string(),
+      title: z.string(),
+      order: z.number(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    }),
+  ),
+});
+```
+
 ### updateCardOrder types
 
 feat: Define types for updateCardOrder action

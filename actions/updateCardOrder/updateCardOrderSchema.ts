@@ -5,6 +5,7 @@ import { z } from 'zod';
  * 
  */
 export const UpdateCardOrder = z.object({
+  boardId: z.string(),
   listId: z.string(),
   items: z.array(
     z.object({
