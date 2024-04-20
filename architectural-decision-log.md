@@ -18230,4 +18230,7 @@ async function performAction (data: InputType): Promise<OutputType> {
 export const updateCardOrder = createServerAction(UpdateCardOrder, performAction);
 ```
 
+style: Apply consistent code formatting (Prettier)
+
+In the `updateCardOrder` server action, ensure that the code adheres to consistent formatting, indentation, and style guidelines by utilizing Prettier. This enhances code readability and maintainability.
 
