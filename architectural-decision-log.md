@@ -18258,3 +18258,39 @@ export const UpdateCardOrder = z.object({
 });
 ```
 
+### Use updateCardOrder server action
+
+Navigate back to `ListContainer` and setup our server action.
+
+Import:
+- `toast` from sonner
+- `useServerAction` hook
+- `updateCardOrder` action
+
+Extract `executeServerAction` and rename to `executeUpdateCardOrder` from `useServerAction` hook. Also pass in the success and error callbacks.
+
+feat: Instantiate updateCardOrder server action
+
+In the `ListContainer` component, the `updateCardOrder` server action is instantiated using `useServerAction`. Success and error handlers are defined to display appropriate toasts.
+
+`components\list\ListContainer.tsx`
+```tsx
+import { toast } from 'sonner';
+import { useServerAction } from '@/hooks/useServerAction';
+import { updateCardOrder } from '@/actions/updateCardOrder';
+
+export default function ListContainer({
+  boardId,
+  data,
+}: ListContainerProps) {
+  const [orderedListData, setOrderedListData] = useState(data);
+
+  const { executeServerAction: executeUpdateCardOrder } = useServerAction(updateCardOrder , {
+    onSuccess: () => {
+      toast.success("Card reordered");
+    },
+    onError: (error) => {
+      toast.error(error);
+    },
+  });
+```
