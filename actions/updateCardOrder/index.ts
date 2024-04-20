@@ -20,18 +20,46 @@ async function performAction (data: InputType): Promise<OutputType> {
     };
   }
 
+  // Destructure the necessary data from the input
   const { 
     boardId,
     listId, 
     items, 
   } = data;
 
+  let cards;
+
+  try {
+    // Construct a transaction array for updating card order
+    const transaction = items.map((card) => database.card.update({
+      where: {
+        id: card.id,
+        list: {
+          board: {
+            orgId,
+          },
+        },
+      },
+      data: {
+        order: card.order,
+        listId: card.listId,
+      },
+    }));
+
+    // Execute the transaction
+    cards = await database.$transaction(transaction);
+  } catch (error) {
+    return {
+      error: 'Failed to update card order.'
+    }
+  }
+
   // Revalidate the cache for the updated board path 
   // to ensure immediate UI consistency post-update
   revalidatePath(`/board/${boardId}`);
 
   return {
-    // ...
+    data: cards
   };
 }
 
