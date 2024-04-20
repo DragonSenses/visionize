@@ -19,7 +19,17 @@ async function performAction (data: InputType): Promise<OutputType> {
       error: 'Unauthorized',
     };
   }
-  
+
+  const { 
+    boardId,
+    listId, 
+    items, 
+  } = data;
+
+  // Revalidate the cache for the updated board path 
+  // to ensure immediate UI consistency post-update
+  revalidatePath(`/board/${boardId}`);
+
   return {
     // ...
   };
