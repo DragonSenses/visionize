@@ -18299,6 +18299,8 @@ Now let's use the new server action to update the card order in the `onDragEnd` 
 
 Where we need to update the card order in the database is in the case when the user moves a card within the same list.
 
+feat: Update card order within list on card move
+
 `components\list\ListContainer.tsx`
 ```tsx
   function onDragEnd(result: any) {
@@ -18331,7 +18333,7 @@ Where we need to update the card order in the database is in the case when the u
         destList.cards = [];
       }
       
-      // Case 4: User drag-and-drops card within the same list
+      // Case 4: User moves card within the same list
       if (source.droppableId === destination.droppableId) {
         // Reorder the cards
         const reorderedCards = reorder(
@@ -18355,6 +18357,49 @@ Where we need to update the card order in the database is in the case when the u
         executeUpdateCardOrder({
           boardId: boardId,
           items: reorderedCards
-        })
+        });
       } else {
 ```
+
+Next use the updateCardOrder action when the user drags a card to a different list.
+
+feat: Update card order across lists on card move
+
+```tsx
+      } else {
+        // Case 5: User moves card to a different list
+
+        // Remove card from the source list
+        const [movedCard] = sourceList.cards.splice(source.index, 1);
+
+        // Assign the new listId to the moved card
+        movedCard.listId = destination.droppableId;
+
+        // Add card to the destination list
+        destList.cards.splice(destination.index, 0, movedCard);
+
+        // Update the order for each card in the source list
+        sourceList.cards.forEach((card, index) => {
+          card.order = index;
+        })
+
+        // Update the order for each card in the destination list
+        destList.cards.forEach((card, index) => {
+          card.order = index;
+        });
+
+        // Update list data state to optimistically update the UI
+        setOrderedListData(newOrderedListData);
+
+        // Update card order data in the database
+        executeUpdateCardOrder({
+          boardId: boardId,
+          items: destList.cards,
+        });
+      }
+```
+
+feat: Update card order during card movement
+
+This change ensures that the card order is correctly updated when a user moves cards within the same list or across different lists. The database is now synchronized with the new order, improving overall usability.
+
