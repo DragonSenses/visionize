@@ -101,7 +101,7 @@ export default function ListContainer({
       executeUpdateListOrder({ items, boardId });
     }
 
-    // Case 4: User drag-and-drops a card
+    // User drag-and-drops a card
     if (type === 'card') {
       let newOrderedListData = [...orderedListData];
 
@@ -127,8 +127,7 @@ export default function ListContainer({
         destList.cards = [];
       }
       
-      // Handle the case for when user moves card within the same list
-      // Move card in the same list
+      // Case 4: User drag-and-drops card within the same list
       if (source.droppableId === destination.droppableId) {
         // Reorder the cards
         const reorderedCards = reorder(
@@ -148,7 +147,11 @@ export default function ListContainer({
         // Update list data state to optimistically update the UI
         setOrderedListData(newOrderedListData);
 
-        // TODO: Execute Server Action
+        // Update card order data in the database
+        executeUpdateCardOrder({
+          boardId: boardId,
+          items: reorderedCards
+        })
       } else {
         // Handle the case for when user moves card to a different list
 
