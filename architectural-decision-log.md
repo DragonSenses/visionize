@@ -18537,14 +18537,66 @@ refactor: CardModal into modular indexed approach
 
 This commit refactors the CardModal component to follow a modular indexed approach, while foregoing the traditional single-file component approach. By organizing related files within a directory structure, we enhance code organization, scalability, and maintainability.
 
+Inside the index we create the `CardModal` client component. We import the `Dialog` components we need, and render `Dialog` & `DialogContent`.
+
+feat: Add Dialog component in CardModal
+
 `components\modals\CardModal\index.tsx`
 ```tsx
-import React from 'react'
+"use client";
+
+import React from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 export default function CardModal() {
   return (
-    <div>CardModal</div>
+    <Dialog>
+      <DialogContent>
+        CardModal
+      </DialogContent>
+    </Dialog>
   )
 }
 ```
 
+Next let's import the `useCardModal` hook to access the state.
+
+feat: Connect CardModal with state slices
+
+This commit adds the useCardModal hook to retrieve the `id`, `isOpen`, and `onClose` state, and assigns them to the corresponding props of the `Dialog` component within the `CardModal`.
+
+```tsx
+"use client";
+
+import React from 'react';
+import {
+  Dialog,
+  DialogContent,
+} from '@/components/ui/dialog';
+
+import { useCardModal } from '@/hooks/useCardModal';
+
+export default function CardModal() {
+  const id = useCardModal((state) => state.id);
+  const isOpen = useCardModal((state) => state.isOpen);
+  const onClose = useCardModal((state) => state.onClose);
+
+  return (
+    <Dialog
+      open={isOpen}
+      onOpenChange={onClose}
+    >
+      <DialogContent>
+        CardModal
+      </DialogContent>
+    </Dialog>
+  )
+}
+```
