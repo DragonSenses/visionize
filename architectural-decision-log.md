@@ -18407,8 +18407,6 @@ This change ensures that the card order is correctly updated when a user moves c
 
 When a user clicks on a card, a modal should open, displaying additional information about the card.
 
-Create `CardModal` in `/components/card`.
-
 Create `useCardModal.ts` in `/hooks`. We can copy the `useMobileSidebar` code into it and rename it.
 
 feat: Create CardModalStore using Zustand
@@ -18452,9 +18450,10 @@ type CardModalStore = {
 export const useCardModal = create<CardModalStore>()((set) => ({
   id: undefined,
   isOpen: false,
-  onOpen: (id: string) => set({ isOpen: true , id}),
-  onClose: () => set({ isOpen: false, id: undefined}),
+  onOpen: (id: string) => set({ isOpen: true, id }),
+  onClose: () => set({ isOpen: false, id: undefined }),
 }));
+
 ```
 
 Next install the `Dialog` component from shadcn/ui
@@ -18462,3 +18461,80 @@ Next install the `Dialog` component from shadcn/ui
 ```sh
 npx shadcn-ui@latest add dialog
 ```
+
+### Single File component vs Modular structure
+
+Before we create the `CardModal` component, let's discuss some considerations of how to organize the file.
+
+There are two ways we can create the file:
+
+1. `components\modals\CardModal.tsx`
+2. `components\modals\CardModal\index.tsx`
+
+The distinction between **`components\modals\CardModal.tsx`** and **`components\modals\CardModal\index.tsx`** lies in their organization and usage within a project. Let's explore the advantages of each:
+
+1. **`components\modals\CardModal.tsx`**:
+    - **Single File Component**: This approach encapsulates all the modal-related logic, styles, and JSX markup within a single TypeScript file. It's a straightforward and compact way to define a modal.
+    - **Ease of Understanding**: Developers can quickly grasp the modal's behavior by examining a single file. This simplicity aids in debugging and maintenance.
+    - **Customization and Reusability**: Since everything is contained in one file, it's easy to customize the modal's appearance, behavior, and content. You can reuse this component across different parts of your application.
+    - **Type Safety**: TypeScript provides type checking for the entire component, ensuring that props, state, and function signatures align correctly.
+    - **Consolidated Styling**: CSS or styled-components can be directly included within the same file, making it convenient to manage styles.
+    - **Example Usage**:
+        ```tsx
+        // components/modals/CardModal.tsx
+        import React from 'react';
+
+        interface CardModalProps {
+          title: string;
+          content: React.ReactNode;
+          onClose: () => void;
+        }
+
+        const CardModal: React.FC<CardModalProps> = ({ title, content, onClose }) => {
+          // Modal implementation here...
+          return (
+            <div className="modal">
+              <h2>{title}</h2>
+              <div className="modal-content">{content}</div>
+              <button onClick={onClose}>Close</button>
+            </div>
+          );
+        };
+
+        export default CardModal;
+        ```
+2. **`components\modals\CardModal\index.tsx`**:
+    - **Modular Structure**: This approach separates concerns into multiple files. The `index.tsx` file typically serves as an entry point or an aggregator for the modal component.
+    - **Organized Directory Structure**: By placing related files (such as styles, utility functions, or additional components) alongside the main modal component, you achieve better organization.
+    - **Scalability**: As your modal grows in complexity (e.g., adding more features, animations, or context providers), the modular structure allows you to manage each aspect separately.
+    - **Example Usage**:
+        ```tsx
+        // components/modals/CardModal/index.tsx
+        import CardModal from './CardModal';
+        import CardModalStyles from './CardModalStyles'; // Styles
+        import CardModalUtils from './CardModalUtils'; // Utility functions
+
+        export { CardModal, CardModalStyles, CardModalUtils };
+        ```
+
+In summary, choose the approach that aligns with your project's requirements. If simplicity, reusability, and type safety are crucial, consider the single-file component. If you anticipate future expansion and want a more modular structure, opt for the indexed approach. Remember that both methods can coexist within the same project, depending on the context and specific use cases.
+
+**What is modular structure?**
+
+1. **Modular Structure**:
+    - The indexed approach organizes related files into a directory structure. Each file within the directory serves a specific purpose.
+    - For instance, in your example, the `components\modals\CardModal\index.tsx` file acts as an entry point or aggregator for the modal component.
+    - Other files alongside it (such as styles, utility functions, or additional components) contribute to the overall modularity.
+
+2. **Benefits of Modularity**:
+    - **Scalability**: As your project grows, you can add more features, animations, or context providers to individual files without affecting others.
+    - **Organization**: Grouping related files together enhances code organization and maintainability.
+    - **Reusability**: By exporting components, styles, or utilities from the indexed file, you create reusable building blocks for other parts of your application.
+
+For our case, we are going to go with the indexed approach. 
+
+`components\modals\CardModal\index.tsx`
+```tsx
+
+```
+
