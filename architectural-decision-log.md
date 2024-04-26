@@ -18403,3 +18403,62 @@ feat: Update card order during card movement
 
 This change ensures that the card order is correctly updated when a user moves cards within the same list or across different lists. The database is now synchronized with the new order, improving overall usability.
 
+## Card Modal
+
+When a user clicks on a card, a modal should open, displaying additional information about the card.
+
+Create `CardModal` in `/components/card`.
+
+Create `useCardModal.ts` in `/hooks`. We can copy the `useMobileSidebar` code into it and rename it.
+
+feat: Create CardModalStore using Zustand
+
+This commit adds a CardModalStore using Zustand for managing the modal state related to card interactions. The store includes isOpen, onOpen, and onClose functions.
+
+`hooks\useCardModal.ts`
+```ts
+import { create } from 'zustand';
+
+type CardModalStore = {
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+};
+
+export const useCardModal = create<CardModalStore>()((set) => ({
+  isOpen: false,
+  onOpen: () => set({ isOpen: true }),
+  onClose: () => set({ isOpen: false }),
+}));
+```
+
+Next we need an optional property `id` which is the ID of the card. We update the `onOpen` with this new field. While we set it to `undefined` initialliy but set the `id` when the `onOpen` function is called.
+
+feat: Add id field to CardModalStore
+
+This commit adds a CardModalStore using Zustand. The store includes an optional 'id' field, isOpen state, and functions for opening and closing the modal. The 'onOpen' function now accepts an 'id' parameter.
+
+`hooks\useCardModal.ts`
+```ts
+import { create } from 'zustand';
+
+type CardModalStore = {
+  id?: string;
+  isOpen: boolean;
+  onOpen: (id: string) => void;
+  onClose: () => void;
+};
+
+export const useCardModal = create<CardModalStore>()((set) => ({
+  id: undefined,
+  isOpen: false,
+  onOpen: (id: string) => set({ isOpen: true , id}),
+  onClose: () => set({ isOpen: false, id: undefined}),
+}));
+```
+
+Next install the `Dialog` component from shadcn/ui
+
+```sh
+npx shadcn-ui@latest add dialog
+```
