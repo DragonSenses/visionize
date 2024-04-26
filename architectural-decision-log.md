@@ -18641,3 +18641,31 @@ export default function ModalProvider() {
 }
 
 ```
+
+feat: Introduce isMounted state in ModalProvider
+feat: Apply mounting technique in ModalProvider
+
+The `isMounted` state variable serves a specific purpose related to component lifecycle management in React. Let's break down its role:
+
+1. **Purpose**:
+    - The `isMounted` variable tracks whether the component is currently mounted (i.e., part of the DOM) or unmounted (not rendered).
+    - It helps prevent certain actions from being performed on an unmounted component, which can lead to memory leaks or unwanted behavior.
+
+2. **Implementation**:
+    - The `useState(false)` initializes the `isMounted` state variable with an initial value of `false`.
+    - The `useEffect` hook runs after the initial render (similar to `componentDidMount` in class components).
+    - Inside the effect, `setIsMounted(true)` updates the `isMounted` value to `true`, indicating that the component is now mounted.
+    - The empty dependency array (`[]`) ensures that the effect runs only once (equivalent to `componentDidMount`).
+
+3. **Use Cases**:
+    - **Client-Side Code Delay**: By setting `isMounted` to `true` after the initial render, you delay the execution of client-side-only code (e.g., animations, timers, or subscriptions) until after hydration.
+    - **Avoiding Unwanted Actions**: The conditional check `if (!isMounted)` prevents rendering of the component before the effect has run. This protects against hydration errors or unwanted flashes of content.
+    - **Preventing State Updates**: If you have asynchronous operations (e.g., fetching data) that might continue after the component unmounts, you can use `isMounted` to avoid state updates on an unmounted component.
+
+4. **Best Practices**:
+    - While `isMounted` can be useful, it's essential to consider other patterns:
+        - **Functional Updates**: Use functional updates with `setState` to avoid state updates on unmounted components.
+        - **Cleanup Functions**: In more complex scenarios, use cleanup functions in `useEffect` to cancel subscriptions or clear resources when the component unmounts.
+
+Remember that the `isMounted` approach is not always necessary, and there are alternative ways to handle component lifecycle and state management.
+
