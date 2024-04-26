@@ -18294,3 +18294,67 @@ export default function ListContainer({
     },
   });
 ```
+
+Now let's use the new server action to update the card order in the `onDragEnd` function.
+
+Where we need to update the card order in the database is in the case when the user moves a card within the same list.
+
+`components\list\ListContainer.tsx`
+```tsx
+  function onDragEnd(result: any) {
+    const { destination, source, type } = result;
+    // ...
+
+    // User drag-and-drops a card
+    if (type === 'card') {
+      let newOrderedListData = [...orderedListData];
+
+      const sourceList = newOrderedListData
+        .find(list => list.id === source.droppableId);
+
+      const destList = newOrderedListData
+        .find(list => list.id === destination.droppableId);
+
+      // If either sourceList or destList are not found
+      if (!sourceList || !destList) {
+        return;
+      }
+
+      // If the list is empty, then initialize an empty array of cards
+      // Check if cards exist in sourceList
+      if (!sourceList.cards) {
+        sourceList.cards = [];
+      }
+
+      // Check if cards exists in destList
+      if(!destList.cards) {
+        destList.cards = [];
+      }
+      
+      // Case 4: User drag-and-drops card within the same list
+      if (source.droppableId === destination.droppableId) {
+        // Reorder the cards
+        const reorderedCards = reorder(
+          sourceList.cards,
+          source.index,
+          destination.index,
+        );
+
+        // Change the order of each card
+        reorderedCards.forEach((card, index) => {
+          card.order = index;
+        });
+
+        // Assign newly ordered cards to the sourceList
+        sourceList.cards = reorderedCards;
+
+        // Update list data state to optimistically update the UI
+        setOrderedListData(newOrderedListData);
+
+        // Update card order data in the database
+        executeUpdateCardOrder({
+          boardId: boardId,
+          items: reorderedCards
+        })
+      } else {
+```
