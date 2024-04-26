@@ -18533,8 +18533,18 @@ In summary, choose the approach that aligns with your project's requirements. If
 
 For our case, we are going to go with the indexed approach. 
 
+refactor: CardModal into modular indexed approach
+
+This commit refactors the CardModal component to follow a modular indexed approach, while foregoing the traditional single-file component approach. By organizing related files within a directory structure, we enhance code organization, scalability, and maintainability.
+
 `components\modals\CardModal\index.tsx`
 ```tsx
+import React from 'react'
 
+export default function CardModal() {
+  return (
+    <div>CardModal</div>
+  )
+}
 ```
 
