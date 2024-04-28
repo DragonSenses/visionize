@@ -1,6 +1,8 @@
 import React from 'react';
-import { ClerkProvider } from '@clerk/nextjs';
 import { Toaster } from "sonner";
+import { ClerkProvider } from '@clerk/nextjs';
+
+import ModalProvider from '@/components/providers/ModalProvider';
 
 const AppLayout = ({
   children
@@ -10,6 +12,7 @@ const AppLayout = ({
   return (
     <ClerkProvider>
       <Toaster />
+      <ModalProvider />
       {children}
     </ClerkProvider>
   )
