@@ -18758,7 +18758,8 @@ TanStack Query v5 will handle data-fetching.
 
 -[TanStack Query docs](https://tanstack.com/query/latest/docs/framework/react/overview)
 
-Install
+feat: Install @tanstack/react-query (v5.32.0)
+
 ```sh
 npm i @tanstack/react-query
 ```
