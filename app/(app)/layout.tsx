@@ -3,6 +3,7 @@ import { Toaster } from "sonner";
 import { ClerkProvider } from '@clerk/nextjs';
 
 import ModalProvider from '@/components/providers/ModalProvider';
+import QueryProvider from '@/components/providers/QueryProvider';
 
 const AppLayout = ({
   children
@@ -11,9 +12,11 @@ const AppLayout = ({
 }) => {
   return (
     <ClerkProvider>
-      <Toaster />
-      <ModalProvider />
-      {children}
+      <QueryProvider>
+        <Toaster />
+        <ModalProvider />
+        {children}
+      </QueryProvider>
     </ClerkProvider>
   )
 }
