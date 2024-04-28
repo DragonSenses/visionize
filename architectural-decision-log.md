@@ -18746,3 +18746,19 @@ Let's modify the background to be blacker instead, currently it uses `bg-backgro
 
 We can extend the modal's behavior by extending the dialog functionality.
 
+## Data Fetching
+
+The next step is to be able to display the contents of the card within the modal. 
+
+We need to fetch data before we can display data. This time we need to fetch data without server actions because of how drag-and-drop works (it requires client components). So we need to call an API route.
+
+TanStack Query v5 will handle data-fetching.
+
+### TanStack Query
+
+-[TanStack Query docs](https://tanstack.com/query/latest/docs/framework/react/overview)
+
+Install
+```sh
+npm i @tanstack/react-query
+```
