@@ -18735,3 +18735,14 @@ export default function CardItem({
   )
 }
 ```
+
+### Customize the modal
+
+We can customize the `CardModal` by adding functionality to the `Dialog` component. Navigate to `components\ui\dialog.tsx` and find the `DialogOverlay`.
+
+Currently, when we open the `CardModal` which opens the `DialogOverlay` it has a white background.
+
+Let's modify the background to be blacker instead, currently it uses `bg-background/80`, we can change that to `bg-black/80`. This will improve the contrast between the modal in the foreground and the background page.
+
+We can extend the modal's behavior by extending the dialog functionality.
+
