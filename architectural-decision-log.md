@@ -18756,10 +18756,95 @@ TanStack Query v5 will handle data-fetching.
 
 ### TanStack Query
 
--[TanStack Query docs](https://tanstack.com/query/latest/docs/framework/react/overview)
+-[TanStack Query | Overview](https://tanstack.com/query/latest/docs/framework/react/overview)
+-[TanStack Query | Quick start](https://tanstack.com/query/latest/docs/framework/react/quick-start)
 
 feat: Install @tanstack/react-query (v5.32.0)
 
 ```sh
 npm i @tanstack/react-query
+```
+
+#### QueryProvider
+
+Next create `QueryProvider.tsx` under `/providers`.
+
+```tsx
+"use client";
+
+import React from 'react'
+
+export default function QueryProvider() {
+  return (
+    <div>QueryProvider</div>
+  )
+}
+```
+
+feat: Add QueryProvider for managing QueryClient
+
+**QueryProvider** serves as a wrapper component that provides a **QueryClient** instance to its child components. The **QueryClient** is created within the **QueryProvider** and manages data fetching, caching, and state management for queries in your application. By wrapping your components with **QueryProvider**, you ensure that they have access to the shared query client, allowing them to make data requests using **@tanstack/react-query**.
+
+In `QueryProvider`,
+
+- The `QueryProvider` component sets up a `QueryClient` using `useState`.
+- It wraps the entire application with a `QueryClientProvider`, making the query client available to all child components.
+- The `children` prop represents the child components that will have access to the query client.
+
+feat: Add QueryProvider with @tanstack/react-query
+
+```tsx
+"use client";
+
+import React, { useState } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+/**
+ * QueryProvider component wraps the entire application with a QueryClientProvider.
+ * It initializes a new QueryClient and provides it to all child components.
+ *
+ * @param children React nodes that represent the child components.
+ */
+export default function QueryProvider({
+  children
+}: {
+  children: React.ReactNode;
+}) {
+  // Initialize a new QueryClient using useState.
+  const [queryClient] = useState(() => new QueryClient());
+
+  return (
+    // Provide the queryClient to all child components.
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  );
+}
+```
+
+With that done we can use it to wrap our `AppLayout`. Wrap everything inside `ClerkProvider` with `QueryProvider`.
+
+feat: Wrap AppLayout with QueryProvider
+
+`app\(app)\layout.tsx`
+```tsx
+import QueryProvider from '@/components/providers/QueryProvider';
+
+const AppLayout = ({
+  children
+}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <ClerkProvider>
+      <QueryProvider>
+        <Toaster />
+        <ModalProvider />
+        {children}
+      </QueryProvider>
+    </ClerkProvider>
+  )
+}
+
+export default AppLayout
 ```
