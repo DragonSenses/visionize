@@ -18669,3 +18669,69 @@ The `isMounted` state variable serves a specific purpose related to component li
 
 Remember that the `isMounted` approach is not always necessary, and there are alternative ways to handle component lifecycle and state management.
 
+#### Use ModalProvider to open CardModal
+
+Now render `ModalProvider` in the `AppLayout`.
+
+feat: Add ModalProvider to AppLayout
+
+`app\(app)\layout.tsx`
+```tsx
+import React from 'react';
+import { Toaster } from "sonner";
+import { ClerkProvider } from '@clerk/nextjs';
+
+import ModalProvider from '@/components/providers/ModalProvider';
+
+const AppLayout = ({
+  children
+}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <ClerkProvider>
+      <Toaster />
+      <ModalProvider />
+      {children}
+    </ClerkProvider>
+  )
+}
+
+export default AppLayout
+```
+
+Now back to `CardItem` component we can call the `useCardModal` hook. Then we add the `onClick` prop to the `div` that consumes the `provided` object.
+
+feat: Add useCardModal hook & onClick to CardItem
+
+`components\card\CardItem.tsx`
+```tsx
+import { useCardModal } from '@/hooks/useCardModal';
+
+export default function CardItem({
+  data,
+  index,
+}: CardItemProps) {
+  const cardModal = useCardModal();
+  
+  return (
+    <Draggable
+      draggableId={data.id}
+      index={index}
+    >
+      {(provided) => (
+        <div
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+          role="button"
+          onClick={() => cardModal.onOpen(data.id)}
+          className='py-2 px-3 bg-white text-sm shadow-sm rounded-md truncate border-2 border-transparent hover:border-black'
+        >
+          {data.title}
+        </div>
+      )}
+    </Draggable>
+  )
+}
+```
