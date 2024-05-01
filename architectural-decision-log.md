@@ -18848,3 +18848,25 @@ const AppLayout = ({
 
 export default AppLayout
 ```
+
+##### Combination of server components and client components?
+
+**Question**: Since `QueryProvider` is a client component, and it nearly wraps the entire application that contains server components, will everything be on the client?
+
+**Answer**: No. 
+
+**Server Components and Client Components Interaction**:
+   - Server components are designed to be rendered on the server side during the initial page load (SSR) and then rehydrated on the client side.
+   - Client components, on the other hand, are rendered directly on the client side (CSR).
+   - To include a server component within a client component, you can use the `{children}` prop. This prop allows you to include arbitrary React components within the client component, including server components.
+   - When passing a child component or prop to the client component, the client component has no knowledge of what the child is. It doesn't automatically make all child components behave as client components. Instead, it allows you to nest server components within client components explicitly.
+
+To include a server component within a client component, you can use the `{children}` prop. This prop allows you to include arbitrary React components within the client component, including server components.
+
+When passing a child component or prop to the client component, the client component has no knowledge of what the child is. It doesn’t automatically make all child components behave as client components. Instead, it allows you to nest server components within client components explicitly.
+
+**Example in Code**:
+   - In `QueryProvider` component, we're wrapping the entire application with a `QueryClientProvider`. This initializes a new `QueryClient` and provides it to all child components.
+   - The `children` prop is used to include any child components within the `QueryClientProvider`. These child components can be either server components or client components.
+   - By nesting these providers, we're ensuring that the `QueryClient` is available to all components within the `AppLayout`.
+
