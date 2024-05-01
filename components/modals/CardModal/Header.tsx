@@ -1,9 +1,18 @@
 "use client";
 
+import { CardWithList } from '@/types/types';
 import React from 'react';
 
-export default function Header() {
+interface HeaderProps {
+  data: CardWithList;
+}
+
+export default function Header({
+  data,
+}: HeaderProps) {
   return (
-    <div>Header</div>
+    <div>
+      Header
+    </div>
   )
 }
