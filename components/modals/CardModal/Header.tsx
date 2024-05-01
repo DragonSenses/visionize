@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Layout } from 'lucide-react';
 
 import { CardWithList } from '@/types/types';
@@ -13,6 +13,8 @@ interface HeaderProps {
 export default function Header({
   data,
 }: HeaderProps) {
+  const [title, setTitle] = useState(data?.title);
+
   return (
     <div>
       <Layout />
@@ -20,6 +22,7 @@ export default function Header({
         <form>
           <FormInput
             id='title'
+            defaultValue={title}
           />
         </form>
       </div>
