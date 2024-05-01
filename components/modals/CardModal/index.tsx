@@ -42,7 +42,7 @@ export default function CardModal() {
       onOpenChange={onClose}
     >
       <DialogContent>
-        CardModal
+        {cardData?.title}
       </DialogContent>
     </Dialog>
   )
