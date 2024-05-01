@@ -18870,3 +18870,26 @@ When passing a child component or prop to the client component, the client compo
    - The `children` prop is used to include any child components within the `QueryClientProvider`. These child components can be either server components or client components.
    - By nesting these providers, we're ensuring that the `QueryClient` is available to all components within the `AppLayout`.
 
+## API routes
+
+Let's create an API `GET` route for fetching card data by ID.
+
+Create the file `app\api\cards\[cardId]\route.ts`, inside create the `GET` function handler.
+
+feat(api): Add GET route for card by ID
+
+`app\api\cards\[cardId]\route.ts`
+```ts
+import { NextResponse } from "next/server";
+
+export async function GET(
+  req: Request,
+  { params }: { params: { cardId: string } }
+) {
+  try {
+    
+  } catch (error) {
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
+```
