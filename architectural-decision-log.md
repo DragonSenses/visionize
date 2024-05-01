@@ -18870,7 +18870,7 @@ When passing a child component or prop to the client component, the client compo
    - The `children` prop is used to include any child components within the `QueryClientProvider`. These child components can be either server components or client components.
    - By nesting these providers, we're ensuring that the `QueryClient` is available to all components within the `AppLayout`.
 
-## API routes
+### API routes
 
 Let's create an API `GET` route for fetching card data by ID.
 
@@ -18965,4 +18965,56 @@ export async function GET(
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
+```
+
+### Fetcher
+
+With the API request ready, we can create a reusable library utility named `fetcher.ts`.
+
+feat(lib): Create reusable data fetching utility
+
+`lib\fetcher.ts`
+```ts
+/**
+ * Fetches data from the specified URL and returns the parsed JSON response.
+ *
+ * @param {string} url - The URL to fetch data from.
+ * @returns {Promise<any>} - A Promise that resolves to the parsed JSON data.
+ */
+export const fetcher = (url: string) => fetch(url)
+  .then((res) => res.json());
+```
+
+### Fetch card data with fetch and useQuery
+
+- [Query Basics | TanStack](https://tanstack.com/query/v5/docs/framework/react/guides/queries)
+- [useQuery | TanStack Query v5](https://tanstack.com/query/v5/docs/framework/react/reference/useQuery)
+- [TypeScript with TanStack](https://tanstack.com/query/v5/docs/framework/react/typescript)
+- 
+Now back to `Card-Modal`, create the fetch using the `useQuery` hook from **TanStack Query**.
+
+feat: Fetch card data with useQuery hook
+
+`components\modals\CardModal\index.tsx`
+```tsx
+import { useQuery } from '@tanstack/react-query';
+
+import { fetcher } from '@/lib/fetcher';
+
+import { CardWithList } from '@/types/types';
+
+// Import custom hook for managing card modal state
+import { useCardModal } from '@/hooks/useCardModal';
+
+export default function CardModal() {
+  // Get the card ID, modal state, and close function from the custom hook
+  const id = useCardModal((state) => state.id);
+  const isOpen = useCardModal((state) => state.isOpen);
+  const onClose = useCardModal((state) => state.onClose);
+
+  // Fetch card data using the useQuery hook
+  const {data: cardData } = useQuery<CardWithList>({
+    queryKey: ["card", id],
+    queryFn: () => fetcher(`/api/cards/${id}`),
+  });
 ```
