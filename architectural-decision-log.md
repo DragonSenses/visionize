@@ -19029,7 +19029,6 @@ Rendder the card title from `cardData` in the Dialog content. This ensures that 
 // ...
 export default function CardModal() {
   // ...
-  // Render the dialog with the card content
   return (
     <Dialog
       open={isOpen}
@@ -19047,3 +19046,47 @@ Now we can test the modal by selecting a card within a list. After clicking a ca
 
 We can inspect network activity related to a specific card in the F12 Developer Tools (Chrome DevTools).
 Check the Network tab, then search for `card`. Once we click on a card and have the modal open, we can see the network request passing in the exact card ID and the data it comes with.
+
+## Card Modal part 2
+
+Let's improve the card modal. 
+
+### Header component for Card
+
+Add a client component `Header.tsx` inside `components\modals\CardModal`.
+
+```tsx
+"use client";
+
+import React from 'react';
+
+export default function Header() {
+  return (
+    <div>Header</div>
+  )
+}
+```
+
+With that we can use and import the `Header` component in `components\modals\CardModal\index.tsx`. Instead of rendering the card title directly as is, we can refactor it to the header component and pass in the `cardData` to the `data` prop.
+
+refactor: Use local Header component in CardModal
+
+In this commit, the CardModal component has been refactored to utilize a local Header component. The `cardData` is now passed as a prop to the Header component, allowing it to display relevant information within the modal.
+
+```tsx
+import Header from './Header';
+
+export default function CardModal() {
+  // ...
+  return (
+    <Dialog
+      open={isOpen}
+      onOpenChange={onClose}
+    >
+      <DialogContent>
+        <Header data={cardData} />
+      </DialogContent>
+    </Dialog>
+  )
+}
+```
