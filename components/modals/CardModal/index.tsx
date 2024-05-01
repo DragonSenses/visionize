@@ -4,6 +4,15 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 
+// Import the reusable data fetcher
+import { fetcher } from '@/lib/fetcher';
+
+// Import custom union type
+import { CardWithList } from '@/types/types';
+
+// Import custom hook for managing card modal state
+import { useCardModal } from '@/hooks/useCardModal';
+
 // Import UI components
 import {
   Dialog,
@@ -14,14 +23,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-// Import the reusable data fetcher
-import { fetcher } from '@/lib/fetcher';
-
-// Import custom union type
-import { CardWithList } from '@/types/types';
-
-// Import custom hook for managing card modal state
-import { useCardModal } from '@/hooks/useCardModal';
+import Header from './Header';
 
 export default function CardModal() {
   // Get the card ID, modal state, and close function from the custom hook
@@ -42,7 +44,7 @@ export default function CardModal() {
       onOpenChange={onClose}
     >
       <DialogContent>
-        {cardData?.title}
+        <Header data={cardData} />
       </DialogContent>
     </Dialog>
   )
