@@ -19090,3 +19090,113 @@ export default function CardModal() {
   )
 }
 ```
+
+Now define the prop interface for `Header`.
+
+feat(CardModal): Define prop types for Header
+
+```tsx
+"use client";
+
+import { CardWithList } from '@/types/types';
+import React from 'react';
+
+interface HeaderProps {
+  data: CardWithList;
+}
+
+export default function Header({
+  data,
+}: HeaderProps) {
+  return (
+    <div>
+      Header
+    </div>
+  )
+}
+```
+
+Now the `Header` component should be structured in a way that where it should contain the `FormInput` for the card title data. We should also accompany it with an icon, will use `Layout` from lucide-react for now.
+
+feat(Header): Add Layout and FormInput components
+
+```tsx
+import { Layout } from 'lucide-react';
+import FormInput from '@/components/form/FormInput';
+
+export default function Header({
+  data,
+}: HeaderProps) {
+  return (
+    <div>
+      <Layout />
+      <div>
+        <form>
+          <FormInput
+            id='title'
+          />
+        </form>
+      </div>
+    </div>
+  )
+}
+```
+
+Let's also store the `title` data in a state variable.
+
+feat: Add title state for optimistic updates
+
+```tsx
+"use client";
+
+import React, { useState } from 'react';
+
+export default function Header({
+  data,
+}: HeaderProps) {
+  const [title, setTitle] = useState(data?.title);
+
+  return (
+    <div>
+      <Layout />
+      <div>
+        <form>
+          <FormInput
+            id='title'
+            defaultValue={title}
+          />
+        </form>
+      </div>
+    </div>
+  )
+}
+```
+
+Enhance the appearance of the `Header` component for the card modal.
+
+style: Add custom styles to Header component
+
+In this commit, custom styles have been applied div container, Layout icon and the FormInput component within the Header. The styles for the FormInput include adjustments to padding, font size, background, and border.
+
+```tsx
+// ...
+export default function Header({
+  data,
+}: HeaderProps) {
+  // ...
+  return (
+    <div className='flex items-start gap-x-3 mb-6 w-full' >
+      <Layout className='h-5 w-5 mt-1 text-neutral-700' />
+      <div className='w-full'>
+        <form>
+          <FormInput
+            id='title'
+            defaultValue={title}
+            className='relative px-1 -left-1.5 w-[95%] text-xl text-neutral-700 font-semibold bg-transparent border-transparent focus-visible:bg-white focus-visible:border-input mb-0.5 truncate'
+          />
+        </form>
+      </div>
+    </div>
+  )
+}
+```
