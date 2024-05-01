@@ -19018,3 +19018,32 @@ export default function CardModal() {
     queryFn: () => fetcher(`/api/cards/${id}`),
   });
 ```
+
+We finally solved the original problem of fetching the data (through an API), so next we we can display the data. Render the `cardData?.title` inside `DialogContent`.
+
+feat: Display card title in Dialog content
+
+Rendder the card title from `cardData` in the Dialog content. This ensures that the title is visible when the dialog is open.
+
+```tsx
+// ...
+export default function CardModal() {
+  // ...
+  // Render the dialog with the card content
+  return (
+    <Dialog
+      open={isOpen}
+      onOpenChange={onClose}
+    >
+      <DialogContent>
+        {cardData?.title}
+      </DialogContent>
+    </Dialog>
+  )
+}
+```
+
+Now we can test the modal by selecting a card within a list. After clicking a card, the modal should open which opens up the `Dialog` displaying the card title.
+
+We can inspect network activity related to a specific card in the F12 Developer Tools (Chrome DevTools).
+Check the Network tab, then search for `card`. Once we click on a card and have the modal open, we can see the network request passing in the exact card ID and the data it comes with.
