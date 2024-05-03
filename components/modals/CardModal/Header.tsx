@@ -35,6 +35,8 @@ export default function Header({
       <div className='w-full'>
         <form>
           <FormInput
+            ref={inputRef}
+            onBlur={onBlur}
             id='title'
             defaultValue={title}
             className='relative px-1 -left-1.5 w-[95%] text-xl text-neutral-700 font-semibold bg-transparent border-transparent focus-visible:bg-white focus-visible:border-input mb-0.5 truncate'
