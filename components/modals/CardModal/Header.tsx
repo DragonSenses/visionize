@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { ElementRef, useRef, useState } from 'react';
 import { Layout } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { CardWithList } from '@/types/types';
 import FormInput from '@/components/form/FormInput';
@@ -14,6 +16,9 @@ interface HeaderProps {
 export default function Header({
   data,
 }: HeaderProps) {
+  const params = useParams();
+  const queryClient = useQueryClient();
+  const inputRef = useRef<ElementRef<"input">>(null);
   const [title, setTitle] = useState(data.title);
 
   return (
