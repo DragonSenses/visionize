@@ -19280,3 +19280,132 @@ export default function CardModal() {
 ```
 
 Now we can quickly test by opening up a `Card` and seeing the skeleton render before the `Header` renders with the async `cardData`.
+
+#### Enhance functionality of CardModal header
+
+Continue developing the `Header` component.
+
+feat: Add params, queryClient & inputRef to Header
+
+This commit introduces the following additions to the Header component:
+- `params` from `useParams()`
+- `queryClient` from `useQueryClient()`
+- `inputRef` as a ref for an input element
+
+```tsx
+import React, { ElementRef, useRef, useState } from 'react';
+import { useParams } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
+
+export default function Header({
+  data,
+}: HeaderProps) {
+  const params = useParams();
+  const queryClient = useQueryClient();
+  const inputRef = useRef<ElementRef<"input">>(null);
+// ...
+}
+```
+
+Also add the `onBlur` function, which is used to trigger form submission when the input field loses focus.
+
+feat: Implement onBlur function in card header
+
+```tsx
+export default function Header({
+  data,
+}: HeaderProps) {
+  // ...
+
+  function onBlur() {
+    inputRef.current?.form?.requestSubmit();
+  }
+```
+
+feat: Assign ref and onBlur to FormInput in header
+
+```tsx
+export default function Header({
+  data,
+}: HeaderProps) {
+  // ...
+  return (
+    <div className='flex items-start gap-x-3 mb-6 w-full' >
+      <Layout className='h-5 w-5 mt-1 text-neutral-700' />
+      <div className='w-full'>
+        <form>
+          <FormInput
+            ref={inputRef}
+            onBlur={onBlur}
+            id='title'
+            defaultValue={title}
+            className='relative px-1 -left-1.5 w-[95%] text-xl text-neutral-700 font-semibold bg-transparent border-transparent focus-visible:bg-white focus-visible:border-input mb-0.5 truncate'
+          />
+        </form>
+      </div>
+    </div>
+  )
+}
+```
+
+Now finally create the `onSubmit` function which just logs the card title from the `formData`. Assign the handler to the `action` prop of the `form`.
+
+feat: Implement onSubmit handler in card header
+
+```tsx
+export default function Header({
+  data,
+}: HeaderProps) {
+  // ...
+
+  function onSubmit(formData: FormData) {
+    console.log(formData.get("title"));
+  }
+
+  return (
+    <div className='flex items-start gap-x-3 mb-6 w-full' >
+      <Layout className='h-5 w-5 mt-1 text-neutral-700' />
+      <div className='w-full'>
+        <form action={onSubmit}>
+          <FormInput
+        // ...
+          />
+        </form>
+      </div>
+    </div>
+  )
+}
+```
+
+Let's add one more thing to the output of the header so that the user can determine what list they are in when the card modal is opened.
+
+feat: Show list title in CardModal to improve UX
+
+This commit adds a paragraph below the form input in the Header component. The paragraph displays the list title, allowing users to determine which list they are in when the card modal is opened.
+
+```tsx
+export default function Header({
+  data,
+}: HeaderProps) {
+  // ...
+  return (
+    <div className='flex items-start gap-x-3 mb-6 w-full' >
+      <Layout className='h-5 w-5 mt-1 text-neutral-700' />
+      <div className='w-full'>
+        <form action={onSubmit}>
+          <FormInput
+        // ...
+          />
+        </form>
+        <p className='text-sm text-muted-foreground'>
+          in list <span className='underline'>{data.list.title}</span>
+        </p>
+      </div>
+    </div>
+  )
+}
+```
+
+So what is the bigger picture with these changes? Well let's try out an example, we can click on a card on a list. Open the Chrome DevTools "F12" and inspect the element of the `form`. Now when we try to change the card title, by replacing it with some new text then pressing enter we should be able to see the new title logged into the console.
+
+This allows for the user to edit the card title within the `CardModal` itself. The submit should be sent to the server actions which we have yet to implement.
