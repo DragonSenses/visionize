@@ -19154,7 +19154,7 @@ import React, { useState } from 'react';
 export default function Header({
   data,
 }: HeaderProps) {
-  const [title, setTitle] = useState(data?.title);
+  const [title, setTitle] = useState(data.title);
 
   return (
     <div>
@@ -19200,3 +19200,83 @@ export default function Header({
   )
 }
 ```
+
+#### Handle undefined cardData in Header component
+
+Create a `Skeleton` for the `Header` component.
+
+feat: Add Skeleton component for Header
+
+This commit adds a `HeaderSkeleton` component that displays a loading skeleton for the Header. The skeleton includes placeholders for various elements, such as icons and text. Also do not use optional chaining `?.` to access the `title` property of the `data` object. Just use `data.title` directly.
+
+```tsx
+export default function Header({
+  data,
+}: HeaderProps) {
+  const [title, setTitle] = useState(data.title);
+  // ...
+}
+
+// ...
+Header.Skeleton = function HeaderSkeleton() {
+  return (
+    <div className='flex items-start gap-x-3 mb-6 w-full' >
+      <Skeleton className='h-6 w-6 mt-1 bg-neutral-200' />
+      <div>
+        <Skeleton className='w-24 h-6  bg-neutral-200' />
+        <Skeleton className='w-12 h-4 bg-neutral-200' />
+      </div>
+    </div>
+  )
+}
+```
+
+Notice in `CardModal` on this line:
+
+```tsx
+<Header data={cardData} />
+```
+
+We have an error:
+
+```sh
+Type 'CardWithList | undefined' is not assignable to type 'CardWithList'.
+  Type 'undefined' is not assignable to type 'CardWithList'.
+    Type 'undefined' is not assignable to type '{ id: string; title: string; order: number; description: string | null; listId: string; createdAt: Date; updatedAt: Date; }'.ts(2322)
+header.tsx(11, 3): The expected type comes from property 'data' which is declared here on type 'IntrinsicAttributes & HeaderProps'
+```
+
+Now we can fix the error by conditionally rendering a `Skeleton` if there is no card data and the header if card data exists so:
+
+fix: Handle undefined cardData in CardModal
+
+This commit ensures that the `CardModal` component handles the case when `cardData` is undefined. It avoids type errors related to the expected type of `data`.
+
+feat: Dynamically render skeleton or header
+
+```tsx
+export default function CardModal() {
+  // ...
+  // Fetch card data using the useQuery hook
+  const {data: cardData } = useQuery<CardWithList>({
+    queryKey: ["card", id],
+    queryFn: () => fetcher(`/api/cards/${id}`),
+  });
+
+  return (
+    <Dialog
+      open={isOpen}
+      onOpenChange={onClose}
+    >
+      <DialogContent>
+        {!cardData 
+          ? <Header.Skeleton />
+          : <Header data={cardData} />
+        }
+      </DialogContent>
+    </Dialog>
+  )
+}
+```
+
+Now we can quickly test by opening up a `Card` and seeing the skeleton render before the `Header` renders with the async `cardData`.
