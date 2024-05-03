@@ -21,6 +21,14 @@ export default function Header({
   const inputRef = useRef<ElementRef<"input">>(null);
   const [title, setTitle] = useState(data.title);
 
+  /**
+   * Handles the onBlur event for the input field.
+   * When the input field loses focus, this function triggers form submission.
+   */
+  function onBlur(): void {
+    inputRef.current?.form?.requestSubmit();
+  }
+
   return (
     <div className='flex items-start gap-x-3 mb-6 w-full' >
       <Layout className='h-5 w-5 mt-1 text-neutral-700' />
