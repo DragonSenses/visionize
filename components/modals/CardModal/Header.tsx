@@ -51,6 +51,9 @@ export default function Header({
             className='relative px-1 -left-1.5 w-[95%] text-xl text-neutral-700 font-semibold bg-transparent border-transparent focus-visible:bg-white focus-visible:border-input mb-0.5 truncate'
           />
         </form>
+        <p className='text-sm text-muted-foreground'>
+          in list <span className='underline'>{data.list.title}</span>
+        </p>
       </div>
     </div>
   )
