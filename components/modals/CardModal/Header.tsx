@@ -29,11 +29,20 @@ export default function Header({
     inputRef.current?.form?.requestSubmit();
   }
 
+  /**
+   * Handles form submission in the Header component.
+   * Logs the value of the "title" field from the form data.
+   * @param formData - The form data containing input values.
+   */
+  function onSubmit(formData: FormData): void {
+    console.log(formData.get("title"));
+  }
+
   return (
     <div className='flex items-start gap-x-3 mb-6 w-full' >
       <Layout className='h-5 w-5 mt-1 text-neutral-700' />
       <div className='w-full'>
-        <form>
+        <form action={onSubmit}>
           <FormInput
             ref={inputRef}
             onBlur={onBlur}
