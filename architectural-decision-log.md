@@ -19418,6 +19418,40 @@ Make `updateCardOrder` folder inside `/actions` and add the following files:
 2. Types
 3. Server Action handler
 
+### updateCard schema
+
+Create the `UpdateCard` object schema.
+
+feat: Define the UpdateCard Zod schema
+
+- Introduce Zod schema validation to ensure data integrity for UpdateCard
+
+`actions\updateCard\updateCardSchema.ts`
+```typescript
+import { z } from 'zod';
+
+export const UpdateCard = z.object({
+  boardId: z.string(),
+  description: z.optional(
+    z.string({
+      required_error: "Description is required",
+      invalid_type_error: "Description is required",
+    }).min(3, {
+      message: "Description must be 3 or more characters long."
+    })
+  ),
+  title: z.string({
+    required_error: "Title is required", 
+    invalid_type_error: "Title is required", 
+  }).min(3, {
+    message: "Title must be 3 or more characters long.", 
+  }),
+  id: z.string(),
+});
+```
+
+
+
 ### updateCard action
 
 feat: Create updateCard action index handler
