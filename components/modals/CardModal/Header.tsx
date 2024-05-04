@@ -9,6 +9,9 @@ import { CardWithList } from '@/types/types';
 import FormInput from '@/components/form/FormInput';
 import { Skeleton } from '@/components/ui/skeleton';
 
+import { useServerAction } from '@/hooks/useServerAction';
+import { updateCard } from '@/actions/updateCard';
+
 interface HeaderProps {
   data: CardWithList;
 }
@@ -20,6 +23,8 @@ export default function Header({
   const queryClient = useQueryClient();
   const inputRef = useRef<ElementRef<"input">>(null);
   const [title, setTitle] = useState(data.title);
+
+  const { executeServerAction } = useServerAction(updateCard);
 
   /**
    * Handles the onBlur event for the input field.
