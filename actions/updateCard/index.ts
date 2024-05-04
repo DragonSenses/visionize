@@ -19,9 +19,38 @@ async function performAction(data: InputType): Promise<OutputType> {
     };
   }
 
+  const {
+    id,
+    boardId,
+    ...values
+  } = data;
+
+  let card;
+
+  try {
+    card = await database.card.update({
+      where: {
+        id,
+        list: {
+          board: {
+            orgId,
+          },
+        },
+      },
+      data: {
+        ...values,
+      },
+    });
+
+  } catch (error) {
+    return {
+      error: "Failed to update card.",
+    };
+  }
+
   // Return the updated card
   return {
-    data: board,
+    data: card,
   };
 }
 
