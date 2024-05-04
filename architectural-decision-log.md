@@ -19409,3 +19409,38 @@ export default function Header({
 So what is the bigger picture with these changes? Well let's try out an example, we can click on a card on a list. Open the Chrome DevTools "F12" and inspect the element of the `form`. Now when we try to change the card title, by replacing it with some new text then pressing enter we should be able to see the new title logged into the console.
 
 This allows for the user to edit the card title within the `CardModal` itself. The submit should be sent to the server actions which we have yet to implement.
+
+## updateCard server action
+
+Make `updateCardOrder` folder inside `/actions` and add the following files:
+
+1. Schema
+2. Types
+3. Server Action handler
+
+### updateCard action
+
+feat: Create updateCard action index handler
+
+This commit adds an `updateCard` server action index handler in the `index.ts` file. The handler performs an action to update a card and returns the updated card data.
+
+```ts
+"use server";
+import { auth } from "@clerk/nextjs";
+import { revalidatePath } from "next/cache";
+
+import { createServerAction } from "@/lib/createServerAction";
+import { database } from "@/lib/database";
+
+import { UpdateCard } from "./updateCardSchema";
+import { InputType, OutputType } from "./updateCardTypes";
+
+async function performAction (data: InputType): Promise<OutputType> {
+  // Return the updated card
+  return {
+    data: board
+  };
+}
+
+export const updateCard = createServerAction(UpdateCard, performAction);
+```
