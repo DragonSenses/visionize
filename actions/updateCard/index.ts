@@ -8,10 +8,20 @@ import { database } from "@/lib/database";
 import { UpdateCard } from "./updateCardSchema";
 import { InputType, OutputType } from "./updateCardTypes";
 
-async function performAction (data: InputType): Promise<OutputType> {
+async function performAction(data: InputType): Promise<OutputType> {
+  // Authenticate the user and get their organization ID
+  const { userId, orgId } = auth();
+
+  // If authentication fails, return an error
+  if (!userId || !orgId) {
+    return {
+      error: "Unauthorized",
+    };
+  }
+
   // Return the updated card
   return {
-    data: board
+    data: board,
   };
 }
 
