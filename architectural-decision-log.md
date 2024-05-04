@@ -19450,7 +19450,23 @@ export const UpdateCard = z.object({
 });
 ```
 
+### updateCard types
 
+feat: Define types for updateCard action
+
+```ts
+import { z } from 'zod';
+
+import { Card } from '@prisma/client';
+
+import { ActionState } from '@/lib/createServerAction';
+
+import { UpdateCard } from './updateCardSchema';
+
+export type InputType = z.infer<typeof UpdateCard>;
+
+export type OutputType = ActionState<InputType, Card>;
+```
 
 ### updateCard action
 
