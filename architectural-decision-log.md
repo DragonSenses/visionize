@@ -19494,3 +19494,92 @@ async function performAction (data: InputType): Promise<OutputType> {
 
 export const updateCard = createServerAction(UpdateCard, performAction);
 ```
+
+feat: Add user authentication to updateCard
+
+```ts
+import { auth } from "@clerk/nextjs";
+
+async function performAction (data: InputType): Promise<OutputType> {
+  // Authenticate the user and get their organization ID
+  const { userId, orgId } = auth();
+
+  // If authentication fails, return an error
+  if (!userId || !orgId) {
+    return {
+      error: 'Unauthorized',
+    };
+  }
+  
+  return {
+    // ...
+  };
+}
+```
+
+Next implement the functionality to update the card in the database.
+
+feat: Update card in database
+
+```tsx
+async function performAction(data: InputType): Promise<OutputType> {
+// ...
+
+const {
+    id,
+    boardId,
+    ...values
+  } = data;
+
+  let card;
+
+  try {
+    card = await database.card.update({
+      where: {
+        id,
+        list: {
+          board: {
+            orgId,
+          },
+        },
+      },
+      data: {
+        ...values,
+      },
+    });
+
+  } catch (error) {
+    return {
+      error: "Failed to update card.",
+    };
+  }
+  
+  // Return the updated card
+  return {
+    data: card,
+  };
+}
+```
+
+Finally, before we return the updated card let's invoke `revalidatePath` on the `boardId` page for cache revalidation.
+
+feat: Add cache revalidation for updateCard
+
+Adds cache revalidation for the updated board path to ensure immediate UI consistency.
+
+```ts
+async function performAction(data: InputType): Promise<OutputType> {
+// ...
+
+  // Revalidate the cache for the updated board path 
+  // to ensure immediate UI consistency post-update
+  revalidatePath(`/board/${boardId}`);
+
+    // Return the updated card
+  return {
+    data: card,
+  };
+}
+
+export const updateCard = createServerAction(UpdateCard, performAction);
+```
