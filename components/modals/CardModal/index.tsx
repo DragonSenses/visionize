@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/dialog';
 
 import Header from './Header';
+import Description from './Description';
 
 export default function CardModal() {
   // Get the card ID, modal state, and close function from the custom hook
@@ -48,6 +49,14 @@ export default function CardModal() {
           ? <Header.Skeleton />
           : <Header data={cardData} />
         }
+        {/* Responsive grid for card description and actions */}
+        <div className='grid grid-cols-1 md:grid-cols-4 md:gap-4'>
+          <div className='col-span-3'>
+            <div className='w-full space-y-6'>
+
+            </div>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   )
