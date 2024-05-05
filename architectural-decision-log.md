@@ -19627,3 +19627,38 @@ export default function Header({
 }
 ```
 
+#### Invalidate relevant query after card update
+
+Next add the success and error callbacks. For the success we want to mark queries as stale and potentially refetch them. We know that a query's data is out of data because of something that the user has done.
+
+- [Query Invalidation | TanStack Query](https://tanstack.com/query/latest/docs/framework/react/guides/query-invalidation)
+  
+feat: Add success & error callbacks to updateCard
+
+When executing the updateCard server action, add an `onSuccess` callback that invalidates the relevant query in the query cache, displays a success toast with the new title, and updates the local state. Also add an `onError` callback displays an error toast if the action fails.
+
+```tsx
+import { toast } from 'sonner';
+
+export default function Header({
+  data,
+}: HeaderProps) {
+
+  const { executeServerAction: executeUpdateCard } = useServerAction(updateCard, {
+    onSuccess(data) {
+      // Invalidate the relevant query in the query cache
+      queryClient.invalidateQueries({
+        queryKey: ["card", data.id]
+      });
+
+      // Display a success toast with the new title
+      toast.success(`Renamed to "${data.title}`);
+      
+      // Update the local state with the new title
+      setTitle(data.title);
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
+```
