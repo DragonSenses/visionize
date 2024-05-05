@@ -24,7 +24,7 @@ export default function Header({
   const inputRef = useRef<ElementRef<"input">>(null);
   const [title, setTitle] = useState(data.title);
 
-  const { executeServerAction } = useServerAction(updateCard);
+  const { executeServerAction: executeUpdateCard } = useServerAction(updateCard);
 
   /**
    * Handles the onBlur event for the input field.
@@ -36,11 +36,21 @@ export default function Header({
 
   /**
    * Handles form submission in the Header component.
-   * Logs the value of the "title" field from the form data.
    * @param formData - The form data containing input values.
    */
   function onSubmit(formData: FormData): void {
-    console.log(formData.get("title"));
+    const title = formData.get("title") as string;
+    const boardId = params.boardId as string;
+
+    if (title === data.title) {
+      return;
+    }
+
+    executeUpdateCard({
+      title,
+      boardId,
+      id: data.id,
+    });
   }
 
   return (
