@@ -19583,3 +19583,47 @@ async function performAction(data: InputType): Promise<OutputType> {
 
 export const updateCard = createServerAction(UpdateCard, performAction);
 ```
+
+### Use updateCard server action
+
+feat: Instantiate updateCard server action
+
+In the `CardModal` component's `Header`, the `updateCard` server action is instantiated using `useServerAction`.
+
+feat: Handle form submission in card modal header
+
+This function processes form data from the input field in the Header component. It extracts the title and board ID, compares the title with the existing data, and executes an update action if the title has changed.
+
+`components\list\ListContainer.tsx`
+```tsx
+import { useServerAction } from '@/hooks/useServerAction';
+import { updateCard } from '@/actions/updateCard';
+
+export default function Header({
+  data,
+}: HeaderProps) {
+
+  const { executeServerAction: executeUpdateCard } = useServerAction(updateCard);
+
+  /**
+   * Handles form submission in the Header component.
+   * @param formData - The form data containing input values.
+   */
+  function onSubmit(formData: FormData): void {
+    const title = formData.get("title") as string;
+    const boardId = params.boardId as string;
+
+    if (title === data.title) {
+      return;
+    }
+
+    executeUpdateCard({
+      title,
+      boardId,
+      id: data.id,
+    });
+  }
+  // ...
+}
+```
+
