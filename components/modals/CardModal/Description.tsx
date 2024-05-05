@@ -2,8 +2,16 @@
 
 import React from 'react';
 
-export default function Description() {
+import { CardWithList } from '@/types/types';
+
+interface DescriptionProps {
+  data: CardWithList
+}
+
+export default function Description({
+  data
+}: DescriptionProps) {
   return (
-    <div>Description</div>
+    <div>{data.description}</div>
   )
 }
