@@ -4,6 +4,7 @@ import React, { ElementRef, useRef, useState } from 'react';
 import { Layout } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import { CardWithList } from '@/types/types';
 import FormInput from '@/components/form/FormInput';
@@ -24,7 +25,23 @@ export default function Header({
   const inputRef = useRef<ElementRef<"input">>(null);
   const [title, setTitle] = useState(data.title);
 
-  const { executeServerAction: executeUpdateCard } = useServerAction(updateCard);
+  const { executeServerAction: executeUpdateCard } = useServerAction(updateCard, {
+    onSuccess(data) {
+      // Invalidate the relevant query in the query cache
+      queryClient.invalidateQueries({
+        queryKey: ["card", data.id]
+      });
+
+      // Display a success toast with the new title
+      toast.success(`Renamed to "${data.title}`);
+      
+      // Update the local state with the new title
+      setTitle(data.title);
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
 
   /**
    * Handles the onBlur event for the input field.
