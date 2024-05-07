@@ -19690,4 +19690,78 @@ export default function Description({
 }
 ```
 
+### Add visual placeholder for card description
+
+feat: Add skeleton component to Description
+
+The `Description` component now includes a skeleton UI for loading state. It displays placeholders for the card description.
+
+```tsx
+Description.Skeleton = function DescriptionSkeleton() {
+  return (
+    <div className='flex items-start gap-x-3 w-full'>
+      <Skeleton className='h-6 w-6 bg-neutral-200'/>
+      <div className='w-full'>
+        <Skeleton className='h-6 w-24 mb-2 bg-neutral-200'/>
+        <Skeleton className='h-[78px] w-full mb-2 bg-neutral-200'/>
+      </div>
+    </div>
+  )
+}
+```
+
+Setup a responsive grid which will contain the description, card actions and more. This will be inside the `CardModal`.
+
+feat: Add responsive grid container in CardModal
+
+In the CardModal component, a grid layout is introduced to accommodate the card description and related actions. The layout adjusts based on screen size.
+
+`components\modals\CardModal\index.tsx`
+```tsx
+export default function CardModal() { 
+  // ...
+  return (
+    <Dialog
+      open={isOpen}
+      onOpenChange={onClose}
+    >
+      <DialogContent>
+        {!cardData 
+          ? <Header.Skeleton />
+          : <Header data={cardData} />
+        }
+        {/* Responsive grid for card description and actions */}
+        <div className='grid grid-cols-1 md:grid-cols-4 md:gap-4'>
+          <div className='col-span-3'>
+            <div className='w-full space-y-6'>
+
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+```
+
+Now inside the grid container we can conditionally render the card description based on `cardData`.
+
+feat: Conditionally render card description
+
+In the CardModal component, the description skeleton is conditionally rendered based on whether `cardData` is available. If not, the skeleton UI is displayed; otherwise, the actual description content is shown.
+
+```tsx
+        {/* Responsive grid for card description and actions */}
+        <div className='grid grid-cols-1 md:grid-cols-4 md:gap-4'>
+          <div className='col-span-3'>
+            <div className='w-full space-y-6'>
+              {!cardData
+                ? <Description.Skeleton />
+                : <Description data={cardData} />
+              }
+            </div>
+          </div>
+        </div>
+```
+
 <!-- TODO: Description, Card Actions (copy, delete), logs -->
