@@ -2,6 +2,8 @@
 
 import React, { ElementRef, useRef, useState } from 'react';
 import { AlignLeft } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { CardWithList } from '@/types/types';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -13,6 +15,8 @@ interface DescriptionProps {
 export default function Description({
   data
 }: DescriptionProps) {
+  const params = useParams();
+  const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const formRef = useRef<ElementRef<"form">>(null);
   const textAreaRef = useRef<ElementRef<"textarea">>(null);
