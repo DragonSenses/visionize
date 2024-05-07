@@ -19824,3 +19824,61 @@ export default function Description({
 }
 ```
 
+### Editing mode for description
+
+Let's set up the state and refs we need to enable editing mode.
+
+feat: Enable editing mode in Description component
+
+Added state (`isEditing`) and refs (`formRef` and `textAreaRef`) to allow users to edit the card description. 
+
+```tsx
+import React, { ElementRef, useRef, useState } from 'react';
+// ...
+export default function Description({
+  data
+}: DescriptionProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const formRef = useRef<ElementRef<"form">>(null);
+  const textAreaRef = useRef<ElementRef<"textarea">>(null);
+```
+
+feat: Add queryClient and params to Description
+
+```tsx
+import { useParams } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
+
+export default function Description({
+  data
+}: DescriptionProps) {
+  const params = useParams();
+  const queryClient = useQueryClient();
+```
+
+feat: Implement edit toggle in Description
+
+```tsx
+export default function Description({
+  data
+}: DescriptionProps) {
+
+  const textAreaRef = useRef<ElementRef<"textarea">>(null);
+
+  /**
+   * Enables editing mode and focus input.
+   */
+  function enableEditing() {
+    setIsEditing(true);
+    setTimeout(() => {
+      textAreaRef.current?.focus();
+    });
+  }
+
+  /**
+   * Disables editing mode.
+   */
+  function disableEditing() {
+    setIsEditing(false);
+  }
+```
