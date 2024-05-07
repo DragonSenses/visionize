@@ -19862,7 +19862,7 @@ feat: Implement edit toggle in Description
 export default function Description({
   data
 }: DescriptionProps) {
-
+  const [isEditing, setIsEditing] = useState(false);
   const textAreaRef = useRef<ElementRef<"textarea">>(null);
 
   /**
@@ -19881,4 +19881,73 @@ export default function Description({
   function disableEditing() {
     setIsEditing(false);
   }
+```
+
+feat: Allow multiple ways to exit edit mode
+
+This commit improves user experience by providing multiple ways to exit edit mode within the card's `Description` component. Now the user can also use the "Escape" key or click outside the form element to toggle edit mode off. This flexibility ensures a smoother interaction for users who prefer different methods of interaction.
+
+feat: Allow user to disable editing w/ Escape key
+
+```tsx
+export default function Description({
+  data
+}: DescriptionProps) {
+  const [isEditing, setIsEditing] = useState(false);
+
+  function disableEditing() {
+    setIsEditing(false);
+  }
+
+  /**
+   * When user clicks "Escape" key, it disables editing mode.
+   * @param event the key press event
+   */
+  function handleEscapeKey(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      disableEditing();
+    }
+  }
+```
+
+Now let's implement the functionality for the escape key. Use the `useEventListener` hook to attach an event listener to entire docuemtn and to listen for a specific keyboard event. It takes two arguments the event type `keydown` and a callback function `handleEscapeKey` which will be executed when the specified event occurs. This hook automatically manages the event listener lifecycle (adding and removing).
+
+ - The `handleEscapeKey` function is defined to handle the `keydown` event
+ - If the pressed key is the "Escape" key (`event.key === "Escape"`), it calls the `disableEditing()` function
+ - The `useEventListener` hook is used to listen for the `keydown` event on the entire document (window level)
+
+feat: Add Esc key event listener for edit disable
+
+```tsx
+import { useEventListener } from 'usehooks-ts';
+
+export default function Description({
+  data
+}: DescriptionProps) {
+  function handleEscapeKey(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      disableEditing();
+    }
+  }
+  // Custom hook that attaches event listeners to DOM elements, the window, or media query lists.
+  // Listen for the 'keydown' event on the entire document (window level)
+  useEventListener('keydown', handleEscapeKey);
+
+}
+```
+
+Similarly, add the `useOnClickOutside` to disable editing when user clicks outside the form.
+
+feat: Disable editing on outside click
+
+```tsx
+import { useEventListener, useOnClickOutside } from 'usehooks-ts';
+
+export default function Description({
+  data
+}: DescriptionProps) {
+
+  // Custom hook that handles clicks outside a specified element.
+  // Disable editing when user clicks outside the form
+  useOnClickOutside(formRef, disableEditing);
 ```
