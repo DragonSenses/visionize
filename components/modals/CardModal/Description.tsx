@@ -39,6 +39,16 @@ export default function Description({
     setIsEditing(false);
   }
 
+  /**
+   * When user clicks "Escape" key, it disables editing mode.
+   * @param event the key press event
+   */
+  function handleEscapeKey(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      disableEditing();
+    }
+  }
+
   return (
     <div className='flex items-start gap-x-3 w-full'>
       <AlignLeft className='h-5 w-5 mt-0.5 text-neutral-700' />
