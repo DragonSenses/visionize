@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { ElementRef, useRef, useState } from 'react';
 import { AlignLeft } from 'lucide-react';
 
 import { CardWithList } from '@/types/types';
@@ -13,6 +13,10 @@ interface DescriptionProps {
 export default function Description({
   data
 }: DescriptionProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const formRef = useRef<ElementRef<"form">>(null);
+  const textAreaRef = useRef<ElementRef<"textarea">>(null);
+
   return (
     <div className='flex items-start gap-x-3 w-full'>
       <AlignLeft className='h-5 w-5 mt-0.5 text-neutral-700' />
