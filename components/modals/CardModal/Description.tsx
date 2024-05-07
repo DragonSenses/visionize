@@ -7,6 +7,7 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { CardWithList } from '@/types/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useEventListener } from 'usehooks-ts';
 
 interface DescriptionProps {
   data: CardWithList
@@ -48,6 +49,10 @@ export default function Description({
       disableEditing();
     }
   }
+
+  // Custom hook that attaches event listeners to DOM elements, the window, or media query lists.
+  // Listen for the 'keydown' event on the entire document (window level)
+  useEventListener('keydown', handleEscapeKey);
 
   return (
     <div className='flex items-start gap-x-3 w-full'>
