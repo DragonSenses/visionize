@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import { AlignLeft } from 'lucide-react';
 
 import { CardWithList } from '@/types/types';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -13,7 +14,15 @@ export default function Description({
   data
 }: DescriptionProps) {
   return (
-    <div>{data.description}</div>
+    <div className='flex items-start gap-x-3 w-full'>
+      <AlignLeft className='h-5 w-5 mt-0.5 text-neutral-700' />
+      <div className='w-full'>
+        <p className='mb-2 font-semibold text-neutral-700'>
+          Description
+        </p>
+      </div>
+      {data.description}
+    </div>
   )
 }
 
