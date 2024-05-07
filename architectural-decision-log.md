@@ -19764,4 +19764,63 @@ In the CardModal component, the description skeleton is conditionally rendered b
         </div>
 ```
 
-<!-- TODO: Description, Card Actions (copy, delete), logs -->
+### Description output
+
+Now let's add and style the `Description` output to match the skeleton.
+
+feat: Add icon and title to Description component
+
+```tsx
+import { AlignLeft } from 'lucide-react';
+
+export default function Description({
+  data
+}: DescriptionProps) {
+  return (
+    <div className='flex items-start gap-x-3 w-full'>
+      <AlignLeft className='h-5 w-5 mt-0.5 text-neutral-700' />
+      <div className='w-full'>
+        <p className='mb-2 font-semibold text-neutral-700'>
+          Description
+        </p>
+      </div>
+      {data.description}
+    </div>
+  )
+}
+```
+
+Next we want to add a conditional element. During edit mode it will be a `textarea`, otherwise just a `div`. Let's start by adding a `div` after the `p`.
+
+feat: Add description input field to Description
+
+This commit adds an input field for users to enter or edit descriptions. The new `<div>` element with `role="button"` serves as the input area.
+
+- Added a description input field
+- The input field has a placeholder ("Add a description...") when no description is provided
+- The component now allows users to interact with the description input
+
+```tsx
+export default function Description({
+  data
+}: DescriptionProps) {
+  return (
+    <div className='flex items-start gap-x-3 w-full'>
+      <AlignLeft className='h-5 w-5 mt-0.5 text-neutral-700' />
+      <div className='w-full'>
+        <p className='mb-2 font-semibold text-neutral-700'>
+          Description
+        </p>
+        <div
+          role="button"
+          className='min-h-[78px] px-3.5 py-3 rounded-md bg-neutral-200 text-sm font-medium'
+        >
+          {data.description || "Add a description..."}
+        </div>
+      </div>
+      {data.description}
+    </div>
+  )
+}
+```
+
