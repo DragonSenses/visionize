@@ -20,6 +20,12 @@ export default function Description({
         <p className='mb-2 font-semibold text-neutral-700'>
           Description
         </p>
+        <div
+          role="button"
+          className='min-h-[78px] px-3.5 py-3 rounded-md bg-neutral-200 text-sm font-medium'
+        >
+          {data.description || "Add a description..."}
+        </div>
       </div>
       {data.description}
     </div>
