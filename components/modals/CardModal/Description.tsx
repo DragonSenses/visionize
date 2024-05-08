@@ -62,8 +62,8 @@ export default function Description({
     const boardId = params.boardId as string;
     const description = formData.get('description') as string;
 
-    console.log(`boardId: ${boardId}`);
-    console.log(`description: ${description}`);
+    console.log(`boardId: ${ boardId }`);
+    console.log(`description: ${ description }`);
 
     // TODO: execute server action to update
   }
@@ -75,14 +75,18 @@ export default function Description({
         <p className='mb-2 font-semibold text-neutral-700'>
           Description
         </p>
-        <div
-          role="button"
-          className='min-h-[78px] px-3.5 py-3 rounded-md bg-neutral-200 text-sm font-medium'
-        >
-          {data.description || "Add a description..."}
-        </div>
+        {isEditing ? (
+          <div>Editing Mode</div>
+        ) : (
+          <div
+            onClick={enableEditing}
+            role="button"
+            className='min-h-[78px] px-3.5 py-3 rounded-md bg-neutral-200 text-sm font-medium'
+          >
+            {data.description || "Add a description..."}
+          </div>
+        )}
       </div>
-      {data.description}
     </div>
   )
 }
