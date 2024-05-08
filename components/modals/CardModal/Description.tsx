@@ -4,7 +4,10 @@ import React, { ElementRef, useRef, useState } from 'react';
 import { AlignLeft } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
+import { updateCard } from '@/actions/updateCard';
+import { useServerAction } from '@/hooks/useServerAction';
 import { CardWithList } from '@/types/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useEventListener, useOnClickOutside } from 'usehooks-ts';
@@ -60,6 +63,15 @@ export default function Description({
   // Custom hook that handles clicks outside a specified element.
   // Disable editing when user clicks outside the form
   useOnClickOutside(formRef, disableEditing);
+  
+  const { executeServerAction: executeUpdateCard } = useServerAction(updateCard, {
+    onSuccess(data) {
+      toast.success(`Card description updated.`);
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
 
   function onSubmit(formData: FormData) {
     const boardId = params.boardId as string;
