@@ -64,7 +64,10 @@ export default function Description({
   // Disable editing when user clicks outside the form
   useOnClickOutside(formRef, disableEditing);
   
-  const { executeServerAction: executeUpdateCard } = useServerAction(updateCard, {
+  const { 
+    executeServerAction: executeUpdateCard, 
+    fieldErrors 
+  } = useServerAction(updateCard, {
     onSuccess(data) {
       toast.success(`Card description updated.`);
     },
@@ -99,6 +102,7 @@ export default function Description({
               id='description'
               placeholder='Add a description...'
               defaultValue={data.description || undefined}
+              errors={fieldErrors}
               className='w-full mt-2'
             />
             <div className='flex items-center gap-x-2'>
