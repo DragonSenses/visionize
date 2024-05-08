@@ -20005,3 +20005,68 @@ export default function Description({
 }
 ```
 
+### Edit mode: input field of card description
+
+Now let's refactor the placeholder `div` for the editing mode to a `form` element. The `form` consists of a `FormTextArea`, `FormSubmitButton` and a cancel `Button`.
+
+feat: Develop edit mode of card description
+
+Added a form with FormTextArea, FormSubmitButton, and Button components to enable editing mode for the card description.
+
+refactor: Card description edit mode into a form
+
+```tsx
+import { Button } from '@/components/ui/button';
+import FormSubmitButton from '@/components/form/FormSubmitButton';
+import FormTextArea from '@/components/form/FormTextArea';
+
+export default function Description({
+  data
+}: DescriptionProps) {
+  // ...
+    return (
+    <div className='flex items-start gap-x-3 w-full'>
+      <AlignLeft className='h-5 w-5 mt-0.5 text-neutral-700' />
+      <div className='w-full'>
+        <p className='mb-2 font-semibold text-neutral-700'>
+          Description
+        </p>
+        {isEditing ? (
+          <form
+            ref={formRef}
+            className='space-y-2'
+          >
+            <FormTextArea
+              id='description'
+              placeholder='Add a description...'
+              defaultValue={data.description || undefined}
+              className='w-full mt-2'
+            />
+            <div className='flex items-center gap-x-2'>
+              <FormSubmitButton>
+                Save
+              </FormSubmitButton>
+              <Button
+                type='button'
+                onClick={disableEditing}
+                size='sm'
+                variant='ghost'
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
+        ) : (
+          <div
+            onClick={enableEditing}
+            role="button"
+            className='min-h-[78px] px-3.5 py-3 rounded-md bg-neutral-200 text-sm font-medium'
+          >
+            {data.description || "Add a description..."}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+```
