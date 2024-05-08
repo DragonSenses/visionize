@@ -58,6 +58,16 @@ export default function Description({
   // Disable editing when user clicks outside the form
   useOnClickOutside(formRef, disableEditing);
 
+  function onSubmit(formData: FormData) {
+    const boardId = params.boardId as string;
+    const description = formData.get('description') as string;
+
+    console.log(`boardId: ${boardId}`);
+    console.log(`description: ${description}`);
+
+    // TODO: execute server action to update
+  }
+
   return (
     <div className='flex items-start gap-x-3 w-full'>
       <AlignLeft className='h-5 w-5 mt-0.5 text-neutral-700' />
