@@ -8,6 +8,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { CardWithList } from '@/types/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useEventListener, useOnClickOutside } from 'usehooks-ts';
+import { Button } from '@/components/ui/button';
+import FormSubmitButton from '@/components/form/FormSubmitButton';
+import FormTextArea from '@/components/form/FormTextArea';
 
 interface DescriptionProps {
   data: CardWithList
@@ -76,7 +79,30 @@ export default function Description({
           Description
         </p>
         {isEditing ? (
-          <div>Editing Mode</div>
+          <form
+            ref={formRef}
+            className='space-y-2'
+          >
+            <FormTextArea
+              id='description'
+              placeholder='Add a description...'
+              defaultValue={data.description || undefined}
+              className='w-full mt-2'
+            />
+            <div className='flex items-center gap-x-2'>
+              <FormSubmitButton>
+                Save
+              </FormSubmitButton>
+              <Button
+                type='button'
+                onClick={disableEditing}
+                size='sm'
+                variant='ghost'
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
         ) : (
           <div
             onClick={enableEditing}
