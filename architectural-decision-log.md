@@ -20070,3 +20070,108 @@ export default function Description({
   )
 }
 ```
+
+### Use updateCard server action in Description component
+
+So do we create a server action to update the description? 
+
+No, we can still use the `updateCard` server action because as we can see in the schema, we already have the optional description ready to be validated:
+
+`actions\updateCard\updateCardSchema.ts`
+```ts
+export const UpdateCard = z.object({
+  boardId: z.string(),
+  description: z.optional(
+    z.string({
+      required_error: "Description is required",
+      invalid_type_error: "Description is required",
+    }).min(3, {
+      message: "Description must be 3 or more characters long."
+    })
+  ),
+```
+
+And in the index handler we have `...values` which spreads all the values in the data that the user passes in to the server action. So this means it covers both the card title editing and card description editing.
+
+`actions\updateCard\index.ts`
+```ts
+async function performAction(data: InputType): Promise<OutputType> {
+  // ...
+  let card;
+
+  try {
+    card = await database.card.update({
+      where: {
+        id,
+        list: {
+          board: {
+            orgId,
+          },
+        },
+      },
+      data: {
+        ...values,
+      },
+    });
+```
+
+So let's instantiate the server action with success and error callbacks. For now it should just display toast messages.
+
+feat: Instantiate updateCard server action
+
+```tsx
+import { toast } from 'sonner';
+import { updateCard } from '@/actions/updateCard';
+import { useServerAction } from '@/hooks/useServerAction';
+
+export default function Description({
+  data
+}: DescriptionProps) {
+
+  const { executeServerAction: executeUpdateCard } = useServerAction(updateCard, {
+    onSuccess(data) {
+      toast.success(`Card description updated.`);
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
+```
+
+Let's also take the `fieldErrors` from `useServerAction` and add it to the `errors` field of the `FormTextArea` so we can present error validation on the input field.
+
+feat: Add error validation to FormTextArea input
+
+```tsx
+  const { 
+    executeServerAction: executeUpdateCard, 
+    fieldErrors 
+  } = useServerAction(updateCard, {
+    onSuccess(data) {
+      toast.success(`Card description updated.`);
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
+
+  return (
+    <div className='flex items-start gap-x-3 w-full'>
+      <AlignLeft className='h-5 w-5 mt-0.5 text-neutral-700' />
+      <div className='w-full'>
+        <p className='mb-2 font-semibold text-neutral-700'>
+          Description
+        </p>
+        {isEditing ? (
+          <form
+            ref={formRef}
+            className='space-y-2'
+          >
+            <FormTextArea
+              id='description'
+              placeholder='Add a description...'
+              defaultValue={data.description || undefined}
+              errors={fieldErrors}
+              className='w-full mt-2'
+            />
+```
