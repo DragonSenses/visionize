@@ -19951,3 +19951,57 @@ export default function Description({
   // Disable editing when user clicks outside the form
   useOnClickOutside(formRef, disableEditing);
 ```
+
+Create the submit handler function without implementing the server action.
+
+feat: Add onSubmit handler to Description
+
+```tsx
+  function onSubmit(formData: FormData) {
+    const boardId = params.boardId as string;
+    const description = formData.get('description') as string;
+
+    console.log(`boardId: ${boardId}`);
+    console.log(`description: ${description}`);
+
+    // TODO: execute server action to update
+  }
+```
+
+### Conditionally render the edit mode input field
+
+feat: Toggle view/edit mode in card description
+
+Now let's conditionally render the `div` when in display mode or `textarea` input when in edit mode.
+
+feat: Conditionally render input or view
+
+```tsx
+export default function Description({
+  data
+}: DescriptionProps) {
+  // ...
+  return (
+    <div className='flex items-start gap-x-3 w-full'>
+      <AlignLeft className='h-5 w-5 mt-0.5 text-neutral-700' />
+      <div className='w-full'>
+        <p className='mb-2 font-semibold text-neutral-700'>
+          Description
+        </p>
+        {isEditing ? (
+          <div>Editing Mode</div>
+        ) : (
+          <div
+            onClick={enableEditing}
+            role="button"
+            className='min-h-[78px] px-3.5 py-3 rounded-md bg-neutral-200 text-sm font-medium'
+          >
+            {data.description || "Add a description..."}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+```
+
