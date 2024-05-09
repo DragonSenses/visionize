@@ -69,7 +69,7 @@ export default function Description({
     fieldErrors
   } = useServerAction(updateCard, {
     onSuccess(data) {
-      toast.success(`Card description updated.`);
+      toast.success(`Card ${ data.title } updated.`);
     },
     onError(error) {
       toast.error(error);

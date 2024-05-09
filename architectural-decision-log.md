@@ -20139,7 +20139,7 @@ export default function Description({
 
   const { executeServerAction: executeUpdateCard } = useServerAction(updateCard, {
     onSuccess(data) {
-      toast.success(`Card description updated.`);
+      toast.success(`Card ${ data.title } updated.`);
     },
     onError(error) {
       toast.error(error);
@@ -20157,7 +20157,7 @@ feat: Add error validation to FormTextArea input
     fieldErrors 
   } = useServerAction(updateCard, {
     onSuccess(data) {
-      toast.success(`Card description updated.`);
+      toast.success(`Card ${ data.title } updated.`);
     },
     onError(error) {
       toast.error(error);
