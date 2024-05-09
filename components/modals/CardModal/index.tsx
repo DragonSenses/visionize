@@ -25,6 +25,7 @@ import {
 
 import Header from './Header';
 import Description from './Description';
+import Actions from './Actions';
 
 export default function CardModal() {
   // Get the card ID, modal state, and close function from the custom hook
@@ -51,6 +52,7 @@ export default function CardModal() {
         }
         {/* Responsive grid for card description and actions */}
         <div className='grid grid-cols-1 md:grid-cols-4 md:gap-4'>
+          {/* Card Description */}
           <div className='col-span-3'>
             <div className='w-full space-y-6'>
               {!cardData
@@ -59,6 +61,11 @@ export default function CardModal() {
               }
             </div>
           </div>
+          {/* Card Actions */}
+          {!cardData
+            ? <Actions.Skeleton />
+            : <Actions data={cardData} />
+          }
         </div>
       </DialogContent>
     </Dialog>
