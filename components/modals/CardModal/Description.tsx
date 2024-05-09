@@ -95,6 +95,7 @@ export default function Description({
         </p>
         {isEditing ? (
           <form
+            action={onSubmit}
             ref={formRef}
             className='space-y-2'
           >
