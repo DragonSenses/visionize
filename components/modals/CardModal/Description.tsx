@@ -108,6 +108,7 @@ export default function Description({
             className='space-y-2'
           >
             <FormTextArea
+              ref={textAreaRef}
               id='description'
               placeholder='Add a description...'
               defaultValue={data.description || undefined}

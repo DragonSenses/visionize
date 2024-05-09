@@ -20071,6 +20071,15 @@ export default function Description({
 }
 ```
 
+feat: Assign ref to FormTextArea in Description
+
+```tsx
+<FormTextArea
+  ref={textAreaRef}
+  // ...props
+/>
+```
+
 ### Use updateCard server action in Description component
 
 So do we create a server action to update the description? 
