@@ -2,9 +2,16 @@
 
 import React from 'react';
 
+import { CardWithList } from '@/types/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function Actions() {
+interface ActionsProps {
+  data: CardWithList
+}
+
+export default function Actions({
+  data,
+}: ActionsProps) {
   return (
     <div>Actions</div>
   )

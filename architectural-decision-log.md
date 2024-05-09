@@ -20277,6 +20277,24 @@ export default function Actions() {
 }
 ```
 
+feat: Define prop types for card Actions component
+
+```tsx
+import { CardWithList } from '@/types/types';
+
+interface ActionsProps {
+  data: CardWithList
+}
+
+export default function Actions({
+  data,
+}: ActionsProps) {
+  return (
+    <div>Actions</div>
+  )
+}
+```
+
 Let's create the skeleton for the card actions.
 
 feat: Create card actions skeleton placeholder
@@ -20348,3 +20366,4 @@ export default function CardModal() {
   )
 }
 ```
+
