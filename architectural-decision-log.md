@@ -20260,3 +20260,43 @@ feat: Invalidate query and update success behavior
     },
   });
 ```
+
+## CardModal actions
+
+Create a client component `Actions.tsx` in `/CardModal`.
+
+```tsx
+"use client";
+
+import React from 'react';
+
+export default function Actions() {
+  return (
+    <div>Actions</div>
+  )
+}
+```
+
+Let's create the skeleton for the card actions.
+
+feat: Create card actions skeleton placeholder
+
+```tsx
+import { Skeleton } from '@/components/ui/skeleton';
+
+export default function Actions() {
+  return (
+    <div>Actions</div>
+  )
+}
+
+Actions.Skeleton = function ActionsSkeleton() {
+  return (
+    <div className='mt-2 space-y-2'>
+      <Skeleton className='w-20 h-4 bg-neutral-200'/>
+      <Skeleton className='w-full h-8 bg-neutral-200'/>
+      <Skeleton className='w-full h-8 bg-neutral-200'/>
+    </div>
+  )
+}
+```
