@@ -63,10 +63,10 @@ export default function Description({
   // Custom hook that handles clicks outside a specified element.
   // Disable editing when user clicks outside the form
   useOnClickOutside(formRef, disableEditing);
-  
-  const { 
-    executeServerAction: executeUpdateCard, 
-    fieldErrors 
+
+  const {
+    executeServerAction: executeUpdateCard,
+    fieldErrors
   } = useServerAction(updateCard, {
     onSuccess(data) {
       toast.success(`Card description updated.`);
@@ -76,14 +76,22 @@ export default function Description({
     },
   });
 
-  function onSubmit(formData: FormData) {
+  /**
+   * Handles form submission for updating card information.
+   * @param formData The form data containing user input.
+   */
+  function onSubmit(formData: FormData): void {
+    // Extract the boardId from the URL parameters (params)
     const boardId = params.boardId as string;
+
+    // Extract the description from the form data
     const description = formData.get('description') as string;
 
-    console.log(`boardId: ${ boardId }`);
-    console.log(`description: ${ description }`);
-
-    // TODO: execute server action to update
+    executeUpdateCard({
+      id: data.id, // The card ID (from 'data' prop)
+      boardId,
+      description,
+    });
   }
 
   return (
