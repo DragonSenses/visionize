@@ -20300,3 +20300,51 @@ Actions.Skeleton = function ActionsSkeleton() {
   )
 }
 ```
+
+Now conditionally render the `Actions` when `cardData` is available, otherwise render the skeleton. Also pass in the `cardData` to the `data` prop in `Actions`.
+
+feat: Conditionally render card actions
+
+In the CardModal component, the card actions are conditionally rendered based on whether `cardData` is available. If `cardData` is not present, a skeleton loader is displayed; otherwise, the actual card actions are shown using the `Actions` component.
+
+```tsx
+export default function CardModal() {
+  // ...
+
+  const {data: cardData } = useQuery<CardWithList>({
+    queryKey: ["card", id],
+    queryFn: () => fetcher(`/api/cards/${id}`),
+  });
+
+  return (
+    <Dialog
+      open={isOpen}
+      onOpenChange={onClose}
+    >
+      <DialogContent>
+        {!cardData 
+          ? <Header.Skeleton />
+          : <Header data={cardData} />
+        }
+        {/* Responsive grid for card description and actions */}
+        <div className='grid grid-cols-1 md:grid-cols-4 md:gap-4'>
+          {/* Card Description */}
+          <div className='col-span-3'>
+            <div className='w-full space-y-6'>
+              {!cardData
+                ? <Description.Skeleton />
+                : <Description data={cardData} />
+              }
+            </div>
+          </div>
+          {/* Card Actions */}
+          {!cardData
+            ? <Actions.Skeleton />
+            : <Actions data={cardData} />
+          }
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+```
