@@ -19431,6 +19431,7 @@ feat: Define the UpdateCard Zod schema
 import { z } from 'zod';
 
 export const UpdateCard = z.object({
+  id: z.string(),
   boardId: z.string(),
   description: z.optional(
     z.string({
@@ -19440,13 +19441,12 @@ export const UpdateCard = z.object({
       message: "Description must be 3 or more characters long."
     })
   ),
-  title: z.string({
+  title: z.optional(z.string({
     required_error: "Title is required", 
     invalid_type_error: "Title is required", 
   }).min(3, {
     message: "Title must be 3 or more characters long.", 
-  }),
-  id: z.string(),
+  })),
 });
 ```
 
@@ -20174,4 +20174,45 @@ feat: Add error validation to FormTextArea input
               errors={fieldErrors}
               className='w-full mt-2'
             />
+```
+
+Next let's implement the submit handler and assign it to the form.
+
+feat: Implement form submission in Description
+
+feat: Assign submit handler to form in edit mode
+
+```tsx
+
+  return (
+    <div className='flex items-start gap-x-3 w-full'>
+      { /* ... */}
+        {isEditing ? (
+          <form
+            action={onSubmit}
+            ref={formRef}
+            className='space-y-2'
+          >
+```
+
+feat: Implement submit handler in card description
+
+```tsx
+  /**
+   * Handles form submission for updating card information.
+   * @param formData The form data containing user input.
+   */
+  function onSubmit(formData: FormData): void {
+    // Extract the boardId from the URL parameters (params)
+    const boardId = params.boardId as string;
+
+    // Extract the description from the form data
+    const description = formData.get('description') as string;
+
+    executeUpdateCard({
+      id: data.id, // The card ID (from 'data' prop)
+      boardId,
+      description,
+    });
+  }
 ```
