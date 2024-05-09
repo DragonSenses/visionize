@@ -20225,3 +20225,38 @@ feat: Implement submit handler in card description
     });
   }
 ```
+
+After some testing we need to update the `onSuccess` callback when the `updateCard` server action is executed.
+
+feat: Enhance success behavior for card updates
+
+- Add `queryClient` and `invalidateQueries`
+- Display success message with a toast notification
+- Disable the editing after form submission
+
+feat: Invalidate query and update success behavior
+
+- Added `queryClient` and `invalidateQueries` to handle query invalidation
+- Displayed a toast notification with a success message when the card is updated
+- Disabled editing mode after form submission
+
+```tsx
+  const {
+    executeServerAction: executeUpdateCard,
+    fieldErrors
+  } = useServerAction(updateCard, {
+    onSuccess(data) {
+      // Invalidate the relevant query in the query cache
+      queryClient.invalidateQueries({
+        queryKey: ["card", data.id]
+      });
+
+      toast.success(`Card ${ data.title } updated.`);
+
+      disableEditing();
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
+```
