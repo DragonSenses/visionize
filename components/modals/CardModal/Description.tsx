@@ -69,7 +69,14 @@ export default function Description({
     fieldErrors
   } = useServerAction(updateCard, {
     onSuccess(data) {
+      // Invalidate the relevant query in the query cache
+      queryClient.invalidateQueries({
+        queryKey: ["card", data.id]
+      });
+
       toast.success(`Card ${ data.title } updated.`);
+
+      disableEditing();
     },
     onError(error) {
       toast.error(error);
