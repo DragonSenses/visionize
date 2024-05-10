@@ -20534,6 +20534,7 @@ export const CopyCard = z.object({
 
 feat: Define types for copyCard action
 
+`actions\copyCard\copyCardTypes.ts`
 ```tsx
 import { z } from 'zod';
 
@@ -20562,6 +20563,7 @@ feat: Create copyCard action index handler
 
 This commit defines a server action to copy a card. It imports necessary modules, creates the server action using the provided input validation schema (CopyCard), and specifies the expected input and output types. The performAction function handles the card copying logic.
 
+`actions\copyCard\index.ts`
 ```tsx
 "use server";
 
@@ -20634,3 +20636,70 @@ async function performAction(data: InputType): Promise<OutputType> {
 }
 ```
 
+Finally, we implement the functionality to duplicate the card.
+
+- Open up a `try..catch` block and setup the error handling
+- Fetch the original card to duplicate in the database
+  - Handle the error when card isn't found
+- Calculate the next order based on the most recent card.
+- Create the card in the database via **deep copy**
+
+Note: A **deep copy** refers to creating a duplicate or clone of an object or data structure in such a way that all nested elements (including sub-objects, arrays, etc.) are also duplicated. In other words, a deep copy ensures that the copied object is entirely independent of the original, and any modifications made to one do not affect the other.
+
+In programming, deep copying is commonly used when you want to duplicate complex data structures (such as objects, arrays, or trees) without any shared references. It ensures that changes made to the copied structure do not impact the original one.
+
+feat: Implement copyCard server action logic
+
+feat: Execute deep copy logic for card duplication
+
+This commit adds the logic to duplicate a card by deep copying the source card. It retrieves the original card, calculates the next order, and creates a new card with the appropriate title, description, and order.
+
+```tsx
+async function performAction(data: InputType): Promise<OutputType> {
+  const { id, boardId } = data;
+
+  let card;
+
+    try {
+    // Find the original card to duplicate
+    const sourceCard = await database.card.findUnique({
+      where: {
+        id,
+        list: {
+          board: {
+            orgId,
+          },
+        },
+      },
+    });
+
+    // Return an error message if the original card is not found
+    if (!sourceCard) {
+      return { error: "Card not found." };
+    }
+
+    // Fetch the most recent card in the list to properly assign the newest order
+    const mostRecentCard = await database.card.findFirst({
+      where: { listId: sourceCard.listId },
+      orderBy: { order: "desc" },
+      select: { order: true },
+    });
+
+    // Get the next order depending on whether the mostRecentCard is present or not
+    const nextOrder = mostRecentCard ? mostRecentCard.order + 1 : 1;
+
+    // Create a new card by deep copying the source card
+    card = await database.card.create({
+      data: {
+        title: `${sourceCard.title} - Copy`,
+        description: sourceCard.description,
+        order: nextOrder,
+        listId: sourceCard.listId,
+      },
+    });
+  } catch (error) {
+    return {
+      error: "Failed to copy.",
+    };
+  }
+```
