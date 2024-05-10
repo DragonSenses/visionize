@@ -30,7 +30,50 @@ async function performAction(data: InputType): Promise<OutputType> {
 
   let card;
 
-  // Revalidate the cache for the updated board path 
+  try {
+    // Find the original card to duplicate
+    const sourceCard = await database.card.findUnique({
+      where: {
+        id,
+        list: {
+          board: {
+            orgId,
+          },
+        },
+      },
+    });
+
+    // Return an error message if the original card is not found
+    if (!sourceCard) {
+      return { error: "Card not found." };
+    }
+
+    // Fetch the most recent card in the list to properly assign the newest order
+    const mostRecentCard = await database.card.findFirst({
+      where: { listId: sourceCard.listId },
+      orderBy: { order: "desc" },
+      select: { order: true },
+    });
+
+    // Get the next order depending on whether the mostRecentCard is present or not
+    const nextOrder = mostRecentCard ? mostRecentCard.order + 1 : 1;
+
+    // Create a new card by deep copying the source card
+    card = await database.card.create({
+      data: {
+        title: `${sourceCard.title} - Copy`,
+        description: sourceCard.description,
+        order: nextOrder,
+        listId: sourceCard.listId,
+      },
+    });
+  } catch (error) {
+    return {
+      error: "Failed to copy.",
+    };
+  }
+
+  // Revalidate the cache for the updated board path
   // to ensure immediate UI consistency post-update
   revalidatePath(`/board/${boardId}`);
 
