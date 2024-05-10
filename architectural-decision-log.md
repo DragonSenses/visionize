@@ -20499,3 +20499,34 @@ export default function Actions({
   )
 }
 ```
+
+## copyCard server action
+
+Create a directory named `copyCard` inside of `/actions` and create the following files:
+
+Create `copyCard` folder inside `/actions` and add the following files:
+
+1. Schema
+2. Types
+3. Server Action handler
+
+### copyCard schema
+
+Create the `CopyCard` object schema.
+
+feat: Define the CopyCard Zod schema
+
+`actions\copyCard\copyCardSchema.ts`
+```ts
+import { z } from 'zod';
+
+/**
+ * Define the CopyCard object schema.
+ * 
+ */
+export const CopyCard = z.object({
+  id: z.string(),
+  boardId: z.string(),
+});
+```
+
