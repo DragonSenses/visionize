@@ -20405,3 +20405,97 @@ export default function Actions({
   )
 }
 ```
+
+#### Extend the functionality of Button component
+
+feat: Extend Button component with variant & size
+
+Let's extend the functionality of the `Button` component by giving it a new variant that better harmonizes with the `CardModal`.
+
+Call this new variant `"card-action"`. Notice that if we simply put the property name as `card-action`, it will interpret the hypen `(-)` as a subtraction operation. In JS/TS, hypens are not valid characters for variable or property names. So we MUST wrap the variant property name in single or double quotes so it can treated as a single string property.
+
+feat: Add "card-action" variant to Button
+
+In the Button component, a new variant called "card-action" is introduced to harmonize with the overall style of the `CardModal`, providing consistent and visually appealing buttons. The "card-action" variant can be customized further to match specific design requirements.
+
+`components\ui\button.tsx`
+```tsx
+const buttonVariants = cva(
+  // "...",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline:
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+        primary: "bg-sky-500 hover:bg-sky-600/90 text-primary-foreground",
+        transparent: "bg-transparent text-white hover:bg-white/20",
+        "card-action": "bg-neutral-200 hover:bg-neutral-300 text-secondary-foreground",
+      },
+```
+
+Let's also add a new size named `inline` that automatically adjusts an element's height based on its content. It also has some padding around and 14px font size (to adjust the icons and text content within).
+
+The term "inline" is commonly used to describe a button size that occupies minimal vertical space and flows seamlessly within a line of text or other elements. It implies that the button doesn't disrupt the layout and remains compact.
+
+feat: Add "inline" size variant to Button
+
+In the Button component, a new size variant called "inline" is introduced to create a compact button size that aligns well within a line of text or other elements. The "inline" variant is designed for scenarios where vertical space is limited.
+
+```tsx
+const buttonVariants = cva(
+  // "...",
+  {
+    variants: {
+      variant: {
+        // ...
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
+        icon: "h-10 w-10",
+        inline: "h-auto px-2 py-1.5 text-sm",
+      },
+```
+
+Use the new `card-action` variant and `inline` size within the `Actions` component.
+
+style: Add button variant and size to card actions
+
+```tsx
+export default function Actions({
+  data,
+}: ActionsProps) {
+  return (
+    <div className='mt-2 space-y-2'>
+      <p className='text-xs font-semibold'>
+        Actions
+      </p>
+      {/* Buttons */}
+      <Button
+        variant='card-action'
+        size='inline'
+        className='w-full justify-start'
+      >
+        <Copy className='h-4 w-4 mr-2' />
+        Copy
+      </Button>
+      <Button
+        variant='card-action'
+        size='inline'
+        className='w-full justify-start'
+      >
+        <Trash className='h-4 w-4 mr-2' />
+        Delete
+      </Button>
+    </div>
+  )
+}
+```
