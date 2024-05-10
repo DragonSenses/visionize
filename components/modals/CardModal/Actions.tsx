@@ -20,11 +20,19 @@ export default function Actions({
         Actions
       </p>
       {/* Buttons */}
-      <Button>
+      <Button
+        variant='card-action'
+        size='inline'
+        className='w-full justify-start'
+      >
         <Copy className='h-4 w-4 mr-2' />
         Copy
       </Button>
-      <Button>
+      <Button
+        variant='card-action'
+        size='inline'
+        className='w-full justify-start'
+      >
         <Trash className='h-4 w-4 mr-2' />
         Delete
       </Button>
