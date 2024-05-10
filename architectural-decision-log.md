@@ -20553,3 +20553,84 @@ export type InputType = z.infer<typeof CopyCard>;
 // Define the output data type (ActionState) with expected output type
 export type OutputType = ActionState<InputType, Card>;
 ```
+
+### copyCard action
+
+docs: Define server action for copying a card
+
+feat: Create copyCard action index handler
+
+This commit defines a server action to copy a card. It imports necessary modules, creates the server action using the provided input validation schema (CopyCard), and specifies the expected input and output types. The performAction function handles the card copying logic.
+
+```tsx
+"use server";
+
+import { auth } from "@clerk/nextjs"; // Authentication module
+import { revalidatePath } from "next/cache"; // Cache revalidation module
+
+import { createServerAction } from "@/lib/createServerAction"; // Server action creator
+import { database } from "@/lib/database"; // Database interface
+
+import { CopyCard } from "./copyCardSchema"; // Input validation schema
+import { InputType, OutputType } from "./copyCardTypes"; // Type definitions
+
+/**
+ * Defines a server action to copy a card.
+ *
+ * @param {InputType} data - An object containing the data needed to copy the card.
+ * @returns {Promise<OutputType>} - The copied card or an error message.
+ */
+async function performAction(data: InputType): Promise<OutputType> {
+  let card;
+  // Return the copied card
+  return {
+    data: card,
+  };
+}
+
+// Export the server action for external use
+export const copyCard = createServerAction(CopyCard, performAction);
+```
+
+feat: Add user authentication to copyCard
+
+```ts
+import { auth } from "@clerk/nextjs";
+
+async function performAction (data: InputType): Promise<OutputType> {
+  // Authenticate the user and get their organization ID
+  const { userId, orgId } = auth();
+
+  // If authentication fails, return an error
+  if (!userId || !orgId) {
+    return {
+      error: 'Unauthorized',
+    };
+  }
+  
+  return {
+    // ...
+  };
+}
+```
+
+feat: Add cache revalidation for copyCard
+
+Adds cache revalidation for the updated board path to ensure immediate UI consistency.
+
+```ts
+async function performAction(data: InputType): Promise<OutputType> {
+// ...
+  const { id, boardId } = data;
+
+  // Revalidate the cache for the updated board path 
+  // to ensure immediate UI consistency post-update
+  revalidatePath(`/board/${boardId}`);
+
+    // Return the updated card
+  return {
+    data: card,
+  };
+}
+```
+
