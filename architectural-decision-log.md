@@ -20367,3 +20367,41 @@ export default function CardModal() {
 }
 ```
 
+### Actions component output
+
+Now after a lot of setup, lets work on the general structure of the card's `Actions` component. It will contain a title and two buttons. A copy and delete button with their respective icons.
+
+feat: Create output of CardModal Actions component
+
+feat: Add button and icons to CardModal Actions
+
+```tsx
+import { Copy, Trash } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+
+interface ActionsProps {
+  data: CardWithList
+}
+
+export default function Actions({
+  data,
+}: ActionsProps) {
+  return (
+    <div className='mt-2 space-y-2'>
+      <p className='text-xs font-semibold'>
+        Actions
+      </p>
+      {/* Buttons */}
+      <Button>
+        <Copy className='h-4 w-4 mr-2' />
+        Copy
+      </Button>
+      <Button>
+        <Trash className='h-4 w-4 mr-2' />
+        Delete
+      </Button>
+    </div>
+  )
+}
+```
