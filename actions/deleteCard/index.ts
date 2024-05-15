@@ -25,8 +25,14 @@ async function performAction(data: InputType): Promise<OutputType> {
       error: "Unauthorized",
     };
   }
+  
+  const { id, boardId } = data;
 
   let card;
+
+  // Revalidate the cache for the updated board path 
+  // to ensure immediate UI consistency post-update
+  revalidatePath(`/board/${boardId}`);
 
   // Return the deleted card
   return {
