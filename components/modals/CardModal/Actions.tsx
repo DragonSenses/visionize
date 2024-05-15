@@ -7,6 +7,9 @@ import { CardWithList } from '@/types/types';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
+import { copyCard } from '@/actions/copyCard';
+import { useServerAction } from '@/hooks/useServerAction';
+
 interface ActionsProps {
   data: CardWithList
 }
@@ -14,6 +17,12 @@ interface ActionsProps {
 export default function Actions({
   data,
 }: ActionsProps) {
+
+  const {
+    executeServerAction: executeCopyCard,
+    isLoading: isLoadingCopy,
+  } = useServerAction(copyCard);
+
   return (
     <div className='mt-2 space-y-2'>
       <p className='text-xs font-semibold'>
