@@ -20703,3 +20703,46 @@ async function performAction(data: InputType): Promise<OutputType> {
     };
   }
 ```
+
+## deleteCard server action
+
+Create a directory named `deleteCard` inside of `/actions` and create the following files:
+
+Create `deleteCard` folder inside `/actions` and add the following files:
+
+1. Schema
+2. Types
+3. Server Action handler
+
+### deleteCard schema
+
+Create the `deleteCard` object schema.
+
+feat: Define the deleteCard Zod schema
+
+`actions\deleteCard\deleteCardSchema.ts`
+```ts
+import { z } from 'zod';
+
+export const DeleteCard = z.object({
+  id: z.string(),
+  boardId: z.string(),
+});
+```
+
+### deleteCard types
+
+feat: Define types for deleteCard action
+
+`actions\deleteCard\deleteCardTypes.ts`
+```javascript
+import { z } from 'zod';
+import { Card } from '@prisma/client';
+
+import { ActionState } from '@/lib/createServerAction';
+
+import { DeleteCard } from './deleteCardSchema';
+
+export type InputType = z.infer<typeof DeleteCard>;
+export type OutputType = ActionState<InputType, Card>;
+```
