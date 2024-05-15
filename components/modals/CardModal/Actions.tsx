@@ -40,6 +40,8 @@ export default function Actions({
       </p>
       {/* Buttons */}
       <Button
+        onClick={onCopy}
+        disabled={isLoadingCopy}
         variant='card-action'
         size='inline'
         className='w-full justify-start'
