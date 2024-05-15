@@ -16,8 +16,18 @@ import { InputType, OutputType } from "./deleteCardTypes"; // Type definitions
  * @returns {Promise<OutputType>} - The deleted card or an error message.
  */
 async function performAction(data: InputType): Promise<OutputType> {
+  // Authenticate the user and get their organization ID
+  const { userId, orgId } = auth();
+
+  // If authentication fails, return an error
+  if (!userId || !orgId) {
+    return {
+      error: "Unauthorized",
+    };
+  }
+
   let card;
-  
+
   // Return the deleted card
   return {
     data: card,
