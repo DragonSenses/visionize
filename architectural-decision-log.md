@@ -20827,3 +20827,42 @@ async function performAction(data: InputType): Promise<OutputType> {
   };
 }
 ```
+
+feat: Implement deleteCard server action logic
+
+feat: Implement card deletion logic
+
+```ts
+async function performAction(data: InputType): Promise<OutputType> {
+// ...
+  const { id, boardId } = data;
+
+  let card;
+
+  try {
+    card = await database.card.delete({
+      where: {
+        id,
+        list: {
+          board: {
+            orgId,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    return {
+      error: "Failed to delete card.",
+    };
+  }
+
+  // Revalidate the cache for the updated board path
+  // to ensure immediate UI consistency post-update
+  revalidatePath(`/board/${boardId}`);
+
+  // Return the deleted card
+  return {
+    data: card,
+  };
+}
+```
