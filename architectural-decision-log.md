@@ -20704,6 +20704,97 @@ async function performAction(data: InputType): Promise<OutputType> {
   }
 ```
 
+### Use copyCard server action
+
+With `useServerAction` hook create the copyCard server action. Also destructure the `isLoading` and rename it to `isLoadingCopy`.
+
+feat: Instantiate updateCard in Actions component
+
+`components\modals\CardModal\Actions.tsx`
+```tsx
+import { copyCard } from '@/actions/copyCard';
+import { useServerAction } from '@/hooks/useServerAction';
+
+export default function Actions({
+  data,
+}: ActionsProps) {
+
+  const {
+    executeServerAction: executeCopyCard,
+    isLoading: isLoadingCopy,
+  } = useServerAction(copyCard);
+```
+
+Next create the `onCopy` function that executes the copyCard server action. We will `useParams` to extract the `boardId` that is needed for the server action.
+
+feat: Implement onCopy function handler
+
+This commit adds an `onCopy` function handler to handle copying behavior. It retrieves the `boardId` from the URL parameters and executes the `copyCard` server action.
+
+```tsx
+import { useParams } from 'next/navigation';
+
+import { copyCard } from '@/actions/copyCard';
+import { useServerAction } from '@/hooks/useServerAction';
+
+export default function Actions({
+  data,
+}: ActionsProps) {
+  const params = useParams();
+
+  const {executeServerAction: executeCopyCard } = useServerAction(copyCard);
+
+  function onCopy() {
+    const boardId = params.boardId as string;
+    executeCopyCard({
+      id: data.id,
+      boardId
+    });
+  }
+```
+
+Finally, assign the respective props to the copy button to give it the copy functionality. Set the `onClick` prop to `onCopy` function, and se the `disabled` to `isLoadingCopy`.
+
+feat: Add onClick & disabled props to copy Button
+
+This commit enhances the card's Actions component by adding the onClick handler and disabling the copy Button when the action is in progress.
+
+```tsx
+export default function Actions({
+  data,
+}: ActionsProps) {
+
+  const {
+    executeServerAction: executeCopyCard,
+    isLoading: isLoadingCopy,
+  } = useServerAction(copyCard);
+
+  function onCopy() {
+    const boardId = params.boardId as string;
+    executeCopyCard({
+      id: data.id,
+      boardId
+    });
+  }
+
+  return (
+    <div className='mt-2 space-y-2'>
+      <p className='text-xs font-semibold'>
+        Actions
+      </p>
+      {/* Buttons */}
+      <Button
+        onClick={onCopy}
+        disabled={isLoadingCopy}
+        variant='card-action'
+        size='inline'
+        className='w-full justify-start'
+      >
+        <Copy className='h-4 w-4 mr-2' />
+        Copy
+      </Button>
+```
+
 ## deleteCard server action
 
 Create a directory named `deleteCard` inside of `/actions` and create the following files:
