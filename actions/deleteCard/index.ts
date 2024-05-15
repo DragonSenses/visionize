@@ -25,12 +25,29 @@ async function performAction(data: InputType): Promise<OutputType> {
       error: "Unauthorized",
     };
   }
-  
+
   const { id, boardId } = data;
 
   let card;
 
-  // Revalidate the cache for the updated board path 
+  try {
+    card = await database.card.delete({
+      where: {
+        id,
+        list: {
+          board: {
+            orgId,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    return {
+      error: "Failed to delete card.",
+    };
+  }
+
+  // Revalidate the cache for the updated board path
   // to ensure immediate UI consistency post-update
   revalidatePath(`/board/${boardId}`);
 
