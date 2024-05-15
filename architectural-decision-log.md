@@ -20746,3 +20746,84 @@ import { DeleteCard } from './deleteCardSchema';
 export type InputType = z.infer<typeof DeleteCard>;
 export type OutputType = ActionState<InputType, Card>;
 ```
+
+### deleteCard index handler
+
+docs: Define server action for deleting a card
+
+feat: Create deleteCard action index handler
+
+This commit defines a server action to delete a card. It imports necessary modules, creates the server action using the provided input validation schema (DeleteCard), and specifies the expected input and output types. The performAction function handles the card deleting logic.
+
+`actions\deleteCard\index.ts`
+```tsx
+"use server";
+
+import { auth } from "@clerk/nextjs"; // Authentication module
+import { revalidatePath } from "next/cache"; // Cache revalidation module
+
+import { createServerAction } from "@/lib/createServerAction"; // Server action creator
+import { database } from "@/lib/database"; // Database interface
+
+import { DeleteCard } from "./deleteCardSchema"; // Input validation schema
+import { InputType, OutputType } from "./deleteCardTypes"; // Type definitions
+
+/**
+ * Defines a server action to delete a card.
+ *
+ * @param {InputType} data - An object containing the data needed to delete the card.
+ * @returns {Promise<OutputType>} - The deleted card or an error message.
+ */
+async function performAction(data: InputType): Promise<OutputType> {
+  let card;
+  
+  // Return the deleted card
+  return {
+    data: card,
+  };
+}
+
+// Export the server action for external use
+export const deleteCard = createServerAction(DeleteCard, performAction);
+```
+
+feat: Add user authentication to deleteCard
+
+```ts
+import { auth } from "@clerk/nextjs";
+
+async function performAction (data: InputType): Promise<OutputType> {
+  // Authenticate the user and get their organization ID
+  const { userId, orgId } = auth();
+
+  // If authentication fails, return an error
+  if (!userId || !orgId) {
+    return {
+      error: 'Unauthorized',
+    };
+  }
+  
+  return {
+    // ...
+  };
+}
+```
+
+feat: Add cache revalidation for deleteCard
+
+Adds cache revalidation for the updated board path to ensure immediate UI consistency.
+
+```ts
+async function performAction(data: InputType): Promise<OutputType> {
+// ...
+  const { id, boardId } = data;
+
+  // Revalidate the cache for the updated board path 
+  // to ensure immediate UI consistency post-update
+  revalidatePath(`/board/${boardId}`);
+
+  return {
+    data: card,
+  };
+}
+```
