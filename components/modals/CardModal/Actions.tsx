@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Copy, Trash } from 'lucide-react';
+import { useParams } from 'next/navigation';
 
 import { CardWithList } from '@/types/types';
 import { Button } from '@/components/ui/button';
@@ -17,11 +18,20 @@ interface ActionsProps {
 export default function Actions({
   data,
 }: ActionsProps) {
+  const params = useParams();
 
   const {
     executeServerAction: executeCopyCard,
     isLoading: isLoadingCopy,
   } = useServerAction(copyCard);
+
+  function onCopy() {
+    const boardId = params.boardId as string;
+    executeCopyCard({
+      id: data.id,
+      boardId
+    });
+  }
 
   return (
     <div className='mt-2 space-y-2'>
