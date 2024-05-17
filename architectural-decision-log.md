@@ -20708,7 +20708,7 @@ async function performAction(data: InputType): Promise<OutputType> {
 
 With `useServerAction` hook create the copyCard server action. Also destructure the `isLoading` and rename it to `isLoadingCopy`.
 
-feat: Instantiate updateCard in Actions component
+feat: Instantiate copyCard in Actions component
 
 `components\modals\CardModal\Actions.tsx`
 ```tsx
@@ -20956,4 +20956,25 @@ async function performAction(data: InputType): Promise<OutputType> {
     data: card,
   };
 }
+```
+
+### Use deleteCard server action
+
+With `useServerAction` hook create the deleteCard server action. Also destructure the `isLoading` and rename it to `isLoadingDelete`.
+
+feat: Add deleteCard action in Actions component
+
+`components\modals\CardModal\Actions.tsx`
+```tsx
+import { deleteCard } from '@/actions/deleteCard';
+import { useServerAction } from '@/hooks/useServerAction';
+
+export default function Actions({
+  data,
+}: ActionsProps) {
+
+  const {
+    executeServerAction: executeDeleteCard,
+    isLoading: isLoadingDelete,
+  } = useServerAction(deleteCard)
 ```
