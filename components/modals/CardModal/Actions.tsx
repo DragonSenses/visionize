@@ -39,6 +39,14 @@ export default function Actions({
     });
   }
 
+  function onDelete() {
+    const boardId = params.boardId as string;
+    executeDeleteCard({
+      id: data.id,
+      boardId
+    });
+  }
+
   return (
     <div className='mt-2 space-y-2'>
       <p className='text-xs font-semibold'>
