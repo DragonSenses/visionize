@@ -64,6 +64,8 @@ export default function Actions({
         Copy
       </Button>
       <Button
+        onClick={onDelete}
+        disabled={isLoadingDelete}
         variant='card-action'
         size='inline'
         className='w-full justify-start'
