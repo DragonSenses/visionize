@@ -12,6 +12,9 @@ import { copyCard } from '@/actions/copyCard';
 import { deleteCard } from '@/actions/deleteCard';
 import { useServerAction } from '@/hooks/useServerAction';
 
+import { toast } from 'sonner';
+import { useCardModal } from '@/hooks/useCardModal';
+
 interface ActionsProps {
   data: CardWithList
 }
@@ -19,12 +22,21 @@ interface ActionsProps {
 export default function Actions({
   data,
 }: ActionsProps) {
+  const cardModal = useCardModal();
   const params = useParams();
 
   const {
     executeServerAction: executeCopyCard,
     isLoading: isLoadingCopy,
-  } = useServerAction(copyCard);
+  } = useServerAction(copyCard, {
+    onSuccess(data) {
+      toast.success(`Card "${data.title} copied.`);
+      cardModal.onClose();
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
 
   const {
     executeServerAction: executeDeleteCard,
