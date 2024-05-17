@@ -20795,6 +20795,38 @@ export default function Actions({
       </Button>
 ```
 
+Now add the `onSuccess` and `onError` callbacks to the copyCard server action.
+
+The behavior we want on success is to present a toast success message from sonner. We also want to close the `cardModal` for user convenience, so we need to use the `useCardModal` hook. As for error handling we just display a toast notification.
+
+feat: Add success & error callbacks to copyCard
+
+This commit adds callback functions that are executed in response to specific events, such as successful or failed server action. The `onSuccess` callback displays a success toast with the copied card's title, while the `onError` callback shows an error toast with the specific error message.
+
+```tsx
+import { toast } from 'sonner';
+import { useCardModal } from '@/hooks/useCardModal';
+
+export default function Actions({
+  data,
+}: ActionsProps) {
+  const cardModal = useCardModal();
+  const params = useParams();
+
+  const {
+    executeServerAction: executeCopyCard,
+    isLoading: isLoadingCopy,
+  } = useServerAction(copyCard, {
+    onSuccess(data) {
+      toast.success(`Card "${data.title} copied.`);
+      cardModal.onClose();
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
+```
+
 ## deleteCard server action
 
 Create a directory named `deleteCard` inside of `/actions` and create the following files:
@@ -21040,4 +21072,31 @@ export default function Actions({
          </div>
   )
 }
+```
+
+feat: Add success & error callbacks to deleteCard
+
+This commit adds callback functions that are executed in response to specific events, such as successful or failed server action. The `onSuccess` callback displays a success toast with the deleted card's title, while the `onError` callback shows an error toast with the specific error message.
+
+```tsx
+import { toast } from 'sonner';
+import { useCardModal } from '@/hooks/useCardModal';
+
+export default function Actions({
+  data,
+}: ActionsProps) {
+  const cardModal = useCardModal();
+
+  const {
+    executeServerAction: executeDeleteCard,
+    isLoading: isLoadingDelete,
+  } = useServerAction(deleteCard, {
+    onSuccess(data) {
+      toast.success(`Card "${data.title} deleted.`);
+      cardModal.onClose();
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
 ```
