@@ -18738,13 +18738,44 @@ export default function CardItem({
 
 ### Customize the modal
 
-We can customize the `CardModal` by adding functionality to the `Dialog` component. Navigate to `components\ui\dialog.tsx` and find the `DialogOverlay`.
+We can customize the `CardModal` by adding functionality to extending the `Dialog` component. Navigate to `components\ui\dialog.tsx` and find the `DialogOverlay`.
+
+#### Modify DialogOverlay
 
 Currently, when we open the `CardModal` which opens the `DialogOverlay` it has a white background.
 
 Let's modify the background to be blacker instead, currently it uses `bg-background/80`, we can change that to `bg-black/80`. This will improve the contrast between the modal in the foreground and the background page.
 
-We can extend the modal's behavior by extending the dialog functionality.
+
+#### Modify DialogContent
+
+Let's expand the width of the `CardModal`. Inside the `Dialog` component, navigate to the `DialogContent` and replace the style `max-w-lg` to `max-w-3xl` to give the `Dialog` more room for us to put more components.
+
+feat: Adjust Dialog component width to max-w-3xl
+
+This commit modifies the `Dialog` component to use a maximum width of `max-w-3xl` instead of `max-w-lg`. The change ensures that the dialog accommodates a wider content area while maintaining a consistent design.
+
+```tsx
+const DialogContent = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+>(({ className, children, ...props }, ref) => (
+  <DialogPortal>
+    <DialogOverlay />
+    <DialogPrimitive.Content
+      ref={ref}
+      className={cn(
+        "... max-w-3xl ...",
+        className
+      )}
+      {...props}
+    >
+      { /* ... */}
+    </DialogPrimitive.Content>
+  </DialogPortal>
+))
+DialogContent.displayName = DialogPrimitive.Content.displayName
+```
 
 ## Data Fetching
 
