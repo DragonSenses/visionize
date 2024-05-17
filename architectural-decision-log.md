@@ -20753,7 +20753,7 @@ export default function Actions({
   }
 ```
 
-Finally, assign the respective props to the copy button to give it the copy functionality. Set the `onClick` prop to `onCopy` function, and se the `disabled` to `isLoadingCopy`.
+Finally, assign the respective props to the copy button to give it the copy functionality. Set the `onClick` prop to `onCopy` function, and set the `disabled` prop to `isLoadingCopy`.
 
 feat: Add onClick & disabled props to copy Button
 
@@ -20960,6 +20960,8 @@ async function performAction(data: InputType): Promise<OutputType> {
 
 ### Use deleteCard server action
 
+feat: Wire up the delete button in CardModal
+
 With `useServerAction` hook create the deleteCard server action. Also destructure the `isLoading` and rename it to `isLoadingDelete`.
 
 feat: Add deleteCard action in Actions component
@@ -20977,4 +20979,65 @@ export default function Actions({
     executeServerAction: executeDeleteCard,
     isLoading: isLoadingDelete,
   } = useServerAction(deleteCard)
+```
+
+Next create the `onDelete` function that executes the deleteCard server action. We will `useParams` to extract the `boardId` that is needed for the server action.
+
+feat: Implement onDelete function handler
+
+This commit adds an `onDelete` function handler to handle card deletion. It retrieves the `boardId` from the URL parameters and executes the `deleteCard` server action.
+
+```tsx
+   function onDelete() {
+     const boardId = params.boardId as string;
+     executeDeleteCard({
+       id: data.id,
+       boardId
+     });
+   }
+```
+
+Finally, assign the respective props to the delete button to give it the delete functionality. Set the `onClick` prop to `onDelete` function, and set the `disabled` prop to `isLoadingCopy`.
+
+feat: Add OnClick & disabled to delete Button
+
+This commit enhances the card's Actions component by adding the onClick handler and disabling the delete Button when the action is in progress.
+
+```tsx
+export default function Actions({
+  data,
+}: ActionsProps) {
+
+  const {
+    executeServerAction: executeDeleteCard,
+    isLoading: isLoadingDelete,
+  } = useServerAction(deleteCard);
+
+  function onDelete() {
+    const boardId = params.boardId as string;
+    executeDeleteCard({
+      id: data.id,
+      boardId
+    });
+  }
+
+  return (
+    <div className='mt-2 space-y-2'>
+      <p className='text-xs font-semibold'>
+        Actions
+      </p>
+      {/* Buttons */}
+      <Button
+        onClick={onDelete}
+        disabled={isLoadingDelete}
+        variant='card-action'
+        size='inline'
+        className='w-full justify-start'
+      >
+        <Trash className='h-4 w-4 mr-2' />
+        Delete
+      </Button>
+         </div>
+  )
+}
 ```
