@@ -41,7 +41,15 @@ export default function Actions({
   const {
     executeServerAction: executeDeleteCard,
     isLoading: isLoadingDelete,
-  } = useServerAction(deleteCard);
+  } = useServerAction(deleteCard, {
+    onSuccess(data) {
+      toast.success(`Card "${data.title} deleted.`);
+      cardModal.onClose();
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
 
   function onCopy() {
     const boardId = params.boardId as string;
