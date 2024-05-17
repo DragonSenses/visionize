@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { copyCard } from '@/actions/copyCard';
+import { deleteCard } from '@/actions/deleteCard';
 import { useServerAction } from '@/hooks/useServerAction';
 
 interface ActionsProps {
@@ -24,6 +25,11 @@ export default function Actions({
     executeServerAction: executeCopyCard,
     isLoading: isLoadingCopy,
   } = useServerAction(copyCard);
+
+  const {
+    executeServerAction: executeDeleteCard,
+    isLoading: isLoadingDelete,
+  } = useServerAction(deleteCard);
 
   function onCopy() {
     const boardId = params.boardId as string;
