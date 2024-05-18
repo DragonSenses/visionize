@@ -21131,3 +21131,40 @@ export default function Actions({
     },
   });
 ```
+
+## Audit Log
+
+The next step for our application is creating a record of events and changes. This **audit log** will be used for the `Activity` portion of our application.
+
+An **audit log** is the process of documenting activity within the software systems used across an organization. It records events, their timestamps, responsible users or services, and impacted entities. 
+
+Audit logs help track user activity, investigate breaches, and ensure compliance with regulatory requirements. These logs capture information such as event names, descriptions, actors, impacted objects, and source details. 
+
+Unlike regular system logs, which aid in troubleshooting errors, audit logs serve compliance and business policy enforcement purposes. Organizations use them to track administrative actions, data access, user denials, and system-wide changes.
+
+Sources:
+
+- (1) [Audit Logging: What It Is & How It Works | Datadog](https://www.datadoghq.com/knowledge-center/audit-logging/)
+- (2) [What Is an Audit Log? - computer.org](https://www.computer.org/publications/tech-news/community-voices/audit-log-for-software-security)
+- (3) [Event Log Monitoring and Log Audit Software Basics - Netwrix](https://blog.netwrix.com/2022/12/20/audit-and-event-log-monitoring/)
+
+### What is an Audit Log?
+
+An **audit log**, also called an audit trail, is a record of events and changes. Audit logs record the occurrence of an event, the time at which it occurred, the responsible user or service, and the impacted entity. 
+
+**Audit logging** is the process of documenting activity within the software systems used across your organization.
+
+An **audit trail** is a security-relevant chronological record that provides documentary evidence of the sequence of activities that have affected at any time a specific operation, procedure, event, or device.
+
+When you use a technology service or product, audit logs are generated in response to every user action and response from the technology system. These logs capture information that can be used to...
+
+- Authenticate the user.
+- Identify and validate the request.
+- Route the request to the right service node.
+- Perform relevant technology operations and processing.
+  
+Though these micro-actions behind audit logs are important in their own ways, the bigger purpose is greater. The idea behind collecting audit logs is two-fold:
+
+1. To identify errors and improve accuracy.
+2. To understand the purpose behind an activity, which can be later used for accountability or compliance.
+
