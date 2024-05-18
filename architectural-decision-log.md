@@ -21168,3 +21168,67 @@ Though these micro-actions behind audit logs are important in their own ways, th
 1. To identify errors and improve accuracy.
 2. To understand the purpose behind an activity, which can be later used for accountability or compliance.
 
+### AuditLog model
+
+Navigate to `prisma\schema.prisma` and create an `AuditLog` model.
+
+```prisma
+model AuditLog {
+
+}
+```
+
+Then we need to create **enums** to be used for the `AuditLog` model.
+
+#### Defining enums in Prisma Schema
+
+- [Defining enums | Prisma docs](https://www.prisma.io/docs/orm/prisma-schema/data-model/models#defining-enums)
+
+In **Prisma**, an **enum** is a scalar type defined in the schema that represents a set of possible values. 
+
+It's used to model discrete options or categories within your data model. When you define an enum in your Prisma schema, it generates a corresponding TypeScript type that you can use in your application code. 
+
+For example, you can create an enum called `Role` with values like `USER` and `ADMIN` to represent user roles in your application¹. Enums enhance type safety and allow you to express specific options in your data model.
+
+```prisma
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+  role  Role    @default(USER)
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+```
+
+#### Add enums for AuditLog model
+
+Let's add `enum ACTION` that defines three actions (create, update, and delete) that can be used within our Prisma data model.
+
+feat: Add ACTION enum for AuditLog model
+
+```prisma
+enum ACTION {
+  CREATE
+  UPDATE
+  DELETE
+}
+```
+
+In this **Prisma schema**, the code defines an **enum** called `ACTION`.
+
+1. **Enum Name**: `ACTION`
+   - This is the name of the enum type.
+   - Enums allow you to define a set of possible values that a field can take.
+
+2. **Enum Values**:
+   - The enum has three possible values: `CREATE`, `UPDATE`, and `DELETE`.
+   - These values represent different actions that can occur in your application.
+
+3. **Generated TypeScript Type**:
+   - When you define an enum in Prisma, it generates a corresponding TypeScript type.
+   - In your application code, you can use this generated type to ensure type safety when working with these enum values.
+
