@@ -4190,6 +4190,32 @@ enum Role {
 }
 ```
 
+
+### Set up prisma schema with local database
+
+Create an `.env` file. Add an environment variable for the postgresql connection URI.
+
+To find the **URI (connection URL)** for your PostgreSQL database in **pgAdmin 4**, follow these steps:
+
+1. Open your desktop **pgAdmin 4** application.
+2. Click on **File** > **Runtime** > **View Log**.
+3. Scroll to the bottom of the log, where you'll find the **Application Server URL**. It will look something like this:
+   - `http://127.0.0.1:{PORT_NUMBER}/?key={YOUR_KEY}`
+4. Copy this URL and open it in your web browser.
+
+This URL allows you to connect to your PostgreSQL server using **pgAdmin 4**. Make sure to replace `{PORT_NUMBER}` and `{YOUR_KEY}` with the actual values specific to your setup. 
+
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+```
+
 ### (Optional) Database providers
 
 We can host our database online with database providers. Here are some free or affordable options:
