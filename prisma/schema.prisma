@@ -69,3 +69,17 @@ enum ENTITY_TYPE {
   LIST
   CARD
 }
+
+model AuditLog {
+  id         String      @id @default(uuid())
+  orgId      String
+  action     ACTION
+  entityId   String
+  entityType ENTITY_TYPE
+  userId     String
+  userImage  String      @db.Text
+  userName   String      @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
