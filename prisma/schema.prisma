@@ -57,3 +57,10 @@ model Card {
 
   @@index([listId])
 }
+
+enum ACTION {
+  CREATE
+  UPDATE
+  DELETE
+}
+
