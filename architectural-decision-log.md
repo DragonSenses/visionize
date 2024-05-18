@@ -21495,14 +21495,15 @@ feat: Define the AuditLog model in prisma schema
 
 ```prisma
 model AuditLog {
-  id         String      @id @default(uuid())
-  orgId      String
-  action     ACTION
-  entityId   String
-  entityType ENTITY_TYPE
-  userId     String
-  userImage  String      @db.Text
-  userName   String      @db.Text
+  id          String      @id @default(uuid())
+  orgId       String
+  action      ACTION
+  entityId    String
+  entityTitle String
+  entityType  ENTITY_TYPE
+  userId      String
+  userImage   String      @db.Text
+  userName    String      @db.Text
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
