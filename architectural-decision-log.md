@@ -4086,6 +4086,110 @@ if(process.env.NODE_ENV !== "production") {
 }
 ```
 
+### Prisma schema overview
+
+[Prisma Schema Overview](https://www.prisma.io/docs/orm/prisma-schema/overview)
+
+The Prisma schema file (short: schema file, Prisma schema or schema) is the main configuration file for your Prisma ORM setup. It is typically called `schema.prisma` and consists of the following parts:
+
+- [Data sources](https://www.prisma.io/docs/orm/prisma-schema/overview/data-sources): Specify the details of the data sources Prisma ORM should connect to (e.g. a PostgreSQL database)
+- [Generators](https://www.prisma.io/docs/orm/prisma-schema/overview/generators): Specifies what clients should be generated based on the data model (e.g. Prisma Client)
+- [Data model definition](https://www.prisma.io/docs/orm/prisma-schema/data-model): Specifies your application [models](https://www.prisma.io/docs/orm/prisma-schema/data-model/models#defining-models) (the shape of the data per data source) and their [relations](https://www.prisma.io/docs/orm/prisma-schema/data-model/relations)
+
+See the [Prisma schema API reference](https://www.prisma.io/docs/orm/reference/prisma-schema-reference) for detailed information about each section of the schema.
+
+Whenever a `prisma` command is invoked, the CLI typically reads some information from the schema file, e.g.:
+
+- `prisma generate`: Reads all above mentioned information from the Prisma schema to generate the correct data source client code (e.g. Prisma Client).
+- `prisma migrate dev`: Reads the data sources and data model definition to create a new migration.
+
+You can also use [environment variables](https://www.prisma.io/docs/orm/prisma-schema/overview#accessing-environment-variables-from-the-schema) inside the schema file to provide configuration options when a CLI command is invoked.
+
+#### Prisma schema example
+
+The following is an example of a Prisma schema file that specifies:
+
+- A data source (PostgreSQL or MongoDB)
+- A generator (Prisma Client)
+- A data model definition with two models (with one relation) and one enum
+- Several [native data type attributes](https://www.prisma.io/docs/orm/prisma-schema/data-model/models#native-types-mapping) (`@db.VarChar(255)`, `@db.ObjectId`)
+
+
+For a relational database such as **PostgreSQL**:
+
+`schema.prisma`
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  email     String   @unique
+  name      String?
+  role      Role     @default(USER)
+  posts     Post[]
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  published Boolean  @default(false)
+  title     String   @db.VarChar(255)
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  Int?
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+```
+
+For a non-relational database such as **MongoDB**:
+
+```prisma
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  email     String   @unique
+  name      String?
+  role      Role     @default(USER)
+  posts     Post[]
+}
+
+model Post {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  published Boolean  @default(false)
+  title     String
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  String   @db.ObjectId
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+```
+
 ### (Optional) Database providers
 
 We can host our database online with database providers. Here are some free or affordable options:
