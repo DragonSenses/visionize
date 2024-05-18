@@ -4190,10 +4190,95 @@ enum Role {
 }
 ```
 
+### Set up postgreSQL and prisma
+
+docs: Add Prisma setup instructions for PostgreSQL
+
+- [PostgreSQL | Prisma.io](https://www.prisma.io/dataguide/postgresql)
+- [Setting up a PostgreSQL database](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database)
+- [Connecting to PostgreSQL databases](https://www.prisma.io/dataguide/postgresql/connecting-to-postgresql-databases)
+- [Intro to PostgreSQL connection URIs](https://www.prisma.io/dataguide/postgresql/short-guides/connection-uris)
+- [Data Sources in Prisma Schema](https://www.prisma.io/docs/orm/prisma-schema/overview/data-sources)
 
 ### Set up prisma schema with local database
 
+- [Connection Urls | Prisma docs](https://pris.ly/d/connection-strings)
+- [PostgreSQL in prisma connection string](https://www.prisma.io/docs/orm/overview/databases/postgresql)
+
 Create an `.env` file. Add an environment variable for the postgresql connection URI.
+
+Inside the `.env` file create a `DATABASE_URL` variable. This will store the connection URI string to our local database. 
+
+An example connection URI string should be something like this: 
+
+`.env`
+```shell
+DATABASE_URL="postgresql://johndoe:mypassword@localhost:5432/mydb?schema=public"
+```
+
+1. **Provider**: The `provider` specifies the type of database you're connecting to. In this case, it's PostgreSQL.
+
+2. **URL Components**:
+   - **User**: `"johndoe"` is the username for the database.
+   - **Password**: `"mypassword"` is the password for the user.
+   - **Host**: `"localhost"` refers to the machine where the PostgreSQL server is running.
+   - **Port**: `5432` is the default port for PostgreSQL.
+   - **Database Name**: `"mydb"` is the name of the database.
+   - **Schema**: `"public"` specifies the schema within the database.
+     - If you omit the schema, Prisma will use the `"public"` schema by default
+
+So, the complete URL connects to a PostgreSQL database with the given credentials and schema. If you're using Prisma, this URL allows Prisma ORM to connect to your database when executing queries with Prisma Client or making schema changes with Prisma Migrate. If you need to make the URL dynamic, you can pass it programmatically when creating the Prisma Client. 
+
+To connect to a PostgreSQL database server, you need to configure a [datasource](https://www.prisma.io/docs/orm/prisma-schema/overview/data-sources) block in your [Prisma schema file](https://www.prisma.io/docs/orm/prisma-schema):
+
+`schema.prisma`
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+```
+
+The fields passed to the datasource block are:
+
+- `provider`: Specifies the `postgresql` data source connector.
+- `url`: Specifies the [connection URL](https://www.prisma.io/docs/orm/overview/databases/postgresql#connection-url) for the PostgreSQL database server. In this case, an [environment variable is used](https://www.prisma.io/docs/orm/prisma-schema/overview#accessing-environment-variables-from-the-schema) to provide the connection URL.
+
+Or without environment variables (not recommended):
+
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://johndoe:mypassword@localhost:5432/mydb?schema=public"
+}
+```
+
+#### Connection URI strings
+
+- [Connection Urls | Prisma docs](https://pris.ly/d/connection-strings)
+
+- [Intro to PostgreSQL connection URIs](https://www.prisma.io/dataguide/postgresql/short-guides/connection-uris)
+
+Let's look at the spec for a PostgreSQL connection URI:
+```sh
+postgres[ql]://[username[:password]@][host[:port],]/database[?parameter_list]
+
+\_____________/\____________________/\____________/\_______/\_______________/
+     |                   |                  |          |            |
+     |- schema           |- userspec        |          |            |- parameter list
+                                            |          |
+                                            |          |- database name
+                                            |
+                                            |- hostspec
+```
+
+We can test a PostgreSQL connection string in the terminal by running the command `pg_isready`
+
+```sh
+pg_isready -d DATABASE_NAME -h HOST_NAME -p PORT_NUMBER -U DATABASE_USER
+```
+
+##### Find connection URI string with database tool like pgAdmin
 
 To find the **URI (connection URL)** for your PostgreSQL database in **pgAdmin 4**, follow these steps:
 
@@ -4204,17 +4289,6 @@ To find the **URI (connection URL)** for your PostgreSQL database in **pgAdmin 4
 4. Copy this URL and open it in your web browser.
 
 This URL allows you to connect to your PostgreSQL server using **pgAdmin 4**. Make sure to replace `{PORT_NUMBER}` and `{YOUR_KEY}` with the actual values specific to your setup. 
-
-```prisma
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
-}
-```
 
 ### (Optional) Database providers
 
