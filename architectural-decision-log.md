@@ -21635,3 +21635,10 @@ The `npx prisma generate` command **generates Prisma Client** based on your Pris
 5. **Regeneration**:
    - Whenever you modify your Prisma schema (e.g., add tables, fields, or relationships), run `prisma generate` again.
    - This ensures that Prisma Client reflects the latest changes in your schema.
+
+**Reminder:** Keep packages `prisma` and `prisma/client` up-to-date.
+
+```sh
+npm i --save-dev prisma@latest                  
+npm i @prisma/client@latest
+```
