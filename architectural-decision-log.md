@@ -21232,3 +21232,77 @@ In this **Prisma schema**, the code defines an **enum** called `ACTION`.
    - When you define an enum in Prisma, it generates a corresponding TypeScript type.
    - In your application code, you can use this generated type to ensure type safety when working with these enum values.
 
+The next `enum` will be `ENTITY_TYPE` which are interconnected with each of these actions. It will contain board, list and cards.
+
+feat: Add ENTITY_TYPE enum
+
+```prisma
+enum ENTITY_TYPE {
+  BOARD
+  LIST
+  CARD
+}
+```
+
+#### Define the fields of AuditLog model
+
+- [ Defining fields | Prisma schema](https://www.prisma.io/docs/orm/prisma-schema/data-model/models#defining-fields)
+  
+Now we can define the fields, or properties of a model, for `AuditLog`.
+
+feat: Define the AuditLog model in prisma schema
+
+```prisma
+model AuditLog {
+  id         String      @id @default(uuid())
+  orgId      String
+  action     ACTION
+  entityId   String
+  entityType ENTITY_TYPE
+  userId     String
+  userImage  String      @db.Text
+  userName   String      @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+```
+
+1. **`id` (String)**:
+   - This field represents the unique identifier for each audit log entry.
+   - It's annotated with `@id` to indicate that it's the primary key.
+   - The `@default(uuid())` specifies that a UUID (Universally Unique Identifier) is generated as the default value for this field.
+
+2. **`orgId` (String)**:
+   - Represents the organization ID associated with the audit log entry.
+   - It's a string field.
+
+3. **`action` (ACTION)**:
+   - An enum field representing the action taken (e.g., create, update, delete).
+   - The `ACTION` enum defines the possible values for this field.
+
+4. **`entityId` (String)**:
+   - Represents the unique identifier of the affected entity (e.g., board, list, card).
+   - It's a string field.
+
+5. **`entityType` (ENTITY_TYPE)**:
+   - An enum field representing the type of entity (e.g., board, list, card).
+   - The `ENTITY_TYPE` enum defines the possible values for this field.
+
+6. **`userId` (String)**:
+   - Represents the user ID associated with the action.
+   - It's a string field.
+
+7. **`userImage` (String)**:
+   - Stores the user's image (possibly a URL or base64-encoded data).
+   - Annotated with `@db.Text` to handle large text data.
+
+8. **`userName` (String)**:
+   - Represents the name of the user associated with the action.
+   - Annotated with `@db.Text`.
+
+9. **Timestamp Fields**:
+   - `createdAt`: Represents the creation timestamp of the audit log entry.
+   - `updatedAt`: Represents the last update timestamp (automatically managed by Prisma).
+
+In summary, the `AuditLog` model captures information about actions performed by users within an organization, including details like the action type, affected entity, user ID, and timestamps. 
