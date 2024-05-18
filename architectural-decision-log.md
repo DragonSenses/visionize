@@ -21590,3 +21590,48 @@ The `npx prisma db push` command serves the following purpose:
 
 Remember that `db push` is a powerful tool for rapid prototyping, but for more controlled schema management, consider using migrations with Prisma Migrate.
 
+#### Generate the prisma client
+
+Remember to run `prisma generate` after making any schema changes to keep your Prisma Client up-to-date.
+
+feat: Regenerate Prisma client with new schema
+
+```sh
+npx prisma generate
+```
+
+The `npx prisma generate` command **generates Prisma Client** based on your Prisma schema. Let's break down what it does:
+
+1. **Prisma Client**:
+   - Prisma Client is an **auto-generated database client** tailored to your database schema.
+   - It provides a type-safe API for reading and writing data in your database.
+
+2. **How It Works**:
+   - When you run `prisma generate`, Prisma reads your `schema.prisma` file.
+   - It analyzes your data model, relationships, and queries.
+   - Based on this analysis, it generates TypeScript (or JavaScript) code for Prisma Client.
+
+3. **Generated Files**:
+   - The generated files are placed in the `node_modules/@prisma/client` directory.
+   - You'll find an `index.d.ts` file (TypeScript declarations) and an `index.js` file (JavaScript implementation).
+
+4. **Usage**:
+   - In your application code, you can import Prisma Client from the generated files.
+   - Example usage:
+     ```javascript
+     const { PrismaClient } = require('@prisma/client');
+     const prisma = new PrismaClient();
+
+     async function main() {
+       const users = await prisma.user.findMany();
+       console.log(users);
+     }
+
+     main().catch((error) => {
+       console.error(error);
+     });
+     ```
+
+5. **Regeneration**:
+   - Whenever you modify your Prisma schema (e.g., add tables, fields, or relationships), run `prisma generate` again.
+   - This ensures that Prisma Client reflects the latest changes in your schema.
