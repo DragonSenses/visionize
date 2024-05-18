@@ -4086,11 +4086,23 @@ if(process.env.NODE_ENV !== "production") {
 }
 ```
 
-### Planetscale
+### (Optional) Database providers
 
-To streamline the process we will use prisma with SQL on planetscale.
+We can host our database online with database providers. Here are some free or affordable options:
 
-**Option 2**: postgresql with [neon tech](https://neon.tech/docs/connect/connect-from-any-app)
+1. **Supabase**: Offers a fantastic free tier with PostgreSQL, authentication, real-time subscriptions, and storage. It's an open-source alternative to Firebase
+2. **Neon**: Fully managed serverless platform with a free tier, providing autoscaling, branching, and unlimited storage
+3. **Turso**: Offers a generous free tier with SQLite, especially known for ultra-low latency edge deployments
+4. **CockroachDB**: Provides a free tier with distributed SQL, suitable for most hobby projects
+5. **AWS RDS**: AWS offers free usage (750 hours and 20GB storage) for Amazon RDS with MySQL, MariaDB, and PostgreSQL
+
+#### Neon tech
+
+We can use postgresql with [neon tech](https://neon.tech/docs/connect/connect-from-any-app).
+
+#### Planetscale
+
+To streamline the process we can use prisma with SQL on planetscale.
 
 Go through the [planetscale documentation](https://planetscale.com/docs) to set it up and get your DB connection string and paste into `.env` file.
 
@@ -4113,12 +4125,15 @@ datasource db {
 }
 ```
 
-### Models
+**Update:** On 6 March 2024, the **Planetscale** team announced their decision **to remove their Hobby plan — a free tier developers used to manage and deploy their serverless databases**. According to Sam Lambert, the CEO of Planetscale, they made this decision to "prioritize profitability and build a company that can last forever."
+
+- Note: I'm a tad bit crestfallen that planetscale discontinued their free tier for developers, but I appreciate their transparency in not providing any other reason or hiding behind a pretense.
+
+## Database Models
 
 The Prisma schema is a declarative way to define your application models and map them to your database. The Prisma schema is independent of the database provider you choose, so you can use the same syntax and logic to define your models for MySQL or PostgreSQL. However, there may be some differences in how Prisma handles certain features or data types depending on the database provider. For example, PostgreSQL supports enums and arrays, while MySQL does not. Prisma will automatically generate the appropriate SQL code for each database provider based on your Prisma schema.
 
-
-#### Board Model
+### Board Model
 
 Let's create the first Model, `Board` which will have a `id` and `title`.
 
