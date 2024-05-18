@@ -64,3 +64,8 @@ enum ACTION {
   DELETE
 }
 
+enum ENTITY_TYPE {
+  BOARD
+  LIST
+  CARD
+}
