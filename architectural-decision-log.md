@@ -3938,7 +3938,7 @@ You can now invoke the Prisma CLI by prefixing it with npx:
 ```sh
 npx prisma
 ```
-vNext, set up your Prisma project by creating your [Prisma schema](https://www.prisma.io/docs/orm/prisma-schema) file template with the following command:
+Next, set up your Prisma project by creating your [Prisma schema](https://www.prisma.io/docs/orm/prisma-schema) file template with the following command:
 
 ```sh
 npx prisma init
@@ -4293,6 +4293,12 @@ We can test a PostgreSQL connection string in the terminal by running the comman
 ```sh
 pg_isready -d DATABASE_NAME -h HOST_NAME -p PORT_NUMBER -U DATABASE_USER
 ```
+
+##### **Important** Connection URL for PostgreSQL must percentage-encode special characters!
+
+For MySQL, PostgreSQL and CockroachDB you must [percentage-encode special characters](https://developer.mozilla.org/en-US/docs/Glossary/percent-encoding) in any part of your connection URL - including passwords. For example, `p@$$w0rd` becomes `p%40%24%24w0rd`.
+
+For Microsoft SQL Server, you must escape special characters in any part of your connection string.
 
 ##### Find connection URI string with database tool like pgAdmin
 
@@ -21541,3 +21547,46 @@ model AuditLog {
    - `updatedAt`: Represents the last update timestamp (automatically managed by Prisma).
 
 In summary, the `AuditLog` model captures information about actions performed by users within an organization, including details like the action type, affected entity, user ID, and timestamps. 
+
+#### Synchronize Prisma schema with database schema
+
+Now to prototype the schema run the command:
+
+feat: Sync Prisma schema with database schema
+
+```sh
+npx prisma db push
+```
+
+The `npx prisma db push` command serves the following purpose:
+
+1. **Schema Synchronization**:
+   - It synchronizes your **Prisma schema** (defined in the `prisma/schema.prisma` file) with your **database schema**.
+   - Specifically, it introspects the database to infer the changes required to make your database schema reflect the state of your Prisma schema.
+   - Unlike migrations, it does not create a separate migrations folder or SQL files.
+
+2. **Database Creation**:
+   - If the specified database does not exist, `db push` creates it.
+   - This is useful during prototyping and local development when you don't need to version schema changes.
+
+3. **Generators Triggered**:
+   - After applying changes to the database schema, `db push` automatically triggers generators (such as Prisma Client) without manual invocation.
+   - You don't need to run `prisma generate` separately.
+
+4. **Data Loss Consideration**:
+   - If `db push` anticipates that changes could result in data loss, it:
+     - Throws an error.
+     - Requires the `--accept-data-loss` option if you still want to proceed.
+
+5. **Use Cases**:
+   - **Recommended for**:
+     - Quick schema prototyping and iteration locally.
+     - Prioritizing reaching a desired end-state without previewing changes.
+     - Situations where you don't need fine-grained control over schema changes.
+   - **Not recommended for**:
+     - Replicating schema changes in other environments.
+     - Customizing schema changes impact.
+     - Keeping track of schema changes over time.
+
+Remember that `db push` is a powerful tool for rapid prototyping, but for more controlled schema management, consider using migrations with Prisma Migrate.
+
