@@ -21646,6 +21646,8 @@ npm i @prisma/client@latest
 
 ### Create an Audit Log
 
+Next we need to create a utility function called `createdAuditLog` that encapsulates the process of creating audit log entries in the database.
+
 feat: Add utility function for audit log creation
 
 Create a reusable utility function that creates an Audit Log. Inside `/lib` create file `createAuditLog.ts`.
@@ -21656,7 +21658,7 @@ feat: Define prop types for AuditLog on creation
 import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 interface AuditLogProps {
-  entityId: StringConstructor;
+  entityId: string;
   entityType: ENTITY_TYPE;
   entityTitle: string;
   action: ACTION;
@@ -21679,7 +21681,7 @@ import { auth, currentUser } from "@clerk/nextjs";
 import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 interface AuditLogProps {
-  entityId: StringConstructor;
+  entityId: string;
   entityType: ENTITY_TYPE;
   entityTitle: string;
   action: ACTION;
@@ -21695,6 +21697,88 @@ export async function createAuditLog(props: AuditLogProps) {
     }
     
     // Create an audit log
+  } catch (error) {
+    // Handle any error that may occur within the scope of the audit log
+    console.error("[AUDIT_LOG_ERROR]", error);
+  }
+}
+```
+
+Now we fetch the audit log from the database using prisma.
+
+From the props, extract the data we need to create an audit log. Then query the database to create `AuditLog`.
+
+feat: Add Prisma query for creating audit logs
+
+This commit adds a Prisma query to create an audit log entry in the database. The audit log captures details such as the affected entity's ID, title, type, action performed, user ID, user image (if available), and user name.
+
+```ts
+    // Destructure properties from the input
+    const { action, entityId, entityTitle, entityType } = props;
+
+    // Create an audit log entry in the database
+    await database.auditLog.create({
+      data: {
+        orgId, // Organization ID
+        entityId, // ID of the affected entity (e.g., card, board, list)
+        entityTitle, // Title or description of the affected entity
+        entityType, // Type of the affected entity (e.g., "Card", "Board", etc.)
+        action, // The action performed (e.g., "Create", "Update", "Delete")
+        userId: user.id, // ID of the user who triggered the action
+        userImage: user?.imageUrl, // URL to the user's profile image (if available)
+        userName: user?.firstName + " " + user?.lastName, // Full name of the user
+      },
+    });
+```
+
+feat: Implement createAuditLog utility function
+
+`lib\createAuditLog.ts`
+```ts
+import { auth, currentUser } from "@clerk/nextjs";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
+import { database } from "@/lib/database";
+
+interface AuditLogProps {
+  entityId: string;
+  entityType: ENTITY_TYPE;
+  entityTitle: string;
+  action: ACTION;
+}
+
+/**
+ * Creates an audit log entry in the database.
+ * @param props - Properties for the audit log.
+ */
+export async function createAuditLog(props: AuditLogProps) {
+  try {
+    // Retrieve organization ID from authentication
+    const { orgId } = auth();
+
+    // Get information about the currently logged-in user
+    const user = await currentUser();
+
+    // Ensure user and organization ID exist
+    if (!user || !orgId) {
+      throw new Error("User not found.");
+    }
+
+    // Destructure properties from the input
+    const { action, entityId, entityTitle, entityType } = props;
+
+    // Create an audit log entry in the database
+    await database.auditLog.create({
+      data: {
+        orgId, // Organization ID
+        entityId, // ID of the affected entity (e.g., card, board, list)
+        entityTitle, // Title or description of the affected entity
+        entityType, // Type of the affected entity (e.g., "Card", "Board", etc.)
+        action, // The action performed (e.g., "Create", "Update", "Delete")
+        userId: user.id, // ID of the user who triggered the action
+        userImage: user?.imageUrl, // URL to the user's profile image (if available)
+        userName: user?.firstName + " " + user?.lastName, // Full name of the user
+      },
+    });
   } catch (error) {
     // Handle any error that may occur within the scope of the audit log
     console.error("[AUDIT_LOG_ERROR]", error);
