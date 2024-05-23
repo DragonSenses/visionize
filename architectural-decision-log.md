@@ -21831,3 +21831,24 @@ async function performAction(data: InputType): Promise<OutputType> {
 
 export const createCard = createServerAction(CreateCard, performAction);
 ```
+
+### Create API route to fetch audit log for cards
+
+Create a `logs` folder in the `app/api/cards/[cardId]` folder. Then create a `route.ts` file, which contains a `GET` route with the `request` and `{params}` as parameters. It opens up a `try..catch` and performs error handling.
+
+feat(api): Add GET route for card audit log
+
+`app\api\cards\[cardId]\logs\route.ts`
+```ts
+import { NextResponse } from "next/server";
+
+export async function GET(
+  request: Request,
+  { params }: { params: { cardId: string } }
+) {
+  try {
+  } catch (error) {
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
+```
