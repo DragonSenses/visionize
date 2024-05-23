@@ -21785,3 +21785,49 @@ export async function createAuditLog(props: AuditLogProps) {
   }
 }
 ```
+
+### Use createAuditLog
+
+Let's now create the AuditLog in the action `createCard`. Let's create the audit log after the prisma query that creates the card in the database.
+
+feat: Create audit log in createCard server action
+
+`actions\createCard\index.ts`
+```ts
+import { createAuditLog } from "@/lib/createAuditLog";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
+
+async function performAction(data: InputType): Promise<OutputType> {
+  // ...
+
+    // Create the card in the database
+    card = await database.card.create({
+      data: {
+        title,
+        listId,
+        order: nextOrder,
+      },
+    });
+
+    await createAuditLog({
+      entityId: card.id,
+      entityTitle: card.title,
+      entityType: ENTITY_TYPE.CARD,
+      action: ACTION.CREATE,
+    });
+
+  } catch (error) {
+    return {
+      error: "Failed to create card.",
+    };
+  }
+
+  revalidatePath(`/board/${boardId}`);
+
+  return {
+    data: card,
+  };
+}
+
+export const createCard = createServerAction(CreateCard, performAction);
+```
