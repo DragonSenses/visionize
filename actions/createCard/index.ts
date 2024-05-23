@@ -1,9 +1,11 @@
 "use server";
 import { auth } from "@clerk/nextjs";
 import { revalidatePath } from "next/cache";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 import { createServerAction } from "@/lib/createServerAction";
 import { database } from "@/lib/database";
+import { createAuditLog } from "@/lib/createAuditLog";
 
 import { CreateCard } from "./createCardSchema";
 import { InputType, OutputType } from "./createCardTypes";
@@ -17,7 +19,7 @@ async function performAction(data: InputType): Promise<OutputType> {
     };
   }
 
-  const { title, boardId, listId, } = data;
+  const { title, boardId, listId } = data;
 
   let card;
 
@@ -28,7 +30,7 @@ async function performAction(data: InputType): Promise<OutputType> {
         id: listId,
         board: {
           orgId,
-        }
+        },
       },
     });
 
@@ -57,6 +59,12 @@ async function performAction(data: InputType): Promise<OutputType> {
       },
     });
 
+    await createAuditLog({
+      entityId: card.id,
+      entityTitle: card.title,
+      entityType: ENTITY_TYPE.CARD,
+      action: ACTION.CREATE,
+    });
   } catch (error) {
     return {
       error: "Failed to create card.",
