@@ -21852,3 +21852,73 @@ export async function GET(
   }
 }
 ```
+
+feat(api): Add authentication to GET audit log
+
+```ts
+import { auth } from "@clerk/nextjs";
+import { NextResponse } from "next/server";
+
+export async function GET(
+  request: Request,
+  { params }: { params: { cardId: string } }
+) {
+  try {
+    // Authenticate the user using Clerk authentication.
+    const { userId, orgId } = auth();
+
+    // If the user is not authenticated, return an "Unauthorized" response.
+    if (!userId || !orgId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+  } catch (error) {
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
+```
+
+Then we create a query that fetches all the auditLog records which matches the specific card ID. We also use pagination to paginate the results. We will only take the first 3 results (to fit inside the `CardModal`), later on the activity/audit log page we can see all records related to the specific card.
+
+- [Pagination - Prisma Client](https://www.prisma.io/docs/orm/prisma-client/queries/pagination)
+
+
+feat(api): Fetch audit logs for card in GET route
+
+```ts
+import { auth } from "@clerk/nextjs";
+import { NextResponse } from "next/server";
+import { ENTITY_TYPE } from "@prisma/client";
+
+import { database } from "@/lib/database";
+
+export async function GET(
+  request: Request,
+  { params }: { params: { cardId: string } }
+) {
+  try {
+    // Authenticate the user using Clerk authentication.
+    const { userId, orgId } = auth();
+
+    // If the user is not authenticated, return an "Unauthorized" response.
+    if (!userId || !orgId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    // Query to fetch first 3 audit log records related to the specific card
+    const auditLogs = await database.auditLog.findMany({
+      where: {
+        orgId,
+        entityId: params.cardId,
+        entityType: ENTITY_TYPE.CARD,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 3,
+    });
+
+  } catch (error) {
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
+```
