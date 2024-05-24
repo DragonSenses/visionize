@@ -21922,3 +21922,24 @@ export async function GET(
   }
 }
 ```
+
+### Fetch audit logs in CardModal
+
+Navigate to `CardModal` and fetch the audit log data using the `useQuery` hook. Use the reusable `fetcher` utility to retrieve the data from the API endpoint `/api/cards/${id}/logs`.
+
+feat(CardModal): Fetch audit log data for cards
+
+```ts
+import { useQuery } from '@tanstack/react-query';
+
+import { AuditLog } from '@prisma/client';
+
+export default function CardModal() {
+  // ...
+
+  // Fetch audit log data using the useQuery hook
+  const {data: auditLogsData } = useQuery<AuditLog[]>({
+    queryKey: ["card-logs", id],
+    queryFn: () => fetcher(`/api/cards/${id}/logs`),
+  });
+```
