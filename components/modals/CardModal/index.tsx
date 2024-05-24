@@ -10,6 +10,9 @@ import { fetcher } from '@/lib/fetcher';
 // Import custom union type
 import { CardWithList } from '@/types/types';
 
+// Import AuditLog type
+import { AuditLog } from '@prisma/client';
+
 // Import custom hook for managing card modal state
 import { useCardModal } from '@/hooks/useCardModal';
 
@@ -34,9 +37,15 @@ export default function CardModal() {
   const onClose = useCardModal((state) => state.onClose);
 
   // Fetch card data using the useQuery hook
-  const {data: cardData } = useQuery<CardWithList>({
+  const { data: cardData } = useQuery<CardWithList>({
     queryKey: ["card", id],
-    queryFn: () => fetcher(`/api/cards/${id}`),
+    queryFn: () => fetcher(`/api/cards/${ id }`),
+  });
+
+  // Fetch audit log data using the useQuery hook
+  const { data: auditLogsData } = useQuery<AuditLog[]>({
+    queryKey: ["card-logs", id],
+    queryFn: () => fetcher(`/api/cards/${ id }/logs`),
   });
 
   // Render the dialog with the card content
@@ -46,7 +55,7 @@ export default function CardModal() {
       onOpenChange={onClose}
     >
       <DialogContent>
-        {!cardData 
+        {!cardData
           ? <Header.Skeleton />
           : <Header data={cardData} />
         }
