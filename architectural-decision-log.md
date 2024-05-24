@@ -21988,3 +21988,50 @@ Activity.Skeleton = function ActivitySkeleton() {
   )
 }
 ```
+
+Now let's conditionally render the `Activity` component within the `CardModal`. Right under the card description, let's conditionally render the `Activity` component depending on whether `auditLogsData` is available.
+
+feat: Render card audit log within CardModal
+
+feat: Conditionally render card activity
+
+In the CardModal component, the activity skeleton is conditionally rendered based on whether `auditLogsData` is available. If not, the skeleton UI is displayed; otherwise, the actual audit log for the specific card is shown.
+
+```tsx
+import Activity from './Activity';
+
+export default function CardModal() {
+  // ...
+
+  // Fetch audit log data using the useQuery hook
+  const { data: auditLogsData } = useQuery<AuditLog[]>({
+    queryKey: ["card-logs", id],
+    queryFn: () => fetcher(`/api/cards/${ id }/logs`),
+  });
+
+  return (
+    <Dialog
+      open={isOpen}
+      onOpenChange={onClose}
+    >
+      <DialogContent>
+        {!cardData
+          ? <Header.Skeleton />
+          : <Header data={cardData} />
+        }
+        <div className='grid grid-cols-1 md:grid-cols-4 md:gap-4'>
+          <div className='col-span-3'>
+            <div className='w-full space-y-6'>
+              {/* Card Description */}
+              {!cardData
+                ? <Description.Skeleton />
+                : <Description data={cardData} />
+              }
+              {/* Card Activity */}
+              {!auditLogsData
+                ? <Activity.Skeleton />
+                : <Activity data={auditLogsData} />
+              }
+            </div>
+          </div>
+```
