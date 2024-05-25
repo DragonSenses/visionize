@@ -21994,7 +21994,7 @@ export default function CardModal() {
 
 Create a client component `Activity` inside the `CardModal`. This component will display the audit logs associated with a specific card. This renders the audit log history for the user to see within the `CardModal`.
 
-The props it takes is `data` that is an `AuditLog[]`.
+The `ActivityProps` interface contains `data` of type `AuditLog[]`.
 
 feat: Define prop types for Activity component
 
@@ -22010,7 +22010,7 @@ interface ActivityProps {
 
 export default function Activity({
   data,
-}: AuditLog) {
+}: ActivityProps) {
   return (
     <div>Activity</div>
   )
@@ -22105,7 +22105,7 @@ import { ActivityIcon } from 'lucide-react';
 
 export default function Activity({
   data,
-}: AuditLog) {
+}: ActivityProps) {
   return (
     <div>
       <ActivityIcon/>
@@ -22131,7 +22131,7 @@ Improve the Activity component with tailored CSS classes to improve the visual h
 ```tsx
 export default function Activity({
   data,
-}: AuditLog) {
+}: ActivityProps) {
   return (
     <div className='flex items-start w-full gap-x-3'>
       <ActivityIcon className='h-5 w-5 mt-0.5 text-neutral-700' />
@@ -22148,4 +22148,18 @@ export default function Activity({
     </div>
   )
 }
+```
+
+fix: Rectify prop type in Activity component
+
+This commit resolves the TypeScript error by updating the Activity component's prop type. It corrects prop type from AuditLog to ActivityProps. The data prop now correctly uses the ActivityProps interface, ensuring type consistency and eliminating the previous mismatch issue.
+
+```tsx
+interface ActivityProps {
+  data: AuditLog[];
+}
+
+export default function Activity({
+  data,
+}: ActivityProps) {
 ```

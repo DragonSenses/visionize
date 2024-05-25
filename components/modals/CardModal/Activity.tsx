@@ -12,7 +12,7 @@ interface ActivityProps {
 
 export default function Activity({
   data,
-}: AuditLog) {
+}: ActivityProps) {
   return (
     <div className='flex items-start w-full gap-x-3'>
       <ActivityIcon className='h-5 w-5 mt-0.5 text-neutral-700' />
