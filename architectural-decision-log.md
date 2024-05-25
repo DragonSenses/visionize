@@ -22091,3 +22091,61 @@ export default function CardModal() {
             </div>
           </div>
 ```
+
+### Activity output
+
+Let's create the basic layout of the `Activity` component.
+
+feat: Implement basic Activity component layout
+
+This commit introduces the Activity component, which displays a list of audit log entries. Each entry is represented by an entity title and is uniquely identified by its ID. The component utilizes the ActivityIcon and maps over the provided data to render the list.
+
+```tsx
+import { ActivityIcon } from 'lucide-react';
+
+export default function Activity({
+  data,
+}: AuditLog) {
+  return (
+    <div>
+      <ActivityIcon/>
+      <div>
+        <p>
+          Activity
+        </p>
+        <ol>
+          {data.map((auditLog: AuditLog) => (
+            <p key={auditLog.id}>{auditLog.entityTitle}</p>
+          ))}
+        </ol>
+      </div>
+    </div>
+  )
+}
+```
+
+style: Enhance visual hierarchy in Activity
+
+Improve the Activity component with tailored CSS classes to improve the visual hierarchy and readability. The component now features a flex layout with a gap, a resized ActivityIcon with neutral color, and a structured list with consistent spacing. The typography has been updated to emphasize the 'Activity' header, ensuring a clear and engaging user interface.
+
+```tsx
+export default function Activity({
+  data,
+}: AuditLog) {
+  return (
+    <div className='flex items-start w-full gap-x-3'>
+      <ActivityIcon className='h-5 w-5 mt-0.5 text-neutral-700' />
+      <div className='w-full'>
+        <p className='mb-2 font-semibold text-neutral-700'>
+          Activity
+        </p>
+        <ol className='mt-2 space-y-4'>
+          {data.map((auditLog: AuditLog) => (
+            <p key={auditLog.id}>{auditLog.entityTitle}</p>
+          ))}
+        </ol>
+      </div>
+    </div>
+  )
+}
+```
