@@ -4,6 +4,7 @@ import React from 'react';
 import { AuditLog } from '@prisma/client';
 
 import { Skeleton } from '@/components/ui/skeleton';
+import { ActivityIcon } from 'lucide-react';
 
 interface ActivityProps {
   data: AuditLog[];
@@ -13,7 +14,19 @@ export default function Activity({
   data,
 }: AuditLog) {
   return (
-    <div>Activity</div>
+    <div>
+      <ActivityIcon/>
+      <div>
+        <p>
+          Activity
+        </p>
+        <ol>
+          {data.map((auditLog: AuditLog) => (
+            <p key={auditLog.id}>{auditLog.entityTitle}</p>
+          ))}
+        </ol>
+      </div>
+    </div>
   )
 }
 
