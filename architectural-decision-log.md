@@ -22163,3 +22163,39 @@ export default function Activity({
   data,
 }: ActivityProps) {
 ```
+
+### Generate log messages
+
+Create a utility function `generateLogMessage` in `/lib` which returns a log message string. The string is generated based on three variables:
+
+1. action
+   1. CREATE, UPDATE, DELETE
+2. `entityType`
+   1.  BOARD, LIST, CARD
+3. `entityTitle`
+
+feat: Add generateLogMessage utility for AuditLogs
+
+`lib\generateLogMessage.ts`
+```ts
+import { ACTION, AuditLog } from "@prisma/client";
+
+export function generateLogMessage(log: AuditLog) {
+  const { action, entityTitle, entityType } = log;
+
+  if (!action || !entityTitle || !entityType) {
+    return `Error: could not generate message for audit log\n ${log}`;
+  }
+
+  switch (action) {
+    case ACTION.CREATE:
+      return `created ${entityType.toLowerCase()} "${entityTitle}"`;
+    case ACTION.DELETE:
+      return `deleted ${entityType.toLowerCase()} "${entityTitle}"`;
+    case ACTION.UPDATE:
+      return `updated ${entityType.toLowerCase()} "${entityTitle}"`;
+    default:
+      return `unknown action performed on ${entityType.toLowerCase()} "${entityTitle}"`;
+  }
+}
+```
