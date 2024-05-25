@@ -21994,13 +21994,23 @@ export default function CardModal() {
 
 Create a client component `Activity` inside the `CardModal`. This component will display the audit logs associated with a specific card. This renders the audit log history for the user to see within the `CardModal`.
 
+The props it takes is `data` that is an `AuditLog[]`.
+
+feat: Define prop types for Activity component
+
 `components\modals\CardModal\Activity.tsx`
 ```tsx
 "use client";
 
 import React from 'react';
 
-export default function Activity() {
+interface ActivityProps {
+  data: AuditLog[];
+}
+
+export default function Activity({
+  data,
+}: AuditLog) {
   return (
     <div>Activity</div>
   )

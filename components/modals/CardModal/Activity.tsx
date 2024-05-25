@@ -5,7 +5,7 @@ import { AuditLog } from '@prisma/client';
 
 import { Skeleton } from '@/components/ui/skeleton';
 
-interface ActitvityProps {
+interface ActivityProps {
   data: AuditLog[];
 }
 
