@@ -14,13 +14,13 @@ export default function Activity({
   data,
 }: AuditLog) {
   return (
-    <div>
-      <ActivityIcon/>
-      <div>
-        <p>
+    <div className='flex items-start w-full gap-x-3'>
+      <ActivityIcon className='h-5 w-5 mt-0.5 text-neutral-700' />
+      <div className='w-full'>
+        <p className='mb-2 font-semibold text-neutral-700'>
           Activity
         </p>
-        <ol>
+        <ol className='mt-2 space-y-4'>
           {data.map((auditLog: AuditLog) => (
             <p key={auditLog.id}>{auditLog.entityTitle}</p>
           ))}
