@@ -135,6 +135,39 @@ ncu -g
 
 # Dependency log
 
+## 2024/05/25
+
+(May 25, 2024)
+```sh
+npm outdated                                                                                                    
+
+Package                Current   Wanted   Latest  Location                            Depended by
+@clerk/nextjs           4.31.0   4.31.0    5.1.2  node_modules/@clerk/nextjs          visionize
+@tanstack/react-query   5.37.1   5.39.0   5.39.0  node_modules/@tanstack/react-query  visionize
+@types/react            18.3.2   18.3.3   18.3.3  node_modules/@types/react           visionize
+eslint                  8.57.0   8.57.0    9.3.0  node_modules/eslint                 visionize
+eslint-config-next      14.0.4   14.0.4   14.2.3  node_modules/eslint-config-next     visionize
+lucide-react           0.307.0  0.307.0  0.379.0  node_modules/lucide-react           visionize
+next                    14.0.4   14.0.4   14.2.3  node_modules/next                   visionize
+usehooks-ts             2.16.0   2.16.0    3.1.0  node_modules/usehooks-ts            visionize
+```
+
+chore: Update @tanstack/react-query & @types/react
+
+```sh
+npm update --save
+
+Package             Current   Wanted   Latest  Location                         Depended by
+@clerk/nextjs        4.31.0   4.31.0    5.1.2  node_modules/@clerk/nextjs       visionize
+eslint               8.57.0   8.57.0    9.3.0  node_modules/eslint              visionize
+eslint-config-next   14.0.4   14.0.4   14.2.3  node_modules/eslint-config-next  visionize
+lucide-react        0.307.0  0.307.0  0.379.0  node_modules/lucide-react        visionize
+next                 14.0.4   14.0.4   14.2.3  node_modules/next                visionize
+usehooks-ts          2.16.0   2.16.0    3.1.0  node_modules/usehooks-ts         visionize
+```
+
+## 2024/05/20
+
 (May 20, 2024)
 ```sh
 npm outdated
