@@ -22199,3 +22199,75 @@ export function generateLogMessage(log: AuditLog) {
   }
 }
 ```
+
+### ActivityItem component
+
+feat: Add ActivityItem to display audit log info
+
+In the global `/components` folder, create the component `ActivityItem`. It has a prop interface that contains `data` an `AuditLog`.
+
+feat: Define prop types for ActivityItem component
+
+```tsx
+import React from 'react';
+import { AuditLog } from '@prisma/client';
+
+interface ActivityItemProps {
+  data: AuditLog;
+}
+
+export default function ActivityItem({
+  data
+}: ActivityItemProps) {
+  return (
+    <div>ActivityItem</div>
+  )
+}
+```
+
+Let's also install [Avatar - shadcn/ui](https://ui.shadcn.com/docs/components/avatar), an image element with a fallback for representing the user.
+
+```sh
+npx shadcn-ui@latest add avatar
+```
+
+Now develop the initial layout of the `ActivityItem`, which consists of an `Avatar`, a username and log message.
+
+feat: Add ActivityItem component layout
+
+This commit adds the initial layout for the `ActivityItem` component. The component displays an avatar image, user name, and a log message generated from the `AuditLog` data.
+
+- The `Avatar` component wraps the user's avatar image
+- The user's name is displayed using the `data.userName` property
+- The log message is generated using the `generateLogMessage` function
+
+```tsx
+import React from 'react';
+import { AuditLog } from '@prisma/client';
+
+import { generateLogMessage } from '@/lib/generateLogMessage';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
+
+interface ActivityItemProps {
+  data: AuditLog;
+}
+
+export default function ActivityItem({
+  data
+}: ActivityItemProps) {
+  return (
+    <li>
+      <Avatar>
+        <AvatarImage src={data.userImage} />
+      </Avatar>
+      <div>
+        <p>
+          <span>
+            {data.userName}
+          </span> {generateLogMessage(data)}
+        </p>
+      </div>
+    </li>
+  )
+}
+```
