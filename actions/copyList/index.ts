@@ -2,9 +2,11 @@
 
 import { auth } from "@clerk/nextjs"; // Authentication module
 import { revalidatePath } from "next/cache"; // Cache revalidation module
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 import { createServerAction } from "@/lib/createServerAction"; // Server action creator
 import { database } from "@/lib/database"; // Database interface
+import { createAuditLog } from "@/lib/createAuditLog";
 
 import { CopyList } from "./copyListSchema"; // Input validation schema
 import { InputType, OutputType } from "./copyListTypes"; // Type definitions
@@ -81,6 +83,13 @@ async function performAction(data: InputType): Promise<OutputType> {
       include: {
         cards: true,
       },
+    });
+
+    await createAuditLog({
+      entityId: list.id,
+      entityTitle: list.title,
+      entityType: ENTITY_TYPE.LIST,
+      action: ACTION.CREATE,
     });
   } catch (error) {
     // If the copy fails, return an error
