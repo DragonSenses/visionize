@@ -22208,6 +22208,7 @@ In the global `/components` folder, create the component `ActivityItem`. It has 
 
 feat: Define prop types for ActivityItem component
 
+`components\ActivityItem.tsx`
 ```tsx
 import React from 'react';
 import { AuditLog } from '@prisma/client';
@@ -22268,6 +22269,122 @@ export default function ActivityItem({
         </p>
       </div>
     </li>
+  )
+}
+```
+
+Let's also add the timestamp of when the audit log activity was created. We can use a package that helps with date manipulation functions.
+
+- [data-fns | npm](https://www.npmjs.com/package/date-fns)
+
+feat: Add date-fns (v3.6.0) package
+
+```sh
+npm i date-fns
+```
+
+After the log message, add another `p` which contains the formatted date using `format()` from `date-fns`.
+
+feat: Add timestamp to ActivityItem for audit logs
+
+This commit displays a timestamp for each audit log entry. The timestamp is formatted using the `date-fns` library and shows the date and time when the log was created.
+
+```tsx
+import React from 'react';
+import { AuditLog } from '@prisma/client';
+import { format } from 'date-fns';
+
+import { generateLogMessage } from '@/lib/generateLogMessage';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
+
+interface ActivityItemProps {
+  data: AuditLog;
+}
+
+export default function ActivityItem({
+  data
+}: ActivityItemProps) {
+  return (
+    <li>
+      <Avatar>
+        <AvatarImage src={data.userImage} />
+      </Avatar>
+      <div>
+        <p>
+          <span>
+            {data.userName}
+          </span> {generateLogMessage(data)}
+        </p>
+        <p>
+          {format(new Date(data.createdAt), "MMM d, yyyy 'at' h:mm a")}
+        </p>
+      </div>
+    </li>
+  )
+}
+```
+
+Let's wrap up the `ActivityItem` component by adding some styling.
+
+style(ActivityItem): Add alignment and adjust text
+
+```tsx
+export default function ActivityItem({
+  data
+}: ActivityItemProps) {
+  return (
+    <li className='flex items-center gap-x-2'>
+      <Avatar className='h-8 w-8'>
+        <AvatarImage src={data.userImage} />
+      </Avatar>
+      <div className='flex flex-col space-y-0.5'>
+        <p className='text-sm text-muted-foreground'>
+          <span className='font-semibold lowercase text-neutral-700'>
+            {data.userName}
+          </span> {generateLogMessage(data)}
+        </p>
+        <p className='text-xs text-muted-foreground'>
+          {format(new Date(data.createdAt), "MMM d, yyyy 'at' h:mm a")}
+        </p>
+      </div>
+    </li>
+  )
+}
+```
+
+Now we can refactor the `Activity` component to map out `ActivityItem` components.
+
+refactor: Use ActivityItem in Activity list
+
+This commit replaces individual paragraphs with mapped ActivityItem components in the Activity list.
+
+```tsx
+import ActivityItem from '@/components/ActivityItem';
+
+interface ActivityProps {
+  data: AuditLog[];
+}
+
+export default function Activity({
+  data,
+}: ActivityProps) {
+  return (
+    <div className='flex items-start w-full gap-x-3'>
+      <ActivityIcon className='h-5 w-5 mt-0.5 text-neutral-700' />
+      <div className='w-full'>
+        <p className='mb-2 font-semibold text-neutral-700'>
+          Activity
+        </p>
+        <ol className='mt-2 space-y-4'>
+          {data.map((auditLog: AuditLog) => (
+            <ActivityItem 
+              data={auditLog}
+              key={auditLog.id} 
+            />
+          ))}
+        </ol>
+      </div>
+    </div>
   )
 }
 ```
