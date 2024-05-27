@@ -22496,7 +22496,7 @@ In this commit, we include a comprehensive checklist to track the progress and s
 - [ ] updateList
 - [ ] updateListOrder
 
-#### Audit log for copyCard server action
+#### copyCard server action - audit log
 
 feat: Integrate audit log for copyCard action
 
@@ -22530,4 +22530,39 @@ async function performAction(data: InputType): Promise<OutputType> {
 }
 
 export const copyCard = createServerAction(CopyCard, performAction);
+```
+
+#### copyList server action - audit log
+
+feat: Integrate audit log for copyList action
+
+This commit adds audit logging to the copyList server action. Whenever the action is executed, relevant audit data is captured, providing visibility into this essential operation. By monitoring user actions throughout the project, it improves workflow through increased collaboration, traceability, and security.
+
+`actions\copyList\index.ts`
+```tsx
+import { createAuditLog } from "@/lib/createAuditLog";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
+
+async function performAction(data: InputType): Promise<OutputType> {
+  // ...
+    await createAuditLog({
+      entityId: list.id,
+      entityTitle: list.title,
+      entityType: ENTITY_TYPE.LIST,
+      action: ACTION.CREATE,
+    });
+  } catch (error) {
+    return {
+      error: "Failed to copy list.",
+    };
+  }
+
+  revalidatePath(`/board/${boardId}`);
+
+  return {
+    data: list,
+  };
+}
+
+export const copyList = createServerAction(CopyList, performAction);
 ```
