@@ -15598,18 +15598,43 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
           defaultValue='title'
           placeholder="Enter a title for this card..."
           required={false}
-          errors={}
-          className={}
-          onBlur={() => {}}
-          onClick={() => {}}
-          onChange={() => {}}
-          onKeyDown={() => {}}
+          errors={fieldErrors}
+          className={''}
+          onBlur={() => { }}
+          onClick={() => { }}
+          onChange={() => { }}
+          onKeyDown={onTextAreaKeyDown}
           ref={ref}
         />
       </form>
     )
   }
 
+}
+```
+
+refactor: Remove unneeded props from FormTextArea
+
+This change ensures that the CardForm component behaves correctly, allowing initial card editing before creation.
+
+```tsx
+const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
+  // ...
+}, ref) => {
+
+  if (isEditing) {
+    return (
+      <form className='px-1 py-0.5 m-1 space-y-4'>
+        <FormTextArea 
+          id='title'
+          placeholder="Enter a title for this card..."
+          errors={}
+          onKeyDown={() => {}}
+          ref={ref}
+        />
+      </form>
+    )
+  }
 }
 ```
 

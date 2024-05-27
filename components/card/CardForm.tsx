@@ -87,16 +87,8 @@ const CardForm = forwardRef<HTMLTextAreaElement, CardFormProps>(({
       >
         <FormTextArea
           id='title'
-          label='title'
-          value='title'
-          defaultValue='title'
           placeholder="Enter a title for this card..."
-          required={false}
           errors={fieldErrors}
-          className={''}
-          onBlur={() => { }}
-          onClick={() => { }}
-          onChange={() => { }}
           onKeyDown={onTextAreaKeyDown}
           ref={ref}
         />
