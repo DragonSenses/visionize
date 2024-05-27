@@ -2,9 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 import { database } from "@/lib/database";
 import { createServerAction } from "@/lib/createServerAction";
+import { createAuditLog } from "@/lib/createAuditLog";
 
 import { InputType, ReturnType } from "./createBoardTypes";
 import { CreateBoard } from "./createBoardSchema";
@@ -52,6 +54,13 @@ async function performAction (data: InputType): Promise<ReturnType> {
         imageUserName,
         imageLinkHTML,
       }
+    });
+
+    await createAuditLog({
+      entityId: board.id,
+      entityTitle: board.title,
+      entityType: ENTITY_TYPE.BOARD,
+      action: ACTION.CREATE,
     });
   } catch(error) {
     return {
