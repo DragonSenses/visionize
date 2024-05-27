@@ -3,7 +3,7 @@ import { AuditLog } from '@prisma/client';
 import { format } from 'date-fns';
 
 import { generateLogMessage } from '@/lib/generateLogMessage';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface ActivityItemProps {
   data: AuditLog;
@@ -15,7 +15,8 @@ export default function ActivityItem({
   return (
     <li className='flex items-center gap-x-2'>
       <Avatar className='h-8 w-8'>
-        <AvatarImage src={data.userImage} />
+        <AvatarImage src={data.userImage} alt="User profile image"/>
+        <AvatarFallback>User</AvatarFallback>
       </Avatar>
       <div className='flex flex-col space-y-0.5'>
         <p className='text-sm text-muted-foreground'>

@@ -22352,6 +22352,24 @@ export default function ActivityItem({
 }
 ```
 
+feat: Add avatar fallback in ActivityItem
+
+```tsx
+export default function ActivityItem({
+  data
+}: ActivityItemProps) {
+  return (
+    <li className='flex items-center gap-x-2'>
+      <Avatar className='h-8 w-8'>
+        <AvatarImage src={data.userImage} alt="User profile image"/>
+        <AvatarFallback>User</AvatarFallback>
+      </Avatar>
+      {/* ... */}
+   </li>
+  )
+}
+```
+
 Now we can refactor the `Activity` component to map out `ActivityItem` components.
 
 refactor: Use ActivityItem in Activity list
