@@ -2,12 +2,15 @@
 
 import { auth } from "@clerk/nextjs"; // Authentication module
 import { revalidatePath } from "next/cache"; // Cache revalidation module
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 import { createServerAction } from "@/lib/createServerAction"; // Server action creator
+import { createAuditLog } from "@/lib/createAuditLog";
 import { database } from "@/lib/database"; // Database interface
 
 import { CopyCard } from "./copyCardSchema"; // Input validation schema
 import { InputType, OutputType } from "./copyCardTypes"; // Type definitions
+
 
 /**
  * Defines a server action to copy a card.
@@ -66,6 +69,13 @@ async function performAction(data: InputType): Promise<OutputType> {
         order: nextOrder,
         listId: sourceCard.listId,
       },
+    });
+
+    await createAuditLog({
+      entityId: card.id,
+      entityTitle: card.title,
+      entityType: ENTITY_TYPE.CARD,
+      action: ACTION.CREATE,
     });
   } catch (error) {
     return {
