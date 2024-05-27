@@ -22476,3 +22476,58 @@ docs: Add discussion on integrating audit logging
 
 Include detailed discussion on how to integrate audit logging into our project. It covers the benefits, implementation steps, and best practices for maintaining an effective audit trail. By following this documentation, we enhance collaboration, traceability, and security within our project.
 
+### Checklist for server actions with audit logging
+
+docs: Add checklist for audit logging integration
+
+In this commit, we include a comprehensive checklist to track the progress and status of our audit logging integration for each server action. The checklist covers essential steps, such as configuring audit log libraries, implementing logging hooks, and verifying successful integration.
+
+- [x] copyCard
+- [ ] copyList
+- [ ] createBoard
+- [x] createCard
+- [ ] createList
+- [ ] deleteBoard
+- [ ] deleteCard
+- [ ] deleteList
+- [ ] updateBoard
+- [ ] updateCard
+- [ ] updateCardOrder
+- [ ] updateList
+- [ ] updateListOrder
+
+#### Audit log for copyCard server action
+
+feat: Integrate audit log for copyCard action
+
+This commit adds audit logging to the copyCard server action. Now, whenever a card is copied, relevant audit data is captured, providing visibility into this critical operation. This feature enhances collaboration, traceability, and security by monitoring user actions throughout the application.
+
+`actions\copyCard\index.ts`
+```ts
+import { createAuditLog } from "@/lib/createAuditLog";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
+
+async function performAction(data: InputType): Promise<OutputType> {
+  // ...
+
+    await createAuditLog({
+      entityId: card.id,
+      entityTitle: card.title,
+      entityType: ENTITY_TYPE.CARD,
+      action: ACTION.CREATE,
+    });
+  } catch (error) {
+    return {
+      error: "Failed to copy.",
+    };
+  }
+
+  revalidatePath(`/board/${boardId}`);
+
+  return {
+    data: card,
+  };
+}
+
+export const copyCard = createServerAction(CopyCard, performAction);
+```
