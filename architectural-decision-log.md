@@ -21434,6 +21434,24 @@ Though these micro-actions behind audit logs are important in their own ways, th
 1. To identify errors and improve accuracy.
 2. To understand the purpose behind an activity, which can be later used for accountability or compliance.
 
+### Audit logging and Kanban
+
+The three main benefits of integrating audit logging into a Kanban project are **collaboration**, **efficiency** and **security**.
+
+1. **Enhanced Collaboration**:
+   - **Transparency**: Audit logs provide visibility into actions taken within the Kanban system. Team members can track changes, understand who made them, and collaborate effectively.
+   - **Ownership**: With audit trails, team members take ownership of their tasks. They become more accountable for delivering results, knowing that their actions are recorded.
+
+2. **Efficiency and Process Improvement**:
+   - **Continuous Monitoring**: Audit logs allow real-time monitoring of Kanban activities. This helps identify bottlenecks, delays, or deviations from the process, enabling timely adjustments.
+   - **Problem Identification**: Auditors can review production records and compare them to Kanban signals. When discrepancies arise, corrective actions can be taken promptly to keep the Kanban system on track.
+
+3. **Risk Management and Security**:
+   - **Risk Mitigation**: Audit logs help detect anomalies, unauthorized changes, or security breaches. By analyzing these logs, teams can proactively address risks and maintain system integrity.
+   - **Compliance**: For regulated industries, audit trails are essential for demonstrating compliance with standards and regulations.
+
+In summary, integrating audit logging into a Kanban project improves collaboration, efficiency, risk management, and overall process effectiveness. 
+
 ### AuditLog model
 
 Navigate to `prisma\schema.prisma` and create an `AuditLog` model.
@@ -22431,3 +22449,30 @@ export default function Activity({
   )
 }
 ```
+
+## Implement an audit log for all upcoming and ongoing server actions
+
+As of now, we can list out all the current server actions we have.
+
+```sh
+ls -Path "actions" -ad -Name
+
+copyCard
+copyList
+createBoard
+createCard
+createList
+deleteBoard
+deleteCard
+deleteList
+updateBoard
+updateCard
+updateCardOrder
+updateList
+updateListOrder
+```
+
+docs: Add discussion on integrating audit logging
+
+Include detailed discussion on how to integrate audit logging into our project. It covers the benefits, implementation steps, and best practices for maintaining an effective audit trail. By following this documentation, we enhance collaboration, traceability, and security within our project.
+
