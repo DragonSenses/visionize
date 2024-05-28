@@ -25,9 +25,12 @@ Uses **Next.js 14**, with features such as [Server Actions](https://nextjs.org/b
 # Work-in-Progress
 
 TODO:
-- [ ] Boards
-- [ ] Lists
-- [ ] Cards
+- [x] Boards
+- [x] Lists
+- [x] Cards
+- [x] Audit Log
+- [ ] Settings
+- [ ] Integrate Freemium Model (just for practice)
 
 # Technologies:
 
@@ -35,7 +38,7 @@ TODO:
 - TypeScript
 - React
 - TailwindCSS
-- MySQL, Prisma and PlanetScale for database
+- PostgreSQL and Prisma ORM for database
 - Clerk for authentication
 - Stripe API for payment handling
 - zustand for state management
@@ -46,9 +49,9 @@ TODO:
 - User can **create**, **read**, **update** and **delete** boards
 - User can **create**, **read**, **update** and **delete** lists
 - User can **create**, **read**, **update** and **delete** cards
-- 
+- Users can view activity history with *audit logs*
 
-## Prerequisites
+# Prerequisites
 
 - [Node](https://nodejs.org/en/download) version 14 or higher
 
@@ -74,7 +77,12 @@ TODO:
 
 **4. Create an `.env` file**
 
+TODO: Add additional steps to run locally
+
 ---
+
+# TODO: Mockup, examples & screenshots
+# TODO: Configuration options
 
 # Kanban
 
@@ -91,3 +99,17 @@ This approach aims to manage work by balancing demands with available capacity, 
 Work items are visualized to give participants a view of progress and process, from start to finish—usually via a kanban board. Work is pulled as capacity permits, rather than work being pushed into the process when requested.
 
 In knowledge work and in software development, the aim is to provide a visual process management system which aids decision-making about what, when, and how much to produce. The underlying kanban method originated in lean manufacturing, which was inspired by the Toyota Production System.
+
+## Kanban guide
+
+## Audit logging and Kanban
+
+According to the [The Kaban Guide (2020)(by John Colemane and Daniel Vacanti)](https://kanbanguides.org/english/), the Kanban strategy optimizes the flow of value through a process that uses a visual, pull-based system.
+
+"Kanban comprises the following three practices working in tandem:
+
+1. Defining and visualizing a workflow
+2. Actively managing items in a workflow
+3. Improving a workflow
+
+In their implementation, these Kanban practices are collectively called a Kanban system. Those who participate in the value delivery of a Kanban system are called Kanban system members."
