@@ -22598,3 +22598,31 @@ async function performAction(data: InputType): Promise<OutputType> {
 
 export const createBoard = createServerAction(CreateBoard, performAction);
 ```
+
+#### createList - audit log
+
+feat: Integrate audit log for createList action
+
+This commit adds audit logging to the createList server action. Whenever the action is executed, relevant audit data is captured, providing visibility into this essential operation. By monitoring user actions throughout the project, it improves workflow through increased collaboration, traceability, and security.
+
+```tsx
+import { createAuditLog } from "@/lib/createAuditLog";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
+
+async function performAction(data: InputType): Promise<OutputType> {
+   // ...
+  try {
+    // Create the list in the database...
+    
+    await createAuditLog({
+      entityId: list.id,
+      entityTitle: list.title,
+      entityType: ENTITY_TYPE.LIST,
+      action: ACTION.CREATE,
+    });
+  } catch (error) {
+  // ...
+}
+
+export const createList = createServerAction(CreateList, performAction);
+```

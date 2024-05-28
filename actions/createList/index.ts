@@ -1,9 +1,11 @@
 "use server";
 import { auth } from "@clerk/nextjs";
 import { revalidatePath } from "next/cache";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 import { createServerAction } from "@/lib/createServerAction";
 import { database } from "@/lib/database";
+import { createAuditLog } from "@/lib/createAuditLog";
 
 import { CreateList } from "./createListSchema";
 import { InputType, OutputType } from "./createListTypes";
@@ -53,6 +55,13 @@ async function performAction(data: InputType): Promise<OutputType> {
         boardId,
         order: nextOrder,
       },
+    });
+
+    await createAuditLog({
+      entityId: list.id,
+      entityTitle: list.title,
+      entityType: ENTITY_TYPE.LIST,
+      action: ACTION.CREATE,
     });
   } catch (error) {
     return {
