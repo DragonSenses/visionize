@@ -2,19 +2,21 @@
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 import { createServerAction } from "@/lib/createServerAction";
 import { database } from "@/lib/database";
+import { createAuditLog } from "@/lib/createAuditLog";
 
 import { DeleteBoard } from "./deleteBoardSchema";
 import { InputType, OutputType } from "./deleteBoardTypes";
 
-async function performAction (data: InputType): Promise<OutputType> {
+async function performAction(data: InputType): Promise<OutputType> {
   const { userId, orgId } = auth();
 
   if (!userId || !orgId) {
     return {
-      error: 'Unauthorized',
+      error: "Unauthorized",
     };
   }
 
@@ -29,10 +31,17 @@ async function performAction (data: InputType): Promise<OutputType> {
         orgId,
       },
     });
+
+    await createAuditLog({
+      entityId: board.id,
+      entityTitle: board.title,
+      entityType: ENTITY_TYPE.BOARD,
+      action: ACTION.DELETE,
+    });
   } catch (error) {
     return {
-      error: 'Failed to delete board.'
-    }
+      error: "Failed to delete board.",
+    };
   }
 
   const path = `/organization/${orgId}`;

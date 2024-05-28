@@ -22626,3 +22626,31 @@ async function performAction(data: InputType): Promise<OutputType> {
 
 export const createList = createServerAction(CreateList, performAction);
 ```
+
+#### deleteBoard - audit log
+
+feat: Integrate audit log for deleteBoard action
+
+This commit adds audit logging to the deleteBoard server action. Whenever the action is executed, relevant audit data is captured, providing visibility into this essential operation. By monitoring user actions throughout the project, it improves workflow through increased collaboration, traceability, and security.
+
+```tsx
+import { createAuditLog } from "@/lib/createAuditLog";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
+
+async function performAction(data: InputType): Promise<OutputType> {
+   // ...
+  try {
+    // Delete the board in the database...
+    
+    await createAuditLog({
+      entityId: board.id,
+      entityTitle: board.title,
+      entityType: ENTITY_TYPE.BOARD,
+      action: ACTION.DELETE,
+    });
+  } catch (error) {
+  // ...
+}
+
+export const deleteBoard = createServerAction(DeleteBoard, performAction);
+```
