@@ -15,22 +15,19 @@ import { InputType, OutputType } from "./deleteListTypes"; // Type definitions
  * @param data an object that contains the data needed to delete the list
  * @returns the deleted list
  */
-async function performAction (data: InputType): Promise<OutputType> {
+async function performAction(data: InputType): Promise<OutputType> {
   // Authenticate the user and get their organization ID
   const { userId, orgId } = auth();
 
   // If authentication fails, return an error
   if (!userId || !orgId) {
     return {
-      error: 'Unauthorized',
+      error: "Unauthorized",
     };
   }
 
   // Destructure the necessary data from the input
-  const { 
-    id,
-    boardId,
-  } = data;
+  const { id, boardId } = data;
 
   // Declare a variable to store the deleted list
   let list;
@@ -43,24 +40,24 @@ async function performAction (data: InputType): Promise<OutputType> {
         boardId,
         board: {
           // Organization ID for additional security check
-          orgId, 
+          orgId,
         },
       },
     });
   } catch (error) {
     // If the delete fails, return an error
     return {
-      error: 'Failed to delete list.'
-    }
+      error: "Failed to delete list.",
+    };
   }
 
-  // Revalidate the cache for the deleted board path 
+  // Revalidate the cache for the deleted board path
   // to ensure immediate UI consistency post-delete
   revalidatePath(`/board/${boardId}`);
 
   // Return the deleted list
   return {
-    data: list
+    data: list,
   };
 }
 
