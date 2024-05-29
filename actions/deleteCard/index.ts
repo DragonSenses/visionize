@@ -2,9 +2,11 @@
 
 import { auth } from "@clerk/nextjs"; // Authentication module
 import { revalidatePath } from "next/cache"; // Cache revalidation module
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 import { createServerAction } from "@/lib/createServerAction"; // Server action creator
 import { database } from "@/lib/database"; // Database interface
+import { createAuditLog } from "@/lib/createAuditLog";
 
 import { DeleteCard } from "./deleteCardSchema"; // Input validation schema
 import { InputType, OutputType } from "./deleteCardTypes"; // Type definitions
@@ -40,6 +42,13 @@ async function performAction(data: InputType): Promise<OutputType> {
           },
         },
       },
+    });
+
+    await createAuditLog({
+      entityId: card.id,
+      entityTitle: card.title,
+      entityType: ENTITY_TYPE.CARD,
+      action: ACTION.DELETE,
     });
   } catch (error) {
     return {
