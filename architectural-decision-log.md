@@ -22738,3 +22738,30 @@ async function performAction(data: InputType): Promise<OutputType> {
 
 export const updateBoard = createServerAction(UpdateBoard, performAction);
 ```
+#### updateCard - audit log
+
+feat: Integrate audit log for updateCard action
+
+This commit adds audit logging to the updateCard server action. Whenever the action is executed, relevant audit data is captured, providing visibility into this essential operation. By monitoring user actions throughout the project, it improves workflow through increased collaboration, traceability, and security.
+
+```tsx
+import { createAuditLog } from "@/lib/createAuditLog";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
+
+async function performAction(data: InputType): Promise<OutputType> {
+   // ...
+  try {
+    // Update the card in the database...
+    
+    await createAuditLog({
+      entityId: card.id,
+      entityTitle: card.title,
+      entityType: ENTITY_TYPE.CARD,
+      action: ACTION.UPDATE,
+    });
+  } catch (error) {
+  // ...
+}
+
+export const updateCard = createServerAction(UpdateCard, performAction);
+```
