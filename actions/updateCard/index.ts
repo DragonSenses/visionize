@@ -19,11 +19,7 @@ async function performAction(data: InputType): Promise<OutputType> {
     };
   }
 
-  const {
-    id,
-    boardId,
-    ...values
-  } = data;
+  const { id, boardId, ...values } = data;
 
   let card;
 
@@ -41,14 +37,13 @@ async function performAction(data: InputType): Promise<OutputType> {
         ...values,
       },
     });
-
   } catch (error) {
     return {
       error: "Failed to update card.",
     };
   }
 
-  // Revalidate the cache for the updated board path 
+  // Revalidate the cache for the updated board path
   // to ensure immediate UI consistency post-update
   revalidatePath(`/board/${boardId}`);
 
