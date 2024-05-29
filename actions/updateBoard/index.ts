@@ -8,12 +8,12 @@ import { database } from "@/lib/database";
 import { UpdateBoard } from "./updateBoardSchema";
 import { InputType, OutputType } from "./updateBoardTypes";
 
-async function performAction (data: InputType): Promise<OutputType> {
+async function performAction(data: InputType): Promise<OutputType> {
   const { userId, orgId } = auth();
 
   if (!userId || !orgId) {
     return {
-      error: 'Unauthorized',
+      error: "Unauthorized",
     };
   }
 
@@ -33,15 +33,15 @@ async function performAction (data: InputType): Promise<OutputType> {
     });
   } catch (error) {
     return {
-      error: 'Failed to update board.'
-    }
+      error: "Failed to update board.",
+    };
   }
 
   revalidatePath(`/board/${id}`);
 
   // Return the updated board
   return {
-    data: board
+    data: board,
   };
 }
 
