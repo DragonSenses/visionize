@@ -32,6 +32,10 @@ export default function Header({
         queryKey: ["card", data.id]
       });
 
+      queryClient.invalidateQueries({
+        queryKey: ["card-logs", data.id]
+      });
+
       // Display a success toast with the new title
       toast.success(`Renamed to "${data.title}`);
       
