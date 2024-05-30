@@ -22793,3 +22793,48 @@ async function performAction(data: InputType): Promise<OutputType> {
 
 export const updateList = createServerAction(UpdateList, performAction);
 ```
+
+## Query cache invalidation
+
+Currently, the issue is that when the card is updated through the `CardModal` it does not display the change in the audit log.
+
+Let's look at the relevant code in the `CardModal`.
+
+`components\modals\CardModal\index.tsx`
+```tsx
+export default function CardModal() {
+  // ...
+
+  // Fetch audit log data using the useQuery hook
+  const { data: auditLogsData } = useQuery<AuditLog[]>({
+    queryKey: ["card-logs", id],
+    queryFn: () => fetcher(`/api/cards/${ id }/logs`),
+  });
+
+  return (
+    <Dialog>
+      <DialogContent>
+        {/* CardModal Header... */}
+        <div className='grid grid-cols-1 md:grid-cols-4 md:gap-4'>
+          <div className='col-span-3'>
+            <div className='w-full space-y-6'>
+              {/* Card Description... */}
+              {/* Card Activity */}
+              {!auditLogsData
+                ? <Activity.Skeleton />
+                : <Activity data={auditLogsData} />
+              }
+            </div>
+          </div>
+          {/* Card Actions... */}
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+```
+
+Notice that when we fetch `auditLogsData` with the `useQuery` hook we use the `queryKey` of `"card-logs"`. We then pass `auditLogsData` to the `Activity` component.
+
+But wait, where else do we edit the card in? Let's invalidate the query cache in those components.
+
