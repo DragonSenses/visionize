@@ -22912,3 +22912,44 @@ export default function Header({
     },
   });
 ```
+
+### Add query cache invalidation to CardModal's Description
+
+Similarly, for the `Description` component we should invalidate the audit log data when the card description is updated.
+
+feat: Invalidate audit logs query in Description
+
+feat: Update card description & invalidate queries
+
+- Invalidated "card" query for card data
+- Invalidated "card-logs" query for audit log data
+
+```tsx
+export default function Description({
+  data
+}: DescriptionProps) {
+  const queryClient = useQueryClient();
+  // ...
+  const {
+    executeServerAction: executeUpdateCard,
+    fieldErrors
+  } = useServerAction(updateCard, {
+    onSuccess(data) {
+      // Invalidate the relevant query in the query cache
+      queryClient.invalidateQueries({
+        queryKey: ["card", data.id]
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["card-logs", data.id]
+      });
+
+      toast.success(`Card ${ data.title } updated.`);
+
+      disableEditing();
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
+```
