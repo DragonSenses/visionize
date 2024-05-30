@@ -22953,3 +22953,41 @@ export default function Description({
     },
   });
 ```
+
+## Activity page
+
+Navigate back to `app\(app)\(dashboard)\org\[orgId]` and create a nested route segment (folder) named `activity` with a `page.tsx`.
+
+Remember that Next.js uses a file-system-based router, where each folder represents a route segment. By organizing the files and folders in this way, we create a clear structure for our application's routes. 
+
+1. **File Structure:**
+   - The file path is: `app\(app)\(dashboard)\org\[orgId]\activity\page.tsx`
+   - Each folder in this path corresponds to a route segment
+
+2. **Route Segments:**
+   - Here's how it maps to route segments:
+     - `app`: This is the root segment.
+     - `(app)`: A nested segment.
+     - `(dashboard)`: Another nested segment (represents a dashboard within the app).
+     - `org`: A segment (representing an organization).
+     - `[orgId]`: A dynamic segment (using square brackets), which can take different values for different organizations.
+     - `activity`: The final segment (representing an activity page).
+
+3. **Dynamic Routing:**
+   - The `[orgId]` segment indicates dynamic routing. In Next.js, you can create dynamic routes by using square brackets in your file names (e.g., `[orgId].tsx`).
+   - When a user visits a URL like `/org/123/activity`, the `[orgId]` segment captures the value `123` and allows you to handle it dynamically in your component.
+
+Here is the initial structure of the activity page:
+
+feat: Add ActivityPage component
+
+`app\(app)\(dashboard)\org\[orgId]\activity\page.tsx`
+```tsx
+import React from 'react';
+
+export default function ActivityPage() {
+  return (
+    <div>ActivityPage</div>
+  )
+}
+```
