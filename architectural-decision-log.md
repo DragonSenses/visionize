@@ -22838,3 +22838,77 @@ Notice that when we fetch `auditLogsData` with the `useQuery` hook we use the `q
 
 But wait, where else do we edit the card in? Let's invalidate the query cache in those components.
 
+### Add query cache invalidation of audit logs to Header
+
+Inside the `CardModal`'s `Header` component. Where we create an `updateCard` server action:
+
+`components\modals\CardModal\Header.tsx`
+```tsx
+export default function Header({
+  data,
+}: HeaderProps) {
+
+  const queryClient = useQueryClient();
+
+  const { executeServerAction: executeUpdateCard } = useServerAction(updateCard, {
+    onSuccess(data) {
+      // Invalidate the relevant query in the query cache
+      queryClient.invalidateQueries({
+        queryKey: ["card", data.id]
+      });
+
+      // Display a success toast with the new title
+      toast.success(`Renamed to "${data.title}`);
+      
+      // Update the local state with the new title
+      setTitle(data.title);
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
+```
+
+Invalidate the `card-logs` data within the `CardModal`'s `Header` component.
+
+- **Query Cache Invalidation:**
+   - In the `onSuccess` callback, we're invalidating the relevant query in the query cache using `queryClient.invalidateQueries`. 
+   - We need to make sure that the query key (`["card", data.id]`) matches the query we're using to fetch card data.
+   - If the query key is incorrect, it might not trigger a re-fetch of the updated card data, leading to the audit log not being updated.
+
+feat: Update card title and invalidate queries
+
+- Invalidated "card" query for card data
+- Invalidated "card-logs" query for audit log data
+
+```tsx
+export default function Header({
+  data,
+}: HeaderProps) {
+  const params = useParams();
+  const queryClient = useQueryClient();
+  const inputRef = useRef<ElementRef<"input">>(null);
+  const [title, setTitle] = useState(data.title);
+
+  const { executeServerAction: executeUpdateCard } = useServerAction(updateCard, {
+    onSuccess(data) {
+      // Invalidate the relevant query in the query cache
+      queryClient.invalidateQueries({
+        queryKey: ["card", data.id]
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["card-logs", data.id]
+      });
+
+      // Display a success toast with the new title
+      toast.success(`Renamed to "${data.title}`);
+      
+      // Update the local state with the new title
+      setTitle(data.title);
+    },
+    onError(error) {
+      toast.error(error);
+    },
+  });
+```
