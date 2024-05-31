@@ -23028,3 +23028,53 @@ export default function ActivityPage() {
   )
 }
 ```
+
+Convert the `AcitivityList` to an `async` function. Then authenticate the user's organization.
+
+feat: Add authentication to ActivityList component
+
+```tsx
+import React from 'react';
+import { auth } from '@clerk/nextjs';
+import { redirect } from 'next/navigation';
+
+export default async function ActivityList() {
+  const { orgId } = auth();
+
+  if (!orgId) {
+    return redirect('/org-selection');
+  }
+
+  return (
+    <div>ActivityList</div>
+  )
+}
+```
+
+feat: Fetch organization-specific audit logs data
+
+feat: Fetch audit logs data in ActivityList
+
+```tsx
+import { database } from '@/lib/database';
+
+export default async function ActivityList() {
+  // Authenticate the user's organization
+  const { orgId } = auth();
+
+  if (!orgId) {
+    return redirect('/org-selection');
+  }
+
+  // Fetch the audit logs data from the database
+  const auditLogs = await database.auditLog.findMany({
+    where: {
+      orgId,
+    },
+  });
+
+  return (
+    <div>ActivityList</div>
+  )
+}
+```
