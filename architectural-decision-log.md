@@ -22991,3 +22991,40 @@ export default function ActivityPage() {
   )
 }
 ```
+
+Also create a global component named `ActivityList`.
+
+`components\ActivityList.tsx`
+```tsx
+import React from 'react';
+
+export default function ActivityList() {
+  return (
+    <div>ActivityList</div>
+  )
+}
+```
+
+Then back in `ActivityPage` we can render an `Info` component, `Separator` and the `ActivityList`.
+
+feat: Add initial output of ActivityPage component
+
+feat: Add info section & ActivityList component
+
+```tsx
+import React from 'react';
+
+import ActivityList from '@/components/ActivityList';
+import Info from '@/components/Info';
+import { Separator } from '@/components/ui/separator';
+
+export default function ActivityPage() {
+  return (
+    <div className='w-full'>
+      <Info />
+      <Separator className='my-2'/>
+      <ActivityList />
+    </div>
+  )
+}
+```
