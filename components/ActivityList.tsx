@@ -20,6 +20,8 @@ export default async function ActivityList() {
   });
 
   return (
-    <div>ActivityList</div>
+    <p className='hidden last:block text-xs text-center text-muted-foreground'>
+      No activity found inside this organization.
+    </p>
   )
 }
