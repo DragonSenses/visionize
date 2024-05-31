@@ -23029,6 +23029,8 @@ export default function ActivityPage() {
 }
 ```
 
+### ActivityList component
+
 Convert the `AcitivityList` to an `async` function. Then authenticate the user's organization.
 
 feat: Add authentication to ActivityList component
@@ -23075,6 +23077,52 @@ export default async function ActivityList() {
 
   return (
     <div>ActivityList</div>
+  )
+}
+```
+
+Now let's work on the output. We want an `ol` element that contains a mapping of each log within `auditLogs` into an `ActivityItem`.
+
+However, it will also render a `p` which displays a message when there are no audit logs. We can do this by styling an element if it's the last child using the `last` modifier in TailwindCSS.
+
+- [last Tailwind CSS style](https://tailwindcss.com/docs/hover-focus-and-other-states#last)
+
+feat(ActivityList): Render org-specific audit logs
+
+feat: Render activity items in ActivityList
+
+Fetch and display audit logs data specific to the organization. The logs are retrieved from the database. If no activity is found, a message is displayed.
+
+```tsx
+import ActivityItem from './ActivityItem';
+
+export default async function ActivityList() {
+  // Authenticate the user's organization
+  const { orgId } = auth();
+
+  if (!orgId) {
+    return redirect('/org-selection');
+  }
+
+  // Fetch the audit logs data from the database
+  const auditLogs = await database.auditLog.findMany({
+    where: {
+      orgId,
+    },
+  });
+
+  return (
+    <ol className='space-y-4 mt-4'>
+      <p className='hidden last:block text-xs text-center text-muted-foreground'>
+        No activity found inside this organization.
+      </p>
+      {auditLogs.map((log) => (
+        <ActivityItem 
+          data={log}
+          key={log.id}
+        />
+      ))}
+    </ol>
   )
 }
 ```
