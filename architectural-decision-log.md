@@ -23294,3 +23294,32 @@ export default async function ActivityList() {
   });
 // ...
 ```
+
+# Implement monetization, subscription and board limits (for development practice)
+
+Now that the app is nearing its project completion requirements we will now document the steps for monetization by implementing board limits and subscription. 
+
+**Please note, this is just for development practice** and will not be a feature for the end product.
+
+To enforce a limit on the user to create boards we can start by saving their limits in the database.
+
+## Board limits
+
+feat: Implement board creation limits
+
+This commit introduces board creation limits to restrict the number of boards that can be created within the application.
+
+We want to set a board limit for each organization. We want to track that through a new model in the database named `OrgLimit`. It will have the usual fields of `id, orgId, createdAt, updatedAt`. It will also have a new field named `count` initialized at 0.
+
+feat: Define the OrgLimit model in prisma schema
+
+```prisma
+model OrgLimit {
+  id    String @id @default(uuid())
+  orgId String @unique
+  count Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+```
