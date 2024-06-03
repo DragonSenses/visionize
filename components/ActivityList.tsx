@@ -14,10 +14,13 @@ export default async function ActivityList() {
     return redirect('/org-selection');
   }
 
-  // Fetch the audit logs data from the database
+  // Fetch the audit logs data from the database in descending order
   const auditLogs = await database.auditLog.findMany({
     where: {
       orgId,
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
 
