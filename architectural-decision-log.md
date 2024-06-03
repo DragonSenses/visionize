@@ -23094,7 +23094,7 @@ feat: Render activity items in ActivityList
 Fetch and display audit logs data specific to the organization. The logs are retrieved from the database. If no activity is found, a message is displayed.
 
 ```tsx
-import ActivityItem from './ActivityItem';
+import ActivityItem from '@/components/ActivityItem';
 
 export default async function ActivityList() {
   // Authenticate the user's organization
@@ -23122,6 +23122,34 @@ export default async function ActivityList() {
           key={log.id}
         />
       ))}
+    </ol>
+  )
+}
+```
+
+Finally, let's make the `Skeleton` for the loading state.
+
+feat: Create ActivityList skeleton placeholder
+
+This commit adds a skeleton placeholder for the `ActivityList` component. The placeholder emulates an audit log of an organization through an ordered list with 7 individual activity item placeholders. Each activity item is represented by a `Skeleton` component.
+
+```tsx
+import { Skeleton } from '@/components/ui/skeleton';
+
+export default async function ActivityList() {
+  // ...
+}
+
+ActivityList.Skeleton = function ActivityListSkeleton() {
+  return (
+    <ol className='space-y-4 mt-4'>
+      <Skeleton className='w-[80%] h-14' />
+      <Skeleton className='w-[80%] h-14' />
+      <Skeleton className='w-[80%] h-14' />
+      <Skeleton className='w-[80%] h-14' />
+      <Skeleton className='w-[80%] h-14' />
+      <Skeleton className='w-[80%] h-14' />
+      <Skeleton className='w-[80%] h-14' />
     </ol>
   )
 }
