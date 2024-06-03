@@ -23154,3 +23154,47 @@ ActivityList.Skeleton = function ActivityListSkeleton() {
   )
 }
 ```
+
+### Display a fallback while content is loading using Suspense
+
+- [Suspense - React](https://react.dev/reference/react/Suspense)
+
+`<Suspense>` lets you display a fallback until its children have finished loading.
+
+You can wrap any part of your application with a Suspense boundary:
+
+```tsx
+<Suspense fallback={<Loading />}>
+  <Albums />
+</Suspense>
+```
+
+- Notice we pass in a component (i.e., a type React node) to the fallback
+
+Wrap the `ActivityList` with a `Suspense` boundary. Provide the skeleton as a fallback to the `Suspense`.
+
+feat: Display audit log fallback in ActivityPage
+
+feat: Add Suspense to ActivityList in ActivityPage
+
+Wrap the ActivityList component in a Suspense fallback. Now, when loading data asynchronously, the skeleton UI from ActivityList.Skeleton will be displayed.
+
+```tsx
+import React, { Suspense } from 'react';
+
+import ActivityList from '@/components/ActivityList';
+import Info from '@/components/Info';
+import { Separator } from '@/components/ui/separator';
+
+export default function ActivityPage() {
+  return (
+    <div className='w-full'>
+      <Info />
+      <Separator className='my-2' />
+      <Suspense fallback={<ActivityList.Skeleton />}>
+        <ActivityList />
+      </Suspense>
+    </div>
+  )
+}
+```
