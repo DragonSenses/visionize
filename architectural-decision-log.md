@@ -23171,6 +23171,79 @@ You can wrap any part of your application with a Suspense boundary:
 
 - Notice we pass in a component (i.e., a type React node) to the fallback
 
+React will display your `loading fallback` until all the code and data needed by `the children` has been loaded.
+
+`ArtistPage.js`
+```javascript
+import { Suspense } from 'react';
+import Albums from './Albums.js';
+
+export default function ArtistPage({ artist }) {
+  return (
+    <>
+      <h1>{artist.name}</h1>
+      <Suspense fallback={<Loading />}>
+        <Albums artistId={artist.id} />
+      </Suspense>
+    </>
+  );
+}
+
+function Loading() {
+  return <h2>🌀 Loading...</h2>;
+}
+```
+
+The `Albums` component suspends while fetching the list of albums. Until it’s ready to render, React switches the closest Suspense boundary above to show the fallback—your `Loading` component. Then, when the data loads, React hides the `Loading` fallback and renders the `Albums` component with data.
+
+#### What is a Suspense boundary?
+
+A **suspense boundary** is a concept in React that allows you to handle asynchronous data fetching and code splitting in a more graceful way. Use suspense boundaries in a React application to enhance both user experience and performance.
+
+1. **Asynchronous Data Fetching:**
+   - When your React application fetches data from an external source (e.g., an API), it often takes some time to retrieve the data.
+   - During this waiting period, you might want to display a loading indicator or fallback UI to improve the user experience.
+   - A suspense boundary helps you manage this waiting state by specifying where the loading behavior should occur.
+
+2. **Code Splitting:**
+   - Code splitting is a technique used to split your JavaScript bundle into smaller chunks.
+   - Instead of loading the entire application code upfront, you load only the necessary parts when needed.
+   - This improves initial page load times and reduces the amount of JavaScript sent to the client.
+   - Suspense boundaries play a role in handling code-split components.
+
+3. **How Suspense Works:**
+   - In React, you can wrap a component or a part of your component tree with a `Suspense` component.
+   - When a component within the `Suspense` boundary needs to load data (e.g., via `React.lazy` for code splitting or custom data fetching), React will pause rendering that part of the tree.
+   - While paused, React can display a fallback UI (such as a loading spinner or skeleton content) until the data is ready.
+   - Once the data is available, React resumes rendering the actual component.
+
+4. **Example:**
+   - Suppose you have a component that dynamically loads a large image from an API:
+     ```tsx
+     import React, { Suspense } from 'react';
+
+     const ImageComponent = React.lazy(() => import('./ImageComponent'));
+
+     function App() {
+       return (
+         <div>
+           <h1>My Image</h1>
+           <Suspense fallback={<div>Loading...</div>}>
+             <ImageComponent />
+           </Suspense>
+         </div>
+       );
+     }
+     ```
+   - In this example, the `Suspense` boundary ensures that the fallback (`<div>Loading...</div>`) is displayed while the image is being fetched.
+
+5. **Benefits:**
+   - Cleaner code: You can centralize loading behavior within suspense boundaries.
+   - Improved user experience: Users see loading indicators during data fetching.
+   - Better performance: Code splitting reduces initial load times.
+
+#### Wrap ActivityList with Suspense
+
 Wrap the `ActivityList` with a `Suspense` boundary. Provide the skeleton as a fallback to the `Suspense`.
 
 feat: Display audit log fallback in ActivityPage
