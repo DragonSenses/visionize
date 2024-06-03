@@ -23295,6 +23295,12 @@ export default async function ActivityList() {
 // ...
 ```
 
+## Wrapping up, finalization
+
+refactor: Remove outdated board actions
+
+Deletes the 'actions_old' folder, which contained obsolete 'createBoard.ts', 'deleteBoard.ts', and 'updateBoard.ts' files. These actions are no longer relevant to the latest version of the application.
+
 # Implement monetization, subscription and board limits (for development practice)
 
 Now that the app is nearing its project completion requirements we will now document the steps for monetization by implementing board limits and subscription. 
@@ -23323,3 +23329,16 @@ model OrgLimit {
   updatedAt DateTime @updatedAt
 }
 ```
+
+#### Synchronize Prisma schema with database schema
+
+Now to prototype the schema and synchronize the new changes.
+
+feat: Sync Prisma schema with database schema
+
+0. Shut down the app with CTRL + C in the terminal
+1. npm prisma generate
+2. (Optional) npx migrate reset
+   1. To reset the entire database
+3. npx prisma db push
+
