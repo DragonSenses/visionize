@@ -23271,3 +23271,26 @@ export default function ActivityPage() {
   )
 }
 ```
+
+### Order the audit logs by time descending
+
+feat: Order audit logs by time in descending order
+
+In the ActivityList component, fetch audit logs from the database and order them by creation time in descending order.
+
+```tsx
+import { database } from '@/lib/database';
+
+export default async function ActivityList() {
+  //...
+  // Fetch the audit logs data from the database in descending order
+  const auditLogs = await database.auditLog.findMany({
+    where: {
+      orgId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+// ...
+```
