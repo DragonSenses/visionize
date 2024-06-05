@@ -23342,3 +23342,15 @@ feat: Sync Prisma schema with database schema
    1. To reset the entire database
 3. npx prisma db push
 
+#### Create constant for board limits
+
+Inside the `constants` folder create `boards.ts` that contains the variable `MAX_FREE_BOARDS` so we can centralize and control the maximum number of free boards allowed per organization.
+
+feat: Centralize board limits constant
+
+This commit introduces the FREE_BOARD_THRESHOLD constant, which represents the maximum number of free boards allowed. By centralizing this value, we ensure that board limits can be easily adjusted in one location.
+
+`constants\boards.ts`
+```ts
+export const FREE_BOARD_THRESHOLD: number = 15;
+```

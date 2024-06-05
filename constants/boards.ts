@@ -1,0 +1,1 @@
+export const FREE_BOARD_THRESHOLD: number = 15;
