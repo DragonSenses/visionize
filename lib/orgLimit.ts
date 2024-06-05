@@ -62,9 +62,23 @@ export async function decreaseAvailableBoardCount() {
 }
 
 /**
- * Checks whether user can create a new free board
+ * Checks whether the user can create a new free board.
+ * @returns {boolean} True if the user has available board slots, false otherwise.
  */
-export function hasAvailableCount() {}
+export async function hasAvailableBoardCount(): Promise<boolean> {
+  const { orgId } = auth();
+
+  if (!orgId) {
+    throw new Error("Unauthorized");
+  }
+
+  // Fetch the orgLimit
+  const orgLimit = await database.orgLimit.findUnique({
+    where: { orgId },
+  });
+
+  return (!orgLimit || orgLimit.count < FREE_BOARD_THRESHOLD);
+}
 
 /**
  * Retrieves the number of available boards created within an organization
