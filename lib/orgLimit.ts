@@ -35,7 +35,31 @@ export async function incrementAvailableBoardCount() {
 /**
  * Decrements the available board count.
  */
-export async function decreaseAvailableCount() {}
+export async function decreaseAvailableBoardCount() {
+  const { orgId } = auth();
+
+  if (!orgId) {
+    throw new Error("Unauthorized");
+  }
+
+  // Fetch the orgLimit
+  const orgLimit = await database.orgLimit.findUnique({
+    where: { orgId },
+  });
+
+  if (orgLimit) {
+    await database.orgLimit.update({
+      where: { orgId },
+      data: { count: orgLimit.count > 0 ? orgLimit.count - 1 : 0 }
+    });
+  } else {
+    // If orgLimit does not exist, it could indicate that a board is being
+    // create for the first time. So create the orgLimit with a count of 1.
+    await database.orgLimit.create({
+      data: { orgId, count: 1}
+    });
+  }
+}
 
 /**
  * Checks whether user can create a new free board
