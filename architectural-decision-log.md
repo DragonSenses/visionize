@@ -23337,9 +23337,9 @@ Now to prototype the schema and synchronize the new changes.
 feat: Sync Prisma schema with database schema
 
 0. Shut down the app with CTRL + C in the terminal
-1. npm prisma generate
-2. (Optional) npx migrate reset
-   1. To reset the entire database
+1. npx prisma generate
+2. (Optional) npx prisma migrate reset
+   - To reset the development database. See [npx prisma migrate reset | Prisma docs](https://www.prisma.io/docs/orm/prisma-migrate/workflows/development-and-production#reset-the-development-database)
 3. npx prisma db push
 
 #### Create constant for board limits
@@ -23354,3 +23354,42 @@ This commit introduces the FREE_BOARD_THRESHOLD constant, which represents the m
 ```ts
 export const FREE_BOARD_THRESHOLD: number = 15;
 ```
+
+#### orgLimit utility to manage board limits in an organization
+
+Create `orgLimit.ts` inside `/lib`. It will contain a set of re-usable functions to help manage the board limits within an organization.
+
+   - `async function incrementAvailableCount()`
+   - `async function decreaseAvailableCount()`
+   - `function hasAvailableCount()`
+   - `function getAvailableCount()`
+
+feat: Add utility functions to manage board limits
+
+`lib\orgLimit.ts`
+```typescript
+import { auth } from "@clerk/nextjs";
+import { FREE_BOARD_THRESHOLD } from "@/constants/boards";
+import { database } from "@/lib/database";
+
+/**
+ * Increments the available board count.
+ */
+export async function incrementAvailableCount() {}
+
+/**
+ * Decrements the available board count.
+ */
+export async function decreaseAvailableCount() {}
+
+/**
+ * Checks whether user can create a new free board
+ */
+export function hasAvailableCount() {}
+
+/**
+ * Retrieves the number of available boards created within an organization
+ */
+export function getAvailableCount() {}
+```
+
