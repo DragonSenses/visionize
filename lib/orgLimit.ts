@@ -81,6 +81,20 @@ export async function hasAvailableBoardCount(): Promise<boolean> {
 }
 
 /**
- * Retrieves the number of available boards created within an organization
+ * Retrieves the number of available boards within an organization.
+ * If the user is unauthorized or no organization ID is available, returns 0.
+ * @returns {number} The count of available boards or 0 if none.
  */
-export function getAvailableCount() {}
+export async function getAvailableBoardCount(): Promise<number> {
+  const { orgId } = auth();
+
+  if (!orgId) {
+    return 0;
+  }
+
+  const orgLimit = await database.orgLimit.findUnique({
+    where: { orgId },
+  });
+
+  return (orgLimit) ? orgLimit.count : 0;
+}
