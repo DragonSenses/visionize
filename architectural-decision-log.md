@@ -23671,3 +23671,50 @@ async function performAction (data: InputType): Promise<ReturnType> {
 
 export const createBoard = createServerAction(CreateBoard, performAction);
 ```
+
+## Increase available board slots on board deletion
+
+Now that we can both increase and limit the number of boards being created, we also need a method to decrease the count, freeing up the limits and enabling the creation of new boards.
+
+Inside `deleteBoard` action, use the utility method `decreaseAvailableBoardCount()` to relax the board limits after board deletion.
+
+feat: Free up board slots in deleteBoard action
+
+feat: Release board limits upon board deletion
+
+```tsx
+import { decreaseAvailableBoardCount } from "@/lib/orgLimit";
+
+async function performAction(data: InputType): Promise<OutputType> {
+  // authentication...
+
+  const { id } = data;
+
+  let board;
+
+  try {
+    board = await database.board.delete({
+      where: {
+        id,
+        orgId,
+      },
+    });
+
+    await decreaseAvailableBoardCount();
+
+    await createAuditLog({
+      // ...
+    });
+  } catch (error) {
+    return {
+      error: "Failed to delete board.",
+    };
+  }
+
+  const path = `/organization/${orgId}`;
+  revalidatePath(path);
+  redirect(path);
+}
+
+export const deleteBoard = createServerAction(DeleteBoard, performAction);
+```
