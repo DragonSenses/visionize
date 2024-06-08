@@ -7,6 +7,7 @@ import { ACTION, ENTITY_TYPE } from "@prisma/client";
 import { database } from "@/lib/database";
 import { createServerAction } from "@/lib/createServerAction";
 import { createAuditLog } from "@/lib/createAuditLog";
+import { hasAvailableBoardCount, incrementAvailableBoardCount } from "@/lib/orgLimit";
 
 import { InputType, ReturnType } from "./createBoardTypes";
 import { CreateBoard } from "./createBoardSchema";
@@ -22,6 +23,14 @@ async function performAction (data: InputType): Promise<ReturnType> {
     }
   }
 
+  const canCreateBoard = await hasAvailableBoardCount();
+
+  if (!canCreateBoard) {
+    return {
+      error: "You have reached your limit of free boards. Please upgrade to create more."
+    }
+  }
+  
   // Destructure the title property from the validated data
   const { title, image } = data;
 
@@ -55,6 +64,8 @@ async function performAction (data: InputType): Promise<ReturnType> {
         imageLinkHTML,
       }
     });
+
+    await incrementAvailableBoardCount();
 
     await createAuditLog({
       entityId: board.id,
