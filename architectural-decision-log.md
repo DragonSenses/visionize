@@ -23511,6 +23511,70 @@ export async function getAvailableBoardCount(): Promise<number> {
 }
 ```
 
+## Apply board limits to BoardList component
+
+Navigate to `BoardList` component, `components\BoardList.tsx`. This is where we render the `BoardCreationButton` component inside the `FormPopover`.
+
+```tsx
+export default async function BoardList() {
+  // ...
+  return (
+    <div className='space-y-4'>
+      {/* User icon header... */}
+      {/* Grid of boards... */}
+      <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4'>
+        {boards.map((board) => (
+          {/* Mapped boards... */}
+        ))}
+        <FormPopover side='right' sideOffset={10}>
+          <BoardCreationButton />
+        </FormPopover>
+      </div>
+    </div>
+  )
+}
+```
+
+Navigate to `BoardCreationButton.tsx`, and instead of `freeBoards` use the variable `availableBoardCount` which calls `getAvailableBoardCount()`. Then calculate the amount boards the user has remianing using the `FREE_BOARD_THRESHOLD` constant.
+
+feat: Dynamically render board limits in button
+
+This commit dynamically calculates and displays the board limits within the BoardCreationButton component. It improves user experience by providing real-time information.
+
+```tsx
+import React from 'react';
+import { HelpCircle } from 'lucide-react';
+
+import BoardTooltip from '@/components/BoardTooltip';
+import { FREE_BOARD_THRESHOLD } from '@/constants/boards';
+import { getAvailableBoardCount } from '@/lib/orgLimit';
+
+const availableBoardCount = await getAvailableBoardCount();
+
+export default async function BoardCreationButton() {
+  return (
+    <div
+      role='button'
+      className='relative flex flex-col items-center h-full w-full rounded-sm aspect-video bg-muted gap-y-1 justify-center transition hover:opacity-75'
+    >
+      <p className='text-sm'>Create new board</p>
+      <span className='text-xs'>
+        {`${FREE_BOARD_THRESHOLD - availableBoardCount} remaining`}
+      </span>
+      <BoardTooltip 
+        sideOffset={40}
+        description={`
+          Free workspaces allow up to ${FREE_BOARD_THRESHOLD} boards. 
+          Upgrade this workspace to create unlimited boards.
+        `}
+      >
+        <HelpCircle className='absolute bottom-2 right-2 h-[14px] w-[14px]'/>
+      </BoardTooltip>
+    </div>
+  )
+}
+```
+
 #### Issue: **"Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022' or 'esnext'"**
 
 The error:
