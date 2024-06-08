@@ -135,6 +135,52 @@ ncu -g
 
 # Dependency log
 
+## 2024/06/07
+
+```sh
+npm outdated
+Package                 Current   Wanted   Latest  Location                            Depended by
+@clerk/nextjs            4.31.0   4.31.3    5.1.4  node_modules/@clerk/nextjs          visionize
+@tanstack/react-query    5.39.0   5.40.1   5.40.1  node_modules/@tanstack/react-query  visionize
+@types/node            20.12.12  20.14.2  20.14.2  node_modules/@types/node            visionize
+eslint                   8.57.0   8.57.0    9.4.0  node_modules/eslint                 visionize
+eslint-config-next       14.0.4   14.0.4   14.2.3  node_modules/eslint-config-next     visionize
+lucide-react            0.307.0  0.307.0  0.390.0  node_modules/lucide-react           visionize
+next                     14.0.4   14.0.4   14.2.3  node_modules/next                   visionize
+tailwindcss               3.4.3    3.4.4    3.4.4  node_modules/tailwindcss            visionize
+usehooks-ts              2.16.0   2.16.0    3.1.0  node_modules/usehooks-ts            visionize
+```
+
+chore: Update Next.js to v14.2.3
+
+```sh
+npm i next@latest
+```
+
+chore: Update dev dependencies to latest versions
+
+Updates the following packages:
+- lucide-react (v0.390.0)
+- tailwindcss (v3.4.4)
+- usehooks-ts (v3.1.0)
+
+TailwindCSS helps with styling, lucide-react provides icons, and use-hooks offers reusable hooks for React development.
+
+```sh
+npm i tailwindcss@latest lucide-react@latest usehooks-ts@latest
+```
+
+Log after updates:
+
+```sh
+Package                 Current   Wanted   Latest  Location                            Depended by
+@clerk/nextjs            4.31.0   4.31.3    5.1.4  node_modules/@clerk/nextjs          visionize
+@tanstack/react-query    5.39.0   5.40.1   5.40.1  node_modules/@tanstack/react-query  visionize
+@types/node            20.12.12  20.14.2  20.14.2  node_modules/@types/node            visionize
+eslint                   8.57.0   8.57.0    9.4.0  node_modules/eslint                 visionize
+eslint-config-next       14.0.4   14.0.4   14.2.3  node_modules/eslint-config-next     visionize
+```
+
 ## 2024/05/25
 
 (May 25, 2024)
