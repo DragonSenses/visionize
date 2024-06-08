@@ -2,10 +2,12 @@ import React from 'react';
 import { HelpCircle } from 'lucide-react';
 
 import BoardTooltip from '@/components/BoardTooltip';
+import { FREE_BOARD_THRESHOLD } from '@/constants/boards';
+import { getAvailableBoardCount } from '@/lib/orgLimit';
 
-const freeBoards = 15;
+const availableBoardCount = await getAvailableBoardCount();
 
-export default function BoardCreationButton() {
+export default async function BoardCreationButton() {
   return (
     <div
       role='button'
@@ -13,12 +15,12 @@ export default function BoardCreationButton() {
     >
       <p className='text-sm'>Create new board</p>
       <span className='text-xs'>
-        {freeBoards} remaining
+        {`${FREE_BOARD_THRESHOLD - availableBoardCount} remaining`}
       </span>
       <BoardTooltip 
         sideOffset={40}
         description={`
-          Free workspaces allow up to ${freeBoards} boards. 
+          Free workspaces allow up to ${FREE_BOARD_THRESHOLD} boards. 
           Upgrade this workspace to create unlimited boards.
         `}
       >
