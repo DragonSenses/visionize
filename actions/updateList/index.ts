@@ -1,7 +1,7 @@
 // Enforce server-side execution context for security and performance
 "use server";
 
-import { auth } from "@clerk/nextjs"; // Authentication module
+import { auth } from "@clerk/nextjs/server"; // Authentication module
 import { revalidatePath } from "next/cache"; // Cache revalidation module
 import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
