@@ -135,6 +135,44 @@ ncu -g
 
 # Dependency log
 
+## 2024/06/08
+
+```sh
+npm outdated                                                                                            
+Package                 Current   Wanted   Latest  Location                            Depended by
+@clerk/nextjs            4.31.0   4.31.3    5.1.4  node_modules/@clerk/nextjs          visionize
+@tanstack/react-query    5.39.0   5.40.1   5.40.1  node_modules/@tanstack/react-query  visionize
+@types/node            20.12.12  20.14.2  20.14.2  node_modules/@types/node            visionize
+eslint                   8.57.0   8.57.0    9.4.0  node_modules/eslint                 visionize
+eslint-config-next       14.0.4   14.0.4   14.2.3  node_modules/eslint-config-next     visionize
+sonner                   1.4.41    1.5.0    1.5.0  node_modules/sonner                 visionize
+```
+
+chore: Update sonner to v1.5.0
+
+```sh
+npm i sonner@latest
+```
+
+chore: Update @tanstack/react-query & @types/node
+
+```sh
+npm i @tanstack/react-query@latest @types/node@latest
+```
+
+chore: Update @clerk/nextjs to v5.1.4
+
+```sh
+npm i @clerk/nextjs@latest
+```
+
+chore: Update eslint dev dependencies
+
+```sh
+Package  Current  Wanted  Latest  Location             Depended by
+eslint    8.57.0  8.57.0   9.4.0  node_modules/eslint  visionize
+```
+
 ## 2024/06/07
 
 ```sh
