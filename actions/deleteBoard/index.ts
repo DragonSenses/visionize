@@ -10,6 +10,7 @@ import { createAuditLog } from "@/lib/createAuditLog";
 
 import { DeleteBoard } from "./deleteBoardSchema";
 import { InputType, OutputType } from "./deleteBoardTypes";
+import { decreaseAvailableBoardCount } from "@/lib/orgLimit";
 
 async function performAction(data: InputType): Promise<OutputType> {
   const { userId, orgId } = auth();
@@ -31,6 +32,8 @@ async function performAction(data: InputType): Promise<OutputType> {
         orgId,
       },
     });
+
+    await decreaseAvailableBoardCount();
 
     await createAuditLog({
       entityId: board.id,
