@@ -23510,3 +23510,41 @@ export async function getAvailableBoardCount(): Promise<number> {
   return (orgLimit) ? orgLimit.count : 0;
 }
 ```
+
+#### Issue: **"Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022' or 'esnext'"**
+
+The error:
+```sh
+**"Top-level 'await' expressions are only allowed when the 'module' option is set to 'es2022' or 'esnext'"**
+```
+
+Indicates that you're trying to use top-level `await` in your TypeScript code, but your current configuration doesn't support it.
+
+To quickly address the issue we update the `tsconfig.json` with the correct settings for top-level `await`.
+
+Current configuration:
+
+`tsconfig.json`
+```json
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "esnext",
+    // Other options...
+  }
+}
+```
+
+chore: Update tsconfig target to ES2022
+
+New configuration:
+
+```json
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "esnext",
+    // Other options...
+  }
+}
+```
