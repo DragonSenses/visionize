@@ -23612,3 +23612,62 @@ New configuration:
   }
 }
 ```
+
+
+## Add board creation constraints to createBoard server action
+
+Navigate to `createBoard` server action and invoke the utility method to `incrementAvailableBoardCount()` after board creation. We also need to ensure that we create a board only when there are free board slots remaining. To do this we use the utility method `hasAvailableCount()`. Then return an error if the user does not have any remaining available boards slots left.
+
+feat(createBoard): Add board creation constraints
+
+feat: Enforce board creation limits in createBoard
+
+This commit applies board creation constraints to the createBoard server action. It imports and uses two utility functions to help manage board limitations for users within an organization.
+
+`actions\createBoard\index.ts`
+```tsx
+"use server";
+
+import { hasAvailableBoardCount, incrementAvailableBoardCount } from "@/lib/orgLimit";
+
+async function performAction (data: InputType): Promise<ReturnType> {
+  // authenticate...
+
+  const canCreateBoard = await hasAvailableBoardCount();
+
+  if (!canCreateBoard) {
+    return {
+      error: "You have reached your limit of free boards. Please upgrade to create more."
+    }
+  }
+
+  const { title, image } = data;
+
+  let board;
+
+  try {
+    board = await database.board.create({
+      data: {
+        // ...
+      }
+    });
+
+    await incrementAvailableBoardCount();
+
+    await createAuditLog({
+      // ...
+    });
+  } catch(error) {
+    return {
+      error: "Internal error: failed to create in database."
+    }
+  }
+
+  revalidatePath(`/board/${board.id}`);
+
+  return { data: board };
+}
+
+
+export const createBoard = createServerAction(CreateBoard, performAction);
+```
