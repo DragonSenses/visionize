@@ -23301,6 +23301,29 @@ refactor: Remove outdated board actions
 
 Deletes the 'actions_old' folder, which contained obsolete 'createBoard.ts', 'deleteBoard.ts', and 'updateBoard.ts' files. These actions are no longer relevant to the latest version of the application.
 
+### Update to Clerk (v5.1.4)
+
+- [Breaking changes | Clerk](https://clerk.com/docs/upgrade-guides/core-2/nextjs#breaking-changes)
+- [New middleware architecture](https://clerk.com/docs/upgrade-guides/core-2/nextjs#new-middleware-architecture)
+- [Changes to top-level exports](https://clerk.com/docs/upgrade-guides/core-2/nextjs#changes-to-top-level-exports)
+- [CLI upgrade helper](https://clerk.com/docs/upgrade-guides/core-2/nextjs#cli-upgrade-helper)
+  ```sh
+  npx @clerk/upgrade
+  ```
+
+Previously used Clerk (v4.31.0), where we use the package `@clerk/nextjs` and extract `auth` to access the [Auth object](https://clerk.com/docs/references/nextjs/auth-object).
+
+In the latest version v5.1.4, we need to change the top-level export to `@clerk/nextjs/server` to maintain the functionality. This was done to "to improve bundle size and tree-shaking efficiency. These changes have resulted in a ~75% reduction in build size for middleware bundles. However, you will likely need to make some changes to import paths as a result."
+
+refactor: Top-level auth import for create actions
+
+refactor: Top-level auth import for delete actions
+
+refactor: Top-level auth import for update actions
+
+refactor: Top-level auth import for copy actions
+
+
 # Implement monetization, subscription and board limits (for development practice)
 
 Now that the app is nearing its project completion requirements we will now document the steps for monetization by implementing board limits and subscription. 
