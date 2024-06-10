@@ -1,4 +1,21 @@
-import { authMiddleware, redirectToSignIn } from "@clerk/nextjs";
+import {
+  clerkMiddleware,
+  createRouteMatcher
+} from "@clerk/nextjs/server"
+
+const isPublicRoute = createRouteMatcher(["/"])
+
+export default clerkMiddleware((auth, req) => {
+  if (isPublicRoute(req)) return // if it's a public route, do nothing
+  auth().protect() // for any other route, require auth
+})
+
+export const config = {
+  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
+};
+
+/* 
+import { authMiddleware, redirectToSignIn } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 export default authMiddleware({
@@ -39,5 +56,6 @@ export default authMiddleware({
 });
 
 export const config = {
-  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 };
+*/
