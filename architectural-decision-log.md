@@ -23339,9 +23339,23 @@ clerk-upgrade
 
 refactor: Top-level auth import for components
 
+    - components\ActivityList.tsx:2:1
+    - components\BoardList.tsx:3:1
+
 refactor: Top-level auth import for lib utility
 
 Upgrading to Clerk Core 2, which requires importing `auth` and/or `currentUser` from the appropriate modules.
+
+    - lib\createAuditLog.ts:1:1
+    - lib\orgLimit.ts:1:1
+
+refactor: Top-level auth import for API routes
+
+    - app\api\cards\[cardId]\route.ts:1:1
+    - app\api\cards\[cardId]\logs\route.ts:1:1
+  
+
+
 
 ### middleware
 
