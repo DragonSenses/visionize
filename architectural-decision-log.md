@@ -23854,7 +23854,6 @@ async function performAction (data: InputType): Promise<ReturnType> {
   return { data: board };
 }
 
-
 export const createBoard = createServerAction(CreateBoard, performAction);
 ```
 
@@ -24061,3 +24060,59 @@ export async function getAvailableBoardCount(orgId: string): Promise<number> {
 }
 ```
 
+#### Update the affected components and server actions
+
+refactor: Board limit functions in server actions
+
+Now to update the following server actions that used these functions to manage board limits:
+
+   - createBoard
+   - deleteBoard
+
+feat: Update board limit functions in createBoard
+
+`actions\createBoard\index.ts`
+```tsx
+"use server";
+
+import { hasAvailableBoardCount, incrementAvailableBoardCount } from "@/lib/orgLimit";
+
+async function performAction (data: InputType): Promise<ReturnType> {
+  // authenticate...
+
+  const canCreateBoard = await hasAvailableBoardCount(orgId);
+
+  if (!canCreateBoard) {
+    return {
+      error: "You have reached your limit of free boards. Please upgrade to create more."
+    }
+  }
+
+  const { title, image } = data;
+
+  let board;
+
+  try {
+    board = await database.board.create({
+      data: {
+        // ...
+      }
+    });
+
+    await incrementAvailableBoardCount(orgId);
+
+
+    await createAuditLog({
+      // ...
+    });
+  } catch(error) {
+  // ...
+```
+
+feat: Update board limit functions in deleteBoard
+
+
+Update the components:
+
+   - BoardList
+    - BoardCreationButton
