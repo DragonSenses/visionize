@@ -23904,3 +23904,160 @@ async function performAction(data: InputType): Promise<OutputType> {
 
 export const deleteBoard = createServerAction(DeleteBoard, performAction);
 ```
+
+## Error: Dynamic API was called outside request
+
+The error:
+
+```sh
+Error: Clerk: auth() and currentUser() are only supported in App Router (/app directory).
+If you're using /pages, try getAuth() instead.
+Original error: Error: `headers` was called outside a request scope. Read more: https://nextjs.org/docs/messages/next-dynamic-api-wrong-context
+```
+
+The offending code:
+
+`lib\orgLimit.ts`
+```js
+import { auth } from "@clerk/nextjs/server";
+
+import { FREE_BOARD_THRESHOLD } from "@/constants/boards";
+import { database } from "@/lib/database";
+
+export async function incrementAvailableBoardCount() {
+  const { orgId } = auth();
+```
+
+Resources:
+
+- [Dynamic API was called outside a request scope | Nextjs Reference](https://nextjs.org/docs/messages/next-dynamic-api-wrong-context)
+- [auth() | Clerk Reference](https://clerk.com/docs/references/nextjs/auth#auth)
+- [Auth object | Clerk Reference](https://clerk.com/docs/references/nextjs/auth-object)
+
+According to the documentation, "the `auth()` helper returns the `Auth` object of the currently active user. This is the same `Auth` object that is returned by the `getAuth()` hook. However, it **can be used in Server Components, Route Handlers, and Server Actions.**"
+
+Possible solutions:
+
+The issue is that we rely on `auth` from clerk for data fetching here.
+
+1. Consider passing the necessary data (such as `orgId`) explicitly instead of relying on `auth()`.
+
+2. Create an API route to update the board limits under `/app` directory
+
+### fix: Handle dynamic API call outside request scope
+
+fix: Handle dynamic API call outside request scope
+
+In the latest Clerk update, the `auth()` function now returns an `Auth` object containing information about the currently active user. However, it's important to note that `auth()` is only supported within the App Router (i.e., the `/app` directory). Since the `orgLimit` utility functions, which manage board limits, reside in the `/lib` directory, a workaround has been implemented. Instead of relying on `auth()`, the necessary data (such as `orgId`) is explicitly passed to these functions.
+
+#### Pass necessary data into functions explicitly instead of relying on `auth()`
+
+A less painful solution is rewriting the utility functions to take in the `orgId` parameter instead.
+
+Here are the method signatures:
+
+   - `async function incrementAvailableCount(orgId: string)`
+   - `async function decreaseAvailableCount(orgId: string)`
+   - `async function hasAvailableCount(orgId: string)`
+   - `async function getAvailableCount(orgId: string)`
+
+refactor: Improve orgId handling in utility functions
+
+`lib\orgLimit.ts`
+```ts
+import { FREE_BOARD_THRESHOLD } from "@/constants/boards";
+import { database } from "@/lib/database";
+
+/**
+ * Increments the available board count.
+ * @param {string} orgId - The organization ID.
+ */
+export async function incrementAvailableBoardCount(orgId: string) {
+  if (!orgId) {
+    throw new Error("Unauthorized");
+  }
+
+  // Fetch the orgLimit
+  const orgLimit = await database.orgLimit.findUnique({
+    where: { orgId },
+  });
+
+  if (orgLimit) {
+    await database.orgLimit.update({
+      where: { orgId },
+      data: { count: orgLimit.count + 1 }
+    });
+  } else {
+    // If orgLimit does not exist, it could indicate that a board is being
+    // create for the first time. So create the orgLimit with a count of 1.
+    await database.orgLimit.create({
+      data: { orgId, count: 1}
+    });
+  }
+}
+
+/**
+ * Decrements the available board count.
+ * @param {string} orgId - The organization ID.
+ */
+export async function decreaseAvailableBoardCount(orgId: string) {
+  if (!orgId) {
+    throw new Error("Unauthorized");
+  }
+
+  // Fetch the orgLimit
+  const orgLimit = await database.orgLimit.findUnique({
+    where: { orgId },
+  });
+
+  if (orgLimit) {
+    await database.orgLimit.update({
+      where: { orgId },
+      data: { count: orgLimit.count > 0 ? orgLimit.count - 1 : 0 }
+    });
+  } else {
+    // If orgLimit does not exist, it could indicate that a board is being
+    // create for the first time. So create the orgLimit with a count of 1.
+    await database.orgLimit.create({
+      data: { orgId, count: 1}
+    });
+  }
+}
+
+/**
+ * Checks whether the user can create a new free board.
+ * @param {string} orgId - The organization ID.
+ * @returns {boolean} True if the user has available board slots, false otherwise.
+ */
+export async function hasAvailableBoardCount(orgId: string): Promise<boolean> {
+  if (!orgId) {
+    throw new Error("Unauthorized");
+  }
+
+  // Fetch the orgLimit
+  const orgLimit = await database.orgLimit.findUnique({
+    where: { orgId },
+  });
+
+  return (!orgLimit || orgLimit.count < FREE_BOARD_THRESHOLD);
+}
+
+/**
+ * Retrieves the number of available boards within an organization.
+ * If the user is unauthorized or no organization ID is available, returns 0.
+ * @param {string} orgId - The organization ID.
+ * @returns {number} The count of available boards or 0 if none.
+ */
+export async function getAvailableBoardCount(orgId: string): Promise<number> {
+  if (!orgId) {
+    return 0;
+  }
+
+  const orgLimit = await database.orgLimit.findUnique({
+    where: { orgId },
+  });
+
+  return (orgLimit) ? orgLimit.count : 0;
+}
+```
+
