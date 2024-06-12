@@ -24181,6 +24181,31 @@ The component that uses the board limit functions is `BoardCreationButton`.
 
   - Access the `orgId` prop
 
-##### Issue: BoardCreationButton does not render within BoardList
+feat: Define prop types for BoardCreationButton
 
+refactor: Retrieve board count using prop data
+
+fix: Ensure dynamic API calls occur in request scope
+
+In this commit, we address the "Dynamic API was called outside request" issue for the BoardCreationButton component. Instead of relying on `auth()` from Clerk, we explicitly pass the `orgId` prop to the `getAvailableBoardCount` function, ensuring that the dynamic API call happens within the request scope.
+
+```tsx
+interface BoardCreationButtonProps {
+  orgId: string;
+}
+
+export default async function BoardCreationButton({
+  orgId,
+}: BoardCreationButtonProps) {
+
+  const availableBoardCount = await getAvailableBoardCount(orgId);
+```
+
+**Note:** Because `BoardCreationButton` is a component that is part of the request lifecycle, we needed to ensure that the dynamic API calls are made within the appropriate context i.e., within the request scope.
+
+The error we encountered is related to dynamic APIs in Next.js. When we see the "Dynamic API was called outside request" error, it means that a dynamic API call occurred outside the request scope. This can happen if the call is made in a global scope or deep inside other modules/functions that are not immediately visible.
+
+To fix this issue, ensure that all dynamic API calls happen within the request scope. Specifically, make sure that any dynamic API calls are made within the appropriate context, such as within a route handler or component that is part of the request lifecycle.
+
+##### Issue: BoardCreationButton does not render within BoardList
 
