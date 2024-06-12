@@ -1,14 +1,11 @@
-import { auth } from "@clerk/nextjs/server";
-
 import { FREE_BOARD_THRESHOLD } from "@/constants/boards";
 import { database } from "@/lib/database";
 
 /**
  * Increments the available board count.
+ * @param {string} orgId - The organization ID.
  */
-export async function incrementAvailableBoardCount() {
-  const { orgId } = auth();
-
+export async function incrementAvailableBoardCount(orgId: string) {
   if (!orgId) {
     throw new Error("Unauthorized");
   }
@@ -34,10 +31,9 @@ export async function incrementAvailableBoardCount() {
 
 /**
  * Decrements the available board count.
+ * @param {string} orgId - The organization ID.
  */
-export async function decreaseAvailableBoardCount() {
-  const { orgId } = auth();
-
+export async function decreaseAvailableBoardCount(orgId: string) {
   if (!orgId) {
     throw new Error("Unauthorized");
   }
@@ -63,11 +59,10 @@ export async function decreaseAvailableBoardCount() {
 
 /**
  * Checks whether the user can create a new free board.
+ * @param {string} orgId - The organization ID.
  * @returns {boolean} True if the user has available board slots, false otherwise.
  */
-export async function hasAvailableBoardCount(): Promise<boolean> {
-  const { orgId } = auth();
-
+export async function hasAvailableBoardCount(orgId: string): Promise<boolean> {
   if (!orgId) {
     throw new Error("Unauthorized");
   }
@@ -83,11 +78,10 @@ export async function hasAvailableBoardCount(): Promise<boolean> {
 /**
  * Retrieves the number of available boards within an organization.
  * If the user is unauthorized or no organization ID is available, returns 0.
+ * @param {string} orgId - The organization ID.
  * @returns {number} The count of available boards or 0 if none.
  */
-export async function getAvailableBoardCount(): Promise<number> {
-  const { orgId } = auth();
-
+export async function getAvailableBoardCount(orgId: string): Promise<number> {
   if (!orgId) {
     return 0;
   }
