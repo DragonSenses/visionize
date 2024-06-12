@@ -1,61 +1,22 @@
-import {
-  clerkMiddleware,
-  createRouteMatcher
-} from "@clerk/nextjs/server"
-
-const isPublicRoute = createRouteMatcher(["/"])
-
-export default clerkMiddleware((auth, req) => {
-  if (isPublicRoute(req)) return // if it's a public route, do nothing
-  auth().protect() // for any other route, require auth
-})
-
-export const config = {
-  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
-};
-
-/* 
-import { authMiddleware, redirectToSignIn } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-export default authMiddleware({
-  publicRoutes: ["/"],
+const isPublicRoute = createRouteMatcher(["/", "/sign-in(.*)", "/sign-up(.*)"]);
 
-  afterAuth(auth, req, evt) {
-    // Handle users who aren't authenticated
-    if (!auth.userId && !auth.isPublicRoute) {
-      return redirectToSignIn({ returnBackUrl: req.url });
-    }
+export default clerkMiddleware((auth, req) => {
+  // If user is logged-in and on the landing page, redirect them
+  if (auth().userId && req.nextUrl.pathname === "/") {
+    const orgSelection = new URL("/org-selection", req.url);
+    return NextResponse.redirect(orgSelection);
+  }
 
-    // If user is logged-in and on the landing page, redirect them
-    if (
-      auth.userId && 
-      req.nextUrl.pathname === "/") 
-    {
-      const orgSelection = new URL("/org-selection", req.url);
-      return NextResponse.redirect(orgSelection);
-    }
+  if (isPublicRoute(req)) return; // if it's a public route, do nothing
 
-    // Redirect logged in users to personal user page if they are not active in an organization
-  //   if (
-  //     auth.userId &&
-  //     !auth.orgId &&
-  //     req.nextUrl.pathname !== "/org-selection"
-  //   ) {
-  //     const orgSelection = new URL("/org-selection", req.url);
-  //     return NextResponse.redirect(orgSelection);
-  //   }
-
-    // If the user is logged in and trying to access a protected route, allow them to access route
-    if (auth.userId && !auth.isPublicRoute) {
-      return NextResponse.next();
-    }
-    // Allow users visiting public routes to access them
-    return NextResponse.next();
-  },
+  // For any other route, require auth
+  // Also redirects unauthenticated users to the sign-in route automatically
+  auth().protect();
 });
 
 export const config = {
-  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 };
-*/
