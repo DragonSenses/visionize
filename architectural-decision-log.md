@@ -23323,6 +23323,22 @@ refactor: Top-level auth import for update actions
 
 refactor: Top-level auth import for copy actions
 
+#### Use CLI upgrade helper
+
+To facilitate the upgrade process use the [CLI upgrade helper](https://clerk.com/docs/upgrade-guides/core-2/nextjs#cli-upgrade-helper).
+
+```sh
+npx @clerk/upgrade
+```
+
+Or to install directly:
+```sh
+npm i @clerk/upgrade -g
+clerk-upgrade
+```
+
+refactor: Top-level auth import for components
+
 ### middleware
 
 Also need to update the middleware. [Upgrading @clerk/nextjs to Core 2](https://clerk.com/docs/upgrade-guides/core-2/nextjs).

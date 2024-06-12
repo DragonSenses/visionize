@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { auth } from '@clerk/nextjs';
+import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { UserRound } from 'lucide-react';
 
