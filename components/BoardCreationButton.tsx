@@ -9,11 +9,11 @@ interface BoardCreationButtonProps {
   orgId: string;
 }
 
-const availableBoardCount = await getAvailableBoardCount();
-
 export default async function BoardCreationButton({
   orgId,
 }: BoardCreationButtonProps) {
+
+  const availableBoardCount = await getAvailableBoardCount(orgId);
 
   return (
     <div
