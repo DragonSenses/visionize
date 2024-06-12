@@ -23,7 +23,7 @@ async function performAction (data: InputType): Promise<ReturnType> {
     }
   }
 
-  const canCreateBoard = await hasAvailableBoardCount();
+  const canCreateBoard = await hasAvailableBoardCount(orgId);
 
   if (!canCreateBoard) {
     return {
@@ -65,7 +65,7 @@ async function performAction (data: InputType): Promise<ReturnType> {
       }
     });
 
-    await incrementAvailableBoardCount();
+    await incrementAvailableBoardCount(orgId);
 
     await createAuditLog({
       entityId: board.id,
