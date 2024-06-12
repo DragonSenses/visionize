@@ -1,5 +1,5 @@
 import React from 'react';
-import { auth } from '@clerk/nextjs';
+import { auth } from '@clerk/nextjs/server';
 
 import URLMatcher from './_components/URLMatcher';
 

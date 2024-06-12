@@ -23354,8 +23354,11 @@ refactor: Top-level auth import for API routes
     - app\api\cards\[cardId]\route.ts:1:1
     - app\api\cards\[cardId]\logs\route.ts:1:1
   
+refactor: Top-level auth import for layouts/page
 
-
+    - app\(app)\(dashboard)\board\[boardId]\page.tsx:2:1
+    - app\(app)\(dashboard)\board\[boardId]\layout.tsx:3:1
+    - app\(app)\(dashboard)\org\[orgId]\layout.tsx:2:1
 
 ### middleware
 
