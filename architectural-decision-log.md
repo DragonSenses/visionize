@@ -24060,7 +24060,7 @@ export async function getAvailableBoardCount(orgId: string): Promise<number> {
 }
 ```
 
-#### Update the affected components and server actions
+#### Update the affected server actions
 
 refactor: Board limit functions in server actions
 
@@ -24134,7 +24134,53 @@ async function performAction(data: InputType): Promise<OutputType> {
   // ...
 ```
 
+#### Update the affected components
+
+refactor: Board limit handling in board components
+
 Update the components:
 
    - BoardList
     - BoardCreationButton
+
+The component that uses the board limit functions is `BoardCreationButton`.
+
+1. Parent component: `BoardList`
+
+  - In the parent component (where we render `BoardCreationButton`), we make sure to have access to the `orgId`
+
+2. Pass the Prop:
+
+  - When rendering `BoardCreationButton`, include the `orgId` as a prop
+
+  feat: Pass orgId prop in BoardList to button
+
+  `components\BoardList.tsx`
+   ```tsx
+     export default async function BoardList() {
+     const { orgId } = auth();
+
+     return (
+       <div className='space-y-4'>
+         {/* User icon header */}
+         {/* Grid of boards */}
+         <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4'>
+           {/* boards */}
+           <FormPopover side='right' sideOffset={10}>
+           
+             <BoardCreationButton orgId={orgId} />
+             
+           </FormPopover>
+         </div>
+       </div>
+     )
+   }
+   ```
+
+3. Receieve the Prop in `BoardCreationButton`
+
+  - Access the `orgId` prop
+
+##### Issue: BoardCreationButton does not render within BoardList
+
+
