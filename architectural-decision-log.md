@@ -24111,6 +24111,28 @@ async function performAction (data: InputType): Promise<ReturnType> {
 
 feat: Update board limit functions in deleteBoard
 
+```tsx
+import { decreaseAvailableBoardCount } from "@/lib/orgLimit";
+
+async function performAction(data: InputType): Promise<OutputType> {
+  // ...
+
+  try {
+    board = await database.board.delete({
+      where: {
+        id,
+        orgId,
+      },
+    });
+
+    await decreaseAvailableBoardCount(orgId);
+
+    await createAuditLog({
+      // ...
+    });
+  } catch (error) {
+  // ...
+```
 
 Update the components:
 

@@ -33,7 +33,7 @@ async function performAction(data: InputType): Promise<OutputType> {
       },
     });
 
-    await decreaseAvailableBoardCount();
+    await decreaseAvailableBoardCount(orgId);
 
     await createAuditLog({
       entityId: board.id,
