@@ -50,7 +50,7 @@ export default async function BoardList() {
           </Link>
         ))}
         <FormPopover side='right' sideOffset={10}>
-          <BoardCreationButton />
+          <BoardCreationButton orgId={orgId} />
         </FormPopover>
       </div>
 
