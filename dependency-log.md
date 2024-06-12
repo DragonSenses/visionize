@@ -135,6 +135,36 @@ ncu -g
 
 # Dependency log
 
+## 2024/06/11
+
+```sh
+npm outdated                                                                                        
+Package                Current   Wanted   Latest  Location                            Depended by
+@tanstack/react-query   5.40.1   5.44.0   5.44.0  node_modules/@tanstack/react-query  visionize
+eslint                  8.57.0   8.57.0    9.4.0  node_modules/eslint                 visionize
+eslint-config-next      14.2.3   14.2.4   14.2.4  node_modules/eslint-config-next     visionize
+lucide-react           0.390.0  0.390.0  0.394.0  node_modules/lucide-react           visionize
+next                    14.2.3   14.2.4   14.2.4  node_modules/next                   visionize
+```
+
+chore: Update Next.js to v14.2.4
+
+```sh
+npm i next@latest
+```
+
+chore: Update @tanstack/react-query to v5.44.0
+
+```sh
+npm i @tanstack/react-query@latest
+```
+
+chore: Update lucide-react to v0.394.0
+
+```sh
+npm i lucide-react@latest
+```
+
 ## 2024/06/08
 
 ```sh
