@@ -5,9 +5,16 @@ import BoardTooltip from '@/components/BoardTooltip';
 import { FREE_BOARD_THRESHOLD } from '@/constants/boards';
 import { getAvailableBoardCount } from '@/lib/orgLimit';
 
+interface BoardCreationButtonProps {
+  orgId: string;
+}
+
 const availableBoardCount = await getAvailableBoardCount();
 
-export default async function BoardCreationButton() {
+export default async function BoardCreationButton({
+  orgId,
+}: BoardCreationButtonProps) {
+
   return (
     <div
       role='button'
