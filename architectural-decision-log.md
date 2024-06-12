@@ -23438,6 +23438,55 @@ export const config = {
 };
 ```
 
+Now let's add the conditions to our middleware to redirect when necessary.
+
+feat: Implement clerkMiddleware for route protection
+
+- Migrate to clerkMiddleware to integrate Clerk authentication in Next.js app
+- Mark the landing page, sign-in, and sign-up pages as public routes
+- Redirect logged-in users from the landing page to /org-selection
+- Protect all other routes with authentication
+- Automatically redirect unauthenticated users to the sign-in route
+
+```ts
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+
+const isPublicRoute = createRouteMatcher(["/", "/sign-in(.*)", "/sign-up(.*)"]);
+
+export default clerkMiddleware((auth, req) => {
+  // If user is logged-in and on the landing page, redirect them
+  if (auth().userId && req.nextUrl.pathname === "/") {
+    const orgSelection = new URL("/org-selection", req.url);
+    return NextResponse.redirect(orgSelection);
+  }
+
+  if (isPublicRoute(req)) return; // if it's a public route, do nothing
+
+  // For any other route, require auth
+  // Also redirects unauthenticated users to the sign-in route automatically
+  auth().protect();
+});
+
+export const config = {
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+};
+```
+
+Also change the environment variables `NEXT_PUBLIC_CLERK_AFTER_...` to `/org-selection` for good measure:
+
+refactor: Configure middleware & authentication URLs
+
+feat: Configure Clerk authentication URLs
+
+`.env`
+```sh
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/org-selection
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/org-selection
+```
+
 # Implement monetization, subscription and board limits (for development practice)
 
 Now that the app is nearing its project completion requirements we will now document the steps for monetization by implementing board limits and subscription. 
