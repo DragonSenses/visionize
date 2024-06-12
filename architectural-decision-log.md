@@ -23339,6 +23339,10 @@ clerk-upgrade
 
 refactor: Top-level auth import for components
 
+refactor: Top-level auth import for lib utility
+
+Upgrading to Clerk Core 2, which requires importing `auth` and/or `currentUser` from the appropriate modules.
+
 ### middleware
 
 Also need to update the middleware. [Upgrading @clerk/nextjs to Core 2](https://clerk.com/docs/upgrade-guides/core-2/nextjs).

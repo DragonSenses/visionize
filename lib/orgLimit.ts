@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 import { FREE_BOARD_THRESHOLD } from "@/constants/boards";
 import { database } from "@/lib/database";
