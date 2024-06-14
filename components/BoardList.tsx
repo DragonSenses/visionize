@@ -2,12 +2,15 @@ import React from 'react';
 import Link from 'next/link';
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
-import { UserRound } from 'lucide-react';
+import { HelpCircle, UserRound } from 'lucide-react';
 
+import { FREE_BOARD_THRESHOLD } from '@/constants/boards';
 import { database } from '@/lib/database';
-import BoardCreationInfo from '@/components/BoardCreationInfo';
+import { getAvailableBoardCount } from '@/lib/orgLimit';
 import FormPopover from '@/components/form/FormPopover';
 import { Skeleton } from '@/components/ui/skeleton';
+import BoardCountDisplay from '@/components/BoardCountDisplay';
+import BoardTooltip from '@/components/BoardTooltip';
 
 export default async function BoardList() {
   const { orgId } = auth();
@@ -25,6 +28,8 @@ export default async function BoardList() {
     }
   });
 
+  const availableBoardCount = await getAvailableBoardCount(orgId);
+
   return (
     <div className='space-y-4'>
       {/* User icon header */}
@@ -37,9 +42,9 @@ export default async function BoardList() {
         {boards.map((board) => (
           <Link
             key={board.id}
-            href={`/board/${board.id}`}
+            href={`/board/${ board.id }`}
             className='group relative h-full w-full p-2 aspect-video bg-no-repeat bg-center bg-cover bg-sky-700 rounded-sm overflow-hidden'
-            style={{ backgroundImage: `url(${board.imageThumbUrl})` }}
+            style={{ backgroundImage: `url(${ board.imageThumbUrl })` }}
           >
             <div
               className='absolute inset-0 bg-black/30 group-hover:bg-black/40 transition'
@@ -50,10 +55,23 @@ export default async function BoardList() {
           </Link>
         ))}
         <FormPopover side='right' sideOffset={10}>
-          <BoardCreationInfo orgId={orgId} />
+          <div
+            role='button'
+            className='relative flex flex-col items-center h-full w-full border border-solid rounded-sm aspect-video bg-muted gap-y-1 justify-center transition hover:opacity-75'
+          >
+            <p className='text-sm'>Create new board</p>
+            <BoardCountDisplay remainingBoardCount={availableBoardCount} />
+            <BoardTooltip
+              sideOffset={40}
+              description={`
+                Free workspaces allow up to ${ FREE_BOARD_THRESHOLD } boards. 
+                Upgrade this workspace to create unlimited boards.`}
+            >
+              <HelpCircle className='absolute bottom-2 right-2 h-[14px] w-[14px]' />
+            </BoardTooltip>
+          </div>
         </FormPopover>
       </div>
-
     </div>
   )
 }
