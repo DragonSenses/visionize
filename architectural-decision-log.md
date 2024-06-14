@@ -23487,6 +23487,47 @@ NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/org-selection
 NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/org-selection
 ```
 
+### After sign up/in/out default value change
+
+- [After sign out default value | Clerk Reference](https://clerk.com/docs/upgrade-guides/core-2/nextjs#after-sign-up-in-out-default-value-change)
+
+"As part of this change, the default redirect URL for each of these props has been set to `/`, so if you are passing `/` explicitly to any one of the above props, that line is no longer necessary and can be removed."
+
+```tsx
+// Not Necessary
+<UserButton afterSignOutUrl='/' />
+// By default
+<UserButton />
+```
+
+Let's change it in the Navbar:
+
+refactor: Remove 'afterSignOutUrl' prop in UserButton
+
+With the update to Core 2, the default redirect URL for the 'afterSignOutUrl' prop is now set to '/'. Explicitly passing this prop has become redundant, so this commit removes it.
+
+`app\(app)\(dashboard)\_components\Navbar.tsx`
+```tsx
+export const Navbar = () => {
+  return (
+    <nav>
+      {/* ...  */}
+        <UserButton
+          appearance={{
+            elements: {
+              avatarBox: {
+                height: 30,
+                width: 30,
+              },
+            },
+          }}
+        />
+      </div>
+    </nav>
+  );
+};
+```
+
 # Implement monetization, subscription and board limits (for development practice)
 
 Now that the app is nearing its project completion requirements we will now document the steps for monetization by implementing board limits and subscription. 
