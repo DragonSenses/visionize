@@ -24209,3 +24209,76 @@ To fix this issue, ensure that all dynamic API calls happen within the request s
 
 ##### Issue: BoardCreationButton does not render within BoardList
 
+1. **Separation of Concerns:** separate the logic of fetching the available board count from the component itself. This will make the `BoardCreationButton` component more cleaner and more focused on rendering.
+2. We can consider moving the API call to a separate utility function or hook. Or we can create a specific component that calculates and displays this logic for us. Let's create `BoardCountDisplay` component for it.
+
+feat: Extract reusable BoardCountDisplay component
+
+- Create a separate BoardCountDisplay component responsible for displaying the remaining board count
+- Move remaining board count calculation logic out of the main component
+- Improve code organization and maintainability
+
+`components\BoardCountDisplay.tsx`
+```tsx
+import React from 'react';
+
+import { FREE_BOARD_THRESHOLD } from '@/constants/boards';
+
+interface BoardCountDisplayProps {
+  remainingBoardCount: number;
+}
+
+export default async function BoardCountDisplay({
+  remainingBoardCount,
+}: BoardCountDisplayProps) {
+  return (
+    <div>
+      <span className='text-xs'>
+        {`${ FREE_BOARD_THRESHOLD - remainingBoardCount } remaining`}
+      </span>
+    </div>
+  )
+}
+```
+
+refactor: Use reusable BoardCountDisplay component
+
+- Extract remaining board count logic into a reusable component
+- Improve code organization and maintainability
+
+`components\BoardCreationButton.tsx`
+```tsx
+import BoardCountDisplay from '@/components/BoardCountDisplay';
+import { FREE_BOARD_THRESHOLD } from '@/constants/boards';
+import { getAvailableBoardCount } from '@/lib/orgLimit';
+
+interface BoardCreationButtonProps {
+  orgId: string;
+}
+
+export default async function BoardCreationButton({
+  orgId,
+}: BoardCreationButtonProps) {
+
+  const availableBoardCount = await getAvailableBoardCount(orgId);
+
+  return (
+    <div
+      role='button'
+      className='relative flex flex-col items-center h-full w-full rounded-sm aspect-video bg-muted gap-y-1 justify-center transition hover:opacity-75'
+    >
+      <p className='text-sm'>Create new board</p>
+      <BoardCountDisplay remainingBoardCount={availableBoardCount} />
+      <BoardTooltip 
+        sideOffset={40}
+        description={`
+          Free workspaces allow up to ${FREE_BOARD_THRESHOLD} boards. 
+          Upgrade this workspace to create unlimited boards.
+        `}
+      >
+        <HelpCircle className='absolute bottom-2 right-2 h-[14px] w-[14px]'/>
+      </BoardTooltip>
+    </div>
+  )
+}
+```

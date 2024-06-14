@@ -2,6 +2,7 @@ import React from 'react';
 import { HelpCircle } from 'lucide-react';
 
 import BoardTooltip from '@/components/BoardTooltip';
+import BoardCountDisplay from '@/components/BoardCountDisplay';
 import { FREE_BOARD_THRESHOLD } from '@/constants/boards';
 import { getAvailableBoardCount } from '@/lib/orgLimit';
 
@@ -21,9 +22,7 @@ export default async function BoardCreationButton({
       className='relative flex flex-col items-center h-full w-full rounded-sm aspect-video bg-muted gap-y-1 justify-center transition hover:opacity-75'
     >
       <p className='text-sm'>Create new board</p>
-      <span className='text-xs'>
-        {`${FREE_BOARD_THRESHOLD - availableBoardCount} remaining`}
-      </span>
+      <BoardCountDisplay remainingBoardCount={availableBoardCount} />
       <BoardTooltip 
         sideOffset={40}
         description={`
