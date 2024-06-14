@@ -6,13 +6,13 @@ import BoardCountDisplay from '@/components/BoardCountDisplay';
 import { FREE_BOARD_THRESHOLD } from '@/constants/boards';
 import { getAvailableBoardCount } from '@/lib/orgLimit';
 
-interface BoardCreationButtonProps {
+interface BoardCreationInfoProps {
   orgId: string;
 }
 
-export default async function BoardCreationButton({
+export default async function BoardCreationInfo({
   orgId,
-}: BoardCreationButtonProps) {
+}: BoardCreationInfoProps) {
 
   const availableBoardCount = await getAvailableBoardCount(orgId);
 

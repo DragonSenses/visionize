@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import { UserRound } from 'lucide-react';
 
 import { database } from '@/lib/database';
-import BoardCreationButton from '@/components/BoardCreationButton';
+import BoardCreationInfo from '@/components/BoardCreationInfo';
 import FormPopover from '@/components/form/FormPopover';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -50,7 +50,7 @@ export default async function BoardList() {
           </Link>
         ))}
         <FormPopover side='right' sideOffset={10}>
-          <BoardCreationButton orgId={orgId} />
+          <BoardCreationInfo orgId={orgId} />
         </FormPopover>
       </div>
 
