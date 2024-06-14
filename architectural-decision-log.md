@@ -23305,6 +23305,23 @@ refactor: Remove outdated components
 
 Deletes the 'components/_old' folder, which contained obsolete components 'Board.tsx', 'BoardForm.tsx', 'BoardFormButton.tsx', and 'BoardFormInput.tsx'. These components were initially used for prototyping the component composition but are no longer relevant to the latest version of the application.
 
+refactor: Reset UserIdPage to a clean slate
+
+This commit resets the UserIdPage component to a basic state with minimal content.
+
+`app\(app)\(dashboard)\user\[userId]\page.tsx`
+```tsx
+import React from 'react';
+
+export default async function UserIdPage() {
+  return (
+    <div className='flex flex-col space-y-4'>
+      UserIdPage
+    </div>
+  )
+}
+```
+
 ### Update to Clerk (v5.1.4)
 
 - [Breaking changes | Clerk](https://clerk.com/docs/upgrade-guides/core-2/nextjs#breaking-changes)
