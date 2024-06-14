@@ -1,6 +1,12 @@
 import React from 'react';
 
-export default function BoardCountDisplay() {
+interface BoardCountDisplayProps {
+  remainingBoardCount: number;
+}
+
+export default function BoardCountDisplay({
+  remainingBoardCount,
+}: BoardCountDisplayProps) {
   return (
     <div>BoardCountDisplay</div>
   )
