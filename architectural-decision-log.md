@@ -23295,11 +23295,15 @@ export default async function ActivityList() {
 // ...
 ```
 
-## Wrapping up, finalization
+# Wrapping up, finalization
 
 refactor: Remove outdated board actions
 
 Deletes the 'actions_old' folder, which contained obsolete 'createBoard.ts', 'deleteBoard.ts', and 'updateBoard.ts' files. These actions are no longer relevant to the latest version of the application.
+
+refactor: Remove outdated components
+
+Deletes the 'components/_old' folder, which contained obsolete components 'Board.tsx', 'BoardForm.tsx', 'BoardFormButton.tsx', and 'BoardFormInput.tsx'. These components were initially used for prototyping the component composition but are no longer relevant to the latest version of the application.
 
 ### Update to Clerk (v5.1.4)
 
