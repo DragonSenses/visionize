@@ -23563,6 +23563,8 @@ feat: Implement board creation limits
 
 This commit introduces board creation limits to restrict the number of boards that can be created within the application.
 
+### OrgLimit model
+
 We want to set a board limit for each organization. We want to track that through a new model in the database named `OrgLimit`. It will have the usual fields of `id, orgId, createdAt, updatedAt`. It will also have a new field named `count` initialized at 0.
 
 feat: Define the OrgLimit model in prisma schema
@@ -23585,10 +23587,10 @@ Now to prototype the schema and synchronize the new changes.
 feat: Sync Prisma schema with database schema
 
 0. Shut down the app with CTRL + C in the terminal
-1. npx prisma generate
+1. npx prisma db push
 2. (Optional) npx prisma migrate reset
    - To reset the development database. See [npx prisma migrate reset | Prisma docs](https://www.prisma.io/docs/orm/prisma-migrate/workflows/development-and-production#reset-the-development-database)
-3. npx prisma db push
+3. npx prisma generate
 
 #### Create constant for board limits
 
@@ -24482,3 +24484,46 @@ Upper bounds
 
 Lower bounds
 - Verify no items and board remains empty
+
+## Subscription
+
+Let's enable users to create unlimited amount of boards when they purchase a subscription via Stripe.
+
+feat: Implement subscription functionality
+
+To implement subscription functionality into the application, consider these steps:
+
+1. **Define the Subscription Model**:
+   - Decide what to offer as subscriptions (e.g., premium features, content access, etc.).
+   - Create a data model (if not already done) to represent subscriptions. This could include fields like `id`, `userId`, `planId`, `status`, and `expirationDate`.
+
+2. **Database Schema Changes**:
+   - Update your Prisma schema (`schema.prisma`) to include the subscription model.
+   - Add necessary fields (e.g., `stripeSubscriptionId`, `planId`, etc.) to your existing models.
+
+3. **Stripe Integration**:
+   - Integrate with Stripe (or any other payment gateway) to handle subscription payments.
+   - Set up plans (monthly, yearly, etc.) in your Stripe dashboard.
+   - Use Stripe APIs to create subscriptions, handle payments, and manage subscription lifecycle.
+
+4. **User Authentication and Authorization**:
+   - Ensure users are authenticated (e.g., using Clerk authentication) before allowing them to subscribe.
+   - Implement authorization checks to ensure users can only manage their own subscriptions.
+
+5. **Subscription API Endpoints**:
+   - Create API endpoints for managing subscriptions (e.g., `/api/subscribe`, `/api/cancel-subscription`, etc.).
+   - These endpoints should handle creating, updating, and canceling subscriptions.
+
+6. **Frontend Implementation**:
+   - Design subscription-related UI components (e.g., subscription plans, payment forms, etc.).
+   - Use Prisma Client to fetch subscription data and display it to users.
+   - Implement subscription-related actions (subscribe, cancel, update payment method, etc.) in your frontend code.
+
+7. **Testing**:
+   - Test subscription flows thoroughly (e.g., successful subscription, failed payment, cancellation, etc.).
+   - Consider edge cases (e.g., handling expired subscriptions, grace periods, etc.).
+
+8. **Monitoring and Analytics**:
+   - Monitor subscription-related events (successful payments, cancellations, etc.).
+   - Use analytics tools to track user behavior related to subscriptions.👍
+
