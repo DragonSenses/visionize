@@ -24542,3 +24542,23 @@ model OrgSubscription {
 
 The next fields are related to storing Stripe API information. Each field is optional. Each field are also mapped (using [`@map`](https://www.prisma.io/docs/orm/reference/prisma-schema-reference#map)) to a more intuitive name to facilitate usage inside the Prisma Client API.
 
+- `stripeCustomerId`
+- `stripeSubscriptionId`
+- `stripePriceId`
+- `stripeCurrentPeriodEnd`
+
+- [map field/column names | Prisma docs](https://www.prisma.io/docs/orm/prisma-schema/data-model/database-mapping#map-field--column-names)
+
+feat: Define the OrgSubscription model in schema
+
+```prisma
+model OrgSubscription {
+  id    String @id @default(uuid())
+  orgId String @unique
+
+  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
+  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
+  stripePriceId          String?   @map(name: "stripe_price_id")
+  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
+}
+```
