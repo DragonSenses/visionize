@@ -24527,3 +24527,18 @@ To implement subscription functionality into the application, consider these ste
    - Monitor subscription-related events (successful payments, cancellations, etc.).
    - Use analytics tools to track user behavior related to subscriptions.👍
 
+### OrgSubscription Model
+
+Define the data model `OrgSubscription` inside `schema.prisma`. For now we give it the properties `id` and `orgId`.
+
+feat: Add initial version of OrgSubscription model
+
+```prisma
+model OrgSubscription {
+  id    String @id @default(uuid())
+  orgId String @unique
+}
+```
+
+The next fields are related to storing Stripe API information. Each field is optional. Each field are also mapped (using [`@map`](https://www.prisma.io/docs/orm/reference/prisma-schema-reference#map)) to a more intuitive name to facilitate usage inside the Prisma Client API.
+
