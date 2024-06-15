@@ -24464,3 +24464,21 @@ BoardList.Skeleton = function BoardListSkeleton() {
   );
 }
 ```
+
+## Test if board limits are enforced
+
+feat: Implement tests for enforcing board limits
+
+- Create a board, available board count decreases
+- Delete a board, available board count decreases
+- Create a board when board count is 0, an error message should appear and prevent user from new board creation
+- Delete a board when board count is 0, this should increases available board count and allow board creation
+- Check across organization if board limits are enforced
+- Check each organization board limits are independent of each other
+- Check if database reflects the changes happening on the front-end
+
+Upper bounds
+- Verify no additional items can be added
+
+Lower bounds
+- Verify no items and board remains empty
