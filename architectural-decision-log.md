@@ -23584,13 +23584,27 @@ model OrgLimit {
 
 Now to prototype the schema and synchronize the new changes.
 
-feat: Sync Prisma schema with database schema
+chore: Update db schema & regenerate prisma client
 
 0. Shut down the app with CTRL + C in the terminal
-1. npx prisma db push
-2. (Optional) npx prisma migrate reset
-   - To reset the development database. See [npx prisma migrate reset | Prisma docs](https://www.prisma.io/docs/orm/prisma-migrate/workflows/development-and-production#reset-the-development-database)
-3. npx prisma generate
+1. **`npx prisma db push`**:
+   - This command applies changes from your Prisma schema to the database.
+   - It creates or modifies database tables, columns, indexes, and other schema-related elements based on your `schema.prisma` file.
+   - Use it after making changes to your schema (e.g., adding or modifying models, fields, or relations).
+   - It's essential to run this command before generating Prisma Client to ensure that your database schema is up-to-date.
+
+2. **`npx prisma generate`**:
+   - This command generates assets, primarily Prisma Client, based on your `schema.prisma`.
+   - Prisma Client is a type-safe query builder that allows you to interact with your database using TypeScript or JavaScript.
+   - It reads your data model and generates code for querying, creating, updating, and deleting data.
+   - Run this command after applying schema changes (via `db push`) to update your Prisma Client code.
+
+In summary, follow this order:
+1. Make schema changes (if needed) in `schema.prisma`.
+2. Run `npx prisma db push` to apply those changes to your database.
+   - Updates the database schema
+3. Finally, run `npx prisma generate` to update Prisma Client.
+   - Updates the Prisma Client code
 
 #### Create constant for board limits
 
@@ -24562,3 +24576,29 @@ model OrgSubscription {
   stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
 }
 ```
+
+#### Synchronize Prisma schema with database
+
+Now to prototype the schema and synchronize the new changes.
+
+chore: Update db schema & regenerate prisma client
+
+0. Shut down the app with CTRL + C in the terminal
+1. **`npx prisma db push`**:
+   - This command applies changes from your Prisma schema to the database.
+   - It creates or modifies database tables, columns, indexes, and other schema-related elements based on your `schema.prisma` file.
+   - Use it after making changes to your schema (e.g., adding or modifying models, fields, or relations).
+   - It's essential to run this command before generating Prisma Client to ensure that your database schema is up-to-date.
+
+2. **`npx prisma generate`**:
+   - This command generates assets, primarily Prisma Client, based on your `schema.prisma`.
+   - Prisma Client is a type-safe query builder that allows you to interact with your database using TypeScript or JavaScript.
+   - It reads your data model and generates code for querying, creating, updating, and deleting data.
+   - Run this command after applying schema changes (via `db push`) to update your Prisma Client code.
+
+In summary, follow this order:
+1. Make schema changes (if needed) in `schema.prisma`.
+2. Run `npx prisma db push` to apply those changes to your database.
+   - Updates the database schema
+3. Finally, run `npx prisma generate` to update Prisma Client.
+   - Updates the Prisma Client code
