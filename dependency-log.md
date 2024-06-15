@@ -135,6 +135,30 @@ ncu -g
 
 # Dependency log
 
+## 2024/06/15
+
+```sh
+npm outdated                                                                                            
+Package                Current   Wanted   Latest  Location                            Depended by
+@clerk/nextjs            5.1.4    5.1.5    5.1.5  node_modules/@clerk/nextjs          visionize
+@tanstack/react-query   5.44.0   5.45.0   5.45.0  node_modules/@tanstack/react-query  visionize
+eslint                  8.57.0   8.57.0    9.5.0  node_modules/eslint                 visionize
+eslint-config-next      14.2.3   14.2.4   14.2.4  node_modules/eslint-config-next     visionize
+lucide-react           0.394.0  0.394.0  0.395.0  node_modules/lucide-react           visionize
+```
+
+chore: Update @clerk/nextjs to v5.1.5
+
+```sh
+npm i @clerk/nextjs@latest
+```
+
+chore: Update dependencies to latest semver range
+
+```sh
+npm update --save
+```
+
 ## 2024/06/11
 
 ```sh
