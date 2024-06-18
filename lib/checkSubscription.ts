@@ -1,5 +1,7 @@
 import { database } from "@/lib/database";
 
+const DAY_IN_MS = 86_400_000;
+
 /**
  * Checks the subscription
  * @param {string} orgId - The organization ID.
@@ -25,4 +27,9 @@ export async function checkSubscription(orgId: string) {
     return false;
   }
 
+  const isValid =
+    (orgSubscription.stripePriceId) &&
+    (orgSubscription.stripeCurrentPeriodEnd?.getTime()! + DAY_IN_MS > Date.now());
+
+  return !!isValid;
 }
