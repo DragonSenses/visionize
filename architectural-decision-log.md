@@ -24602,3 +24602,54 @@ In summary, follow this order:
    - Updates the database schema
 3. Finally, run `npx prisma generate` to update Prisma Client.
    - Updates the Prisma Client code
+
+### Stripe
+
+Let's download the [Stripe Node.js Library](https://www.npmjs.com/package/stripe).
+
+```sh
+npm i stripe
+```
+
+In the [npm package docs](https://www.npmjs.com/package/stripe), we can see the usage which configures the package with your Stripe account's secret key. This will be available in the [Stripe Dashboard](https://dashboard.stripe.com/account/apikeys).
+
+
+- Use ES modules and `async/await`
+- Use the `process.env.STRIPE_API_KEY!` as the key.
+
+Now let's create the stripe utility in `/lib`.
+
+feat(lib): Add Stripe configuration w/ TypeScript
+
+Initialize Stripe with TypeScript support and API version 2024-04-10.
+
+`lib\stripe.ts`
+```ts
+import Stripe from "stripe";
+
+export const stripe = new Stripe(process.env.STRIPE_API_KEY!, {
+  apiVersion: "2024-04-10",
+  typescript: true,
+});
+```
+
+Note: for `apiVersion` can be auto-completed to the version that correlates to the Stripe Node.js library.
+
+Now create a lib utility that checks the organization subscription.
+
+feat: Add subscription check function
+
+```ts
+
+/**
+ * Checks the subscription
+ * @param {string} orgId - The organization ID.
+ */
+export async function checkSubscription(orgId: string) {
+  if (!orgId) {
+    return false;
+  }
+
+}
+
+```
