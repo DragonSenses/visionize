@@ -24635,12 +24635,16 @@ export const stripe = new Stripe(process.env.STRIPE_API_KEY!, {
 
 Note: for `apiVersion` can be auto-completed to the version that correlates to the Stripe Node.js library.
 
+#### check subscription
+
+feat: Implement checkSubscription utility function
+
 Now create a lib utility that checks the organization subscription.
 
 feat: Add subscription check function
 
+`lib\checkSubscription.ts`
 ```ts
-
 /**
  * Checks the subscription
  * @param {string} orgId - The organization ID.
@@ -24651,5 +24655,100 @@ export async function checkSubscription(orgId: string) {
   }
 
 }
-
 ```
+
+feat: Implement query to check subscription status
+
+Implement an organization query with Prisma ORM to check the subscription status based on the organization ID.
+
+`lib\checkSubscription.ts`
+```ts
+import { database } from "@/lib/database";
+
+/**
+ * Checks the subscription
+ * @param {string} orgId - The organization ID.
+ */
+export async function checkSubscription(orgId: string) {
+  if (!orgId) {
+    return false;
+  }
+
+  const orgSubscription = await database.orgSubscription.findUnique({
+    where: {
+      orgId,
+    },
+    select: {
+      stripeCurrentPeriodEnd: true,
+      stripeCustomerId: true,
+      stripePriceId: true,
+      stripeSubscriptionId: true,
+    },
+  });
+
+  if (!orgSubscription) {
+    return false;
+  }
+
+}
+```
+
+Finally we want to check if the subscription is valid. First check if `stripePriceId` exists, then calculate the expiration timestamp by adding a buffer of one day in milliseconds (a constant `DAY_IN_MS`) to the `stripeCurrentPeriodEnd` timestamp. Then compare the result if it is greater than the current timestamp, then the subscription is valid.
+
+feat: Implement subscription validation in utility
+
+```ts
+import { database } from "@/lib/database";
+
+const DAY_IN_MS = 86_400_000;
+
+/**
+ * Checks the subscription
+ * @param {string} orgId - The organization ID.
+ */
+export async function checkSubscription(orgId: string) {
+  if (!orgId) {
+    return false;
+  }
+
+  const orgSubscription = await database.orgSubscription.findUnique({
+    where: {
+      orgId,
+    },
+    select: {
+      stripeCurrentPeriodEnd: true,
+      stripeCustomerId: true,
+      stripePriceId: true,
+      stripeSubscriptionId: true,
+    },
+  });
+
+  if (!orgSubscription) {
+    return false;
+  }
+
+  const isValid =
+    (orgSubscription.stripePriceId) &&
+    (orgSubscription.stripeCurrentPeriodEnd?.getTime()! + DAY_IN_MS > Date.now());
+
+  return !!isValid;
+}
+```
+
+**Note**: Notice the usage of boolean conversion on `isValid` variable.
+
+1. **Purpose:**
+   - The `!!` operator is used to explicitly convert a value to its boolean equivalent.
+   - It ensures that the result is either `true` or `false`.
+
+2. **How It Works:**
+   - When you apply `!!` to a value, it performs two negations:
+     1. First, it negates the value (converting it to a boolean).
+     2. Then, it negates the result of the first negation, effectively converting it back to a positive boolean value.
+
+3. **Use Cases:**
+   - Common scenarios where you might use `!!`:
+     - Coercing a truthy/falsy value to a strict boolean (e.g., when checking if an array has elements).
+     - Ensuring that a function always returns a boolean result (e.g., in validation functions).
+
+Remember that the `!!` operator is a concise way to achieve boolean conversion, but it's not always necessary. In many cases, JavaScript and TypeScript automatically perform truthy/falsy checks without explicitly using `!!`.
