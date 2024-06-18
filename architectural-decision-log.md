@@ -24752,3 +24752,40 @@ export async function checkSubscription(orgId: string) {
      - Ensuring that a function always returns a boolean result (e.g., in validation functions).
 
 Remember that the `!!` operator is a concise way to achieve boolean conversion, but it's not always necessary. In many cases, JavaScript and TypeScript automatically perform truthy/falsy checks without explicitly using `!!`.
+
+### Stripe API keys
+
+docs: Add Stripe setup guide
+
+1. **Log in to Stripe (or Create an Account):**
+   - Navigate to the [Stripe Dashboard](https://dashboard.stripe.com/).
+   - If you're a new user, follow the account creation process.
+
+2. **Create a Store:**
+   - In the dashboard, click the dropdown icon in the top left (usually represented by three horizontal lines).
+   - Select "Create a Store."
+   - If you just created an account, the window to create the store should be open by default.
+   - Name your store as `complete-ecommerce-store`.
+   - Click "Create Account."
+
+3. **Access API Keys:**
+   - Click on **Developers** in the top navigation bar.
+   - Select the **API keys** tab.
+
+4. **Retrieve the Secret Key:**
+   - Click **Reveal test key**.
+   - Copy the **Secret key** (you'll need this for environment variables).
+
+5. **Set Up Environment Variables:**
+   - Open your `.env` file.
+   - Create a variable named `STRIPE_API_KEY`.
+   - Set its value to the **Secret key** you copied earlier.
+   - Double-check that the `STRIPE_API_KEY` inside `lib/stripe.ts` matches the value in your `.env` file.
+
+Feel free to use this organized guide in your documentation! If you have any more requests or need further assistance, feel free to ask. 😊
+
+`.env`
+```.env
+STRIPE_API_KEY=YOUR_SECRET_KEY_GOES_HERE
+```
+
