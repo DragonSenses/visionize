@@ -24782,10 +24782,40 @@ docs: Add Stripe setup guide
    - Set its value to the **Secret key** you copied earlier.
    - Double-check that the `STRIPE_API_KEY` inside `lib/stripe.ts` matches the value in your `.env` file.
 
-Feel free to use this organized guide in your documentation! If you have any more requests or need further assistance, feel free to ask. 😊
-
 `.env`
 ```.env
 STRIPE_API_KEY=YOUR_SECRET_KEY_GOES_HERE
 ```
 
+## Upgrade Modal
+
+Now create a hook `useUpgradeModal` using Zustand, a state management library.
+
+- The `useUpgradeModal` hook manages the state related to an upgrade modal.
+- It defines three properties:
+  - `isOpen`: A boolean indicating whether the modal is open.
+  - `onOpen`: A function to open the modal (sets `isOpen` to `true`).
+  - `onClose`: A function to close the modal (sets `isOpen` to `false`).
+
+feat: Create Zustand store to handle upgrade modal
+
+feat: Manage modal state with useUpgradeModal hook
+
+`hooks\useUpgradeModal.ts`
+```ts
+import { create } from 'zustand';
+
+// Define the shape of the store state
+type UpgradeModalStore = {
+  isOpen: boolean; // Indicates whether the modal is open
+  onOpen: () => void; // Function to open the modal
+  onClose: () => void; // Function to close the modal
+};
+
+// Create the Zustand store for the upgrade modal
+export const useUpgradeModal = create<UpgradeModalStore>()((set) => ({
+  isOpen: false, // Initial state: modal is closed
+  onOpen: () => set({ isOpen: true }), // Set isOpen to true (open modal)
+  onClose: () => set({ isOpen: false }), // Set isOpen to false (close modal)
+}));
+```
