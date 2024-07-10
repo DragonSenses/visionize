@@ -24789,6 +24789,10 @@ STRIPE_API_KEY=YOUR_SECRET_KEY_GOES_HERE
 
 ## Upgrade Modal
 
+The upgrade modal serves as a reminder for users to subscribe to the premium version, granting them access to various benefits.
+
+### zustand useUpgradeModal store
+
 Now create a hook `useUpgradeModal` using Zustand, a state management library.
 
 - The `useUpgradeModal` hook manages the state related to an upgrade modal.
@@ -24817,5 +24821,87 @@ export const useUpgradeModal = create<UpgradeModalStore>()((set) => ({
   isOpen: false, // Initial state: modal is closed
   onOpen: () => set({ isOpen: true }), // Set isOpen to true (open modal)
   onClose: () => set({ isOpen: false }), // Set isOpen to false (close modal)
+}));
+```
+
+### Create UpgradeModal
+
+Create `UpgradeModal.tsx` inside `/components/modals/`.
+
+`components\modals\UpgradeModal.tsx`
+```tsx
+"use client";
+
+import React from 'react';
+
+export default function UpgradeModal() {
+  return (
+    <div>UpgradeModal</div>
+  )
+}
+```
+
+Now import and use the hook to access the modal state and functions:
+
+feat: Access upgrade modal state and functions
+
+This commit adds the useCardModal hook to retrieve the `id`, `isOpen`, and `onClose` state, and assigns them to the corresponding props of the `Dialog` component within the `CardModal`.
+
+```tsx
+"use client";
+
+import React from 'react';
+
+import { useUpgradeModal } from '@/hooks/useUpgradeModal';
+
+export default function UpgradeModal() {
+  // Access the upgrade modal state and functions
+  const upgradeModal = useUpgradeModal();
+
+  return (
+    <div>UpgradeModal</div>
+  )
+}
+```
+
+feat: Import and use UpgradeModal in ModalProvider
+
+`components\providers\ModalProvider.tsx`
+```tsx
+"use client";
+
+import React, { useEffect, useState } from 'react';
+
+import CardModal from '@/components/modals/CardModal';
+import UpgradeModal from '@/components/modals/UpgradeModal';
+
+export default function ModalProvider() {
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+      setIsMounted(true);
+    }, []);
+  
+    if (!isMounted) {
+      return null;
+    }
+
+  return (
+    <>
+      <CardModal />
+      <UpgradeModal />
+    </>
+  )
+}
+```
+
+During development, *temporarily* set `isOpen` in `useUpgradeModal` hook to `true` to make development easier. Temporary actions are often taken to facilitate testing, debugging, or experimentation.
+
+`hooks\useUpgradeModal.ts`
+```ts
+export const useUpgradeModal = create<UpgradeModalStore>()((set) => ({
+  isOpen: true,
+  onOpen: () => set({ isOpen: true }),
+  onClose: () => set({ isOpen: false }),
 }));
 ```
