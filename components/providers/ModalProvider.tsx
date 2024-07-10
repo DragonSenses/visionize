@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 
 import CardModal from '@/components/modals/CardModal';
+import UpgradeModal from '@/components/modals/UpgradeModal';
 
 export default function ModalProvider() {
     // Declare isMounted state variable and initialize it to false
@@ -23,6 +24,7 @@ export default function ModalProvider() {
   return (
     <>
       <CardModal />
+      <UpgradeModal />
     </>
   )
 }
