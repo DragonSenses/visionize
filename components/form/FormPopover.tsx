@@ -16,6 +16,7 @@ import FormInput from '@/components/form/FormInput';
 import FormSubmitButton from '@/components/form/FormSubmitButton';
 
 import { useServerAction } from '@/hooks/useServerAction';
+import { useUpgradeModal } from '@/hooks/useUpgradeModal';
 import { createBoard } from "@/actions/createBoard/index";
 import FormSelector from '@/components/form/FormSelector';
 
@@ -32,6 +33,9 @@ export default function FormPopover({
   sideOffset = 0,
   side = 'bottom',
 }: FormPopoverProps) {
+  // Access the upgrade modal state and functions
+  const upgradeModal = useUpgradeModal();
+
   const router = useRouter();
 
   const closeRef = useRef<ElementRef<"button">>(null);
