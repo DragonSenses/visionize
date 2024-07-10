@@ -25021,3 +25021,54 @@ export default function UpgradeModal() {
   )
 }
 ```
+
+Finally, we should add a `Button` to the UpgradeModal.
+
+feat: Integrate upgrade button in upgrade modal
+
+feat: Add upgrade button to UpgradeModal component
+
+```tsx
+import { Button } from '@/components/ui/button';
+
+export default function UpgradeModal() {
+  const upgradeModal = useUpgradeModal();
+
+  return (
+    <Dialog
+      open={upgradeModal.isOpen}
+      onOpenChange={upgradeModal.onClose}
+    >
+      <DialogContent
+        className='max-w-md p-0 overflow-hidden'
+      >
+          <div className='pl-3'>
+            {/* Promotional features of Visionize Pro */}
+            <ul className='text-sm list-disc'>
+              {/* List of promotional features... */}
+            </ul>
+          </div>
+          <Button
+            className='w-full'
+            variant='primary'
+          >
+            Upgrade
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+```
+
+At this stage of development we can revert the change to turn off the `UpgradeModal`:
+
+`hooks\useUpgradeModal.ts`
+```ts
+export const useUpgradeModal = create<UpgradeModalStore>()((set) => ({
+  isOpen: false, // Initial state: modal is closed
+  onOpen: () => set({ isOpen: true }),
+  onClose: () => set({ isOpen: false }),
+}));
+```
+
