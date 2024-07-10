@@ -26,6 +26,24 @@ export default function UpgradeModal() {
             fill
           />
         </div>
+        <div className='mx-auto p-6 space-y-6 text-neutral-700'>
+          <h2 className='font-semibold text-xl'>
+            Upgrade to Visionize Pro.
+          </h2>
+          <p className='text-xs font-semibold text-neutral-600'>
+            Discover the finest offerings of Visionize. 
+          </p>
+          <div className='pl-3'>
+            {/* Promotional features of Visionize Pro */}
+            <ul className='text-sm list-disc'>
+              <li>Unlimited boards</li>
+              <li>Enhanced security</li>
+              <li>Premium checklists</li>
+              <li>Support Vision-chan!</li>
+              <li>And more upcoming features...</li>
+            </ul>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   )
