@@ -4,7 +4,11 @@ import React from 'react';
 import Image from 'next/image';
 
 import { useUpgradeModal } from '@/hooks/useUpgradeModal';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { 
+  Dialog, 
+  DialogContent 
+} from '@/components/ui/dialog';
 
 export default function UpgradeModal() {
   // Access the upgrade modal state and functions
@@ -43,6 +47,12 @@ export default function UpgradeModal() {
               <li>And more upcoming features...</li>
             </ul>
           </div>
+          <Button
+            className='w-full'
+            variant='primary'
+          >
+            Upgrade
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
