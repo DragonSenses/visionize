@@ -24847,6 +24847,7 @@ feat: Access upgrade modal state and functions
 
 This commit adds the useCardModal hook to retrieve the `id`, `isOpen`, and `onClose` state, and assigns them to the corresponding props of the `Dialog` component within the `CardModal`.
 
+`components\modals\UpgradeModal.tsx`
 ```tsx
 "use client";
 
@@ -24905,3 +24906,67 @@ export const useUpgradeModal = create<UpgradeModalStore>()((set) => ({
   onClose: () => set({ isOpen: false }),
 }));
 ```
+
+### Upgrade Modal's output
+
+Render a `Dialog` component and give it the props `open` and `onOpenChange`.
+ - Set the `open` prop's value to `upgradeModal.isOpen`, which is the zustand store's boolean that indicates whether the modal is open
+ - Set the `onOpenChange` prop to `upgradeModal.onClose`, a function to close the modal
+
+`components\modals\UpgradeModal.tsx`
+```tsx
+"use client";
+
+import React from 'react';
+
+import { useUpgradeModal } from '@/hooks/useUpgradeModal';
+
+export default function UpgradeModal() {
+  // Access the upgrade modal state and functions
+  const upgradeModal = useUpgradeModal();
+
+  return (
+    <Dialog
+      open={upgradeModal.isOpen}
+      onOpenChange={upgradeModal.onClose}
+    >
+      
+    </Dialog>
+  )
+}
+```
+
+Then add the `DialogContent`, a `div` and an `Image` component. The `Image` component will render a hero image, or a website banner for our app.
+
+  - According to [VWO](https://vwo.com/glossary/hero-image), the term "hero image" in web design refers to a large, attention-grabbing picture with text typically shown in the above-the-fold area of the webpage, directly beneath the website header. Typically, a hero image takes up practically the whole pre-scroll full-width area on the page. 
+
+Add that hero image inside the `/public` folder.
+
+```tsx
+// ...
+export default function UpgradeModal() {
+  // Access the upgrade modal state and functions
+  const upgradeModal = useUpgradeModal();
+
+  return (
+    <Dialog
+      open={upgradeModal.isOpen}
+      onOpenChange={upgradeModal.onClose}
+    >
+      <DialogContent
+        className='max-w-md p-0 overflow-hidden'
+      >
+        <div className='relative flex items-center justify-center aspect-video'>
+          <Image
+            src='/hero.jpg'
+            alt='Hero image'
+            className='object-cover'
+            fill
+          />
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+```
+
