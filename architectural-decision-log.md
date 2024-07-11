@@ -25138,3 +25138,12 @@ export function generateAbsoluteUrl(path: string): string {
 }
 ```
 
+Then add the environment variable `NEXT_PUBLIC_APP_URL` to the `.env` file, like so:
+
+feat: Add NEXT_PUBLIC_APP_URL to .env
+
+`.env`
+```sh
+# ...
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
