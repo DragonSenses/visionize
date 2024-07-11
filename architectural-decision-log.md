@@ -25118,3 +25118,23 @@ export default function FormPopover({
     },
   });
 ```
+
+## Upgrade functionality
+
+Now we want to integrate the upgrade functionality to the button. We want it to redirect the user to the stripe checkout page.
+
+Before that we need to create a utility function that prepends the path where the app is hosted to an incoming path. Inside `/lib` create a `generateAbsoluteUrl.ts` file and inside:
+
+feat(utils): Implement URL generation utility
+
+```ts
+/**
+ * Generates an absolute URL by prepending the app's base URL to the provided path.
+ * @param {string} path The relative path to append to the base URL.
+ * @returns The absolute URL.
+ */
+export function generateAbsoluteUrl(path: string): string {
+  return `${process.env.NEXT_PUBLIC_APP_URL}${path}`;
+}
+```
+
