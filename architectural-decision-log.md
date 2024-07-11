@@ -25072,3 +25072,49 @@ export const useUpgradeModal = create<UpgradeModalStore>()((set) => ({
 }));
 ```
 
+### Use the UpgradeModal
+
+Now inside the `FormPopover` create the constant `upgradeModal` with the hook `useUpgradeModal`.
+
+feat: Access upgrade modal state in FormPopover
+
+`components\form\FormPopover.tsx`
+```tsx
+import { useUpgradeModal } from '@/hooks/useUpgradeModal';
+
+export default function FormPopover({
+  // ...props
+}: FormPopoverProps) {
+  const upgradeModal = useUpgradeModal();
+  
+}
+```
+
+Now we want to invoke the upgrade modal every time an error occurs when the `createBoard` server action is called.
+
+feat: Open upgrade modal on board limit error
+
+```tsx
+export default function FormPopover({
+  // ...props
+}: FormPopoverProps) {
+  const upgradeModal = useUpgradeModal();
+
+  const router = useRouter();
+
+  const closeRef = useRef<ElementRef<"button">>(null);
+
+  const { executeServerAction, fieldErrors } = useServerAction(createBoard, {
+    onSuccess: (data) => { 
+      toast.success("Board created.")
+      closeRef.current?.click();
+      router.push(`/board/${data.id}`);
+    },
+    onError: (error) => {
+      console.log({ error });
+      toast.error(error);
+      // Open upgrade modal
+      upgradeModal.onOpen();
+    },
+  });
+```
