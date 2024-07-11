@@ -49,6 +49,7 @@ export default function FormPopover({
     onError: (error) => {
       console.log({ error });
       toast.error(error);
+      upgradeModal.onOpen();
     },
   });
 
