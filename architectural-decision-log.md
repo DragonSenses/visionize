@@ -25164,6 +25164,7 @@ Create the `redirectCheckout` object schema, which will just be am empty object 
 
 feat: Define the redirectCheckout Zod schema
 
+`actions\redirectCheckout\redirectCheckoutSchema.ts`
 ```ts
 import { z } from 'zod';
 
@@ -25172,4 +25173,50 @@ import { z } from 'zod';
  * 
  */
 export const RedirectCheckout = z.object({});
+```
+
+
+### redirectCheckout types
+
+feat: Define types for redirectCheckout action
+
+`actions\redirectCheckout\redirectCheckoutTypes.ts`
+```javascript
+import { z } from 'zod';
+
+// Encapsulate the state of various actions (e.g., fetching data, submitting forms, etc.)
+// Provides a structured way to handle errors and manage data flow
+import { ActionState } from '@/lib/createServerAction';
+
+// Import the schema (validation rules)
+import { RedirectCheckout } from './redirectCheckoutSchema';
+
+// Define the input type based on the schema
+export type InputType = z.infer<typeof RedirectCheckout>;
+
+// Define the output data type (ActionState) with expected output type
+export type OutputType = ActionState<InputType, string>;
+```
+
+### redirectCheckout index handler
+
+docs: Add types and handler for redirectCheckout
+
+feat: Create redirectCheckout action index handler
+
+`actions\deleteCard\index.ts`
+```tsx
+"use server";
+
+import { createServerAction } from "@/lib/createServerAction"; // Server action creator
+
+import { RedirectCheckout } from "./redirectCheckoutSchema"; // Input validation schema
+import { InputType, OutputType } from "./redirectCheckoutTypes"; // Type definitions
+
+async function performAction(data: InputType): Promise<OutputType> {
+  return {};
+}
+
+// Export the server action for external use
+export const redirectCheckout = createServerAction(RedirectCheckout, performAction);
 ```
