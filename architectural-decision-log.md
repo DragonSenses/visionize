@@ -25147,3 +25147,29 @@ feat: Add NEXT_PUBLIC_APP_URL to .env
 # ...
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
+
+### redirectCheckout server action
+
+Create a directory named `redirectCheckout` inside of `/actions` and create the following files:
+
+Create `redirectCheckout` folder inside `/actions` and add the following files:
+
+1. Schema
+2. Types
+3. Server Action handler
+
+#### redirectCheckout schema
+
+Create the `redirectCheckout` object schema, which will just be am empty object for now since we will not pass in anything (nothing to validate).
+
+feat: Define the redirectCheckout Zod schema
+
+```ts
+import { z } from 'zod';
+
+/**
+ * Define the RedirectCheckout object schema.
+ * 
+ */
+export const RedirectCheckout = z.object({});
+```
