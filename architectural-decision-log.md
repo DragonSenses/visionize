@@ -25248,3 +25248,25 @@ async function performAction(data: InputType): Promise<OutputType> {
 
 export const redirectCheckout = createServerAction(RedirectCheckout, performAction);
 ```
+
+Now declare a variable `checkoutUrl` using the `let` keyword and leave it empty for now. This will either be the checkout URL or the billing portal for Stripe.
+
+feat: Add cache revalidation for redirectCheckout
+
+Adds cache revalidation for the updated organization path to ensure immediate UI consistency.
+
+```ts
+async function performAction(data: InputType): Promise<OutputType> {
+// ...
+  let checkoutUrl = "";
+
+  // Revalidate the cache for the updated board path 
+  // to ensure immediate UI consistency post-update
+  revalidatePath(`/board/${boardId}`);
+
+  return {
+    data: checkoutUrl,
+  };
+}
+```
+
