@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 
 import { createServerAction } from "@/lib/createServerAction"; // Server action creator
 import { generateAbsoluteUrl } from "@/lib/generateAbsoluteUrl";
+import { database } from "@/lib/database";
+import { stripe } from "@/lib/stripe";
 
 import { RedirectCheckout } from "./redirectCheckoutSchema"; // Input validation schema
 import { InputType, OutputType } from "./redirectCheckoutTypes"; // Type definitions
@@ -30,6 +32,33 @@ async function performAction(data: InputType): Promise<OutputType> {
   const orgUrl: string = `/org/${orgId}`
   const returnUrl: string = generateAbsoluteUrl(orgUrl);
   let checkoutUrl = "";
+
+  try {
+    // Fetch the organization subscription
+    const orgSubscription = await database.orgSubscription.findUnique({
+      where: {
+        orgId,
+      }
+    });
+
+    // If the user already has an organization subscription
+    if (orgSubscription && orgSubscription.stripeCustomerId) {
+      const stripeSession = await stripe.billingPortal.sessions.create({
+        customer: orgSubscription.stripeCustomerId,
+        return_url: returnUrl,
+      });
+
+      // Set the checkoutUrl to the billing portal instead
+      checkoutUrl = stripeSession.url;
+    } else {
+      // If no subscription then create a stripe checkout session
+
+    }
+  } catch {
+    return {
+      error: "An error occurred when redirecting to checkout."
+    };
+  }
 
   // Revalidate the cache for the updated org path 
   // to ensure immediate UI consistency post-update
