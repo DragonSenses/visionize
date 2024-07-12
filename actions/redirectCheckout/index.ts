@@ -3,6 +3,7 @@
 import { auth, currentUser } from "@clerk/nextjs/server"; // Authentication module
 
 import { createServerAction } from "@/lib/createServerAction"; // Server action creator
+import { generateAbsoluteUrl } from "@/lib/generateAbsoluteUrl";
 
 import { RedirectCheckout } from "./redirectCheckoutSchema"; // Input validation schema
 import { InputType, OutputType } from "./redirectCheckoutTypes"; // Type definitions
@@ -25,6 +26,10 @@ async function performAction(data: InputType): Promise<OutputType> {
       error: "Unauthorized",
     };
   }
+
+  const orgUrl: string = `/org/${orgId}`
+  const returnUrl: string = generateAbsoluteUrl(orgUrl);
+  let checkoutUrl = "";
 
 };
 
