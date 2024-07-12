@@ -25205,7 +25205,7 @@ docs: Add types and handler for redirectCheckout
 feat: Create redirectCheckout action index handler
 
 `actions\deleteCard\index.ts`
-```tsx
+```ts
 "use server";
 
 import { createServerAction } from "@/lib/createServerAction"; // Server action creator
@@ -25218,5 +25218,33 @@ async function performAction(data: InputType): Promise<OutputType> {
 }
 
 // Export the server action for external use
+export const redirectCheckout = createServerAction(RedirectCheckout, performAction);
+```
+
+feat: Add user authentication to redirectCheckout
+
+```ts
+"use server";
+
+import { auth } from "@clerk/nextjs/server";
+
+import { createServerAction } from "@/lib/createServerAction";
+
+import { RedirectCheckout } from "./redirectCheckoutSchema";
+import { InputType, OutputType } from "./redirectCheckoutTypes";
+
+async function performAction(data: InputType): Promise<OutputType> {
+  // Authenticate the user and get their organization ID
+  const { userId, orgId } = auth();
+
+  // If authentication fails, return an error
+  if (!userId || !orgId) {
+    return {
+      error: "Unauthorized",
+    };
+  }
+
+}
+
 export const redirectCheckout = createServerAction(RedirectCheckout, performAction);
 ```
