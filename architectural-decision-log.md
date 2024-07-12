@@ -25308,3 +25308,98 @@ async function performAction(data: InputType): Promise<OutputType> {
 
 export const redirectCheckout = createServerAction(RedirectCheckout, performAction);
 ```
+
+feat: Fetch org subscription in redirectCheckout
+
+feat: Create Stripe session for checkout
+
+This commit adds logic to create a Stripe checkout session when no subscription exists. The session includes details for the "Visionize Pro" product, such as pricing and recurring intervals.
+
+feat: Implement redirectCheckout action logic
+
+```ts
+import { database } from "@/lib/database";
+import { stripe } from "@/lib/stripe";
+
+async function performAction(data: InputType): Promise<OutputType> {
+  // Authenticate the user and get their organization ID
+  const { userId, orgId } = auth();
+  const user = await currentUser();
+
+  // If authentication fails, return an error
+  if (!userId || !orgId || !user) {
+    return {
+      error: "Unauthorized",
+    };
+  }
+
+  const orgUrl: string = `/org/${orgId}`
+  const returnUrl: string = generateAbsoluteUrl(orgUrl);
+  let checkoutUrl = "";
+
+  try {
+    // Fetch the organization subscription
+    const orgSubscription = await database.orgSubscription.findUnique({
+      where: {
+        orgId,
+      }
+    });
+
+    // If the user already has an organization subscription
+    if (orgSubscription && orgSubscription.stripeCustomerId) {
+      const stripeSession = await stripe.billingPortal.sessions.create({
+        customer: orgSubscription.stripeCustomerId,
+        return_url: returnUrl,
+      });
+
+      // Set the checkoutUrl to the billing portal instead
+      checkoutUrl = stripeSession.url;
+    } else {
+      // If no subscription then create a stripe checkout session
+      const stripeSession = await stripe.checkout.sessions.create({
+        success_url: returnUrl,
+        cancel_url: returnUrl,
+        mode: "subscription",
+        payment_method_types: ["card"],
+        billing_address_collection: "auto",
+        customer_email: user.emailAddresses[0].emailAddress,
+        line_items: [
+          {
+            price_data: {
+              currency: "USD",
+              product_data: {
+                name: "Visionize Pro",
+                description: "Visionize Pro provides unlimited boards for your organization."
+              },
+              unit_amount: 2000,
+              recurring: {
+                interval: "month"
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        metadata: {
+          orgId,
+        },
+      });
+
+      // Set the checkout URL to the stripe session URL
+      checkoutUrl = stripeSession.url || "";
+    }
+  } catch {
+    return {
+      error: "An error occurred when redirecting to checkout."
+    };
+  }
+
+  revalidatePath(`/org/${orgId}`);
+
+  return {
+    data: checkoutUrl,
+  };
+
+};
+
+export const redirectCheckout = createServerAction(RedirectCheckout, performAction);
+```
