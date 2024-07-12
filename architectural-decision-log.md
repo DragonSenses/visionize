@@ -25260,9 +25260,9 @@ async function performAction(data: InputType): Promise<OutputType> {
 // ...
   let checkoutUrl = "";
 
-  // Revalidate the cache for the updated board path 
+  // Revalidate the cache for the updated org path 
   // to ensure immediate UI consistency post-update
-  revalidatePath(`/board/${boardId}`);
+  revalidatePath(`/org/${orgId}`);
 
   return {
     data: checkoutUrl,
@@ -25270,3 +25270,41 @@ async function performAction(data: InputType): Promise<OutputType> {
 }
 ```
 
+Let's also get the backend API `user` object of the currently active user with [`currentUser()`](https://clerk.com/docs/references/nextjs/current-user). Also import `generateAbsoluteUrl` to build the string. Create the `orgUrl` and `returnUrl` which invokes `generateAbsoluteUrl(orgUrl)`. 
+
+feat: Get the data needed to redirect checkout
+
+feat(redirectCheckout): Get current active user
+
+feat: Generate absolute URLs in redirectCheckout
+
+This commit adds logic to generate absolute URLs for the `returnUrl` in the `redirectCheckout` action. It ensures that the URL is correctly formatted based on the organization ID.
+
+```ts
+import { auth, currentUser } from "@clerk/nextjs/server"; // Authentication module
+
+import { createServerAction } from "@/lib/createServerAction"; // Server action creator
+import { generateAbsoluteUrl } from "@/lib/generateAbsoluteUrl";
+
+import { RedirectCheckout } from "./redirectCheckoutSchema"; // Input validation schema
+import { InputType, OutputType } from "./redirectCheckoutTypes"; // Type definitions
+
+async function performAction(data: InputType): Promise<OutputType> {
+  const { userId, orgId } = auth();
+  const user = await currentUser();
+
+  if (!userId || !orgId || !user) {
+    return {
+      error: "Unauthorized",
+    };
+  }
+
+  const orgUrl: string = `/org/${orgId}`
+  const returnUrl: string = generateAbsoluteUrl(orgUrl);
+
+  let checkoutUrl = "";
+
+};
+
+export const redirectCheckout = createServerAction(RedirectCheckout, performAction);
+```
