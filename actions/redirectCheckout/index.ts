@@ -52,7 +52,36 @@ async function performAction(data: InputType): Promise<OutputType> {
       checkoutUrl = stripeSession.url;
     } else {
       // If no subscription then create a stripe checkout session
+      const stripeSession = await stripe.checkout.sessions.create({
+        success_url: returnUrl,
+        cancel_url: returnUrl,
+        mode: "subscription",
+        payment_method_types: ["card"],
+        billing_address_collection: "auto",
+        customer_email: user.emailAddresses[0].emailAddress,
+        line_items: [
+          {
+            price_data: {
+              currency: "USD",
+              product_data: {
+                name: "Visionize Pro",
+                description: "Visionize Pro provides unlimited boards for your organization."
+              },
+              unit_amount: 2000,
+              recurring: {
+                interval: "month"
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        metadata: {
+          orgId,
+        },
+      });
 
+      // Set the checkout URL to the stripe session URL
+      checkoutUrl = stripeSession.url || "";
     }
   } catch {
     return {
