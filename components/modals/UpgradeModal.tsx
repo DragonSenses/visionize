@@ -26,7 +26,16 @@ export default function UpgradeModal() {
       // Display a error toast notification if redirectCheckout fails
       toast.error(error);
     },
-  })
+  });
+
+  /**
+   * Handles the upgrade redirection after a successful server action.
+   * Redirects the user to either the checkout session or billing portal.
+   */
+  function handleUpgradeRedirect() {
+    // Execute the redirectCheckout server action
+    executeServerAction({});
+  }
 
   return (
     <Dialog
