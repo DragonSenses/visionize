@@ -16,7 +16,12 @@ export default function UpgradeModal() {
   // Access the upgrade modal state and functions
   const upgradeModal = useUpgradeModal();
 
-  const { executeServerAction, isLoading } = useServerAction(redirectCheckout,)
+  const { executeServerAction, isLoading } = useServerAction(redirectCheckout, {
+    onSuccess(data) {
+      // Redirect the user to either the checkout session or billing portal
+      window.location.href = data;
+    },
+  })
 
   return (
     <Dialog
