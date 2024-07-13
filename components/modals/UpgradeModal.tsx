@@ -3,7 +3,9 @@
 import React from 'react';
 import Image from 'next/image';
 
+import { useServerAction } from '@/hooks/useServerAction';
 import { useUpgradeModal } from '@/hooks/useUpgradeModal';
+import { redirectCheckout } from '@/actions/redirectCheckout';
 import { Button } from '@/components/ui/button';
 import { 
   Dialog, 
@@ -13,6 +15,8 @@ import {
 export default function UpgradeModal() {
   // Access the upgrade modal state and functions
   const upgradeModal = useUpgradeModal();
+
+  const { executeServerAction, isLoading } = useServerAction(redirectCheckout,)
 
   return (
     <Dialog
