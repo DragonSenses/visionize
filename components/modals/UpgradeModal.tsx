@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { toast } from 'sonner';
 
 import { useServerAction } from '@/hooks/useServerAction';
 import { useUpgradeModal } from '@/hooks/useUpgradeModal';
@@ -20,6 +21,10 @@ export default function UpgradeModal() {
     onSuccess(data) {
       // Redirect the user to either the checkout session or billing portal
       window.location.href = data;
+    },
+    onError(error) {
+      // Display a error toast notification if redirectCheckout fails
+      toast.error(error);
     },
   })
 
