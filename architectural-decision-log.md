@@ -25443,3 +25443,60 @@ export default function UpgradeModal() {
     },
   })
 ```
+
+feat: Extend UpgradeModal with redirect behavior
+
+Now create the click handler function that executes the `redirectCheckout` server action.
+
+feat: Implement checkout redirection click handler
+
+```tsx
+  /**
+   * Handles the upgrade redirection after a successful server action.
+   * Redirects the user to either the checkout session or billing portal.
+   */
+  function handleUpgradeRedirect() {
+    // Execute the redirectCheckout server action
+    executeServerAction({});
+  }
+```
+
+Now for wiring up the button with to the specific action or behavior. Assign `handleUpgradeRedirect` to the the upgrade `Button`'s `onClick`. While we are here we can also set the `disabled` prop to `isLoading`.
+
+feat: Connect upgrade button to redirection
+
+```tsx
+  /**
+   * Handles the upgrade redirection after a successful server action.
+   * Redirects the user to either the checkout session or billing portal.
+   */
+  function handleUpgradeRedirect() {
+    // Execute the redirectCheckout server action
+    executeServerAction({});
+  }
+
+  return (
+    <Dialog
+      open={upgradeModal.isOpen}
+      onOpenChange={upgradeModal.onClose}
+    >
+      <DialogContent
+        className='max-w-md p-0 overflow-hidden'
+      >
+        {/* Upgrade Image Banner */}
+        <div className='mx-auto p-6 space-y-6 text-neutral-700'>
+          {/* ... */}
+          <Button
+            className='w-full'
+            disabled={isLoading}
+            onClick={handleUpgradeRedirect}
+            variant='primary'
+          >
+            Upgrade
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+```
