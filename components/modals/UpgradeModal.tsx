@@ -45,6 +45,7 @@ export default function UpgradeModal() {
       <DialogContent
         className='max-w-md p-0 overflow-hidden'
       >
+        {/* Upgrade Image Banner */}
         <div className='relative flex items-center justify-center aspect-video'>
           <Image
             src='/hero.jpg'
@@ -72,6 +73,8 @@ export default function UpgradeModal() {
           </div>
           <Button
             className='w-full'
+            disabled={isLoading}
+            onClick={handleUpgradeRedirect}
             variant='primary'
           >
             Upgrade
