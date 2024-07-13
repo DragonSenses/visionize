@@ -25403,3 +25403,43 @@ async function performAction(data: InputType): Promise<OutputType> {
 
 export const redirectCheckout = createServerAction(RedirectCheckout, performAction);
 ```
+
+## Extend UpgradeModal behavior
+
+Now we need to extend the UpgradeModal behavior with redirectCheckout. Using the `useServerAction` which creates a type-safe server action from `redirectCheckout`.We also need to implement the `onSuccess` and `onError` callbacks for the server action.
+
+feat(UpgradeModal): Instantiate redirectCheckout
+
+feat: Handle success and error callbacks in action
+
+- Show error toast notification using onError callback when redirectCheckout fails
+
+feat: Implement onSuccess callback in redirect
+
+Implement onSuccess callback inside the redirectCheckout server action to redirect users after successful checkout. It changes the current page's URL to the specified location, navigating the user to the desired destination (i.e., checkout session URL or billing portal URL).
+
+feat: Implement onError callback in server action
+
+Show error toast notification using onError callback when redirectCheckout server action fails.
+
+```tsx
+import { toast } from 'sonner';
+
+import { useServerAction } from '@/hooks/useServerAction';
+import { useUpgradeModal } from '@/hooks/useUpgradeModal';
+import { redirectCheckout } from '@/actions/redirectCheckout';
+
+export default function UpgradeModal() {
+  const upgradeModal = useUpgradeModal();
+
+  const { executeServerAction, isLoading } = useServerAction(redirectCheckout, {
+    onSuccess(data) {
+      // Redirect the user to either the checkout session or billing portal
+      window.location.href = data;
+    },
+    onError(error) {
+      // Display a error toast notification if redirectCheckout fails
+      toast.error(error);
+    },
+  })
+```
