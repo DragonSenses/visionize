@@ -27,6 +27,7 @@ export async function POST(req: Request) {
   // Save the event as a Stripe checkout session
   const session = event.data.object as Stripe.Checkout.Session;
 
+  // This webhook event processes the user's initial subscription creation
   // Check if the event type is 'checkout.session.completed'
   if (event.type === "checkout.session.completed") {
     // Retrieve the subscription details using the subscription ID from the session
@@ -40,7 +41,19 @@ export async function POST(req: Request) {
       return new NextResponse("Organization ID is required", { status: 400 });
     }
 
-    // Additional logic can be added here for handling the completed checkout session
-
+    // Handle the completed checkout session by creating a new
+    // organization subscription in the database
+    await database.orgSubscription.create({
+      data: {
+        orgId: session?.metadata?.orgId,
+        stripeCustomerId: subscription.customer as string,
+        stripeSubscriptionId: subscription.id,
+        stripePriceId: subscription.items.data[0].price.id,
+        stripeCurrentPeriodEnd: new Date(
+          subscription.current_period_end * 1000
+        ),
+      },
+    });
   }
+
 }
