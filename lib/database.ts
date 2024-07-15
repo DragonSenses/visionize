@@ -20,10 +20,10 @@ declare const globalThis: {
 
 // Export a database variable that is either the existing global prisma instance or a new one
 // const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
-const database = globalThis.prismaGlobal ?? prismaClientSingleton()
+export const database = globalThis.prismaGlobal ?? prismaClientSingleton()
 
 // export default prisma
-export default database
+// export default database
 
 // If the environment is not production, assign the database variable to the global prisma variable
 // if (process.env.NODE_ENV !== 'production') globalThis.prismaGlobal = prisma
