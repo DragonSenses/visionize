@@ -25700,7 +25700,7 @@ export async function POST(req: Request) {
       body,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!
-    )
+    );
   } catch (error: any) {
     // On error, log and return the error message
     return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 });
@@ -25721,5 +25721,25 @@ Create and save Stripe checkout session from webhook event
 - Handle the POST request from Stripe and verify the webhook signature
 - Use the stripe.webhooks.constructEvent method to parse the event
 - Cast the event data object as a Stripe.Checkout.Session type
-- Save the session in the database or use it for further processing
+- Save the session in the database or use it for further processin
 
+feat: Verify user checkout completion from webhook
+
+```ts
+  // Check if the event type is 'checkout.session.completed'
+  if (event.type === "checkout.session.completed") {
+    
+    // Retrieve the subscription details using the subscription ID from the session
+    const subscription = await stripe.subscriptions.retrieve(
+      session.subscription as string
+    );
+
+    // Check if the session metadata contains an organization ID
+    if (!session?.metadata?.orgId) {
+      // If the organization ID is missing, return an error response
+      return new NextResponse("Organization ID is required", { status: 400 });
+    }
+
+    // Additional logic can be added here for handling the completed checkout session
+  }
+```
