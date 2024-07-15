@@ -25780,3 +25780,55 @@ feat: Handle initial subscription creation event
     });
   }
 ```
+
+### Webhook endpoint handler
+
+The webhook endpoint function must be able to handle more than one [event](https://docs.stripe.com/api/events/object). So we will refactor this to a [switch](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/switch) statement.
+
+refactor: Use switch statement for event handling
+
+This commit improves the webhook endpoint function by refactoring the conditional statements and using switch statements for handling Stripe events.
+
+- **Readability**: Provides a clear and organized structure for different event types, making the code easier to understand at a glance.
+- **Modularity**: Each `case` block handles a specific event type, separating the logic and improving the separation of concerns.
+- **Maintainability**: Simplifies the process of adding new event types, making the code easier to extend and reducing redundancy.
+- **Performance**: Potentially optimizes execution by using a switch statement instead of multiple if-else statements.
+- **Error Handling**: Includes a default case to handle unexpected event types, improving the robustness of the code.
+- **Scalability**: Logical grouping of related event handling logic makes the code more scalable as the application grows.
+
+```ts
+  // This webhook event processes various Stripe events
+  switch (event.type) {
+    // This webhook event processes the user's initial subscription creation
+    case "checkout.session.completed":
+      // Retrieve the subscription details using the subscription ID from the session
+      const subscription = await stripe.subscriptions.retrieve(
+        session.subscription as string
+      );
+
+      // Check if the session metadata contains an organization ID
+      if (!session?.metadata?.orgId) {
+        // If the organization ID is missing, return an error response
+        return new NextResponse("Organization ID is required", { status: 400 });
+      }
+
+      // Handle the completed checkout session by creating a new
+      // organization subscription in the database
+      await database.orgSubscription.create({
+        data: {
+          orgId: session?.metadata?.orgId,
+          stripeCustomerId: subscription.customer as string,
+          stripeSubscriptionId: subscription.id,
+          stripePriceId: subscription.items.data[0].price.id,
+          stripeCurrentPeriodEnd: new Date(
+            subscription.current_period_end * 1000
+          ),
+        },
+      });
+      break;
+
+    default:
+      // Handle other event types or do nothing
+      break;
+  }
+```
