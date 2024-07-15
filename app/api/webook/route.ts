@@ -7,15 +7,15 @@ import { stripe } from "@/lib/stripe";
 
 /**
  * Handles Stripe webhook events and triggers post-payment commerce actions.
- * 
+ *
  * This endpoint listens for POST requests from Stripe webhooks, containing
- * a JSON payload with event details. It processes the event and returns a 
- * successful status code (2xx) before executing any complex logic to avoid 
+ * a JSON payload with event details. It processes the event and returns a
+ * successful status code (2xx) before executing any complex logic to avoid
  * timeouts.
  *
  * @link https://docs.stripe.com/webhooks
  * @param {Request} req - The incoming webhook request from Stripe.
- * @returns {Promise<NextResponse>} A response with a 2xx status code indicating 
+ * @returns {Promise<NextResponse>} A response with a 2xx status code indicating
  * successful receipt of the webhook event.
  */
 export async function POST(req: Request): Promise<NextResponse> {
@@ -33,7 +33,10 @@ export async function POST(req: Request): Promise<NextResponse> {
   } catch (error: any) {
     // On error, log and return the error message
     console.log(`Webhook signature verification failed.`, error.message);
-    return new NextResponse(`Webhook signature verification failed. ${error.message}`, { status: 400 });
+    return new NextResponse(
+      `Webhook signature verification failed. ${error.message}`,
+      { status: 400 }
+    );
   }
 
   // Successfully constructed event
@@ -44,7 +47,7 @@ export async function POST(req: Request): Promise<NextResponse> {
   // This webhook event processes various Stripe events
   switch (event.type) {
     // This webhook event processes the user's initial subscription creation
-    case "checkout.session.completed":
+    case "checkout.session.completed": {
       // Retrieve the subscription details using the subscription ID from the session
       const subscription = await stripe.subscriptions.retrieve(
         session.subscription as string
@@ -70,6 +73,8 @@ export async function POST(req: Request): Promise<NextResponse> {
         },
       });
       break;
+    }
+
 
     default:
       // Handle unexpected event type
