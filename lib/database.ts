@@ -6,41 +6,25 @@ import { PrismaClient } from '@prisma/client'
  * This code is a way to prevent creating multiple instances of 
  * Prisma Client in your application, which can lead to performance
  * issues or errors.
+ * 
+ * @link https://www.prisma.io/docs/orm/more/help-and-troubleshooting/help-articles/nextjs-prisma-client-dev-practices
 */
+const prismaClientSingleton = () => {
+  return new PrismaClient()
+}
 
 // Declare a global variable prisma of type PrismaClient or undefined
-declare global {
-  var prisma: PrismaClient | undefined;
-};
+declare const globalThis: {
+  prismaGlobal: ReturnType<typeof prismaClientSingleton>;
+} & typeof global;
 
 // Export a database variable that is either the existing global prisma instance or a new one
-export const database = globalThis.prisma || new PrismaClient();
+// const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
+const database = globalThis.prismaGlobal ?? prismaClientSingleton()
+
+// export default prisma
+export default database
 
 // If the environment is not production, assign the database variable to the global prisma variable
-if(process.env.NODE_ENV !== "production") {
-  globalThis.prisma = database;
-}
-
-/**
- * Prisma Client - Querying the database
- * @see https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/querying-the-database-typescript-postgresql
- */
-
-// const prisma = new PrismaClient()
-
-/*  
-async function main() {
-  // ... you will write your Prisma Client queries here
-}
-
-main()
-  .then(async () => {
-    await prisma.$disconnect()
-  })
-  .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
-
-*/
+// if (process.env.NODE_ENV !== 'production') globalThis.prismaGlobal = prisma
+if (process.env.NODE_ENV !== 'production') globalThis.prismaGlobal = database
