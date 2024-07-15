@@ -25511,3 +25511,67 @@ feat: Connect upgrade button to redirection
 
 Payments are disallowed for now because we have not set up the webhooks.
 
+## Webhooks
+
+A webhook is a way for one web application to send data to another web application when a certain event happens. For example, you can use a webhook to notify your email service when someone signs up on your website. A webhook usually consists of a URL and a payload, which is the data that is sent with the request.
+
+- [Webhook](https://en.wikipedia.org/wiki/Webhook)
+
+- A webhook in web development is a method of augmenting or altering the behavior of a web page or web application with custom callbacks. These callbacks may be maintained, modified, and managed by third-party users and developers who may not necessarily be affiliated with the originating website or application.
+
+- Webhooks are "user-defined HTTP callbacks". They are usually triggered by some event, such as pushing code to a repository, a comment being posted to a blog, etc. When that event occurs, the source site makes an HTTP request to the URL configured for the webhook. Users can configure them to cause events on one site to invoke behavior on another.
+
+- Common uses are to trigger builds with continuous integration systems, or to notify bug tracking systems. Because webhooks use HTTP, they can be integrated into web services without adding new infrastructure.
+
+##### Connect to webhook locally using Stripe
+
+- [Webhook endpoints | Stripe API reference](https://stripe.com/docs/api/webhook_endpoints/object)
+
+Because we are not in production right now, we have to connect to a webhook locally. We can set this up by configuring a webhook endpoint via the API or configure webhooks from the dashboards, which provides a UI for registering and testing your webhook endpoints.
+
+Access the stripe website and sign-in, click the `Developers` tab, and click the `Webhooks` tab.
+
+In production we will click "Add an endpoint", but since we are testing a webhook locally we click the "Test in a local environment" button.
+
+Install the `Stripe CLI` and open up the terminal.
+
+- Make sure to navigate the the `admin-dashboard` nextjs project, in the directory: `/visionize`
+
+Follow the instructions on Stripe Dashboard > Webhooks > Test in a local environment.
+
+1. Listen to Stripe events
+
+- Open up your respective OS terminal and login through the Stripe CLI
+
+```sh
+stripe login
+```
+
+- Allow Stripe CLI to access acount information with the same code
+
+2. Forward events to your webhook
+
+```sh
+stripe listen --forward-to localhost:3000/webhook
+```
+
+And here we get the **webhook signing secret** from our command line interface.
+
+Copy that key we get to create our webhook.
+
+Then add the webhook signing secret as an environment variable. Inside the `.env` file, add the variable named `STRIPE_WEBHOOK_SECRET` and set it equal to the key you copied.
+
+```env
+//...
+
+STRIPE_WEBHOOK_SECRET=YOUR_WEBHOOK_SIGNING_SECRET_KEY_HERE
+```
+
+3. Trigger events with the CLI
+
+```sh
+stripe trigger
+```
+
+With our **stripe webhook signing secret** we got from step 2, we can create our webhook.
+
