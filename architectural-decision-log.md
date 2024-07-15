@@ -25500,3 +25500,14 @@ feat: Connect upgrade button to redirection
   )
 }
 ```
+
+### Testing redirect behavior
+
+1. Create an organization
+2. Create one board beyond the board limit (Button will say 0 remaining)
+3. `UpgradeModal` appears
+4. Click the upgrade button
+5. User is redirected to stripe checkout page
+
+Payments are disallowed for now because we have not set up the webhooks.
+
