@@ -25931,3 +25931,128 @@ export async function POST(req: Request): Promise<NextResponse> {
 }
 ```
 
+#### Issue: Cannot redeclare block-scoped variable in switch case
+
+Now let's handle the case when the user has renewed their subscription. The webhook event that indicates this is `invoice.payment_succeeded`. Then retrieve the subscription details again. But we get an error:
+
+```sh
+Cannot redeclare block-scoped variable 'subscription'.
+```
+
+```ts
+  switch (event.type) {
+    case "checkout.session.completed":
+      const subscription = await stripe.subscriptions.retrieve(
+        session.subscription as string
+      );
+
+      // complex logic...
+      break;
+
+    // This event indicates that the user has renewed their subscription
+    case "invoice.payment_succeeded":
+      // Handle the invoice payment succeeded event
+
+      const subscription = await stripe.subscriptions.retrieve(
+        session.subscription as string
+      );
+      break;
+
+    default:
+      // Handle unexpected event type
+      console.log(`Unhandled event type ${event.type}.`);
+      break;
+  }
+```
+
+This happens because in JavaScript and TypeScript, each case within a switch statement is not considered a separate block scope. This means that variables declared with let or const within one case are accessible in other case blocks, leading to potential redeclaration errors.
+
+#### Solution to "Cannot redeclare block-scope variable in switch case"
+
+We have two approaches to this:
+
+1. Redeclare subscription variable outside the `switch` statement and assign it within each case
+
+```ts
+export async function POST(req: Request): Promise<NextResponse> {
+  const event = await req.json();
+  // Redeclare variable outside switch using 'let' keyword
+  let subscription;
+
+  switch (event.type) {
+    case "checkout.session.completed":
+      subscription = await stripe.subscriptions.retrieve(
+        session.subscription as string
+      );
+
+      // complex logic...
+      break;
+
+    case "invoice.payment_succeeded":
+
+      subscription = await stripe.subscriptions.retrieve(
+        session.subscription as string
+      );
+      break;
+
+    default:
+      // Handle unexpected event type
+      console.log(`Unhandled event type ${event.type}.`);
+      break;
+  }
+
+}
+```
+
+2. Or use block scopes within each case by wrapping the code in curly braces `{}`.
+
+```ts
+import { NextResponse } from 'next/server';
+
+export async function POST(req: Request): Promise<NextResponse> {
+  const event = await req.json();
+
+  switch (event.type) {
+    case "checkout.session.completed": {
+      const subscription = await stripe.subscriptions.retrieve(
+        session.subscription as string
+      );
+
+      // complex logic...
+      break;
+    }
+
+    case "invoice.payment_succeeded": {
+
+      const subscription = await stripe.subscriptions.retrieve(
+        session.subscription as string
+      );
+      break;
+    }
+
+    default:
+      console.log(`Unhandled event type ${event.type}.`);
+      break;
+  }
+
+  return NextResponse.json({ received: true }, { status: 200 });
+}
+```
+
+Both approaches have their merits, but using block scopes within each `case` is generally considered better practice for a few reasons:
+
+1. **Encapsulation**: Each `case` block is self-contained, making it easier to read and maintain. Variables declared within a block are only accessible within that block, reducing the risk of accidental redeclaration or misuse.
+
+2. **Clarity**: It makes the code clearer by visually separating the logic for each `case`. This can help other developers (or future you) understand the code more quickly.
+
+3. **Scoping**: It leverages the block scoping rules of `let` and `const`, which is more in line with modern JavaScript/TypeScript practices.
+
+fix: Redeclaration error in switch cases
+
+refactor: Use block scoping in switch cases
+
+Improve webhook handler's switch cases by using block scopes within each case. This change ensures the `subscription` variable remains distinct, preventing accidental redeclaration or misuse.
+
+- Encapsulate each case in its own block to prevent variable redeclaration
+- Improve code readability and maintainability
+- Ensure proper scoping of variables within each case
