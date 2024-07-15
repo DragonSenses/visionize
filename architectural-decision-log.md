@@ -25743,3 +25743,40 @@ feat: Verify user checkout completion from webhook
     // Additional logic can be added here for handling the completed checkout session
   }
 ```
+
+Now notice that this even `checkout.session.completed` is a webhook event that triggers when the user creates a subscription for the first time. We now need to create the `orgSubscription` in the database to reflect this change:
+
+feat: Create orgSubscription in db from checkout
+feat: Handle initial subscription creation event
+
+`app\api\webook\route.ts`
+```ts
+  // This webhook event processes the user's initial subscription creation
+  // Check if the event type is 'checkout.session.completed'
+  if (event.type === "checkout.session.completed") {
+    // Retrieve the subscription details using the subscription ID from the session
+    const subscription = await stripe.subscriptions.retrieve(
+      session.subscription as string
+    );
+
+    // Check if the session metadata contains an organization ID
+    if (!session?.metadata?.orgId) {
+      // If the organization ID is missing, return an error response
+      return new NextResponse("Organization ID is required", { status: 400 });
+    }
+
+    // Handle the completed checkout session by creating a new
+    // organization subscription in the database
+    await database.orgSubscription.create({
+      data: {
+        orgId: session?.metadata?.orgId,
+        stripeCustomerId: subscription.customer as string,
+        stripeSubscriptionId: subscription.id,
+        stripePriceId: subscription.items.data[0].price.id,
+        stripeCurrentPeriodEnd: new Date(
+          subscription.current_period_end * 1000
+        ),
+      },
+    });
+  }
+```
