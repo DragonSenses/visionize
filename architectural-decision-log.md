@@ -26276,3 +26276,44 @@ export async function POST(req: Request): Promise<NextResponse> {
   return NextResponse.json({ received: true }, { status: 200 });
 }
 ```
+
+##### Make api webhook route public
+
+Before we test the webhook locally, we need to make the route public in the middleware so it won't require authentication.
+
+feat: Make /api/webhook route public
+
+- Update middleware to treat /api/webhook as a public route
+- Ensure no authentication is required for accessing the webhook endpoint
+
+`middleware.ts`
+```ts
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+
+const isPublicRoute = createRouteMatcher([
+  "/", 
+  "/sign-in(.*)", 
+  "/sign-up(.*)", 
+  "/api/webhook"
+]);
+
+export default clerkMiddleware((auth, req) => {
+  // If user is logged-in and on the landing page, redirect them
+  if (auth().userId && req.nextUrl.pathname === "/") {
+    const orgSelection = new URL("/org-selection", req.url);
+    return NextResponse.redirect(orgSelection);
+  }
+
+  if (isPublicRoute(req)) return; // if it's a public route, do nothing
+
+  // For any other route, require auth
+  // Also redirects unauthenticated users to the sign-in route automatically
+  auth().protect();
+});
+
+export const config = {
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+};
+```
+
