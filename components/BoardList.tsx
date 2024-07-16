@@ -2,9 +2,10 @@ import React from 'react';
 import Link from 'next/link';
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
-import { HelpCircle, UserRound } from 'lucide-react';
+import { HelpCircle, Infinity, UserRound } from 'lucide-react';
 
 import { FREE_BOARD_THRESHOLD } from '@/constants/boards';
+import { checkSubscription } from '@/lib/checkSubscription';
 import { database } from '@/lib/database';
 import { getAvailableBoardCount } from '@/lib/orgLimit';
 import FormPopover from '@/components/form/FormPopover';
@@ -30,6 +31,8 @@ export default async function BoardList() {
 
   const availableBoardCount = await getAvailableBoardCount(orgId);
 
+  const isSubscribed = await checkSubscription(orgId);
+  
   return (
     <div className='space-y-4'>
       {/* User icon header */}
@@ -59,16 +62,24 @@ export default async function BoardList() {
             role='button'
             className='relative flex flex-col items-center h-full w-full border border-solid rounded-sm aspect-video bg-muted gap-y-1 justify-center transition hover:opacity-75'
           >
-            <p className='text-sm'>Create new board</p>
-            <BoardCountDisplay remainingBoardCount={availableBoardCount} />
-            <BoardTooltip
-              sideOffset={40}
-              description={`
+            <p className='text-sm font-semibold'>Create new board</p>
+            {isSubscribed ?
+              <div className='flex items-center gap-x-0.5 text-sm text-sky-950 font-extrabold'>
+                <span>Unlimited</span>
+                <Infinity className='h-5 w-5' />
+              </div> :
+              <>
+                <BoardCountDisplay remainingBoardCount={availableBoardCount} />
+                <BoardTooltip
+                  sideOffset={40}
+                  description={`
                 Free workspaces allow up to ${ FREE_BOARD_THRESHOLD } boards. 
                 Upgrade this workspace to create unlimited boards.`}
-            >
-              <HelpCircle className='absolute bottom-2 right-2 h-[14px] w-[14px]' />
-            </BoardTooltip>
+                >
+                  <HelpCircle className='absolute bottom-2 right-2 h-[14px] w-[14px]' />
+                </BoardTooltip>
+              </>
+            }
           </div>
         </FormPopover>
       </div>
