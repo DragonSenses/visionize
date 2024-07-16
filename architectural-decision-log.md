@@ -32,7 +32,7 @@ With that out of the way, let's move on to development.
 
 *Visualize* and *realize* your vision with Visionize, a task management app that will help you reach your goals.
 
-Inspired by the [Kanban](https://en.wikipedia.org/wiki/Kanban_(development)) development process, allows users to vieew their progress and process, from start to finish.
+Inspired by the [Kanban](https://en.wikipedia.org/wiki/Kanban_(development)) development process, allows users to view their progress and process, from start to finish.
 
 Currently, this project is just a way to learn and implement and practice skills and is not meant for commercial use. Certain design decisions made here favor ease of development over costs in service (e.g., Clerk as authentication as a service as opposed to a self-hosting solution) so may not be lucrative in the long-term. See section on [commercial feasibility](#commercial-feasibility) for more discussion on service pricing, commercial feasaibility, and alternatives to improve it.
 
@@ -52,7 +52,7 @@ Currently, this project is just a way to learn and implement and practice skills
 - Board limit for every organization
 - Stripe subscription for each organization to unlock unlimited boards
 - Landing page
-- MySQL DB
+- PostgreSQL DB
 - Prisma ORM
 - shadcnUI & TailwindCSS
 
@@ -78,8 +78,7 @@ Front-End
 - zustand (global state management)
 
 Database
-- MySQL
-- PlanetScale (TODO: Pending removal)
+- PostgresSQL
 - Prisma (ORM)
 
 Payment and Billing
@@ -88,7 +87,6 @@ Payment and Billing
 Authentication
 - Clerk
   - For now Clerk is fine to develop quickly, but may switch to [Passportjs](https://www.passportjs.org/docs/)
-- [Passportjs | Better Documentation](https://github.com/jwalton/passport-api-docs)
 
 HTTP Client
 - Axios
@@ -338,8 +336,6 @@ As we can see in the [documentation](https://nextjs.org/docs/app/building-your-a
 - Files are used to create UI that is shown for a route segment.
 
 So in order to organize our project without affecting routing, we need to use [Route Groups and Private Folders](https://nextjs.org/docs/getting-started/project-structure#route-groups-and-private-folders) which is denoted by `(folder)` and `_folder` respectively.
-
-#### Next.js exports
 
 ### On to project development
 
@@ -1612,6 +1608,29 @@ export default function OrganizationSelectionPage() {
 
 This commit adds three props to the OrganizationList component from @clerk/nextjs: afterCreateOrganizationUrl, afterSelectPersonalUrl, and afterSelectOrganizationUrl. These props allow the user to to navigate to after creating or selecting an organization or a personal account. This design decision enables both teams and individuals.
 
+#### Update: Disallow personal pages, only allow organization accounts
+
+- [Organizationlist component | Clerk docs](https://clerk.com/docs/components/organization/organization-list#organization-list-component)
+
+In the `OrganizationList` component, we will set `hidePersonal` prop to `false` to hide the personal account entry, so users will only be able to switch between organizations.
+
+feat: Exclude personal accounts from org list
+
+```tsx
+import React from 'react';
+import { OrganizationList } from '@clerk/nextjs';
+
+export default function OrganizationSelectionPage() {
+  return (
+    <OrganizationList
+      hidePersonal={true}
+      afterCreateOrganizationUrl='/org/:id'
+      afterSelectOrganizationUrl='/org/:id'
+    />
+  );
+};
+```
+
 ## Dashboard
 
 We want the user to be routed to the app's dashboard so they can start using the app.
@@ -1858,10 +1877,10 @@ export const Navbar = () => {
       </div>
       <div className='ml-auto flex items-center gap-x-2'>
         <OrganizationSwitcher 
+          hidePersonal={true}
           afterCreateOrganizationUrl='/org/:id'
           afterLeaveOrganizationUrl='/org-selection'
           afterSelectOrganizationUrl="/org/:id"
-          afterSelectPersonalUrl='/user/:id'
         />
       </div>
     </nav>
@@ -1876,10 +1895,10 @@ Let's use the `appearance` prop to style the `OrganizationSwitcher` component.
 
 ```tsx
 <OrganizationSwitcher 
+  hidePersonal={true}
   afterCreateOrganizationUrl='/org/:id'
   afterLeaveOrganizationUrl='/org-selection'
   afterSelectOrganizationUrl="/org/:id"
-  afterSelectPersonalUrl='/user/:id'
   appearance={{
     elements: {
       rootBox: {
@@ -1921,10 +1940,10 @@ export const Navbar = () => {
       </div>
       <div className='ml-auto flex items-center gap-x-2'>
         <OrganizationSwitcher 
+          hidePersonal={true}
           afterCreateOrganizationUrl='/org/:id'
           afterLeaveOrganizationUrl='/org-selection'
           afterSelectOrganizationUrl="/org/:id"
-          afterSelectPersonalUrl='/user/:id'
           appearance={{
             elements: {
               rootBox: {
@@ -23320,6 +23339,108 @@ export default async function UserIdPage() {
     </div>
   )
 }
+```
+
+## Update: Disallow personal pages, only allow organization accounts
+
+docs: Document removal of user orgs from app
+
+- [Organizationlist component | Clerk docs](https://clerk.com/docs/components/organization/organization-list#organization-list-component)
+
+In the `OrganizationList` component, we will set `hidePersonal` prop to `false` to hide the personal account entry, so users will only be able to switch between organizations.
+
+refactor: Exclude personal accounts from org list
+
+```tsx
+import React from 'react';
+import { OrganizationList } from '@clerk/nextjs';
+
+export default function OrganizationSelectionPage() {
+  return (
+    <OrganizationList
+      hidePersonal={true}
+      afterCreateOrganizationUrl='/org/:id'
+      afterSelectOrganizationUrl='/org/:id'
+    />
+  );
+};
+```
+
+Additionally, delete any user pages if you have created them such as `app\(app)\(dashboard)\user\[userId]\page.tsx` and `app\(app)\(dashboard)\user\layout.tsx`.
+
+refactor: Remove outdated user route segment
+
+- Deleted 'user' route segment, including '/user/[userId]/page.tsx' and 'user/layout.tsx'.
+- These files are no longer relevant as the application now disallows personal pages.
+
+### Remove personal page option in navbar
+
+- [OrganizationSwitcher component | Clerk docs](https://clerk.com/docs/components/organization/organization-switcher#organization-switcher-component)
+
+refactor: Remove personal accounts in org switcher
+
+`app\(app)\(dashboard)\_components\Navbar.tsx`
+```tsx
+import React from 'react';
+import { OrganizationSwitcher, UserButton } from '@clerk/nextjs';
+import { Plus } from 'lucide-react';
+
+import Logo from '@/components/Logo';
+import { Button } from '@/components/ui/button';
+
+import MobileSidebar from './MobileSidebar';
+import FormPopover from '@/components/form/FormPopover';
+
+export const Navbar = () => {
+  return (
+    <nav className='flex items-center fixed px-4 z-10 top-0 w-full h-14 border-b shadow-sm bg-white'>
+      <MobileSidebar />
+      <div className='flex items-center gap-x-4'>
+        {/* For screens 768px and larger  */}
+        <div className='hidden md:flex'>
+          <Logo />
+        </div>
+        <FormPopover align='start' side='bottom' sideOffset={18}>
+          <Button
+            variant='primary'
+            size='sm'
+            className='rounded-sm py-1.5 px-2 h-auto'
+          >
+            <span className='hidden md:block'>Create</span>
+            <Plus className='block md:pl-1 h-4 w-4' />
+          </Button>
+        </FormPopover>
+      </div>
+      <div className='ml-auto flex items-center gap-x-2'>
+        <OrganizationSwitcher
+          hidePersonal={true}
+          afterCreateOrganizationUrl='/org/:id'
+          afterLeaveOrganizationUrl='/org-selection'
+          afterSelectOrganizationUrl="/org/:id"
+          appearance={{
+            elements: {
+              rootBox: {
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              },
+            },
+          }}
+        />
+        <UserButton
+          appearance={{
+            elements: {
+              avatarBox: {
+                height: 30,
+                width: 30,
+              },
+            },
+          }}
+        />
+      </div>
+    </nav>
+  );
+};
 ```
 
 ### Update to Clerk (v5.1.4)
