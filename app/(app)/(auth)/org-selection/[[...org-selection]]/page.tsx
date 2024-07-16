@@ -3,9 +3,9 @@ import { OrganizationList } from '@clerk/nextjs';
 
 export default function OrganizationSelectionPage() {
   return (
-    <OrganizationList 
+    <OrganizationList
+      hidePersonal={true}
       afterCreateOrganizationUrl='/org/:id'
-      afterSelectPersonalUrl='/user/:id'
       afterSelectOrganizationUrl='/org/:id'
     />
   );
