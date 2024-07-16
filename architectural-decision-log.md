@@ -26476,7 +26476,7 @@ Add a guide to test and verify the integration using Stripe payments. This simul
 To ensure the payment status is accurately reflected on the front-end, we need to:
 
 - Display a new board creation button that indicates unlimited board limits.
-- Implement a new server action to enable unlimited board creation.
+- Modify `createBoard` server action to enable unlimited board creation.
 
 ### Display unlimited board creation button
 
@@ -26568,4 +26568,90 @@ export default async function BoardList() {
     </div>
   )
 }
+```
+
+### Allow unlimited board creation in server action
+
+feat: Implement subscription in createBoard action
+
+Navigate to `createBoard` server action and create `isSubscribed` variable with `checkSubscription(orgId)` utility function.
+
+In this updated version:
+
+1. The subscription status is checked first.
+2. If the user is not subscribed, the board count limit is checked.
+3. The board creation process proceeds as usual.
+4. The available board count is incremented only if the user is not subscribed.
+
+feat: Enable unlimited boards for subscribed users
+
+- Implemented logic to bypass board count limit for subscribed users.
+- Added checks for subscription status in server action.
+- Ensured non-subscribed users still adhere to board count limits.
+
+`actions\createBoard\index.ts`
+```ts
+"use server";
+
+import { hasAvailableBoardCount, incrementAvailableBoardCount } from "@/lib/orgLimit";
+import { checkSubscription } from "@/lib/checkSubscription";
+
+import { InputType, ReturnType } from "./createBoardTypes";
+import { CreateBoard } from "./createBoardSchema";
+
+async function performAction(data: InputType): Promise<ReturnType> {
+  // Authenticate user...
+  
+  const isSubscribed = await checkSubscription(orgId);
+
+  // Check if the user can create a board based on their subscription status
+  if (!isSubscribed) {
+    const canCreateBoard = await hasAvailableBoardCount(orgId);
+    if (!canCreateBoard) {
+      return {
+        error: "You have reached your limit of free boards. Please upgrade to create more."
+      };
+    }
+  }
+
+  // Destructure data to create new board
+  let board;
+
+  // Try to create a new board in the database
+  try {
+    board = await database.board.create({
+      data: {
+        title,
+        orgId,
+        imageId,
+        imageThumbUrl,
+        imageFullUrl,
+        imageUserName,
+        imageLinkHTML,
+      }
+    });
+
+    // Increment the available board count only if the user is not subscribed
+    if (!isSubscribed) {
+      await incrementAvailableBoardCount(orgId);
+    }
+
+    await createAuditLog({
+      entityId: board.id,
+      entityTitle: board.title,
+      entityType: ENTITY_TYPE.BOARD,
+      action: ACTION.CREATE,
+    });
+  } catch (error) {
+    return {
+      error: "Internal error: failed to create in database."
+    };
+  }
+
+  revalidatePath(`/board/${board.id}`);
+
+  return { data: board };
+}
+
+export const createBoard = createServerAction(CreateBoard, performAction);
 ```
