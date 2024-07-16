@@ -11,7 +11,7 @@ export default async function BoardCountDisplay({
 }: BoardCountDisplayProps) {
   return (
     <div>
-      <span className='text-xs'>
+      <span className='text-xs font-medium'>
         {`${ FREE_BOARD_THRESHOLD - remainingBoardCount } remaining`}
       </span>
     </div>
