@@ -26380,3 +26380,23 @@ stripe trigger payment_intent.succeeded
 
 Back on the terminal with Stripe CLI, run the above command: `stripe trigger payment_intent.succeeded`.
 
+4. Trigger events through the application
+
+   - In our visionize application, attempt to create a board in an organization that has passed its board limit threshold.
+   - Interact with the `UpgradeModal` by clicking the upgrade button
+   - Fill out the checkout page with the following credit card credentials to simulate payments.
+     - See https://docs.stripe.com/testing or [Stripe docs | Simulate payments to test your integration](https://docs.stripe.com/testing)
+
+  When testing interactively, use a card number, such as 4242 4242 4242 4242. Enter the card number in the Dashboard or in any payment form.
+
+    - Use a valid future date, such as 12/34.
+    - Use any three-digit CVC (four digits for American Express cards).
+    - Use any value you like for other form fields.
+
+  We should now see many events in the CLI after we trigger the events through the application and complete the checkout page.
+
+5. Confirm that `orgSubscriptions` are created in the database
+
+test: Simulate payments for integration testing
+
+Add a guide to test and verify the integration using Stripe payments. This simulates transactions without moving any money using special values in test mode. See: https://docs.stripe.com/testing
