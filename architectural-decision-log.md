@@ -24753,6 +24753,76 @@ export async function checkSubscription(orgId: string) {
 
 Remember that the `!!` operator is a concise way to achieve boolean conversion, but it's not always necessary. In many cases, JavaScript and TypeScript automatically perform truthy/falsy checks without explicitly using `!!`.
 
+##### Improve robustness of checkSubscription
+
+When software is ***robust**, it is capable of handling unexpected inputs that are not explicitly defined for its application.
+
+Upon closer inspection the `checkSubscription` utility handles:
+
+1. **Input Validation** of `orgId`
+2. **Database Query**, which selects only the necessary fields
+3. **Subscription Validity Check**
+
+But some improvements can be made in **Type Safety** and **Error Handling**. 
+  - Let's ensure `stripeCurrentPeriodEnd` is always defined before calling `getTime()`
+  - Wrap the query and logic in a `try..catch` block to handle errors
+
+feat: Improve robustness of checkSubscription
+
+- Added type safety to ensure stripeCurrentPeriodEnd is defined.
+- Implemented error handling for database queries.
+
+```ts
+import { database } from "@/lib/database";
+
+// Define the number of milliseconds in a day
+const DAY_IN_MS = 86_400_000;
+
+/**
+ * Checks the subscription status for an organization.
+ *
+ * @param {string} orgId - The organization ID.
+ * @returns {Promise<boolean>} - Returns `true` if the subscription is valid, otherwise `false`.
+ */
+export async function checkSubscription(orgId: string): Promise<boolean> {
+  // Validate input: ensure orgId is provided
+  if (!orgId) {
+    return false;
+  }
+
+  try {
+    // Query the database for the organization's subscription details
+    const orgSubscription = await database.orgSubscription.findUnique({
+      where: {
+        orgId,
+      },
+      select: {
+        stripeCurrentPeriodEnd: true,
+        stripeCustomerId: true,
+        stripePriceId: true,
+        stripeSubscriptionId: true,
+      },
+    });
+
+    // If no subscription is found, or the end of the current period
+    // that the subscription has been invoiced for is undefined
+    if (!orgSubscription || !orgSubscription.stripeCurrentPeriodEnd) {
+      return false;
+    }
+
+    // Calculate validity based on subscription data
+    const isValid =
+      orgSubscription.stripePriceId &&
+      orgSubscription.stripeCurrentPeriodEnd.getTime() + DAY_IN_MS > Date.now();
+
+    return !!isValid;
+  } catch (error) {
+    console.error("Error checking subscription:", error);
+    return false;
+  }
+}
+```
+
 ### Stripe API keys
 
 docs: Add Stripe setup guide
