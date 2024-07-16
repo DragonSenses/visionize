@@ -26400,3 +26400,71 @@ Back on the terminal with Stripe CLI, run the above command: `stripe trigger pay
 test: Simulate payments for integration testing
 
 Add a guide to test and verify the integration using Stripe payments. This simulates transactions without moving any money using special values in test mode. See: https://docs.stripe.com/testing
+
+## Reflect Subscription on the Front-End
+
+To ensure the payment status is accurately reflected on the front-end, we need to:
+
+- Display a new board creation button that indicates unlimited board limits.
+- Implement a new server action to enable unlimited board creation.
+
+### Display unlimited board creation button
+
+feat: Reflect subscription status on front-end
+
+feat: Show unlimited board limits on subscription
+
+Reflect subscription status with new board creation button.
+
+- Add logic to check subscription status using `checkSubscription`
+- Display "Unlimited" board creation button for subscribed users
+- Show remaining board count and tooltip for free tier users
+- Enhance UI to reflect payment status on the front-end
+
+```tsx
+import { HelpCircle, Infinity, UserRound } from 'lucide-react';
+import { checkSubscription } from '@/lib/checkSubscription';
+
+export default async function BoardList() {
+  // ...
+
+  const availableBoardCount = await getAvailableBoardCount(orgId);
+
+  const isSubscribed = await checkSubscription(orgId);
+
+  return (
+    <div className='space-y-4'>
+      {/* User icon header */}
+      {/* Grid of boards */}
+      <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4'>
+        {/* boards... */}
+        <FormPopover side='right' sideOffset={10}>
+          <div
+            role='button'
+            className='relative flex flex-col items-center h-full w-full border border-solid rounded-sm aspect-video bg-muted gap-y-1 justify-center transition hover:opacity-75'
+          >
+            <p className='text-sm'>Create new board</p>
+            {isSubscribed ?
+              <div>
+                <span>Unlimited</span>
+                <Infinity className='h-4 w-4' />
+              </div> :
+              <>
+                <BoardCountDisplay remainingBoardCount={availableBoardCount} />
+                <BoardTooltip
+                  sideOffset={40}
+                  description={`
+                Free workspaces allow up to ${ FREE_BOARD_THRESHOLD } boards. 
+                Upgrade this workspace to create unlimited boards.`}
+                >
+                  <HelpCircle className='absolute bottom-2 right-2 h-[14px] w-[14px]' />
+                </BoardTooltip>
+              </>
+            }
+          </div>
+        </FormPopover>
+      </div>
+    </div>
+  )
+}
+```
