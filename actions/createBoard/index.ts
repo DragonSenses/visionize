@@ -8,6 +8,7 @@ import { database } from "@/lib/database";
 import { createServerAction } from "@/lib/createServerAction";
 import { createAuditLog } from "@/lib/createAuditLog";
 import { hasAvailableBoardCount, incrementAvailableBoardCount } from "@/lib/orgLimit";
+import { checkSubscription } from "@/lib/checkSubscription";
 
 import { InputType, ReturnType } from "./createBoardTypes";
 import { CreateBoard } from "./createBoardSchema";
@@ -23,11 +24,15 @@ async function performAction (data: InputType): Promise<ReturnType> {
     }
   }
 
-  const canCreateBoard = await hasAvailableBoardCount(orgId);
+  const isSubscribed = await checkSubscription(orgId);
 
-  if (!canCreateBoard) {
-    return {
-      error: "You have reached your limit of free boards. Please upgrade to create more."
+  // Check if the user can create a board based on their subscription status
+  if (!isSubscribed) {
+    const canCreateBoard = await hasAvailableBoardCount(orgId);
+    if (!canCreateBoard) {
+      return {
+        error: "You have reached your limit of free boards. Please upgrade to create more."
+      };
     }
   }
   
@@ -65,7 +70,10 @@ async function performAction (data: InputType): Promise<ReturnType> {
       }
     });
 
-    await incrementAvailableBoardCount(orgId);
+    // Increment the available board count only if the user is not subscribed
+    if (!isSubscribed) {
+      await incrementAvailableBoardCount(orgId);
+    }
 
     await createAuditLog({
       entityId: board.id,
