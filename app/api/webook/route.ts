@@ -20,10 +20,14 @@ import { stripe } from "@/lib/stripe";
  */
 export async function POST(req: Request): Promise<NextResponse> {
   const body = await req.text();
+
+  // Get the signature sent by Stripe
   const signature = headers().get("Stripe-Signature") as string;
 
   let event: Stripe.Event;
 
+  // Only verify the event if you have an endpoint secret defined.
+  // Otherwise use the basic event deserialized with JSON.parse
   try {
     event = stripe.webhooks.constructEvent(
       body,
@@ -72,9 +76,34 @@ export async function POST(req: Request): Promise<NextResponse> {
           ),
         },
       });
+
       break;
     }
 
+    // This event indicates that the user has renewed their subscription
+    case "invoice.payment_succeeded": {
+      
+      // Retrieve the subscription details using the subscription ID from the session
+      const subscription = await stripe.subscriptions.retrieve(
+        session.subscription as string
+      );
+      
+      // Handle the invoice payment succeeded event by updating a new
+      // organization subscription in the database
+      await database.orgSubscription.update({
+        where: {
+          stripeCustomerId: subscription.id,
+        },
+        data: {
+          stripePriceId: subscription.items.data[0].price.id,
+          stripeCurrentPeriodEnd: new Date(
+            subscription.current_period_end * 1000,
+          ),
+        },
+      });
+
+      break;
+    }
 
     default:
       // Handle unexpected event type

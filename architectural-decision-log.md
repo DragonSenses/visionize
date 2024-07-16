@@ -26056,3 +26056,83 @@ Improve webhook handler's switch cases by using block scopes within each case. T
 - Encapsulate each case in its own block to prevent variable redeclaration
 - Improve code readability and maintainability
 - Ensure proper scoping of variables within each case
+
+
+#### Handle subscription renewal in webhook handler
+
+The webhook event to look for is `invoice.payment_succeeded` which indicates that the user plans to renew their subscription. In that event lets **update** the `orgSubscription` in the database to reflect the new change.
+
+feat: Handle subscription renewal in webhook
+
+- Add case for "invoice.payment_succeeded" event
+- Retrieve subscription details using the subscription ID from the session
+- Update organization subscription in the database with new price ID and period end date
+
+```ts
+export async function POST(req: Request): Promise<NextResponse> {
+  const body = await req.text();
+  const signature = headers().get("Stripe-Signature") as string;
+
+  let event: Stripe.Event;
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET!
+    );
+  } catch (error: any) {
+    console.log(`Webhook signature verification failed.`, error.message);
+    return new NextResponse(
+      `Webhook signature verification failed. ${error.message}`,
+      { status: 400 }
+    );
+  }
+
+
+  const session = event.data.object as Stripe.Checkout.Session;
+
+  switch (event.type) {
+    case "checkout.session.completed": {
+      const subscription = await stripe.subscriptions.retrieve(
+        session.subscription as string
+      );
+
+      // ...complex logic
+      break;
+    }
+
+    // This event indicates that the user has renewed their subscription
+    case "invoice.payment_succeeded": {
+      
+      // Retrieve the subscription details using the subscription ID from the session
+      const subscription = await stripe.subscriptions.retrieve(
+        session.subscription as string
+      );
+      
+      // Handle the invoice payment succeeded event by updating a new
+      // organization subscription in the database
+      await database.orgSubscription.update({
+        where: {
+          stripeCustomerId: subscription.id,
+        },
+        data: {
+          stripePriceId: subscription.items.data[0].price.id,
+          stripeCurrentPeriodEnd: new Date(
+            subscription.current_period_end * 1000,
+          ),
+        },
+      });
+
+      break;
+    }
+
+    default:
+      console.log(`Unhandled event type ${event.type}.`);
+      break;
+  }
+
+  return NextResponse.json({ received: true }, { status: 200 });
+}
+```
+
