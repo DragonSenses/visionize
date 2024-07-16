@@ -26412,12 +26412,43 @@ To ensure the payment status is accurately reflected on the front-end, we need t
 
 feat: Reflect subscription status on front-end
 
+Before modifying the `BoardList` let's adjust the font weight of the `BoardCountDisplay`.
+
+feat: Enhance board creation button styles
+
+style: Increase font weight of BoardCountDisplay
+
+`components\BoardCountDisplay.tsx`
+```tsx
+import React from 'react';
+
+import { FREE_BOARD_THRESHOLD } from '@/constants/boards';
+
+interface BoardCountDisplayProps {
+  remainingBoardCount: number;
+}
+
+export default async function BoardCountDisplay({
+  remainingBoardCount,
+}: BoardCountDisplayProps) {
+  return (
+    <div>
+      <span className='text-xs font-medium'>
+        {`${ FREE_BOARD_THRESHOLD - remainingBoardCount } remaining`}
+      </span>
+    </div>
+  )
+}
+```
+
+Then in `BoardList`, adjust the "Create new board" text to `font-semibold`. Then create a `isSubscribed` variable that awaits and invokes the `checkSubscription(orgId)` function. If the user has an `orgSubscription` then conditionally render a `span` with "Unlimited" text in `font-extrabold`. Include an `Infinity` icon from lucide-react. Otherwise, render the `BoardCountDisplay`, `BoardCountTooltip`, and `HelpCircle` like before.
+
 feat: Show unlimited board limits on subscription
 
 Reflect subscription status with new board creation button.
 
 - Add logic to check subscription status using `checkSubscription`
-- Display "Unlimited" board creation button for subscribed users
+- Render "Unlimited" board creation button for subscribed users
 - Show remaining board count and tooltip for free tier users
 - Enhance UI to reflect payment status on the front-end
 
@@ -26443,11 +26474,11 @@ export default async function BoardList() {
             role='button'
             className='relative flex flex-col items-center h-full w-full border border-solid rounded-sm aspect-video bg-muted gap-y-1 justify-center transition hover:opacity-75'
           >
-            <p className='text-sm'>Create new board</p>
+            <p className='text-sm font-semibold'>Create new board</p>
             {isSubscribed ?
-              <div>
+              <div className='flex items-center gap-x-0.5 text-sm text-sky-950 font-extrabold'>
                 <span>Unlimited</span>
-                <Infinity className='h-4 w-4' />
+                <Infinity className='h-5 w-5' />
               </div> :
               <>
                 <BoardCountDisplay remainingBoardCount={availableBoardCount} />
