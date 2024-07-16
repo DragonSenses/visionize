@@ -26317,3 +26317,66 @@ export const config = {
 };
 ```
 
+### Test the webhook
+
+Connect to webhook locally using Stripe. To do this you need to:
+
+Go to the URL:
+
+```sh
+  https://dashboard.stripe.com/test/webhooks
+```
+Or
+
+   1. Login to your [stripe dashboard](https://dashboard.stripe.com/)
+   2. In Developers pane, click on the `Webhooks` tab
+   3. Click on "Test in a local environment"
+   4. Follow the instructions
+
+#### Test webhook locally
+
+1. Listen to Stripe events
+
+- Open up your respective OS terminal and login through the Stripe CLI
+
+```sh
+stripe login
+```
+
+- Allow Stripe CLI to access acount information with the same code
+
+2. Forward events to your webhook
+
+```sh
+stripe listen --forward-to localhost:3000/api/webhook
+```
+
+**Note:** make sure that the URL is `localhost:3000/api/webhook`. Do not forget the `/api/`.
+
+And here we get the **webhook signing secret** from our command line interface.
+
+```sh
+$ stripe listen --forward-to localhost:3000/api/webhook
+> Ready! You are using Stripe API Version [20XX-XX-XX]. Your webhook signing secret is wgsec_b146...WEBHOOK_SIGNING_SECRET_EXAMPLE_KEY
+```
+
+Copy that key to enable our webhook to verify the events.
+
+Then add the webhook signing secret as an environment variable. Inside the `.env` file, add the variable named `STRIPE_WEBHOOK_SECRET` and set it equal to the key you copied.
+
+```.env
+//...
+
+STRIPE_WEBHOOK_SECRET=YOUR_WEBHOOK_SIGNING_SECRET_KEY_HERE
+```
+
+**Note:** make sure that the CLI is still open, do not close the window down. It must be open while we test our webhook locally.
+
+3. Trigger events with the CLI
+
+```sh
+stripe trigger payment_intent.succeeded
+```
+
+Back on the terminal with Stripe CLI, run the above command: `stripe trigger payment_intent.succeeded`.
+
