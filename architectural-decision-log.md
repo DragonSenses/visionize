@@ -26913,3 +26913,89 @@ export default async function ActivityPage() {
   )
 }
 ```
+
+# BillingPage component
+
+Recall that in our `SidebarItem.tsx` component, we had our array of `routes`
+
+```tsx
+
+export default function SidebarItem({
+  isActive,
+  isOpen,
+  onOpen,
+  organization,
+}: SidebarItemProps) {
+
+  const router = useRouter();
+
+  const pathname = usePathname();
+
+  const routes = [
+    {
+      displayName: "Boards",
+      href: `/org/${organization.id}`,
+      icon: <Layout className='h-4 w-4 mr-2' />,
+    },
+    {
+      displayName: "Activity",
+      href: `/org/${organization.id}/activity`,
+      icon: <Activity className='h-4 w-4 mr-2' />,
+    },
+    {
+      displayName: "Settings",
+      href: `/org/${organization.id}/settings`,
+      icon: <Settings className='h-4 w-4 mr-2' />,
+    },
+    {
+      displayName: "Billing",
+      href: `/org/${organization.id}/billing`,
+      icon: <CreditCard className='h-4 w-4 mr-2' />,
+    },
+  ];
+```
+
+Create the file `app\(app)\(dashboard)\org\[orgId]\billing\page.tsx`, following the Nextjs project structure to the `href` we set.
+
+`app\(app)\(dashboard)\org\[orgId]\billing\page.tsx`
+```tsx
+import React from 'react';
+
+export default async function BillingPage() {
+  return (
+    <div>BillingPage</div>
+  )
+}
+```
+
+Now similar to `ActivityPage` and `OrgIdPage`, add `orgId` and `isSubscribed` variables and pass the data in to the `Info` component.
+
+feat: Add subscription check and Info component
+
+- Retrieved `orgId` from URL parameters using `useParams`
+- Ensured `orgId` is correctly handled as a string
+- Checked subscription status with `checkSubscription` and stored result in `isSubscribed`
+- Rendered `Info` component with `isSubscribed` prop
+
+```tsx
+import React from 'react';
+import { useParams } from 'next/navigation';
+
+import { checkSubscription } from '@/lib/checkSubscription';
+import Info from '@/components/Info';
+
+export default async function BillingPage() {
+  const { orgId } = useParams();
+
+  // Ensure orgId is a string
+  const orgIdString = Array.isArray(orgId) ? orgId[0] : orgId;
+
+  const isSubscribed = await checkSubscription(orgIdString);
+  
+  return (
+    <div className='w-full'>
+      <Info isSubscribed={isSubscribed}/>
+    </div>
+  )
+}
+```
