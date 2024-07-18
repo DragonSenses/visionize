@@ -26776,3 +26776,140 @@ async function performAction(data: InputType): Promise<ReturnType> {
 
 export const createBoard = createServerAction(CreateBoard, performAction);
 ```
+
+### Conditionally render premium or free text based on subscription status
+
+feat: Render text based on subscription status
+
+In `Info` component, add a prop interface and conditionally render "premium patron" or "free member" based on subscription status.
+
+`components\Info.tsx`
+```tsx
+interface InfoProps {
+  isSubscribed: boolean;
+}
+
+export default function Info({
+  isSubscribed,
+}: InfoProps) {
+  const { organization, isLoaded } = useOrganization();
+
+  if (!isLoaded) {
+    return (
+      <Info.Skeleton />
+    )
+  }
+
+  return (
+    <div className='flex items-center gap-x-4'>
+      {/* Image container */}
+      <div className='relative w-[60px] h-[60px]'>
+        <Image
+          fill
+          src={organization?.imageUrl ?? '/logo.svg'}
+          alt="organization image"
+          className='rounded-md object-cover'
+          sizes="(max-width: 768px) 33vw, (max-width: 1200px) 30vw, 25vw"
+        />
+      </div>
+      {/* Organization Info */}
+      <div className='space-y-1'>
+        <p className='font-semibold text-xl'>
+          {organization?.name}
+        </p>
+        {/* Premium or Free info is dynamically rendered */}
+        <div className='flex items-center text-xs text-muted-foreground gap-1'>
+          <CreditCard />
+          {isSubscribed ?
+            <span>Premium Patron</span> :
+            <span>Free Member</span>
+          }
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+Now in the pages that uses the `Info` component, pass the `isSubscribed` data as a prop to the `Info` component. This will allow it to conditionally render the appropriate text.
+
+In `OrgIdPage`, add the `orgId` variable through `useParams` and parse it as a string. Then get `isSubscribed` variable trhough the `checkSubscription` function. Use the subscription status to render the `Info` component.
+
+feat(OrgPage): Render Info with subscription data
+
+- Retrieved `orgId` from URL parameters using `useParams`
+- Ensured `orgId` is correctly handled as a string
+- Checked subscription status with `checkSubscription` and stored result in `isSubscribed`
+- Passed `isSubscribed` to `Info` component for conditional rendering
+
+`app\(app)\(dashboard)\org\[orgId]\page.tsx`
+```tsx
+import React, { Suspense } from 'react';
+import { useParams } from 'next/navigation';
+
+import BoardList from '@/components/BoardList';
+import Info from '@/components/Info';
+import { Separator } from '@/components/ui/separator';
+import { checkSubscription } from '@/lib/checkSubscription';
+
+const OrganizationIdPage = async () => {
+  const { orgId } = useParams();
+
+  // Ensure orgId is a string
+  const orgIdString = Array.isArray(orgId) ? orgId[0] : orgId;
+
+  const isSubscribed = await checkSubscription(orgIdString);
+
+  return (
+    <div className='flex flex-col w-full mb-20'>
+      <Info isSubscribed={isSubscribed}/>
+      <Separator className='my-4' />
+      <div className='px-2 md:px-4'>
+        <Suspense fallback={<BoardList.Skeleton />}>
+          <BoardList />
+        </Suspense>
+      </div>
+    </div>
+  );
+};
+
+export default OrganizationIdPage
+```
+
+Similarly for the `Activity` page,
+
+feat(Activity): Render Info with subscription data
+
+- Retrieved `orgId` from URL parameters using `useParams`
+- Ensured `orgId` is correctly handled as a string
+- Checked subscription status with `checkSubscription` and stored result in `isSubscribed`
+- Passed `isSubscribed` to `Info` component for conditional rendering
+
+`app\(app)\(dashboard)\org\[orgId]\activity\page.tsx`
+```tsx
+import React, { Suspense } from 'react';
+import { useParams } from 'next/navigation';
+
+import ActivityList from '@/components/ActivityList';
+import Info from '@/components/Info';
+import { Separator } from '@/components/ui/separator';
+import { checkSubscription } from '@/lib/checkSubscription';
+
+export default async function ActivityPage() {
+  const { orgId } = useParams();
+
+  // Ensure orgId is a string
+  const orgIdString = Array.isArray(orgId) ? orgId[0] : orgId;
+
+  const isSubscribed = await checkSubscription(orgIdString);
+  return (
+    <div className='w-full'>
+      <Info isSubscribed={isSubscribed}/>
+      <Separator className='my-2' />
+      <Suspense fallback={<ActivityList.Skeleton />}>
+        <ActivityList />
+      </Suspense>
+    </div>
+  )
+}
+```
