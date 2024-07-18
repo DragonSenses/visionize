@@ -42,7 +42,10 @@ export default function Info({
         {/* Premium or Free info is dynamically rendered */}
         <div className='flex items-center text-xs text-muted-foreground gap-1'>
           <CreditCard />
-          <span>Free</span>
+          {isSubscribed ?
+            <span>Premium Patron</span> :
+            <span>Free Member</span>
+          }
         </div>
       </div>
     </div>
