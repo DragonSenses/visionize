@@ -2,7 +2,13 @@
 
 import React from 'react';
 
-export default function SubscriptionButton() {
+interface SubscriptionButtonProps {
+  isSubscribed: boolean;
+}
+
+export default function SubscriptionButton({
+  isSubscribed,
+}: SubscriptionButtonProps) {
   return (
     <div>SubscriptionButton</div>
   )
