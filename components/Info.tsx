@@ -7,7 +7,13 @@ import { CreditCard } from 'lucide-react';
 
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function Info() {
+interface InfoProps {
+  isSubscribed: boolean;
+}
+
+export default function Info({
+  isSubscribed,
+}: InfoProps) {
   const { organization, isLoaded } = useOrganization();
 
   if (!isLoaded) {
