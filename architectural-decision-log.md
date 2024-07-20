@@ -26917,7 +26917,9 @@ export default function Info({
 
 Now in the pages that uses the `Info` component, pass the `isSubscribed` data as a prop to the `Info` component. This will allow it to conditionally render the appropriate text.
 
-In `OrgIdPage`, add the `orgId` variable through `useParams` and parse it as a string. Then get `isSubscribed` variable trhough the `checkSubscription` function. Use the subscription status to render the `Info` component.
+#### Update OrgIdPage with subscription status
+
+In `OrgIdPage`, add the `orgId` variable through `useParams` and parse it as a string. Then get `isSubscribed` variable through the `checkSubscription` function. Use the subscription status to render the `Info` component.
 
 feat(OrgPage): Render Info with subscription data
 
@@ -26960,6 +26962,62 @@ const OrganizationIdPage = async () => {
 export default OrganizationIdPage
 ```
 
+Here we have a problem though, the `useParams` hook is designed to be used in client components, but `OrganizationIdPage` is a server component. We need to leverage `useParams` in the client component while keeping the data fetching logic in the server component. 
+
+To fix this, we have a few ways to handle it. We can pass the parameters from the server component to a client component. 
+
+To do the solution that separates the server and client components we can:
+
+1. **Extract the logic to a server component** to fetch the subscription status.
+2. **Pass the necessary data to a client component** where you can use `useParams`.
+
+In this setup:
+   - `OrganizationIdPage` is a server component that fetches the subscription status.
+   - `OrganizationIdClient` is a client component that uses `useParams` and receives the subscription status as a prop.
+
+Or we can just change how we retrieve the `orgId` to keep the page as a server component, we use `auth()`.
+
+fix: Ensure orgId is correctly extracted in page
+
+- Updated OrganizationIdPage to extract orgId using auth() from @clerk/nextjs/server.
+- Added logic to ensure orgId is a string.
+- Integrated checkSubscription to verify subscription status based on orgId.
+
+```tsx
+import React, { Suspense } from 'react';
+import { auth } from '@clerk/nextjs/server';
+
+import BoardList from '@/components/BoardList';
+import Info from '@/components/Info';
+import { Separator } from '@/components/ui/separator';
+import { checkSubscription } from '@/lib/checkSubscription';
+
+const OrganizationIdPage = async () => {
+  const { orgId } = auth();
+
+  // Ensure orgId is a string
+  const orgIdString = Array.isArray(orgId) ? orgId[0] : orgId;
+
+  const isSubscribed = await checkSubscription(orgIdString);
+
+  return (
+    <div className='flex flex-col w-full mb-20'>
+      <Info isSubscribed={isSubscribed}/>
+      <Separator className='my-4' />
+      <div className='px-2 md:px-4'>
+        <Suspense fallback={<BoardList.Skeleton />}>
+          <BoardList />
+        </Suspense>
+      </div>
+    </div>
+  );
+};
+
+export default OrganizationIdPage
+```
+
+#### Update ActivityPage with subscription status
+
 Similarly for the `Activity` page,
 
 feat(Activity): Render Info with subscription data
@@ -26981,6 +27039,41 @@ import { checkSubscription } from '@/lib/checkSubscription';
 
 export default async function ActivityPage() {
   const { orgId } = useParams();
+
+  // Ensure orgId is a string
+  const orgIdString = Array.isArray(orgId) ? orgId[0] : orgId;
+
+  const isSubscribed = await checkSubscription(orgIdString);
+  return (
+    <div className='w-full'>
+      <Info isSubscribed={isSubscribed}/>
+      <Separator className='my-2' />
+      <Suspense fallback={<ActivityList.Skeleton />}>
+        <ActivityList />
+      </Suspense>
+    </div>
+  )
+}
+```
+
+fix(ActivityPage): Correct orgId extraction logic
+
+- Updated ActivityPage to extract orgId using auth() from @clerk/nextjs/server.
+- Added logic to ensure orgId is a string.
+- Integrated checkSubscription to verify subscription status based on orgId.
+
+`app\(app)\(dashboard)\org\[orgId]\activity\page.tsx`
+```tsx
+import React, { Suspense } from 'react';
+import { auth } from '@clerk/nextjs/server';
+
+import ActivityList from '@/components/ActivityList';
+import Info from '@/components/Info';
+import { Separator } from '@/components/ui/separator';
+import { checkSubscription } from '@/lib/checkSubscription';
+
+export default async function ActivityPage() {
+  const { orgId } = auth();
 
   // Ensure orgId is a string
   const orgIdString = Array.isArray(orgId) ? orgId[0] : orgId;
@@ -27098,6 +27191,46 @@ export default async function BillingPage() {
   )
 }
 ```
+
+Let's correctly extract `orgId` here through `auth()` instead of `useParams` because this is a server component. 
+
+fix(BillingPage): Correct orgId extraction logic
+
+- Updated BillingPage to extract orgId using auth() from @clerk/nextjs/server.
+- Added logic to ensure orgId is a string.
+- Integrated checkSubscription to verify subscription status based on orgId.
+
+```tsx
+import React from 'react';
+import { auth } from '@clerk/nextjs/server';
+
+import { checkSubscription } from '@/lib/checkSubscription';
+import Info from '@/components/Info';
+import { Separator } from '@/components/ui/separator';
+
+export default async function BillingPage() {
+  const { orgId } = auth();
+
+  // Ensure orgId is a string
+  const orgIdString = Array.isArray(orgId) ? orgId[0] : orgId;
+
+  const isSubscribed = await checkSubscription(orgIdString);
+
+  return (
+    <div className='w-full'>
+      <Info isSubscribed={isSubscribed} />
+      <Separator className='my-2' />
+      
+    </div>
+  )
+}
+```
+
+fix: Apply orgId extraction fix to multiple pages
+
+- Updated orgId extraction logic in ActivityPage, OrganizationIdPage, and BillingPage.
+- Ensured orgId is correctly handled and used consistently.
+- Fixed the "no async client component" error (https://nextjs.org/docs/messages/no-async-client-component).
 
 ### SubscriptionButton component
 
