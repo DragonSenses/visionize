@@ -26914,6 +26914,21 @@ export default async function ActivityPage() {
 }
 ```
 
+## Enable Billing/Customer Portal
+
+docs: Add guide to enable customer billing portal
+
+- [Customer self-service with a customer portal | Stripe docs](https://docs.stripe.com/customer-management)
+- [Activate the no-code customer portal](https://docs.stripe.com/customer-management/activate-no-code-customer-portal)
+
+In the Stripe dashboard, use the search box to find **Customer portal**, which allows customers to manage their subcriptions and billing details.
+
+Inside the Stripe dashboard, within the **Customer portal** settings tab click the `[Active test link]` button. This should launch customer portal with a link.
+
+The Customer portal link should now have a green `[Active]` tag next to it.
+
+Customers are now allowed to sself-manage their payment details, invoices, and subscriptions.
+
 # BillingPage component
 
 Recall that in our `SidebarItem.tsx` component, we had our array of `routes`
