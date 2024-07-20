@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { useParams } from 'next/navigation';
+import { auth } from '@clerk/nextjs/server';
 
 import BoardList from '@/components/BoardList';
 import Info from '@/components/Info';
@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { checkSubscription } from '@/lib/checkSubscription';
 
 const OrganizationIdPage = async () => {
-  const { orgId } = useParams();
+  const { orgId } = auth();
 
   // Ensure orgId is a string
   const orgIdString = Array.isArray(orgId) ? orgId[0] : orgId;
