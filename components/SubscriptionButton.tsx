@@ -31,6 +31,16 @@ export default function SubscriptionButton({
     },
   });
 
+  function handleSubscriptionButtonClick() {
+    if (isSubscribed) {
+      // Redirect to checkout URL if subscribed
+      executeServerAction({});
+    } else {
+      // Otherwise open the upgrade modal for free members
+      upgradeModal.onOpen();
+    }
+  }
+
   return (
     <Button>
       SubscriptionButton
