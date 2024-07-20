@@ -1,12 +1,12 @@
 import React from 'react';
-import { useParams } from 'next/navigation';
+import { auth } from '@clerk/nextjs/server';
 
 import { checkSubscription } from '@/lib/checkSubscription';
 import Info from '@/components/Info';
 import { Separator } from '@/components/ui/separator';
 
 export default async function BillingPage() {
-  const { orgId } = useParams();
+  const { orgId } = auth();
 
   // Ensure orgId is a string
   const orgIdString = Array.isArray(orgId) ? orgId[0] : orgId;
