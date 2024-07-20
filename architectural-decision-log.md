@@ -27363,3 +27363,50 @@ export default function SubscriptionButton({
 
 ```
 
+#### **Test Guidelines for `SubscriptionButton` Component**
+
+##### **Objective**
+To verify that the `SubscriptionButton` component behaves as expected:
+1. Opens an upgrade modal if the user is not subscribed.
+2. Redirects the user to the customer portal if the user is subscribed.
+
+##### **Test Cases**
+
+1. **Initial Setup**
+   - Ensure the component is rendered correctly.
+   - Mock the subscription status (subscribed or not subscribed).
+
+2. **Rendering Tests**
+   - Verify that the `SubscriptionButton` is rendered on the screen.
+
+3. **Behavior Tests**
+   - **When User is Not Subscribed:**
+     - Mock the subscription status to `false`.
+     - Simulate a click on the `SubscriptionButton`.
+     - Verify that the upgrade modal is opened.
+     - Check that the modal contains the correct content (e.g., upgrade options, pricing).
+
+   - **When User is Subscribed:**
+     - Mock the subscription status to `true`.
+     - Simulate a click on the `SubscriptionButton`.
+     - Verify that the user is redirected to the customer portal.
+     - Check that the redirection URL is correct (e.g., `/customer-portal`).
+
+4. **Edge Cases**
+   - **No Subscription Status Available:**
+     - Mock the subscription status to `undefined` or `null`.
+     - Simulate a click on the `SubscriptionButton`.
+     - Verify the component handles this gracefully (e.g., shows an error message or default behavior).
+
+5. **Accessibility Tests**
+   - Ensure the `SubscriptionButton` is accessible via keyboard navigation.
+   - Verify that the modal is accessible and can be closed using keyboard shortcuts (e.g., `Esc` key).
+
+6. **Performance Tests**
+   - Measure the time taken to open the modal or redirect to the customer portal.
+   - Ensure there are no significant performance issues during these actions.
+
+##### **Tools and Libraries**
+- **Testing Library**: For rendering and interacting with the component.
+- **Jest**: For running the tests and assertions.
+- **Mocking Library**: For mocking the subscription status and other dependencies.
