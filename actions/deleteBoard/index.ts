@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
+import { checkSubscription } from '@/lib/checkSubscription';
 import { createServerAction } from "@/lib/createServerAction";
 import { database } from "@/lib/database";
 import { createAuditLog } from "@/lib/createAuditLog";
@@ -21,6 +22,8 @@ async function performAction(data: InputType): Promise<OutputType> {
     };
   }
 
+  const isSubscribed = await checkSubscription(orgId);
+
   const { id } = data;
 
   let board;
@@ -33,7 +36,10 @@ async function performAction(data: InputType): Promise<OutputType> {
       },
     });
 
-    await decreaseAvailableBoardCount(orgId);
+    // Only manage board limits if member is not subscribed
+    if (!isSubscribed) {
+      await decreaseAvailableBoardCount(orgId);
+    }
 
     await createAuditLog({
       entityId: board.id,
