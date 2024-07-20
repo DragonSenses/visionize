@@ -27076,3 +27076,23 @@ export default function SubscriptionButton({
   )
 }
 ```
+
+feat: Instantiate redirectCheckout server action
+
+```tsx
+import { redirectCheckout } from '@/actions/redirectCheckout';
+import { useServerAction } from '@/hooks/useServerAction';
+
+interface SubscriptionButtonProps {
+  isSubscribed: boolean;
+}
+
+export default function SubscriptionButton({
+  isSubscribed,
+}: SubscriptionButtonProps) {
+
+  const upgradeModal = useUpgradeModal();
+
+   // Use the server action hook with the redirectCheckout action
+   const { executeServerAction, isLoading } = useServerAction(redirectCheckout);
+```
