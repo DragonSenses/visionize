@@ -27177,4 +27177,29 @@ export default function SubscriptionButton({
 }
 ```
 
+feat: Wire up functionality to Button component
+
+- Attach click handler to subscription button
+- Disable button when action is loading
+- Set button variant to primary
+- Update button text based on subscription status
+
+```tsx
+export default function SubscriptionButton({
+  isSubscribed,
+}: SubscriptionButtonProps) {
+
+  //...
+
+  return (
+    <Button
+      onClick={handleSubscriptionButtonClick} // Attach the click handler
+      disabled={isLoading} // Disable the button if the action is loading
+      variant="primary" // Set the button variant to primary
+    >
+      {isSubscribed ? "Manage Subscription" : "Upgrade to Premium"}
+    </Button>
+  );
+}
+```
 

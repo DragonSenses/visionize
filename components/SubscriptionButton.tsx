@@ -42,8 +42,12 @@ export default function SubscriptionButton({
   }
 
   return (
-    <Button>
-      SubscriptionButton
+    <Button
+      onClick={handleSubscriptionButtonClick} // Attach the click handler
+      disabled={isLoading} // Disable the button if the action is loading
+      variant="primary" // Set the button variant to primary
+    >
+      {isSubscribed ? "Manage Subscription" : "Upgrade to Premium"}
     </Button>
-  )
+  );
 }
