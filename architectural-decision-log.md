@@ -27232,6 +27232,35 @@ fix: Apply orgId extraction fix to multiple pages
 - Ensured orgId is correctly handled and used consistently.
 - Fixed the "no async client component" error (https://nextjs.org/docs/messages/no-async-client-component).
 
+feat: Integrate SubscriptionButton in BillingPage
+
+```tsx
+import React from 'react';
+import { auth } from '@clerk/nextjs/server';
+
+import { checkSubscription } from '@/lib/checkSubscription';
+import Info from '@/components/Info';
+import SubscriptionButton from '@/components/SubscriptionButton';
+import { Separator } from '@/components/ui/separator';
+
+export default async function BillingPage() {
+  const { orgId } = auth();
+
+  // Ensure orgId is a string
+  const orgIdString = Array.isArray(orgId) ? orgId[0] : orgId;
+
+  const isSubscribed = await checkSubscription(orgIdString);
+
+  return (
+    <div className='w-full'>
+      <Info isSubscribed={isSubscribed} />
+      <Separator className='my-2' />
+      <SubscriptionButton isSubscribed={isSubscribed} />
+    </div>
+  )
+}
+```
+
 ### SubscriptionButton component
 
 `SubscriptionButton` will execute the `redirectCheckout` server action to help the user manage their subscription in the `BillingPage`. 

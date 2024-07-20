@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 
 import { checkSubscription } from '@/lib/checkSubscription';
 import Info from '@/components/Info';
+import SubscriptionButton from '@/components/SubscriptionButton';
 import { Separator } from '@/components/ui/separator';
 
 export default async function BillingPage() {
@@ -17,7 +18,7 @@ export default async function BillingPage() {
     <div className='w-full'>
       <Info isSubscribed={isSubscribed} />
       <Separator className='my-2' />
-      
+      <SubscriptionButton isSubscribed={isSubscribed} />
     </div>
   )
 }
