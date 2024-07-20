@@ -27053,3 +27053,26 @@ export default function SubscriptionButton({
 }
 ```
 
+- Next initialize the `upgradeModal` variable with `useUpgradeModal` hook
+
+feat: Manage upgrade modal state with custom hook
+
+```tsx
+
+import { useUpgradeModal } from '@/hooks/useUpgradeModal';
+import { Button } from '@/components/ui/button';
+
+export default function SubscriptionButton({
+  isSubscribed,
+}: SubscriptionButtonProps) {
+  
+  // Access the upgrade modal state and actions
+  const upgradeModal = useUpgradeModal();
+
+  return (
+    <Button>
+      SubscriptionButton
+    </Button>
+  )
+}
+```
