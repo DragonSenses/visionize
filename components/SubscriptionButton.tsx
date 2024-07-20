@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import { toast } from 'sonner';
 
 import { redirectCheckout } from '@/actions/redirectCheckout';
 import { useServerAction } from '@/hooks/useServerAction';
@@ -18,8 +19,17 @@ export default function SubscriptionButton({
   // Access the upgrade modal state and actions
   const upgradeModal = useUpgradeModal();
 
-   // Use the server action hook with the redirectCheckout action
-   const { executeServerAction, isLoading } = useServerAction(redirectCheckout);
+  // Use the server action hook with the redirectCheckout action
+  const { executeServerAction, isLoading } = useServerAction(redirectCheckout, {
+    onSuccess(data) {
+      // Redirect to the checkout URL on success
+      window.location.href = data;
+    },
+    onError(error) {
+      // Show an error toast on failure
+      toast.error(error);
+    },
+  });
 
   return (
     <Button>

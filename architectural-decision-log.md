@@ -27096,3 +27096,30 @@ export default function SubscriptionButton({
    // Use the server action hook with the redirectCheckout action
    const { executeServerAction, isLoading } = useServerAction(redirectCheckout);
 ```
+
+feat: Add success and error handling in action
+
+```tsx
+import React from 'react';
+import { toast } from 'sonner';
+
+export default function SubscriptionButton({
+  isSubscribed,
+}: SubscriptionButtonProps) {
+
+  // Access the upgrade modal state and actions
+  const upgradeModal = useUpgradeModal();
+
+  // Use the server action hook with the redirectCheckout action
+  const { executeServerAction, isLoading } = useServerAction(redirectCheckout, {
+    onSuccess(data) {
+      // Redirect to the checkout URL on success
+      window.location.href = data;
+    },
+    onError(error) {
+      // Show an error toast on failure
+      toast.error(error);
+    },
+  });
+```
+
