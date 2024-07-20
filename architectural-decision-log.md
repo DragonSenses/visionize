@@ -27004,7 +27004,7 @@ export default async function BillingPage() {
 
 `SubscriptionButton` will execute the `redirectCheckout` server action to help the user manage their subscription in the `BillingPage`. 
 
-Create a `SubscriptionButton.tsx` file in `/components` with a prop interface `isSubscribed`. 
+- Create a `SubscriptionButton.tsx` file in `/components` with a prop interface `isSubscribed`. 
 
 feat: Define prop types for SubscriptionButton
 
@@ -27026,13 +27026,15 @@ export default function SubscriptionButton({
 }
 ```
 
+- Let's start by rendering a `Button` component for `SubscriptionButton`.
+
+feat(SubscriptionButton): Render Button component
+
 ```tsx
 "use client";
 
 import React from 'react';
 
-import { redirectCheckout } from '@/actions/redirectCheckout';
-import { useServerAction } from '@/hooks/useServerAction';
 import { Button } from '@/components/ui/button';
 
 interface SubscriptionButtonProps {
@@ -27042,15 +27044,9 @@ interface SubscriptionButtonProps {
 export default function SubscriptionButton({
   isSubscribed,
 }: SubscriptionButtonProps) {
-  const { executeServerAction, isLoading } = useServerAction(redirectCheckout, {
-
-  })
 
   return (
-    <Button
-      variant="primary"
-      disabled={isLoading}
-    >
+    <Button>
       SubscriptionButton
     </Button>
   )

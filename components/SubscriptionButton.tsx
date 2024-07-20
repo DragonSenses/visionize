@@ -2,6 +2,8 @@
 
 import React from 'react';
 
+import { Button } from '@/components/ui/button';
+
 interface SubscriptionButtonProps {
   isSubscribed: boolean;
 }
@@ -9,7 +11,10 @@ interface SubscriptionButtonProps {
 export default function SubscriptionButton({
   isSubscribed,
 }: SubscriptionButtonProps) {
+
   return (
-    <div>SubscriptionButton</div>
+    <Button>
+      SubscriptionButton
+    </Button>
   )
 }
