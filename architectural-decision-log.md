@@ -26691,7 +26691,7 @@ export default async function BoardList() {
 }
 ```
 
-### Allow unlimited board creation in server action
+### Allow unlimited board creation in createBoard server action
 
 feat: Implement subscription in createBoard action
 
@@ -26775,6 +26775,90 @@ async function performAction(data: InputType): Promise<ReturnType> {
 }
 
 export const createBoard = createServerAction(CreateBoard, performAction);
+```
+
+### Manage board limits only for non-subscribed users in deleteBoard action
+
+feat: Implement subscription in deleteBoard action
+
+Navigate to `subscription` server action and create `isSubscribed` variable with `checkSubscription(orgId)` utility function. Now we do not need to manage board limits with premium members, so we only call `decreaseAvailableBoardCount()` for free members.
+
+In this updated version:
+
+1. The subscription status is checked first.
+2. The board deletion process proceeds as usual.
+3. The available board count is decremented only if the user is not subscribed.
+
+feat: Limit board management to free users
+
+- Implemented board deletion functionality in deleteBoard action
+- Added subscription check to conditionally manage board limits
+- The available board count is decremented only if the user is not subscribed
+- Updated audit log creation for board deletion
+
+`actions\deleteBoard\index.ts`
+```ts
+"use server";
+import { auth } from '@clerk/nextjs/server';
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
+
+import { checkSubscription } from '@/lib/checkSubscription';
+import { createServerAction } from "@/lib/createServerAction";
+import { database } from "@/lib/database";
+import { createAuditLog } from "@/lib/createAuditLog";
+
+import { DeleteBoard } from "./deleteBoardSchema";
+import { InputType, OutputType } from "./deleteBoardTypes";
+import { decreaseAvailableBoardCount } from "@/lib/orgLimit";
+
+async function performAction(data: InputType): Promise<OutputType> {
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
+    return {
+      error: "Unauthorized",
+    };
+  }
+
+  const isSubscribed = await checkSubscription(orgId);
+
+  const { id } = data;
+
+  let board;
+
+  try {
+    board = await database.board.delete({
+      where: {
+        id,
+        orgId,
+      },
+    });
+
+    // Only manage board limits if member is not subscribed
+    if (!isSubscribed) {
+      await decreaseAvailableBoardCount(orgId);
+    }
+
+    await createAuditLog({
+      entityId: board.id,
+      entityTitle: board.title,
+      entityType: ENTITY_TYPE.BOARD,
+      action: ACTION.DELETE,
+    });
+  } catch (error) {
+    return {
+      error: "Failed to delete board.",
+    };
+  }
+
+  const path = `/organization/${orgId}`;
+  revalidatePath(path);
+  redirect(path);
+}
+
+export const deleteBoard = createServerAction(DeleteBoard, performAction);
 ```
 
 ### Conditionally render premium or free text based on subscription status
