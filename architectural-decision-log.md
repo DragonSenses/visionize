@@ -3941,6 +3941,29 @@ export default function SettingsPage() {
 
 Why remove the box shadow? Well we don't want it to look like a Modal. The `OrganizationProfile` should be on the page.
 
+#### Fix error Clerk: The `<OrganizationProfile/>` component is not configured correctly.
+
+Here is the error:
+
+```sh
+Error: 
+Clerk: The <OrganizationProfile/> component is not configured correctly. The most likely reasons for this error are:
+
+1. The "/org/org_234/settings" route is not a catch-all route.
+It is recommended to convert this route to a catch-all route, eg: "/org/org_234/settings/[[...rest]]/page.tsx". Alternatively, you can update the <OrganizationProfile/> component to use hash-based routing by setting the "routing" prop to "hash".
+
+2. The <OrganizationProfile/> component is mounted in a catch-all route, but all routes under "/org/org_234/settings" are protected by the middleware.
+To resolve this, ensure that the middleware does not protect the catch-all route or any of its children. If you are using the "createRouteMatcher" helper, consider adding "(.*)" to the end of the route pattern, eg: "/org/org_234/settings(.*)". For more information, see: https://clerk.com/docs/references/nextjs/clerk-middleware#create-route-matcher
+```
+
+So let's create the folder `[[...rest]]` inside `/settings` and place the `page.tsx` inside.
+
+refactor: Make SettingsPage a catch-all route
+
+fix: Configure OrganizationProfile correctly
+
+- Converted organization settings page to a catch-all route.
+
 #### OrganizationMembers page
 
 The `OrganizationProfile` component within the Settings Page has two tabs: **General** and **Members**. By default the General tab displays a pane on the right with Organization Profile, Leave organization and Delete organization buttons.
