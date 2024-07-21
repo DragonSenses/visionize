@@ -3971,6 +3971,15 @@ feat: Add member view & role management component
 - Added functionality to update member roles.
 - Included actions for removing members from the organization.
 
+style: Enhance ManageRoles visual appearance
+
+- Container: Centered content with flex, padding.
+- Table: Full width, white background, bordered.
+- Table Head: Light gray background.
+- Table Rows: Hover effect.
+- Table Cells: Padding, bottom border.
+- Buttons: Blue background, white text, rounded, disabled state.
+
 `components\ManageRoles.tsx`
 ```tsx
 'use client';
@@ -3997,53 +4006,57 @@ export const ManageRoles = () => {
   }
 
   return (
-    <>
-      <h1>Memberships List</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Joined</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {memberships?.data?.map((mem) => (
-            <tr key={mem.id}>
-              <td>
-                {mem.publicUserData.identifier}{' '}
-                {mem.publicUserData.userId === user?.id && '(You)'}
-              </td>
-              <td>{mem.createdAt.toLocaleDateString()}</td>
-              <td>
-                <SelectRole
-                  defaultRole={mem.role}
-                  onChange={async (e) => {
-                    await mem.update({
-                      role: e.target.value as OrganizationCustomRoleKey,
-                    });
-                    await memberships?.revalidate();
-                  }}
-                />
-              </td>
-              <td>
-                <button
-                  onClick={async () => {
-                    await mem.destroy();
-                    await memberships?.revalidate();
-                  }}
-                >
-                  Remove
-                </button>
-              </td>
+    <div className="flex flex-col items-center p-4">
+      <h1 className="text-2xl font-bold mb-4">Memberships List</h1>
+      <div className="overflow-x-auto w-full">
+        <table className="min-w-full bg-white border border-gray-200">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="py-2 px-4 border-b">User</th>
+              <th className="py-2 px-4 border-b">Joined</th>
+              <th className="py-2 px-4 border-b">Role</th>
+              <th className="py-2 px-4 border-b">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {memberships?.data?.map((mem) => (
+              <tr key={mem.id} className="hover:bg-gray-50">
+                <td className="py-2 px-4 border-b">
+                  {mem.publicUserData.identifier}{' '}
+                  {mem.publicUserData.userId === user?.id && '(You)'}
+                </td>
+                <td className="py-2 px-4 border-b">{mem.createdAt.toLocaleDateString()}</td>
+                <td className="py-2 px-4 border-b">
+                  <SelectRole
+                    defaultRole={mem.role}
+                    onChange={async (e) => {
+                      await mem.update({
+                        role: e.target.value as OrganizationCustomRoleKey,
+                      });
+                      await memberships?.revalidate();
+                    }}
+                  />
+                </td>
+                <td className="py-2 px-4 border-b">
+                  <button
+                    className="text-red-500 hover:text-red-700"
+                    onClick={async () => {
+                      await mem.destroy();
+                      await memberships?.revalidate();
+                    }}
+                  >
+                    Remove
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-      <div>
+      <div className="flex justify-between mt-4 w-full">
         <button
+          className="bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50"
           disabled={!memberships?.hasPreviousPage || memberships?.isFetching}
           onClick={() => memberships?.fetchPrevious?.()}
         >
@@ -4051,13 +4064,14 @@ export const ManageRoles = () => {
         </button>
 
         <button
+          className="bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50"
           disabled={!memberships?.hasNextPage || memberships?.isFetching}
           onClick={() => memberships?.fetchNext?.()}
         >
           Next
         </button>
       </div>
-    </>
+    </div>
   );
 };
 
