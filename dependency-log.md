@@ -1,4 +1,4 @@
-* [Dependency log](#dependency-log)
+* Jump to [Dependency log](#dependency-log)
 
 # Maintenance: dependency/package management
 
@@ -134,6 +134,53 @@ ncu -g
 ```
 
 # Dependency log
+
+## 2024/07/21
+
+```sh
+npm outdated
+Package                    Current    Wanted    Latest  Location                                Depended by
+@clerk/nextjs                5.1.5     5.2.4     5.2.4  node_modules/@clerk/nextjs              visionize
+@prisma/client              5.15.0    5.17.0    5.17.0  node_modules/@prisma/client             visionize
+@radix-ui/react-accordion    1.1.2     1.2.0     1.2.0  node_modules/@radix-ui/react-accordion  visionize
+@radix-ui/react-avatar       1.0.4     1.1.0     1.1.0  node_modules/@radix-ui/react-avatar     visionize
+@radix-ui/react-dialog       1.0.5     1.1.1     1.1.1  node_modules/@radix-ui/react-dialog     visionize
+@radix-ui/react-label        2.0.2     2.1.0     2.1.0  node_modules/@radix-ui/react-label      visionize
+@radix-ui/react-popover      1.0.7     1.1.1     1.1.1  node_modules/@radix-ui/react-popover    visionize
+@radix-ui/react-separator    1.0.3     1.1.0     1.1.0  node_modules/@radix-ui/react-separator  visionize
+@radix-ui/react-slot         1.0.2     1.1.0     1.1.0  node_modules/@radix-ui/react-slot       visionize
+@radix-ui/react-tooltip      1.0.7     1.1.2     1.1.2  node_modules/@radix-ui/react-tooltip    visionize
+@tanstack/react-query       5.45.0   5.51.11   5.51.11  node_modules/@tanstack/react-query      visionize
+@types/node                20.14.2  20.14.11  20.14.11  node_modules/@types/node                visionize
+eslint                      8.57.0    8.57.0     9.7.0  node_modules/eslint                     visionize
+eslint-config-next          14.2.4    14.2.5    14.2.5  node_modules/eslint-config-next         visionize
+lucide-react               0.395.0   0.395.0   0.412.0  node_modules/lucide-react               visionize
+next                        14.2.4    14.2.5    14.2.5  node_modules/next                       visionize
+postcss                     8.4.38    8.4.39    8.4.39  node_modules/postcss                    visionize
+prisma                      5.15.0    5.17.0    5.17.0  node_modules/prisma                     visionize
+stripe                     15.12.0   15.12.0    16.2.0  node_modules/stripe                     visionize
+tailwind-merge               2.3.0     2.4.0     2.4.0  node_modules/tailwind-merge             visionize
+tailwindcss                  3.4.4     3.4.6     3.4.6  node_modules/tailwindcss                visionize
+typescript                   5.4.5     5.5.3     5.5.3  node_modules/typescript                 visionize
+zustand                      4.5.2     4.5.4     4.5.4  node_modules/zustand                    visionize
+```
+
+chore: Update Next.js to v14.2.5
+
+```sh
+npm i next@latest
+```
+
+chore: Update dependencies to latest semver range
+
+```sh
+npm update --save
+npm outdated
+
+Package             Current   Wanted   Latest  Location                         Depended by
+
+```
+
 
 ## 2024/06/15
 
