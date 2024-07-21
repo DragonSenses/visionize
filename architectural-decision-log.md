@@ -3881,7 +3881,7 @@ export default function SkeletonSidebar() {
 
 Next we need to create the `SettingsPage` for the organization.
 
-`app\(app)\(dashboard)\org\settings\page.tsx`
+`app\(app)\(dashboard)\org\[orgId]\settings\page.tsx`
 ```tsx
 import React from 'react';
 
@@ -23443,7 +23443,7 @@ export const Navbar = () => {
 };
 ```
 
-### Update to Clerk (v5.1.4)
+## Update to Clerk (v5.1.4)
 
 - [Breaking changes | Clerk](https://clerk.com/docs/upgrade-guides/core-2/nextjs#breaking-changes)
 - [New middleware architecture](https://clerk.com/docs/upgrade-guides/core-2/nextjs#new-middleware-architecture)
@@ -23465,7 +23465,7 @@ refactor: Top-level auth import for update actions
 
 refactor: Top-level auth import for copy actions
 
-#### Use CLI upgrade helper
+### Use CLI upgrade helper
 
 To facilitate the upgrade process use the [CLI upgrade helper](https://clerk.com/docs/upgrade-guides/core-2/nextjs#cli-upgrade-helper).
 
@@ -23669,6 +23669,13 @@ export const Navbar = () => {
   );
 };
 ```
+
+## Move settings page to org-specific directory
+
+refactor: Move settings page to org-specific route
+
+- Relocated settings page from `app/(app)/(dashboard)/org/settings/page.tsx` to `app/(app)/(dashboard)/org/[orgId]/settings/page.tsx`.
+- Updated directory structure to support org-specific settings.
 
 # Implement monetization, subscription and board limits (for development practice)
 
@@ -27106,7 +27113,7 @@ The Customer portal link should now have a green `[Active]` tag next to it.
 
 Customers are now allowed to sself-manage their payment details, invoices, and subscriptions.
 
-# BillingPage component
+## BillingPage component
 
 Recall that in our `SidebarItem.tsx` component, we had our array of `routes`
 
@@ -27572,3 +27579,79 @@ To verify that the `SubscriptionButton` component behaves as expected:
 - **Testing Library**: For rendering and interacting with the component.
 - **Jest**: For running the tests and assertions.
 - **Mocking Library**: For mocking the subscription status and other dependencies.
+
+# Deployment
+
+Let's add an dependency installation script and prisma generate script to our `package.json`.
+
+chore: Add install and generate scripts
+
+```json
+{
+  "name": "visionize",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "install": "npm install",
+    "generate": "prisma generate"
+  },
+```
+
+## Deploy app to Vercel
+
+[Next.js App Deployment | docs](https://nextjs.org/docs/app/building-your-application/deploying)
+
+Here are the steps to deploy your Next.js project to Vercel:
+
+1. **Prepare Your Next.js Application**:
+   - Ensure your project is ready for deployment. Run `npm run build` to check for any build errors.
+
+2. **Push Your Project to a Git Repository**:
+   - Make sure your project is pushed to a Git repository on GitHub, GitLab, or Bitbucket.
+
+3. **Sign In to Vercel**:
+   - Go to [Vercel](https://vercel.com) and sign in or create an account.
+
+4. **Import Your Project**:
+   - From the Vercel dashboard, click on the "Import Project" button.
+   - Choose the source of your Next.js application (e.g., GitHub, GitLab, or Bitbucket) and connect it to Vercel.
+
+5. **Configure Your Project**:
+   - Vercel will automatically detect your Next.js application and configure default deployment settings.
+   - You can review and adjust settings if needed, such as environment variables.
+
+6. **Deploy Your Application**:
+   - Click the "Deploy" button. Vercel will build your app, run tests, and deploy it globally.
+   - Wait for the deployment process to complete. It should finish in under a minute.
+
+7. **View Your Live Application**:
+   - Once the deployment is complete, you will get deployment URLs.
+   - Click on one of the URLs to view your live Next.js application.
+
+8. **Monitor and Manage Your Deployment**:
+   - Use the Vercel dashboard to monitor your deployment, view logs, and manage settings.
+
+These steps should help you successfully deploy your Next.js project to Vercel. If you encounter any issues, Vercel's documentation and support are great resources to consult.
+
+**Note:** The two environment variables we need to change *after* deployment is `NEXT_PUBLIC_APP_URL` and `STRIPE_WEBHOOK_SECRET`.
+
+This will have the project in deployment in vercel. We can visit it in our deployed domain, an example URL will be `https://visionize.vercel.app`.
+
+- The new `NEXT_PUBLIC_APP_URL` will be `https://visionize.vercel.app`
+
+In Stripe dashboard where we set up the the "Listen to Stripe events" we set the new endpoint URL and select the events to listen to. The events we listen to are:
+
+- `checkout.session.completed`
+- `invoice.payment_succeeded`
+
+We can add more or less events to listen to in our webhook found in `app\api\webook\route.ts`.
+
+Click the "Add events" button after selecting the events to listen to. Then we click "Add endpoint" to direct us to a new tab where we can reveal the **Signing secret** key. Copy the `signing secret` key and add it to the environment variables in vercel.
+
+- The new `STRIPE_WEBHOOK_SECRET` will be set to the new **Signing secret key**  with the endpoint URL of `https://visionize.vercel.app/api/webhook`.
+
+With that all set up this should allow the project to be in production and fully deployed for others to use. Well done.
