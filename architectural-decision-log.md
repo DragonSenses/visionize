@@ -3941,6 +3941,30 @@ export default function SettingsPage() {
 
 Why remove the box shadow? Well we don't want it to look like a Modal. The `OrganizationProfile` should be on the page.
 
+#### OrganizationMembers page
+
+The `OrganizationProfile` component within the Settings Page has two tabs: **General** and **Members**. By default the General tab displays a pane on the right with Organization Profile, Leave organization and Delete organization buttons.
+
+The **Members** tab displays the members within the organization, clicking it navigates us to a route named `/organization-members`. So we need to create the `OrganizationMembersPage` under the `settings` folder.
+
+`app\(app)\(dashboard)\org\[orgId]\settings\organization-members\page.tsx`
+```tsx
+import React from 'react';
+
+import { ManageRoles } from '@/components/ManageRoles';
+
+export default function OrganizationMembersPage() {
+
+  return (
+    <div className='w-full'>
+      <ManageRoles />
+    </div>
+  )
+}
+```
+
+We will then create the `ManageRoles` component.
+
 ## Database
 
 Let's setup the database. We are going to use Prisma.
