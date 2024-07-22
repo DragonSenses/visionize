@@ -171,16 +171,29 @@ chore: Update Next.js to v14.2.5
 npm i next@latest
 ```
 
+chore: Update @clerk/nextjs to v5.2.4
+
+```sh
+npm i @clerk/nextjs@latest
+```
+
+chore: Update prisma & @prisma/client to (v5.17.0)
+
+```sh
+npm i prisma@latest @prisma/client@latest
+```
+
 chore: Update dependencies to latest semver range
 
 ```sh
 npm update --save
 npm outdated
 
-Package             Current   Wanted   Latest  Location                         Depended by
-
+Package       Current   Wanted   Latest  Location                   Depended by
+eslint         8.57.0   8.57.0    9.7.0  node_modules/eslint        visionize
+lucide-react  0.395.0  0.395.0  0.414.0  node_modules/lucide-react  visionize
+stripe        15.12.0  15.12.0   16.2.0  node_modules/stripe        visionize
 ```
-
 
 ## 2024/06/15
 
