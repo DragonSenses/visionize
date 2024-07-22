@@ -20,21 +20,13 @@ While using only three components:
 2. **Lists**, displays the different stages of a task (To Do, In Progress, Done)
 3. **Cards**, which represent tasks, ideas and information
 
+It also has an **audit log**, a record of events and changes, to enhance collaboration.
+
 Uses **Next.js 14**, with features such as [Server Actions](https://nextjs.org/blog/next-14#server-actions-stable).
-
-# Work-in-Progress
-
-TODO:
-- [x] Boards
-- [x] Lists
-- [x] Cards
-- [x] Audit Log
-- [ ] Settings
-- [ ] Integrate Freemium Model (just for practice)
 
 # Technologies:
 
-- Next.JS 14 
+- Next.JS 14
 - TypeScript
 - React
 - TailwindCSS
@@ -50,6 +42,15 @@ TODO:
 - User can **create**, **read**, **update** and **delete** lists
 - User can **create**, **read**, **update** and **delete** cards
 - Users can view activity history with *audit logs*
+
+# Implementation Checklist
+
+- [x] Boards
+- [x] Lists
+- [x] Cards
+- [x] Audit Log
+- [x] Settings page
+- [x] Integrate Freemium Model (for practice)
 
 # Prerequisites
 
@@ -72,17 +73,67 @@ TODO:
   In the terminal:
 
     ```powershell
-    npm run install-dependencies
+    npm run install
     ```
 
-**4. Create an `.env` file**
+**4. Generate Prisma Client**
 
-TODO: Add additional steps to run locally
+  If the `postinstall` script does not run after installing the dependencies, then do the following:
 
----
+  In the terminal:
 
-# TODO: Mockup, examples & screenshots
-# TODO: Configuration options
+    ```powershell
+    npx prisma generate
+    ```
+
+The command `npx prisma generate` creates the Prisma Client, which is a set of auto-generated functions tailored to your database schema. This client allows you to easily interact with your database in your code. Essentially, it updates the client whenever you make changes to your Prisma schema.
+
+**5. Create an `.env` file**
+
+Create the `.env` file at the base of the project. It should contain the following environment variables:
+
+```sh
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/org-selection
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/org-selection
+
+DATABASE_URL=
+NEXT_PUBLIC_UNSPLASH_ACCESS_KEY=
+STRIPE_API_KEY=
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+STRIPE_WEBHOOK_SECRET=
+```
+
+- To get the keys `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY` follow the documentation with [Clerk quick start](https://clerk.com/docs/quickstarts/nextjs).
+
+- To create your local `DATABASE_URL`, install PostgreSQL on your local machine. Follow this guide: [set up a local postgresql database | Prisma](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database)
+
+- For image API generation, create an account with [Unsplash Image API](https://unsplash.com/developers) and follow the [Unsplash documentation - Getting started](https://unsplash.com/documentation#getting-started) to get the `NEXT_PUBLIC_UNSPLASH_ACCESS_KEY`.
+
+- For payment handling, create an account with [Stripe](https://dashboard.stripe.com/) and in the Developers tab get the key for `STRIPE_API_KEY`. 
+- While still logged-in the Stripe dashboard, click the Webhooks tab or navigate to `https://dashboard.stripe.com/test/webhooks`. Click on "Test in a local environment" and follow the instructions. 
+  - Using the Stripe CLI run the command `stripe login` in the terminal of your choice
+  - Forward your events to the webhook with the command: `stripe listen --forward-to localhost:3000/api/webhook`
+  - Then you will get the **webhook signing secret** value from the terminal, save this as the value to `STRIPE_WEBHOOK_SECRET` in your environment variables.
+
+With your environment variables all set up, you are not ready to run the app locally.
+
+**6. Run the app locally**
+
+  In the terminal:
+
+    ```powershell
+    npm run dev
+    ```
+
+  Then with the browser of your choice, navigate to the link: `http://localhost:3000`
+
+**7. Use the app**
+
+  You can now create boards, lists and cards within an organization.
 
 # Kanban
 
