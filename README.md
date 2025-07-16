@@ -22,7 +22,63 @@ While using only three components:
 
 It also has an **audit log**, a record of events and changes, to enhance collaboration.
 
-Uses **Next.js 14**, with features such as [Server Actions](https://nextjs.org/blog/next-14#server-actions-stable).
+> Uses **Next.js 14**, with features such as [Server Actions](https://nextjs.org/blog/next-14#server-actions-stable).
+
+# 📸 Preview & Screenshots
+
+## 🏢 Create Organizations
+
+Set up workspaces to manage boards collaboratively.
+
+![Create Organization](assets/demo/0-create-organization-or-workspace.jpg)
+
+---
+
+## 🗂️ View Board List
+
+Access all your boards from a centralized dashboard.
+
+![Board List](assets/demo/1-board-list.jpg)
+
+---
+
+## 🧱 Create Lists
+
+Build workflow stages like "To Do", "In Progress", and "Done".
+
+![Create List](assets/demo/2-create-list.jpg)
+
+---
+
+## 🧳 Create Boards
+
+Create new boards with custom titles and workflows. Each board is visually enhanced with a unique background sourced from the Unsplash API.
+
+![Create Board](assets/demo/3-create-board.jpg)
+
+---
+
+## 🧩 Manage Boards with Lists & Cards
+
+Customize each board dynamically—edit titles, lists, and cards at any time.
+
+![Board Page](assets/demo/4-board-page.jpg)
+
+---
+
+## 🖱️ Drag and Drop Interaction
+
+Reorganize cards across lists with smooth drag-and-drop functionality.
+
+![Drag and Drop](assets/demo/5-board-page-drag-and-drop.jpg)
+
+---
+
+## 🕵️ Activity Logs
+
+View a complete audit history of all actions taken across boards.
+
+![Activity Page](assets/demo/6-activity-page.jpg)
 
 # Technologies:
 
