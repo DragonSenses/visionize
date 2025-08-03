@@ -8,6 +8,8 @@ Inspired by [Kanban](https://en.wikipedia.org/wiki/Kanban_(development)), (ÁúãÊù
 
 # Description
 
+Visionize is a productivity app for organizing tasks with boards, lists, and cards. Built with Next.js 14, TypeScript, React, TailwindCSS, Prisma ORM, PostgreSQL, Clerk, Stripe, zustand, react-query, and shadcn/ui. Features CRUD, drag-and-drop, audit logs, Zod validation, and freemium capabilities.
+
 Based on the kanban method, this app is a tool to visualize workflow in three steps:
 
 1. To Do
@@ -80,17 +82,25 @@ View a complete audit history of all actions taken across boards.
 
 ![Activity Page](assets/demo/6-activity-page.jpg)
 
-# Technologies:
+# Technologies
 
-- Next.JS 14
-- TypeScript
-- React
-- TailwindCSS
-- PostgreSQL and Prisma ORM for database
-- Clerk for authentication
-- Stripe API for payment handling
-- zustand for state management
-- shadcn/ui for component collection
+| Technology                  | Purpose                                                                 |
+|----------------------------|-------------------------------------------------------------------------|
+| **Next.js 14**             | Full-stack React framework for routing, rendering, and API routes       |
+| **TypeScript**             | Strongly typed language for safer and scalable development              |
+| **React**                  | Component-based UI library powering the frontend                        |
+| **TailwindCSS**            | Utility-first CSS framework for rapid UI styling                        |
+| **PostgreSQL + Prisma ORM**| Relational database with type-safe query building                       |
+| **Clerk**                  | Authentication and user management with support for organizations       |
+| **Stripe API**             | Handles freemium billing and secure payment processing                  |
+| **zustand**                | Lightweight and scalable state management for React                     |
+| **shadcn/ui**              | Prebuilt Radix UI components styled with TailwindCSS                    |
+| **@hello-pangea/dnd**      | Drag-and-drop library for intuitive task reordering                     |
+| **@tanstack/react-query** | Data fetching and caching for performant UIs                            |
+| **Zod**                    | Type-safe schema validation for form inputs and API payloads            |
+| **Sonner**                 | Toast notification system for real-time user feedback                   |
+| **Lucide-react**           | Icon library for clean and customizable UI elements                     |
+| **Unsplash API**           | Dynamically generates board cover images for visual context             |
 
 # Specifications
 
@@ -99,14 +109,13 @@ View a complete audit history of all actions taken across boards.
 - User can **create**, **read**, **update** and **delete** cards
 - Users can view activity history with *audit logs*
 
-# Implementation Checklist
+# Core Capabilities
 
-- [x] Boards
-- [x] Lists
-- [x] Cards
-- [x] Audit Log
-- [x] Settings page
-- [x] Integrate Freemium Model (for practice)
+- CRUD operations for Boards, Lists, and Cards  
+- Real-time drag-and-drop task organization  
+- Audit logs for tracking user actions  
+- Workspace-level collaboration with Organizations  
+- Freemium access control via Stripe (org-based billing, board limits, upgrade flow)
 
 # Prerequisites
 
